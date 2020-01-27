@@ -32,7 +32,7 @@
     <ClInclude Include="src\Header Files\ObjectData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include.h">
+    <ClInclude Include="src\Header Files\Include.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
