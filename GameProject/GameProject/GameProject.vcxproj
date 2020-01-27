@@ -139,6 +139,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Header Files\Camera.h" />
+    <ClInclude Include="src\Header Files\Game.h" />
     <ClInclude Include="src\Header Files\Include.h" />
     <ClInclude Include="src\Header Files\ObjectData.h" />
     <ClInclude Include="src\Header Files\ObjectHandler.h" />
