@@ -17,6 +17,7 @@
 #include "Shader.h"
 #include "Camera.h"
 #include "ObjectData.h" 
+#include "Platform.h"
 
 //NAMESPACES
 using namespace std;

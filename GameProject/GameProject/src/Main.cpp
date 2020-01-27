@@ -31,7 +31,6 @@ void render()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.1f, 0.3f, 0.3f, 1.0f);
 
-
 	SHADER->UseShader();
 	SHADER->SetUniform("u_View", CAMERA->GetView());
 	SHADER->SetUniform("u_Projection", PROJMATRIX);
@@ -60,5 +59,6 @@ int main(void)
 
 	WINDOW->~Window();
 	glfwTerminate();
+
 	return 0;
 }
