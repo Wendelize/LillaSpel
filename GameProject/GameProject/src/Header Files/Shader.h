@@ -7,39 +7,39 @@ using namespace glm;
 class Shader
 {
 private:
-	GLuint _shaderProgram;
-	GLuint _activeProgram = GL_NONE;
+	GLuint m_shaderProgram;
+	GLuint m_activeProgram = GL_NONE;
 public:
 	Shader(const GLchar* VertexShaderFile, const GLchar* FragmentShaderFile);
 	Shader(const GLchar* VertexShaderFile, const GLchar* GeoShaderFile, const GLchar* FragmentShaderFile);
 	~Shader();
 
-	GLuint loadShader(GLenum ShaderType, const GLchar* fileName);
-	void useShader();
-	GLuint getShader();
-	GLint getUniform(const GLchar * name);
-	void setUniform(const GLchar * name, const int & value);
-	void setUniform(const GLchar * name, const float & value);
-	void setUniform(const GLchar * name, const glm::vec2 & vector);
-	void setUniform(const GLchar * name, const glm::vec3 & vector);
-	void setUniform(const GLchar * name, const glm::mat4 & matrix);
-	void setTexture2D(int id, const GLchar * name, GLuint texture);
+	GLuint LoadShader(GLenum ShaderType, const GLchar* fileName);
+	void UseShader();
+	GLuint GetShader();
+	GLint GetUniform(const GLchar * name);
+	void SetUniform(const GLchar * name, const int & value);
+	void SetUniform(const GLchar * name, const float & value);
+	void SetUniform(const GLchar * name, const glm::vec2 & vector);
+	void SetUniform(const GLchar * name, const glm::vec3 & vector);
+	void SetUniform(const GLchar * name, const glm::mat4 & matrix);
+	void SetTexture2D(int id, const GLchar * name, GLuint texture);
 };
 
 Shader::Shader(const GLchar* VertexShaderFile, const GLchar* FragmentShaderFile)
 {
-	GLuint vs = loadShader(GL_VERTEX_SHADER, VertexShaderFile);
-	GLuint fs = loadShader(GL_FRAGMENT_SHADER, FragmentShaderFile);
+	GLuint vs = LoadShader(GL_VERTEX_SHADER, VertexShaderFile);
+	GLuint fs = LoadShader(GL_FRAGMENT_SHADER, FragmentShaderFile);
 
-	_shaderProgram = glCreateProgram();
+	m_shaderProgram = glCreateProgram();
 
-	glAttachShader(_shaderProgram, vs);
-	glAttachShader(_shaderProgram, fs);
+	glAttachShader(m_shaderProgram, vs);
+	glAttachShader(m_shaderProgram, fs);
 
-	glLinkProgram(_shaderProgram);
+	glLinkProgram(m_shaderProgram);
 
-	glDetachShader(_shaderProgram, vs);
-	glDetachShader(_shaderProgram, fs);
+	glDetachShader(m_shaderProgram, vs);
+	glDetachShader(m_shaderProgram, fs);
 
 	glDeleteShader(vs);
 	glDeleteShader(fs);
@@ -47,7 +47,7 @@ Shader::Shader(const GLchar* VertexShaderFile, const GLchar* FragmentShaderFile)
 
 	GLsizei  size = 0;
 	GLchar test[1000];
-	glGetProgramInfoLog(_shaderProgram, 1000, &size, test);
+	glGetProgramInfoLog(m_shaderProgram, 1000, &size, test);
 
 	for (GLsizei i = 0; i < size; i++) {
 		cout << test[i];
@@ -56,21 +56,21 @@ Shader::Shader(const GLchar* VertexShaderFile, const GLchar* FragmentShaderFile)
 
 Shader::Shader(const GLchar * VertexShaderFile, const GLchar * GeoShaderFile, const GLchar * FragmentShaderFile)
 {
-	GLuint vs = loadShader(GL_VERTEX_SHADER, VertexShaderFile);
-	GLuint gs = loadShader(GL_GEOMETRY_SHADER, GeoShaderFile);
-	GLuint fs = loadShader(GL_FRAGMENT_SHADER, FragmentShaderFile);
+	GLuint vs = LoadShader(GL_VERTEX_SHADER, VertexShaderFile);
+	GLuint gs = LoadShader(GL_GEOMETRY_SHADER, GeoShaderFile);
+	GLuint fs = LoadShader(GL_FRAGMENT_SHADER, FragmentShaderFile);
 
-	_shaderProgram = glCreateProgram();
+	m_shaderProgram = glCreateProgram();
 
-	glAttachShader(_shaderProgram, vs);
-	glAttachShader(_shaderProgram, gs);
-	glAttachShader(_shaderProgram, fs);
+	glAttachShader(m_shaderProgram, vs);
+	glAttachShader(m_shaderProgram, gs);
+	glAttachShader(m_shaderProgram, fs);
 
-	glLinkProgram(_shaderProgram);
+	glLinkProgram(m_shaderProgram);
 
-	glDetachShader(_shaderProgram, vs);
-	glDetachShader(_shaderProgram, gs);
-	glDetachShader(_shaderProgram, fs);
+	glDetachShader(m_shaderProgram, vs);
+	glDetachShader(m_shaderProgram, gs);
+	glDetachShader(m_shaderProgram, fs);
 
 	glDeleteShader(vs);
 	glDeleteShader(gs);
@@ -79,7 +79,7 @@ Shader::Shader(const GLchar * VertexShaderFile, const GLchar * GeoShaderFile, co
 
 	GLsizei  sizei = 0;
 	GLchar test[1000];
-	glGetProgramInfoLog(_shaderProgram, 1000, &sizei, test);
+	glGetProgramInfoLog(m_shaderProgram, 1000, &sizei, test);
 
 	for (GLsizei i = 0; i < sizei; i++) {
 		cout << test[i];
@@ -88,10 +88,10 @@ Shader::Shader(const GLchar * VertexShaderFile, const GLchar * GeoShaderFile, co
 
 Shader::~Shader()
 {
-	glDeleteProgram(_shaderProgram);
+	glDeleteProgram(m_shaderProgram);
 }
 
-inline GLuint Shader::loadShader(GLenum ShaderType, const GLchar * fileName)
+inline GLuint Shader::LoadShader(GLenum ShaderType, const GLchar * fileName)
 {
 	
 	GLuint shader = glCreateShader(ShaderType);
@@ -112,58 +112,58 @@ inline GLuint Shader::loadShader(GLenum ShaderType, const GLchar * fileName)
 	return shader;
 }
 
-void Shader::useShader()
+void Shader::UseShader()
 {
 	glUseProgram(0);
-	glUseProgram(_shaderProgram);
-	_activeProgram = _shaderProgram;
+	glUseProgram(m_shaderProgram);
+	m_activeProgram = m_shaderProgram;
 }
 
-GLuint Shader::getShader() {
-	return _shaderProgram;
+GLuint Shader::GetShader() {
+	return m_shaderProgram;
 }
 
-GLint Shader::getUniform(const GLchar * name)
+GLint Shader::GetUniform(const GLchar * name)
 {
-	if (_activeProgram != _shaderProgram)
+	if (m_activeProgram != m_shaderProgram)
 		throw printf("cant get uniform, shader not active");
 
-	GLint location = glGetUniformLocation(_shaderProgram, name);
+	GLint location = glGetUniformLocation(m_shaderProgram, name);
 
 	if (location == -1)
-		printf("cant find uniform '%s' in shader nr %d\n", name, _shaderProgram);
+		printf("cant find uniform '%s' in shader nr %d\n", name, m_shaderProgram);
 
 	return location;
 }
 
-void Shader::setUniform(const GLchar * name, const int & value)
+void Shader::SetUniform(const GLchar * name, const int & value)
 {
-	glUniform1i(getUniform(name), value);
+	glUniform1i(GetUniform(name), value);
 }
 
-void Shader::setUniform(const GLchar * name, const float & value)
+void Shader::SetUniform(const GLchar * name, const float & value)
 {
-	glUniform1f(getUniform(name), value);
+	glUniform1f(GetUniform(name), value);
 }
 
-void Shader::setUniform(const GLchar * name, const glm::vec2 & vector)
+void Shader::SetUniform(const GLchar * name, const glm::vec2 & vector)
 {
-	glUniform2fv(getUniform(name), 1, value_ptr(vector));
+	glUniform2fv(GetUniform(name), 1, value_ptr(vector));
 }
 
-void Shader::setUniform(const GLchar * name, const glm::vec3 & vector)
+void Shader::SetUniform(const GLchar * name, const glm::vec3 & vector)
 {
-	glUniform3fv(getUniform(name), 1, value_ptr(vector));
+	glUniform3fv(GetUniform(name), 1, value_ptr(vector));
 }
 
-void Shader::setUniform(const GLchar * name, const glm::mat4 & matrix)
+void Shader::SetUniform(const GLchar * name, const glm::mat4 & matrix)
 {
-	glUniformMatrix4fv(getUniform(name), 1, GL_FALSE, value_ptr(matrix));
+	glUniformMatrix4fv(GetUniform(name), 1, GL_FALSE, value_ptr(matrix));
 }
 
-void Shader::setTexture2D(int id, const GLchar * name, GLuint texture)
+void Shader::SetTexture2D(int id, const GLchar * name, GLuint texture)
 {
 	glActiveTexture(GL_TEXTURE0 + id);
 	glBindTexture(GL_TEXTURE_2D, texture);
-	setUniform(name, id);
+	SetUniform(name, id);
 }

@@ -26,9 +26,6 @@
     <ClInclude Include="src\Header Files\Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Header Files\Keys.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Header Files\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>

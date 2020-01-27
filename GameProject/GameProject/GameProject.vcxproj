@@ -140,7 +140,6 @@
   <ItemGroup>
     <ClInclude Include="Include.h" />
     <ClInclude Include="src\Header Files\Camera.h" />
-    <ClInclude Include="src\Header Files\Keys.h" />
     <ClInclude Include="src\Header Files\ObjectData.h" />
     <ClInclude Include="src\Header Files\Shader.h" />
     <ClInclude Include="src\Header Files\Window.h" />

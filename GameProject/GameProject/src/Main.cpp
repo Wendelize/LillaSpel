@@ -32,10 +32,10 @@ void createStuff()
 {
 	glEnable(GL_DEPTH_TEST);
 
-	_camera = new Camera(_gameWindow->_window, { 0,0, -10 });
+	_camera = new Camera(_gameWindow->m_window, { 0,0, -10 });
 
 	_viewMatrix = _camera->getView();
-	_projectionMatrix = perspective(radians(45.0f), (float)_gameWindow->getWidht() / (float)_gameWindow->getHeight(), 0.1f, 100.0f);
+	_projectionMatrix = perspective(radians(45.0f), (float)_gameWindow->GetWidht() / (float)_gameWindow->GetHeight(), 0.1f, 100.0f);
 
 	_object = new Object(2, { 0,0,0 });
 	_shader = new Shader("src/Shaders/VertexShader.glsl", "src/Shaders/FragmentShader.glsl");
@@ -54,14 +54,14 @@ void render()
 	glClearColor(0.1f, 0.3f, 0.3f, 1.0f);
 
 
-	_shader->useShader();
-	_shader->setUniform("view", _camera->getView());
-	_shader->setUniform("projection", _projectionMatrix);
-	_shader->setUniform("model", _object->GetModelMat());
+	_shader->UseShader();
+	_shader->SetUniform("view", _camera->getView());
+	_shader->SetUniform("projection", _projectionMatrix);
+	_shader->SetUniform("model", _object->GetModelMat());
 	_object->DrawObject(_shader);
 
 	/* Swap front and back buffers */
-	glfwSwapBuffers(_gameWindow->_window);
+	glfwSwapBuffers(_gameWindow->m_window);
 
 	/* Poll for and process events */
 	glfwPollEvents();
@@ -71,7 +71,7 @@ int main(void)
 {
 	float _deltaTime = 0.0, _curTime = 0.0, _lastTime = 0.0;
 	createStuff();
-	while (!glfwWindowShouldClose(_gameWindow->_window))
+	while (!glfwWindowShouldClose(_gameWindow->m_window))
 	{	
 		_curTime = (float)glfwGetTime();
 		_deltaTime = _curTime - _lastTime;

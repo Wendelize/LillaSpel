@@ -6,50 +6,50 @@ using namespace glm;
 class Window
 {
 private:
-	int _width, _height;
+	int m_width, m_height;
 	//Camera _camera;
 public:
-	GLFWwindow* _window;
+	GLFWwindow* m_window;
 
 	Window(int width = 640, int height = 480);
 	~Window();
 
-	int getWidht();
-	int getHeight();
+	int GetWidht();
+	int GetHeight();
 };
 
 Window::Window(int width, int height)
 {
-	_width = width;
-	_height = height;
+	m_width = width;
+	m_height = height;
 
 	if (!glfwInit())
 		cout << "Could not Initialize the library" << endl;
 
-	_window = glfwCreateWindow(_width, _height, "EXTERMINATOR 2000-------------------------------I think diz is a game.", NULL, NULL);
-	if (!_window){
+	m_window = glfwCreateWindow(m_width, m_height, "EXTERMINATOR 2000-------------------------------I think diz is a game.", NULL, NULL);
+	if (!m_window){
 		glfwTerminate();
 		cout << "Could not open window" << endl;
 	}
 
-	glfwMakeContextCurrent(_window);
+	glfwMakeContextCurrent(m_window);
 	if (glewInit() != GLEW_OK)
 		printf("Error\n");
 }
 
 Window::~Window()
 {
-	glfwDestroyWindow(_window);
+	glfwDestroyWindow(m_window);
 	glfwTerminate();
 	exit(EXIT_SUCCESS);
 }
 
-int Window::getWidht()
+int Window::GetWidht()
 {
-	return _width;
+	return m_width;
 }
 
-int Window::getHeight()
+int Window::GetHeight()
 {
-	return _height;
+	return m_height;
 }
