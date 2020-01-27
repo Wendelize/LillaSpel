@@ -4,6 +4,10 @@
 #include <glfw3.h>
 #include <glm.hpp>
 #include <gtc/type_ptr.hpp>
+#include "assimp/scene.h"
+#include "assimp/postprocess.h"
+#include "assimp/Importer.hpp"
+
 
 //INCLUDES C++
 #include <iostream>
