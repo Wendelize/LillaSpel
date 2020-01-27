@@ -13,10 +13,10 @@
 #include <math.h>
 
 //CLASSES
-#include "Header Files/Window.h"
-#include "Header Files/Shader.h"
-#include "Header Files/Camera.h"
-#include "Header Files/ObjectData.h"
+#include "Window.h"
+#include "Shader.h"
+#include "Camera.h"
+#include "ObjectData.h" 
 
 //NAMESPACES
 using namespace std;
