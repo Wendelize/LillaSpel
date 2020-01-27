@@ -1,5 +1,4 @@
 #pragma once
-
 //INCLUDES 3D
 #include <GL/glew.h>
 #include <glfw3.h>
@@ -14,11 +13,10 @@
 #include <math.h>
 
 //CLASSES
-#include "Window.h"
-#include "Shader.h"
-#include "Camera.h"
-#include "Keys.h"
-#include "ObjectData.h"
+#include "Header Files/Window.h"
+#include "Header Files/Shader.h"
+#include "Header Files/Camera.h"
+#include "Header Files/ObjectData.h"
 
 //NAMESPACES
 using namespace std;
