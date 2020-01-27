@@ -68,13 +68,13 @@ void Object::CreatePlane()
 	};
 	m_nrOfV = sizeof(vertices) / sizeof(*vertices);
 	m_vertices = new vertexData[m_nrOfV];
-	m_vertices = vertices;
+	memcpy(m_vertices, vertices, sizeof(vertices));
 
 	//CREATE INDECES DATA
 	unsigned int indexData[] = { 0, 2, 1,  0, 3, 2 };
 	m_nrOfI = sizeof(indexData) / sizeof(*indexData);
 	m_indices = new unsigned int[m_nrOfI];
-	m_indices = indexData;
+	memcpy(m_indices, indexData, sizeof(indexData));
 }
 
 void Object::CreateCube()
