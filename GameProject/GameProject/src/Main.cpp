@@ -34,7 +34,7 @@ void createStuff()
 
 	_camera = new Camera(_gameWindow->m_window, { 0,0, -10 });
 
-	_viewMatrix = _camera->getView();
+	_viewMatrix = _camera->GetView();
 	_projectionMatrix = perspective(radians(45.0f), (float)_gameWindow->GetWidht() / (float)_gameWindow->GetHeight(), 0.1f, 100.0f);
 
 	_object = new Object(2, { 0,0,0 });
@@ -55,7 +55,7 @@ void render()
 
 
 	_shader->UseShader();
-	_shader->SetUniform("view", _camera->getView());
+	_shader->SetUniform("view", _camera->GetView());
 	_shader->SetUniform("projection", _projectionMatrix);
 	_shader->SetUniform("model", _object->GetModelMat());
 	_object->DrawObject(_shader);
@@ -76,7 +76,7 @@ int main(void)
 		_curTime = (float)glfwGetTime();
 		_deltaTime = _curTime - _lastTime;
 		_lastTime = _curTime;
-		_camera->update(_deltaTime, 10);
+		_camera->UpdateMovement(_deltaTime, 10);
 		render();
 	}
 
