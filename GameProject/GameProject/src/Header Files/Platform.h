@@ -11,6 +11,11 @@ private:
 	Object m_object;
 	// Cubemap... 3D texture...
 public:
-
+	Platform();
+	~Platform();
+	Object GetObject();
+	Object SetObject();
+	// LoadHeightMap();
+	// Textureish();
 };
 
