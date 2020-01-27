@@ -32,6 +32,9 @@
     <ClInclude Include="src\Header Files\ObjectData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Header Files\Include.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Shaders\VertexShader.glsl" />
