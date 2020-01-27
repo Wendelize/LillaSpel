@@ -93,4 +93,6 @@ vector<Object*> ObjectHandler::GetObjects()
 	//{
 	//	  temp.push_back(m_powerUps[i]->GetObject());
 	//}
+
+	return temp;
 }
