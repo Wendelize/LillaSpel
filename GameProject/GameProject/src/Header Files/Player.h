@@ -40,7 +40,7 @@ Player::Player()
 
 Player::~Player()
 {
-
+	delete m_object;
 }
 
 string Player::GetName()
