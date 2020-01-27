@@ -22,25 +22,25 @@
 using namespace std;
 using namespace glm;
 
-Window * _gameWindow = new Window(1200, 840);
-Shader * _shader; 
-Object * _object;
-Camera * _camera;
-mat4 _viewMatrix, _projectionMatrix;
+Window * WINDOW = new Window(1200, 840);
+Shader * SHADER; 
+Object * OBJECT;
+Camera * CAMERA;
+mat4 VIEWMATRIX, PROJMATRIX;
 
 void createStuff()
 {
 	glEnable(GL_DEPTH_TEST);
 
-	_camera = new Camera(_gameWindow->m_window, { 0,0, -10 });
+	CAMERA = new Camera(WINDOW->m_window, { 0,0, -10 });
 
-	_viewMatrix = _camera->GetView();
-	_projectionMatrix = perspective(radians(45.0f), (float)_gameWindow->GetWidht() / (float)_gameWindow->GetHeight(), 0.1f, 100.0f);
+	VIEWMATRIX = CAMERA->GetView();
+	PROJMATRIX = perspective(radians(45.0f), (float)WINDOW->GetWidht() / (float)WINDOW->GetHeight(), 0.1f, 100.0f);
 
-	_object = new Object(2, { 0,0,0 });
-	_shader = new Shader("src/Shaders/VertexShader.glsl", "src/Shaders/FragmentShader.glsl");
-	_object->CreateCube();
-	_object->InitObject();
+	OBJECT = new Object(2, { 0,0,0 });
+	SHADER = new Shader("src/Shaders/VertexShader.glsl", "src/Shaders/FragmentShader.glsl");
+	OBJECT->CreateCube();
+	OBJECT->InitObject();
 
 	double dArray[16] = { 0.0 };
 
@@ -54,14 +54,14 @@ void render()
 	glClearColor(0.1f, 0.3f, 0.3f, 1.0f);
 
 
-	_shader->UseShader();
-	_shader->SetUniform("u_View", _camera->GetView());
-	_shader->SetUniform("u_Projection", _projectionMatrix);
-	_shader->SetUniform("u_Model", _object->GetModelMat());
-	_object->DrawObject(_shader);
+	SHADER->UseShader();
+	SHADER->SetUniform("u_View", CAMERA->GetView());
+	SHADER->SetUniform("u_Projection", PROJMATRIX);
+	SHADER->SetUniform("u_Model", OBJECT->GetModelMat());
+	OBJECT->DrawObject(SHADER);
 
 	/* Swap front and back buffers */
-	glfwSwapBuffers(_gameWindow->m_window);
+	glfwSwapBuffers(WINDOW->m_window);
 
 	/* Poll for and process events */
 	glfwPollEvents();
@@ -71,16 +71,16 @@ int main(void)
 {
 	float _deltaTime = 0.0, _curTime = 0.0, _lastTime = 0.0;
 	createStuff();
-	while (!glfwWindowShouldClose(_gameWindow->m_window))
+	while (!glfwWindowShouldClose(WINDOW->m_window))
 	{	
 		_curTime = (float)glfwGetTime();
 		_deltaTime = _curTime - _lastTime;
 		_lastTime = _curTime;
-		_camera->UpdateMovement(_deltaTime, 10);
+		CAMERA->UpdateMovement(_deltaTime, 10);
 		render();
 	}
 
-	_gameWindow->~Window();
+	WINDOW->~Window();
 	glfwTerminate();
 	return 0;
 }
