@@ -25,6 +25,7 @@ Platform::Platform()
 	m_object = new Object(1000, vec3(0.0f, 0.0f, -1.0f));
 
 	m_object->CreatePlane();
+	m_object->InitObject();
 }
 
 Platform::~Platform()
