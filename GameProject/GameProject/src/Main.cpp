@@ -20,6 +20,7 @@
 
 //NAMESPACES
 using namespace std;
+using namespace glm;
 
 Window * _gameWindow = new Window(1200, 840);
 Shader * _shader; 
@@ -38,8 +39,8 @@ void createStuff()
 
 	_object = new Object(2, { 0,0,0 });
 	_shader = new Shader("src/Shaders/VertexShader.glsl", "src/Shaders/FragmentShader.glsl");
-	_object->createCube();
-	_object->initObject();
+	_object->CreateCube();
+	_object->InitObject();
 
 	double dArray[16] = { 0.0 };
 
@@ -56,8 +57,8 @@ void render()
 	_shader->useShader();
 	_shader->setUniform("view", _camera->getView());
 	_shader->setUniform("projection", _projectionMatrix);
-	_shader->setUniform("model", _object->getModelMat());
-	_object->drawObject(_shader);
+	_shader->setUniform("model", _object->GetModelMat());
+	_object->DrawObject(_shader);
 
 	/* Swap front and back buffers */
 	glfwSwapBuffers(_gameWindow->_window);

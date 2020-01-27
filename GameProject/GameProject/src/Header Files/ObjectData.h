@@ -13,42 +13,42 @@ struct vertexData {
 class Object
 {
 private:
-	vertexData * _vertices;
-	unsigned int * _indices;
-	GLuint _nrOfV;
-	GLuint _nrOfI;
-	float _size;
-	vec3 _position;
-	mat4 _modelMatrix;
+	vertexData * m_vertices;
+	unsigned int * m_indices;
+	GLuint m_nrOfV;
+	GLuint m_nrOfI;
+	float m_size;
+	vec3 m_position;
+	mat4 m_modelMatrix;
 
 	GLsizeiptr vertexBufferSize()const {
-		return (_nrOfV * sizeof(vertexData));
+		return (m_nrOfV * sizeof(vertexData));
 	}
 
 	GLsizeiptr indexBufferSize()const {
-		return (_nrOfI * sizeof(unsigned int));
+		return (m_nrOfI * sizeof(unsigned int));
 	}
 
 public:
-	GLuint VB, IB, VA;
+	GLuint m_vertexBuffer, m_indicesBuffer, m_vertexArray;
 
 	Object(float size, vec3 pos);
 	~Object();
 
-	void createPlane();
-	void createCube();
-	void createPyramid3();
-	void createPyramid4();
-	void loadMesh();
-	void initObject();
-	void drawObject(Shader * shaderProgram);
-	mat4 getModelMat();
+	void CreatePlane();
+	void CreateCube();
+	void CreatePyramid3();
+	void CreatePyramid4();
+	void LoadMesh();
+	void InitObject();
+	void DrawObject(Shader * shaderProgram);
+	mat4 GetModelMat();
 };
 
 Object::Object(float size, vec3 pos)
 {
-	_size = size;
-	_position = pos;
+	m_size = size;
+	m_position = pos;
 
 }
 
@@ -56,67 +56,67 @@ Object::~Object()
 {
 }
 
-void Object::createPlane()
+void Object::CreatePlane()
 {
 	//CREATE VERTICES DATA
 	vertexData vertices[] =
 	{
-	 { {-_size / 2,	0,  _size / 2 }, { 0, 1, 0 }, {1,1,1}},
-	 { {-_size / 2, 0, -_size / 2 }, { 0, 1, 0 }, {1,1,1}},
-	 { { _size / 2,	0, -_size / 2 }, { 0, 1, 0 }, {1,1,1}},
-	 { { _size / 2,	0,  _size / 2 }, { 0, 1, 0 }, {1,1,1}}
+	 { {-m_size / 2,	0,  m_size / 2 }, { 0, 1, 0 }, {1,1,1}},
+	 { {-m_size / 2,	0, -m_size / 2 }, { 0, 1, 0 }, {1,1,1}},
+	 { { m_size / 2,	0, -m_size / 2 }, { 0, 1, 0 }, {1,1,1}},
+	 { { m_size / 2,	0,  m_size / 2 }, { 0, 1, 0 }, {1,1,1}}
 	};
-	_nrOfV = sizeof(vertices) / sizeof(*vertices);
-	_vertices = new vertexData[_nrOfV];
-	_vertices = vertices;
+	m_nrOfV = sizeof(vertices) / sizeof(*vertices);
+	m_vertices = new vertexData[m_nrOfV];
+	m_vertices = vertices;
 
 	//CREATE INDECES DATA
 	unsigned int indexData[] = { 0, 2, 1,  0, 3, 2 };
-	_nrOfI = sizeof(indexData) / sizeof(*indexData);
-	_indices = new unsigned int[_nrOfI];
-	_indices = indexData;
+	m_nrOfI = sizeof(indexData) / sizeof(*indexData);
+	m_indices = new unsigned int[m_nrOfI];
+	m_indices = indexData;
 }
 
-void Object::createCube()
+void Object::CreateCube()
 {
 	//CREATE VERTICES DATA
 	vertexData vertices[] =
 	{
 		//FRONT
-		 { {-_size / 2, -_size / 2,  _size / 2 },   { 0, 0, 1 },	{ 1, 1, 0 } },
-		 { {-_size / 2,  _size / 2,  _size / 2 },	{ 0, 0, 1 },	{ 1, 1, 0 } },
-		 { { _size / 2,  _size / 2,  _size / 2 },	{ 0, 0, 1 },	{ 1, 1, 0 } },
-		 { { _size / 2, -_size / 2,  _size / 2 },	{ 0, 0, 1 },	{ 1, 1, 0 } },
+		 { {-m_size / 2, -m_size / 2,  m_size / 2 },   { 0, 0, 1 },	{ 1, 1, 0 } },
+		 { {-m_size / 2,  m_size / 2,  m_size / 2 },	{ 0, 0, 1 },	{ 1, 1, 0 } },
+		 { { m_size / 2,  m_size / 2,  m_size / 2 },	{ 0, 0, 1 },	{ 1, 1, 0 } },
+		 { { m_size / 2, -m_size / 2,  m_size / 2 },	{ 0, 0, 1 },	{ 1, 1, 0 } },
 		 //BACK														  
-		 { { _size / 2, -_size / 2, -_size / 2 },   { 0, 0, -1 },	{ 1, 1, 1 } },
-		 { { _size / 2,  _size / 2, -_size / 2 },	{ 0, 0, -1 },	{ 1, 1, 1 } },
-		 { {-_size / 2,  _size / 2, -_size / 2 },	{ 0, 0, -1 },	{ 1, 1, 1 } },
-		 { {-_size / 2, -_size / 2, -_size / 2 },	{ 0, 0, -1 },	{ 1, 1, 1 } },
+		 { { m_size / 2, -m_size / 2, -m_size / 2 },   { 0, 0, -1 },	{ 1, 1, 1 } },
+		 { { m_size / 2,  m_size / 2, -m_size / 2 },	{ 0, 0, -1 },	{ 1, 1, 1 } },
+		 { {-m_size / 2,  m_size / 2, -m_size / 2 },	{ 0, 0, -1 },	{ 1, 1, 1 } },
+		 { {-m_size / 2, -m_size / 2, -m_size / 2 },	{ 0, 0, -1 },	{ 1, 1, 1 } },
 		 //TOP														  
-		 { {-_size / 2,  _size / 2,  _size / 2 },	{ 0, 1,  0 },	{ 1, 0, 1 } },
-		 { {-_size / 2,  _size / 2, -_size / 2 },	{ 0, 1,  0 },	{ 1, 0, 1 } },
-		 { { _size / 2,  _size / 2, -_size / 2 },	{ 0, 1,  0 },	{ 0, 0, 1 } },
-		 { { _size / 2,  _size / 2,  _size / 2 },	{ 0, 1,  0 },	{ 1, 0, 1 } },
+		 { {-m_size / 2,  m_size / 2,  m_size / 2 },	{ 0, 1,  0 },	{ 1, 0, 1 } },
+		 { {-m_size / 2,  m_size / 2, -m_size / 2 },	{ 0, 1,  0 },	{ 1, 0, 1 } },
+		 { { m_size / 2,  m_size / 2, -m_size / 2 },	{ 0, 1,  0 },	{ 0, 0, 1 } },
+		 { { m_size / 2,  m_size / 2,  m_size / 2 },	{ 0, 1,  0 },	{ 1, 0, 1 } },
 		 //BOT														  
-		 { {-_size / 2,  -_size / 2, -_size / 2 },	{ 0, -1, 0 },	{ 1, 0, 0 } },
-		 { {-_size / 2,  -_size / 2,  _size / 2 },  { 0, -1, 0 },	{ 1, 0, 0 } },
-		 { { _size / 2,  -_size / 2,  _size / 2 },  { 0, -1, 0 },	{ 1, 0, 0 } },
-		 { { _size / 2,  -_size / 2, -_size / 2 },  { 0, -1, 0 },	{ 1, 0, 0 } },
+		 { {-m_size / 2,  -m_size / 2, -m_size / 2 },	{ 0, -1, 0 },	{ 1, 0, 0 } },
+		 { {-m_size / 2,  -m_size / 2,  m_size / 2 },  { 0, -1, 0 },	{ 1, 0, 0 } },
+		 { { m_size / 2,  -m_size / 2,  m_size / 2 },  { 0, -1, 0 },	{ 1, 0, 0 } },
+		 { { m_size / 2,  -m_size / 2, -m_size / 2 },  { 0, -1, 0 },	{ 1, 0, 0 } },
 		 //RIGHT													  
-		 { { _size / 2,  -_size / 2,  _size / 2 },	{ 1, 0, 0 },	{ 1, 1, 1 } },
-		 { { _size / 2,   _size / 2,  _size / 2 },	{ 1, 0, 0 },	{ 1, 1, 1 } },
-		 { { _size / 2,   _size / 2, -_size / 2 },	{ 1, 0, 0 },	{ 1, 1, 1 } },
-		 { { _size / 2,  -_size / 2, -_size / 2 },	{ 1, 0, 0 },	{ 1, 1, 1 } },
+		 { { m_size / 2,  -m_size / 2,  m_size / 2 },	{ 1, 0, 0 },	{ 1, 1, 1 } },
+		 { { m_size / 2,   m_size / 2,  m_size / 2 },	{ 1, 0, 0 },	{ 1, 1, 1 } },
+		 { { m_size / 2,   m_size / 2, -m_size / 2 },	{ 1, 0, 0 },	{ 1, 1, 1 } },
+		 { { m_size / 2,  -m_size / 2, -m_size / 2 },	{ 1, 0, 0 },	{ 1, 1, 1 } },
 		 //LEFT                                  					 
-		 { {-_size / 2,  -_size / 2, -_size / 2 },	{ -1, 0, 0 },	{ 1, 1, 1 } },
-		 { {-_size / 2,   _size / 2, -_size / 2 },	{ -1, 0, 0 },	{ 1, 1, 1 } },
-		 { {-_size / 2,   _size / 2,  _size / 2 },	{ -1, 0, 0 },	{ 1, 1, 1 } },
-		 { {-_size / 2,  -_size / 2,  _size / 2 },	{ -1, 0, 0 },	{ 1, 1, 1 } }
+		 { {-m_size / 2,  -m_size / 2, -m_size / 2 },	{ -1, 0, 0 },	{ 1, 1, 1 } },
+		 { {-m_size / 2,   m_size / 2, -m_size / 2 },	{ -1, 0, 0 },	{ 1, 1, 1 } },
+		 { {-m_size / 2,   m_size / 2,  m_size / 2 },	{ -1, 0, 0 },	{ 1, 1, 1 } },
+		 { {-m_size / 2,  -m_size / 2,  m_size / 2 },	{ -1, 0, 0 },	{ 1, 1, 1 } }
 	};
 
-	_nrOfV = sizeof(vertices) / sizeof(*vertices);
-	_vertices = new vertexData[_nrOfV];
-	memcpy(_vertices, vertices, sizeof(vertices));
+	m_nrOfV = sizeof(vertices) / sizeof(*vertices);
+	m_vertices = new vertexData[m_nrOfV];
+	memcpy(m_vertices, vertices, sizeof(vertices));
 
 	//CREATE INDECES DATA
 	unsigned int indexData[] = {  0,  2,   1,   0,   3,   2,
@@ -125,110 +125,110 @@ void Object::createCube()
 								 12,  14,  13,  12,  15,  14,
 								 16,  18,  17,  16,  19,  18,
 								 20,  22,  21,  20,  23,  22 };
-	_nrOfI = sizeof(indexData) / sizeof(*indexData);
-	_indices = new unsigned int[_nrOfI];
-	memcpy(_indices, indexData, sizeof(indexData));
+	m_nrOfI = sizeof(indexData) / sizeof(*indexData);
+	m_indices = new unsigned int[m_nrOfI];
+	memcpy(m_indices, indexData, sizeof(indexData));
 
 }
 
-void Object::createPyramid3()
+void Object::CreatePyramid3()
 {
 	//CREATE VERTICES DATA
 	vertexData vertices[] =
 	{
 	//BOT
-		{ {			0,	0, -_size / 2 }, { 0, -1, 0 }, {1,1,1}},
-		{ { _size / 2,  0,  _size / 2 }, { 0, -1, 0 }, {1,1,1}},
-		{ {-_size / 2,	0,  _size / 2 }, { 0, -1, 0 }, {1,1,1}},
+		{ {			0,	0, -m_size / 2 }, { 0, -1, 0 }, {1,1,1}},
+		{ { m_size / 2,  0,  m_size / 2 }, { 0, -1, 0 }, {1,1,1}},
+		{ {-m_size / 2,	0,  m_size / 2 }, { 0, -1, 0 }, {1,1,1}},
 	//WALL1
-		{ {-_size / 2,		0,  _size / 2 }, { 0, 1, 0 }, {1,1,1}},
-		{ {			0,	_size,			0 }, { 0, 1, 0 }, {1,1,1}},
-		{ {			0,		0, -_size / 2 }, { 0, 1, 0 }, {1,1,1}},
+		{ {-m_size / 2,		0,  m_size / 2 }, { 0, 1, 0 }, {1,1,1}},
+		{ {			0,	m_size,			0 }, { 0, 1, 0 }, {1,1,1}},
+		{ {			0,		0, -m_size / 2 }, { 0, 1, 0 }, {1,1,1}},
 	//WALL2
-		{ {	_size / 2,		0,	_size / 2 }, { 0, 1, 0 }, {1,1,1}},
-		{ {			0,	_size,			0 }, { 0, 1, 0 }, {1,1,1}},
-		{ {-_size / 2,		0,  _size / 2 }, { 0, 1, 0 }, {1,1,1}},
+		{ {	m_size / 2,		0,	m_size / 2 }, { 0, 1, 0 }, {1,1,1}},
+		{ {			0,	m_size,			0 }, { 0, 1, 0 }, {1,1,1}},
+		{ {-m_size / 2,		0,  m_size / 2 }, { 0, 1, 0 }, {1,1,1}},
 	//WALL3
-		{ {	_size / 2,		0,  _size / 2 }, { 0, 1, 0 }, {1,1,1}},
-		{ { 0,			_size,			0 }, { 0, 1, 0 }, {1,1,1}},
-		{ {	0,				0, -_size / 2 }, { 0, 1, 0 }, {1,1,1}}
+		{ {	m_size / 2,		0,  m_size / 2 }, { 0, 1, 0 }, {1,1,1}},
+		{ { 0,			m_size,			0 }, { 0, 1, 0 }, {1,1,1}},
+		{ {	0,				0, -m_size / 2 }, { 0, 1, 0 }, {1,1,1}}
 	};
-	_nrOfV = sizeof(vertices) / sizeof(*vertices);
-	_vertices = new vertexData[_nrOfV];
-	_vertices = vertices;
+	m_nrOfV = sizeof(vertices) / sizeof(*vertices);
+	m_vertices = new vertexData[m_nrOfV];
+	m_vertices = vertices;
 
 	//CREATE INDECES DATA
 	unsigned int indexData[] = { 0, 2, 1,  3, 4, 5,  6, 7, 8,  9, 10, 11 };
-	_nrOfI = sizeof(indexData) / sizeof(*indexData);
-	_indices = new unsigned int[_nrOfI];
-	_indices = indexData;
+	m_nrOfI = sizeof(indexData) / sizeof(*indexData);
+	m_indices = new unsigned int[m_nrOfI];
+	m_indices = indexData;
 }
 
-void Object::createPyramid4()
+void Object::CreatePyramid4()
 {
 	//CREATE VERTICES DATA
 	vertexData vertices[] =
 	{
 	//BOT
-		{ {-_size / 2,	0,  _size / 2 }, { 0, 1, 0 }, {1,1,1}},
-		{ {-_size / 2,  0, -_size / 2 }, { 0, 1, 0 }, {1,1,1}},
-		{ { _size / 2,	0, -_size / 2 }, { 0, 1, 0 }, {1,1,1}},
-		{ { _size / 2,	0,  _size / 2 }, { 0, 1, 0 }, {1,1,1}},
+		{ {-m_size / 2,	0,  m_size / 2 }, { 0, 1, 0 }, {1,1,1}},
+		{ {-m_size / 2,  0, -m_size / 2 }, { 0, 1, 0 }, {1,1,1}},
+		{ { m_size / 2,	0, -m_size / 2 }, { 0, 1, 0 }, {1,1,1}},
+		{ { m_size / 2,	0,  m_size / 2 }, { 0, 1, 0 }, {1,1,1}},
 	//LEFT
-		{ {-_size / 2,	0,  _size / 2 }, { 0, 1, 0 }, {1,1,1}},
-		{ {-_size / 2,  0, -_size / 2 }, { 0, 1, 0 }, {1,1,1}},
-		{ { _size / 2,	0, -_size / 2 }, { 0, 1, 0 }, {1,1,1}},
+		{ {-m_size / 2,	0,  m_size / 2 }, { 0, 1, 0 }, {1,1,1}},
+		{ {-m_size / 2,  0, -m_size / 2 }, { 0, 1, 0 }, {1,1,1}},
+		{ { m_size / 2,	0, -m_size / 2 }, { 0, 1, 0 }, {1,1,1}},
 	//RIGHT
-		{ {-_size / 2,	0,  _size / 2 }, { 0, 1, 0 }, {1,1,1}},
-		{ {-_size / 2,  0, -_size / 2 }, { 0, 1, 0 }, {1,1,1}},
-		{ { _size / 2,	0, -_size / 2 }, { 0, 1, 0 }, {1,1,1}},
+		{ {-m_size / 2,	0,  m_size / 2 }, { 0, 1, 0 }, {1,1,1}},
+		{ {-m_size / 2,  0, -m_size / 2 }, { 0, 1, 0 }, {1,1,1}},
+		{ { m_size / 2,	0, -m_size / 2 }, { 0, 1, 0 }, {1,1,1}},
 	//FRONT
-		{ {-_size / 2,	0,  _size / 2 }, { 0, 1, 0 }, {1,1,1}},
-		{ {-_size / 2,  0, -_size / 2 }, { 0, 1, 0 }, {1,1,1}},
-		{ { _size / 2,	0, -_size / 2 }, { 0, 1, 0 }, {1,1,1}},
+		{ {-m_size / 2,	0,  m_size / 2 }, { 0, 1, 0 }, {1,1,1}},
+		{ {-m_size / 2,  0, -m_size / 2 }, { 0, 1, 0 }, {1,1,1}},
+		{ { m_size / 2,	0, -m_size / 2 }, { 0, 1, 0 }, {1,1,1}},
 	//BACK
-		{ {-_size / 2,	0,  _size / 2 }, { 0, 1, 0 }, {1,1,1}},
-		{ {-_size / 2,  0, -_size / 2 }, { 0, 1, 0 }, {1,1,1}},
-		{ { _size / 2,	0,  _size / 2 }, { 0, 1, 0 }, {1,1,1}}
+		{ {-m_size / 2,	0,  m_size / 2 }, { 0, 1, 0 }, {1,1,1}},
+		{ {-m_size / 2,  0, -m_size / 2 }, { 0, 1, 0 }, {1,1,1}},
+		{ { m_size / 2,	0,  m_size / 2 }, { 0, 1, 0 }, {1,1,1}}
 	};
-	_nrOfV = sizeof(vertices) / sizeof(*vertices);
-	_vertices = new vertexData[_nrOfV];
-	_vertices = vertices;
+	m_nrOfV = sizeof(vertices) / sizeof(*vertices);
+	m_vertices = new vertexData[m_nrOfV];
+	m_vertices = vertices;
 
 	//CREATE INDECES DATA
 	unsigned int indexData[] = { 0, 2, 1,  0, 3, 2 };
-	_nrOfI = sizeof(indexData) / sizeof(*indexData);
-	_indices = new unsigned int[_nrOfI];
-	_indices = indexData;
+	m_nrOfI = sizeof(indexData) / sizeof(*indexData);
+	m_indices = new unsigned int[m_nrOfI];
+	m_indices = indexData;
 }
 
-void Object::loadMesh()
+void Object::LoadMesh()
 {
 }
 
-void Object::drawObject(Shader * shaderProgram)
+void Object::DrawObject(Shader * shaderProgram)
 {
-	glBindVertexArray(VA);
+	glBindVertexArray(m_vertexArray);
 	//shaderProgram->setUniform("model", _modelMatrix);
-	glDrawElements(GL_TRIANGLES, _nrOfI, GL_UNSIGNED_INT, (void*)0);
+	glDrawElements(GL_TRIANGLES, m_nrOfI, GL_UNSIGNED_INT, (void*)0);
 	glBindVertexArray(0);
 }
 
-void Object::initObject()
+void Object::InitObject()
 {
 	//Bind VertexArray
-	glGenVertexArrays(1, &VA);
-	glBindVertexArray(VA);
+	glGenVertexArrays(1, &m_vertexArray);
+	glBindVertexArray(m_vertexArray);
 
 	//Bind VertexBuffer & IndexBuffer
-	glGenBuffers(1, &VB);
-	glBindBuffer(GL_ARRAY_BUFFER, VB);
-	glBufferData(GL_ARRAY_BUFFER, vertexBufferSize(), _vertices, GL_STATIC_DRAW);
+	glGenBuffers(1, &m_vertexBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER, vertexBufferSize(), m_vertices, GL_STATIC_DRAW);
 
 
-	glGenBuffers(1, &IB);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IB);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexBufferSize(), _indices, GL_STATIC_DRAW);
+	glGenBuffers(1, &m_indicesBuffer);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indicesBuffer);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexBufferSize(), m_indices, GL_STATIC_DRAW);
 
 	//Write vertex data to memory
 	glEnableVertexAttribArray(0);
@@ -242,10 +242,10 @@ void Object::initObject()
 	
 }
 
-mat4 Object::getModelMat()
+mat4 Object::GetModelMat()
 {
 	//_modelMatrix = translate(mat4(1.0f), _position);
 	//_modelMatrix = rotate(_modelMatrix, radians(20.0f), vec3(1.0f, 0.0f, 0.0f));
-	_modelMatrix = rotate(mat4(1.0f), (float)glfwGetTime(), vec3(1.0f, 1.0f, 0.0f));
-	return _modelMatrix;
+	m_modelMatrix = rotate(mat4(1.0f), (float)glfwGetTime(), vec3(1.0f, 1.0f, 0.0f));
+	return m_modelMatrix;
 }
