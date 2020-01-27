@@ -6,8 +6,8 @@ in vertex_out{
 	vec3 position;
 	vec3 normal;
 	vec3 color;
-} _in;
+} vi;
 
 void main(){
-	fragmentColor = vec4(_in.color, 1.0f);
+	fragmentColor = vec4(vi.color, 1.0f);
 }

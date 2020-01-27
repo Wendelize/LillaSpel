@@ -55,9 +55,9 @@ void render()
 
 
 	_shader->UseShader();
-	_shader->SetUniform("view", _camera->GetView());
-	_shader->SetUniform("projection", _projectionMatrix);
-	_shader->SetUniform("model", _object->GetModelMat());
+	_shader->SetUniform("u_View", _camera->GetView());
+	_shader->SetUniform("u_Projection", _projectionMatrix);
+	_shader->SetUniform("u_Model", _object->GetModelMat());
 	_object->DrawObject(_shader);
 
 	/* Swap front and back buffers */
