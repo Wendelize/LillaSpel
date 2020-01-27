@@ -44,7 +44,7 @@
     <ClInclude Include="src\Header Files\ObjectHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Header Files\Game.h">
+    <ClInclude Include="src\Header Files\Scene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
