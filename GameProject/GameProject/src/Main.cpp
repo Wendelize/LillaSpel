@@ -1,10 +1,12 @@
 #include "Header Files/Include.h"
+#include "Header Files/Transform.h"
 
 Window * WINDOW = new Window(1200, 840);
 Shader * SHADER; 
 Object * OBJECT;
 Camera * CAMERA;
 mat4 VIEWMATRIX, PROJMATRIX;
+Transform * TRANS;
 Model* MODEL;
 
 void createStuff()
@@ -15,14 +17,15 @@ void createStuff()
 
 	VIEWMATRIX = CAMERA->GetView();
 	PROJMATRIX = perspective(radians(45.0f), (float)WINDOW->GetWidht() / (float)WINDOW->GetHeight(), 0.1f, 100.0f);
+	TRANS = new Transform();
 
 	OBJECT = new Object(2, { 0,0,0 });
 	SHADER = new Shader("src/Shaders/VertexShader.glsl", "src/Shaders/FragmentShader.glsl");
 	OBJECT->CreateCube();
 	OBJECT->InitObject();
 
-
-	double dArray[16] = { 0.0 };
+	MODEL = new Model("src/Models/Cartoon_Lowpoly_Car.obj");
+	
 
 
 }
@@ -36,8 +39,10 @@ void render()
 	SHADER->UseShader();
 	SHADER->SetUniform("u_View", CAMERA->GetView());
 	SHADER->SetUniform("u_Projection", PROJMATRIX);
-	SHADER->SetUniform("u_Model", OBJECT->GetModelMat());
-	OBJECT->DrawObject(SHADER);
+	//SHADER->SetUniform("u_Model", OBJECT->GetModelMat());
+	SHADER->SetUniform("u_Model", TRANS->GetMatrix());
+	//OBJECT->DrawObject(SHADER);
+	MODEL->Draw(SHADER);
 
 	/* Swap front and back buffers */
 	glfwSwapBuffers(WINDOW->m_window);
