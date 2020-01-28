@@ -3,24 +3,18 @@
 
 Platform::Platform()
 {
-	m_object = new Object(1000, vec3(0.0f, 0.0f, -1.0f));
-
-	m_object->CreatePlane();
-	m_object->InitObject();
+	m_transform = nullptr;
 }
 
 Platform::~Platform()
 {
-	delete m_object;
+	delete m_transform;
 }
 
-Object* Platform::GetObject()
+ObjectInfo* Platform::GetObjectInfo()
 {
-	return m_object;
-}
-
-void Platform::SetObject(Object* theObject)
-{
-	m_object = theObject;
-	// Potential danger if object is deleted. Might need a deep copy.
+	ObjectInfo* temp = new ObjectInfo();
+	temp->modelId = m_modelId;
+	temp->modelMatrix = m_transform->GetMatrix();
+	return temp;
 }

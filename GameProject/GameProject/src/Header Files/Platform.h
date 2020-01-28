@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Include.h"
+#include "Transform.h"
 
 using namespace std;
 using namespace glm;
@@ -8,15 +9,11 @@ using namespace glm;
 class Platform
 {
 private:
-	// Cubemap... 3D texture...
+	Transform* m_transform;
+	int m_modelId;
 public:
-	Object* m_object;
-
 	Platform();
 	~Platform();
-	Object* GetObject();
-	void SetObject(Object* theObject);
-	// LoadHeightMap();
-	// Textureish();
+	ObjectInfo* GetObjectInfo();
 };
 
