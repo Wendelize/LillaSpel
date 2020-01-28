@@ -37,35 +37,35 @@ void Object::CreateCube()
 	vertexData vertices[] =
 	{
 		//FRONT
-		 { {-m_size / 2, -m_size / 2,  m_size / 2 },   { 0, 0, 1 },	{ 1, 1, 0 } },
-		 { {-m_size / 2,  m_size / 2,  m_size / 2 },	{ 0, 0, 1 },	{ 1, 1, 0 } },
-		 { { m_size / 2,  m_size / 2,  m_size / 2 },	{ 0, 0, 1 },	{ 1, 1, 0 } },
-		 { { m_size / 2, -m_size / 2,  m_size / 2 },	{ 0, 0, 1 },	{ 1, 1, 0 } },
+		 { {-m_size / 2, -m_size / 2,  m_size / 2 },    { 0, 0, 1 },	{ 1, 1, 0 }, {0, 0} },
+		 { {-m_size / 2,  m_size / 2,  m_size / 2 },	{ 0, 0, 1 },	{ 1, 1, 0 }, {0, 1} },
+		 { { m_size / 2,  m_size / 2,  m_size / 2 },	{ 0, 0, 1 },	{ 1, 1, 0 }, {1, 1} },
+		 { { m_size / 2, -m_size / 2,  m_size / 2 },	{ 0, 0, 1 },	{ 1, 1, 0 }, {1, 0} },
 		 //BACK														  
-		 { { m_size / 2, -m_size / 2, -m_size / 2 },   { 0, 0, -1 },	{ 1, 1, 1 } },
-		 { { m_size / 2,  m_size / 2, -m_size / 2 },	{ 0, 0, -1 },	{ 1, 1, 1 } },
-		 { {-m_size / 2,  m_size / 2, -m_size / 2 },	{ 0, 0, -1 },	{ 1, 1, 1 } },
-		 { {-m_size / 2, -m_size / 2, -m_size / 2 },	{ 0, 0, -1 },	{ 1, 1, 1 } },
+		 { { m_size / 2, -m_size / 2, -m_size / 2 },    { 0, 0, -1 },	{ 1, 1, 1 }, {0, 0} },
+		 { { m_size / 2,  m_size / 2, -m_size / 2 },	{ 0, 0, -1 },	{ 1, 1, 1 }, {0, 1} },
+		 { {-m_size / 2,  m_size / 2, -m_size / 2 },	{ 0, 0, -1 },	{ 1, 1, 1 }, {1, 1} },
+		 { {-m_size / 2, -m_size / 2, -m_size / 2 },	{ 0, 0, -1 },	{ 1, 1, 1 }, {1, 0} },
 		 //TOP														  
-		 { {-m_size / 2,  m_size / 2,  m_size / 2 },	{ 0, 1,  0 },	{ 1, 0, 1 } },
-		 { {-m_size / 2,  m_size / 2, -m_size / 2 },	{ 0, 1,  0 },	{ 1, 0, 1 } },
-		 { { m_size / 2,  m_size / 2, -m_size / 2 },	{ 0, 1,  0 },	{ 0, 0, 1 } },
-		 { { m_size / 2,  m_size / 2,  m_size / 2 },	{ 0, 1,  0 },	{ 1, 0, 1 } },
+		 { {-m_size / 2,  m_size / 2,  m_size / 2 },	{ 0, 1,  0 },	{ 1, 0, 1 }, {0, 0} },
+		 { {-m_size / 2,  m_size / 2, -m_size / 2 },	{ 0, 1,  0 },	{ 1, 0, 1 }, {0, 1} },
+		 { { m_size / 2,  m_size / 2, -m_size / 2 },	{ 0, 1,  0 },	{ 0, 0, 1 }, {1, 1} },
+		 { { m_size / 2,  m_size / 2,  m_size / 2 },	{ 0, 1,  0 },	{ 1, 0, 1 }, {1, 0} },
 		 //BOT														  
-		 { {-m_size / 2,  -m_size / 2, -m_size / 2 },	{ 0, -1, 0 },	{ 1, 0, 0 } },
-		 { {-m_size / 2,  -m_size / 2,  m_size / 2 },  { 0, -1, 0 },	{ 1, 0, 0 } },
-		 { { m_size / 2,  -m_size / 2,  m_size / 2 },  { 0, -1, 0 },	{ 1, 0, 0 } },
-		 { { m_size / 2,  -m_size / 2, -m_size / 2 },  { 0, -1, 0 },	{ 1, 0, 0 } },
+		 { {-m_size / 2,  -m_size / 2, -m_size / 2 },	{ 0, -1, 0 },	{ 1, 0, 0 }, {0, 0} },
+		 { {-m_size / 2,  -m_size / 2,  m_size / 2 },  { 0, -1, 0 },	{ 1, 0, 0 }, {0, 1} },
+		 { { m_size / 2,  -m_size / 2,  m_size / 2 },  { 0, -1, 0 },	{ 1, 0, 0 }, {1, 1} },
+		 { { m_size / 2,  -m_size / 2, -m_size / 2 },  { 0, -1, 0 },	{ 1, 0, 0 }, {1, 0} },
 		 //RIGHT													  
-		 { { m_size / 2,  -m_size / 2,  m_size / 2 },	{ 1, 0, 0 },	{ 1, 1, 1 } },
-		 { { m_size / 2,   m_size / 2,  m_size / 2 },	{ 1, 0, 0 },	{ 1, 1, 1 } },
-		 { { m_size / 2,   m_size / 2, -m_size / 2 },	{ 1, 0, 0 },	{ 1, 1, 1 } },
-		 { { m_size / 2,  -m_size / 2, -m_size / 2 },	{ 1, 0, 0 },	{ 1, 1, 1 } },
+		 { { m_size / 2,  -m_size / 2,  m_size / 2 },	{ 1, 0, 0 },	{ 1, 1, 1 }, {0, 0} },
+		 { { m_size / 2,   m_size / 2,  m_size / 2 },	{ 1, 0, 0 },	{ 1, 1, 1 }, {0, 1} },
+		 { { m_size / 2,   m_size / 2, -m_size / 2 },	{ 1, 0, 0 },	{ 1, 1, 1 }, {1, 1} },
+		 { { m_size / 2,  -m_size / 2, -m_size / 2 },	{ 1, 0, 0 },	{ 1, 1, 1 }, {1, 0} },
 		 //LEFT                                  					 
-		 { {-m_size / 2,  -m_size / 2, -m_size / 2 },	{ -1, 0, 0 },	{ 1, 1, 1 } },
-		 { {-m_size / 2,   m_size / 2, -m_size / 2 },	{ -1, 0, 0 },	{ 1, 1, 1 } },
-		 { {-m_size / 2,   m_size / 2,  m_size / 2 },	{ -1, 0, 0 },	{ 1, 1, 1 } },
-		 { {-m_size / 2,  -m_size / 2,  m_size / 2 },	{ -1, 0, 0 },	{ 1, 1, 1 } }
+		 { {-m_size / 2,  -m_size / 2, -m_size / 2 },	{ -1, 0, 0 },	{ 1, 1, 1 }, {0, 0} },
+		 { {-m_size / 2,   m_size / 2, -m_size / 2 },	{ -1, 0, 0 },	{ 1, 1, 1 }, {0, 1} },
+		 { {-m_size / 2,   m_size / 2,  m_size / 2 },	{ -1, 0, 0 },	{ 1, 1, 1 }, {1, 1} },
+		 { {-m_size / 2,  -m_size / 2,  m_size / 2 },	{ -1, 0, 0 },	{ 1, 1, 1 }, {1, 0} }
 	};
 
 	m_nrOfV = sizeof(vertices) / sizeof(*vertices);
