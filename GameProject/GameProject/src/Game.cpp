@@ -3,7 +3,7 @@
 Game::Game()
 {
 	m_objectHandler = new ObjectHandler();
-	// m_scene = new Scene();
+	m_scene = nullptr;
 }
 
 Game::~Game()
@@ -23,5 +23,5 @@ void Game::Input()
 
 void Game::Render()
 {
-
+	m_scene->Render(m_objectHandler->GetObjects());
 }

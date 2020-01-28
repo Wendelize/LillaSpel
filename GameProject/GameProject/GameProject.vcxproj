@@ -147,6 +147,7 @@
     <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\Scene.cpp" />
     <ClCompile Include="src\Shader.cpp" />
+    <ClCompile Include="src\Transform.cpp" />
     <ClCompile Include="src\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -162,6 +163,7 @@
     <ClInclude Include="src\Header Files\Player.h" />
     <ClInclude Include="src\Header Files\Scene.h" />
     <ClInclude Include="src\Header Files\Shader.h" />
+    <ClInclude Include="src\Header Files\Transform.h" />
     <ClInclude Include="src\Header Files\Window.h" />
   </ItemGroup>
   <ItemGroup>
