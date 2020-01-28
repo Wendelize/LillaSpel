@@ -23,6 +23,8 @@
 #include "ObjectData.h" 
 #include "Platform.h"
 #include "Player.h"
+#include "Model.h"
+#include "Mesh.h"
 
 //NAMESPACES
 using namespace std;

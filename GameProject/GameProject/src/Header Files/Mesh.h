@@ -10,11 +10,3 @@ public:
 
 
 };
-
-Mesh::Mesh()
-{
-}
-
-Mesh::~Mesh()
-{
-}

@@ -15,10 +15,10 @@ void Object::CreatePlane()
 	//CREATE VERTICES DATA
 	vertexData vertices[] =
 	{
-	 { {-m_size / 2,	0,  m_size / 2 }, { 0, 1, 0 }, {1,1,1}},
-	 { {-m_size / 2,	0, -m_size / 2 }, { 0, 1, 0 }, {1,1,1}},
-	 { { m_size / 2,	0, -m_size / 2 }, { 0, 1, 0 }, {1,1,1}},
-	 { { m_size / 2,	0,  m_size / 2 }, { 0, 1, 0 }, {1,1,1}}
+	 { {-m_size / 2,	0,  m_size / 2 }, { 0, 1, 0 }, {1,1,1}, {0, 0}},
+	 { {-m_size / 2,	0, -m_size / 2 }, { 0, 1, 0 }, {1,1,1}, {0, 1}},
+	 { { m_size / 2,	0, -m_size / 2 }, { 0, 1, 0 }, {1,1,1}, {1, 1}},
+	 { { m_size / 2,	0,  m_size / 2 }, { 0, 1, 0 }, {1,1,1}, {1, 0}}
 	};
 	m_nrOfV = sizeof(vertices) / sizeof(*vertices);
 	m_vertices = new vertexData[m_nrOfV];
@@ -85,77 +85,6 @@ void Object::CreateCube()
 
 }
 
-void Object::CreatePyramid3()
-{
-	//CREATE VERTICES DATA
-	vertexData vertices[] =
-	{
-		//BOT
-			{ {			0,	0, -m_size / 2 }, { 0, -1, 0 }, {1,1,1}},
-			{ { m_size / 2,  0,  m_size / 2 }, { 0, -1, 0 }, {1,1,1}},
-			{ {-m_size / 2,	0,  m_size / 2 }, { 0, -1, 0 }, {1,1,1}},
-			//WALL1
-				{ {-m_size / 2,		0,  m_size / 2 }, { 0, 1, 0 }, {1,1,1}},
-				{ {			0,	m_size,			0 }, { 0, 1, 0 }, {1,1,1}},
-				{ {			0,		0, -m_size / 2 }, { 0, 1, 0 }, {1,1,1}},
-				//WALL2
-					{ {	m_size / 2,		0,	m_size / 2 }, { 0, 1, 0 }, {1,1,1}},
-					{ {			0,	m_size,			0 }, { 0, 1, 0 }, {1,1,1}},
-					{ {-m_size / 2,		0,  m_size / 2 }, { 0, 1, 0 }, {1,1,1}},
-					//WALL3
-						{ {	m_size / 2,		0,  m_size / 2 }, { 0, 1, 0 }, {1,1,1}},
-						{ { 0,			m_size,			0 }, { 0, 1, 0 }, {1,1,1}},
-						{ {	0,				0, -m_size / 2 }, { 0, 1, 0 }, {1,1,1}}
-	};
-	m_nrOfV = sizeof(vertices) / sizeof(*vertices);
-	m_vertices = new vertexData[m_nrOfV];
-	m_vertices = vertices;
-
-	//CREATE INDECES DATA
-	unsigned int indexData[] = { 0, 2, 1,  3, 4, 5,  6, 7, 8,  9, 10, 11 };
-	m_nrOfI = sizeof(indexData) / sizeof(*indexData);
-	m_indices = new unsigned int[m_nrOfI];
-	m_indices = indexData;
-}
-
-void Object::CreatePyramid4()
-{
-	//CREATE VERTICES DATA
-	vertexData vertices[] =
-	{
-		//BOT
-			{ {-m_size / 2,	0,  m_size / 2 }, { 0, 1, 0 }, {1,1,1}},
-			{ {-m_size / 2,  0, -m_size / 2 }, { 0, 1, 0 }, {1,1,1}},
-			{ { m_size / 2,	0, -m_size / 2 }, { 0, 1, 0 }, {1,1,1}},
-			{ { m_size / 2,	0,  m_size / 2 }, { 0, 1, 0 }, {1,1,1}},
-			//LEFT
-				{ {-m_size / 2,	0,  m_size / 2 }, { 0, 1, 0 }, {1,1,1}},
-				{ {-m_size / 2,  0, -m_size / 2 }, { 0, 1, 0 }, {1,1,1}},
-				{ { m_size / 2,	0, -m_size / 2 }, { 0, 1, 0 }, {1,1,1}},
-				//RIGHT
-					{ {-m_size / 2,	0,  m_size / 2 }, { 0, 1, 0 }, {1,1,1}},
-					{ {-m_size / 2,  0, -m_size / 2 }, { 0, 1, 0 }, {1,1,1}},
-					{ { m_size / 2,	0, -m_size / 2 }, { 0, 1, 0 }, {1,1,1}},
-					//FRONT
-						{ {-m_size / 2,	0,  m_size / 2 }, { 0, 1, 0 }, {1,1,1}},
-						{ {-m_size / 2,  0, -m_size / 2 }, { 0, 1, 0 }, {1,1,1}},
-						{ { m_size / 2,	0, -m_size / 2 }, { 0, 1, 0 }, {1,1,1}},
-						//BACK
-							{ {-m_size / 2,	0,  m_size / 2 }, { 0, 1, 0 }, {1,1,1}},
-							{ {-m_size / 2,  0, -m_size / 2 }, { 0, 1, 0 }, {1,1,1}},
-							{ { m_size / 2,	0,  m_size / 2 }, { 0, 1, 0 }, {1,1,1}}
-	};
-	m_nrOfV = sizeof(vertices) / sizeof(*vertices);
-	m_vertices = new vertexData[m_nrOfV];
-	m_vertices = vertices;
-
-	//CREATE INDECES DATA
-	unsigned int indexData[] = { 0, 2, 1,  0, 3, 2 };
-	m_nrOfI = sizeof(indexData) / sizeof(*indexData);
-	m_indices = new unsigned int[m_nrOfI];
-	m_indices = indexData;
-}
-
 void Object::LoadMesh()
 {
 }
@@ -188,10 +117,13 @@ void Object::InitObject()
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);
+	glEnableVertexAttribArray(3);
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(vertexData), 0);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(vertexData), BUFFER_OFFSET(sizeof(float) * 3));
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(vertexData), BUFFER_OFFSET(sizeof(float) * 6));
+	glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(vertexData), BUFFER_OFFSET(sizeof(float) * 9));
+
 
 
 }

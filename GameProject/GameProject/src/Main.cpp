@@ -17,7 +17,7 @@ void createStuff()
 
 	OBJECT = new Object(2, { 0,0,0 });
 	SHADER = new Shader("src/Shaders/VertexShader.glsl", "src/Shaders/FragmentShader.glsl");
-	OBJECT->CreateCube();
+	OBJECT->CreatePlane();
 	OBJECT->InitObject();
 
 	double dArray[16] = { 0.0 };

@@ -5,6 +5,7 @@ struct vertexData {
 	vec3 pos;
 	vec3 normal;
 	vec3 color;
+	vec2 uv;
 };
 
 class Object
@@ -34,8 +35,6 @@ public:
 
 	void CreatePlane();
 	void CreateCube();
-	void CreatePyramid3();
-	void CreatePyramid4();
 	void LoadMesh();
 	void InitObject();
 	void DrawObject(Shader * shaderProgram);

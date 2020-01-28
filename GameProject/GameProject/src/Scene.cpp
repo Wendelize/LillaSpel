@@ -16,6 +16,7 @@ Scene::Scene(const GLchar* VertexShaderFile, const GLchar* GeoShaderFile, const 
 
 Scene::~Scene()
 {
+
 }
 
 void Scene::Init()

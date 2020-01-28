@@ -9,11 +9,3 @@ public:
 
 
 };
-
-Model::Model()
-{
-}
-
-Model::~Model()
-{
-}
