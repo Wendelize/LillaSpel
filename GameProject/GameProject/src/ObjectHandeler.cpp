@@ -53,13 +53,13 @@ void ObjectHandler::RemovePowerUp()
 	// to be continued
 }
 
-vector<Object*> ObjectHandler::GetObjects()
+vector<ObjectInfo*> ObjectHandler::GetObjects()
 {
-	vector<Object*> temp;
+	vector<ObjectInfo*> temp;
 
 	for (uint i = 0; i < m_players.size(); i++)
 	{
-		temp.push_back(m_players[i]->GetObject());
+		temp.push_back(m_players[i]->GetObjectInfo());
 	}
 
 	for (uint i = 0; i < m_platforms.size(); i++)

@@ -28,7 +28,7 @@ void Scene::UseShader(Shader shader)
 
 }
 
-void Scene::Render(vector<Object*> objects)
+void Scene::Render(vector<ObjectInfo*> objects)
 {
 }
 

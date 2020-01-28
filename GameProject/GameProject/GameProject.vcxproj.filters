@@ -14,6 +14,7 @@
     <ClCompile Include="src\Shader.cpp" />
     <ClCompile Include="src\Window.cpp" />
     <ClCompile Include="src\Controller.cpp" />
+    <ClCompile Include="src\Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Header Files\Camera.h">
@@ -53,6 +54,9 @@
       <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="src\Header Files\Controller.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Header Files\Transform.h">
       <Filter>Header</Filter>
     </ClInclude>
   </ItemGroup>
