@@ -27,4 +27,3 @@ public:
 	Object* GetObject();
 	void SetObject(Object* object);
 };
-

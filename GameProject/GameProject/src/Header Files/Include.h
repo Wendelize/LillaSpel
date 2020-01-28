@@ -22,6 +22,7 @@
 #include "Camera.h"
 #include "ObjectData.h" 
 #include "Platform.h"
+#include "Player.h"
 
 //NAMESPACES
 using namespace std;

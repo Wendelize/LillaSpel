@@ -136,6 +136,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Camera.cpp" />
+    <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\ObjectData.cpp" />
     <ClCompile Include="src\ObjectHandeler.cpp" />
@@ -147,6 +148,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Header Files\Camera.h" />
+    <ClInclude Include="src\Header Files\Game.h" />
     <ClInclude Include="src\Header Files\Include.h" />
     <ClInclude Include="src\Header Files\ObjectData.h" />
     <ClInclude Include="src\Header Files\ObjectHandler.h" />

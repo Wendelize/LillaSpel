@@ -2,7 +2,7 @@
 
 Player::Player()
 {
-	m_object = nullptr;
+	m_object = new Object(1.f, vec3(1.f, 1.f, 1.f));
 	m_name = "";
 	m_health = 0;
 	m_controllerID = 0;
