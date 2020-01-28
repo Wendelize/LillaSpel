@@ -17,6 +17,6 @@ public:
 	Model(const char * path);
 	~Model();
 
-	void Draw(Shader shader);
+	void Draw(Shader* shader);
 
 };

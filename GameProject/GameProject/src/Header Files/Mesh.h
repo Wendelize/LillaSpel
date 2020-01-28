@@ -34,7 +34,7 @@ public:
 	~Mesh();
 
 	void SetTexture(Shader shader);
-	void Draw(Shader shader);
+	void Draw(Shader* shader);
 
 
 };

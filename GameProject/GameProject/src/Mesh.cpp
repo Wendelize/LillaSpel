@@ -64,7 +64,7 @@ void Mesh::SetTexture(Shader shader)
 	glActiveTexture(GL_TEXTURE0);
 }
 
-void Mesh::Draw(Shader shader)
+void Mesh::Draw(Shader* shader)
 {
 	//SetTexture(shader);
 	glBindVertexArray(m_vertexArray);
