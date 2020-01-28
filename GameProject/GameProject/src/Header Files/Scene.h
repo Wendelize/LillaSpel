@@ -16,4 +16,5 @@ public:
 	void Init();
 	void UseShader(Shader shader);
 	void Render(vector<Object*> objects);
+	void SetWindowSize(int width, int height);
 };

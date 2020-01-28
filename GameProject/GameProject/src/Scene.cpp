@@ -27,3 +27,9 @@ void Scene::UseShader(Shader shader)
 void Scene::Render(vector<Object*> objects)
 {
 }
+
+void Scene::SetWindowSize(int width, int height)
+{
+	m_window->SetWidht(width);
+	m_window->SetHeight(height);
+}

@@ -35,3 +35,13 @@ int Window::GetHeight()
 {
 	return m_height;
 }
+
+void Window::SetWidht(int width)
+{
+	m_width = width;
+}
+
+void Window::SetHeight(int height)
+{
+	m_height = height;
+}
