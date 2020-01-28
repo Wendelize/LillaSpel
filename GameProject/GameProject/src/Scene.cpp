@@ -9,6 +9,9 @@ Scene::Scene(const GLchar* VertexShaderFile, const GLchar* FragmentShaderFile)
 
 Scene::Scene(const GLchar* VertexShaderFile, const GLchar* GeoShaderFile, const GLchar* FragmentShaderFile)
 {
+	m_window = new Window(1200, 840);
+	m_shader = new Shader(VertexShaderFile, GeoShaderFile, FragmentShaderFile);
+	m_camera = new Camera(m_window->m_window);
 }
 
 Scene::~Scene()

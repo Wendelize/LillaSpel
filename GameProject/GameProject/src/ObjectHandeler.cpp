@@ -24,7 +24,7 @@ void ObjectHandler::AddPlayer(int controllerID)
 
 void ObjectHandler::RemovePlayer(int controllerID)
 {
-	for (int i = 0; i < m_players.size(); i++)
+	for (uint i = 0; i < m_players.size(); i++)
 	{
 		if (m_players[i]->GetControllerID() == controllerID)
 		{
@@ -57,12 +57,12 @@ vector<Object*> ObjectHandler::GetObjects()
 {
 	vector<Object*> temp;
 
-	for (int i = 0; i < m_players.size(); i++)
+	for (uint i = 0; i < m_players.size(); i++)
 	{
 		temp.push_back(m_players[i]->GetObject());
 	}
 
-	for (int i = 0; i < m_platforms.size(); i++)
+	for (uint i = 0; i < m_platforms.size(); i++)
 	{
 		//temp.push_back(m_platforms[i]->GetObject());
 	}
