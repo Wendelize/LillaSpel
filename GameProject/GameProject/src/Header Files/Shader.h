@@ -24,4 +24,5 @@ public:
 	void SetUniform(const GLchar * name, const glm::vec3 & vector);
 	void SetUniform(const GLchar * name, const glm::mat4 & matrix);
 	void SetTexture2D(int id, const GLchar * name, GLuint texture);
+	void SetInt(const string& name, int value);
 };
