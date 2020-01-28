@@ -13,20 +13,48 @@
     <ClCompile Include="src\Scene.cpp" />
     <ClCompile Include="src\Shader.cpp" />
     <ClCompile Include="src\Window.cpp" />
+    <ClCompile Include="src\Controller.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Header Files\Camera.h" />
-    <ClInclude Include="src\Header Files\Game.h" />
-    <ClInclude Include="src\Header Files\Include.h" />
-    <ClInclude Include="src\Header Files\Mesh.h" />
-    <ClInclude Include="src\Header Files\Model.h" />
-    <ClInclude Include="src\Header Files\ObjectData.h" />
-    <ClInclude Include="src\Header Files\ObjectHandler.h" />
-    <ClInclude Include="src\Header Files\Platform.h" />
-    <ClInclude Include="src\Header Files\Player.h" />
-    <ClInclude Include="src\Header Files\Scene.h" />
-    <ClInclude Include="src\Header Files\Shader.h" />
-    <ClInclude Include="src\Header Files\Window.h" />
+    <ClInclude Include="src\Header Files\Camera.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Header Files\Game.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Header Files\Include.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Header Files\Model.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Header Files\Mesh.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Header Files\ObjectData.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Header Files\ObjectHandler.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Header Files\Platform.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Header Files\Player.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Header Files\Scene.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Header Files\Window.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Header Files\Shader.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Header Files\Controller.h">
+      <Filter>Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Shaders\FragmentShader.glsl" />

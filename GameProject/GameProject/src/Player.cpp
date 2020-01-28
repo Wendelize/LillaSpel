@@ -15,6 +15,51 @@ Player::~Player()
 	delete m_object;
 }
 
+void Player::Update()
+{
+	if (glfwJoystickPresent(m_controllerID) == 1)
+	{
+		if (m_controller->ButtonAIsPressed(m_controllerID))
+		{
+
+		}
+
+		if (m_controller->ButtonXIsPressed(m_controllerID))
+		{
+
+		}
+
+		//Triggers
+		if (m_controller->GetLefTrigger(m_controllerID) != -1)
+		{
+			//Left trigger pressed
+		}
+
+		if (m_controller->GetRightTrigger(m_controllerID) != -1)
+		{
+			//Right trigger pressed
+		}
+
+		//Joysticks
+		if (m_controller->GetLeftStickVertical(m_controllerID) < -0.5f)
+		{
+			//Left stick - up 
+		}
+		if (m_controller->GetLeftStickVertical(m_controllerID) > 0.5f)
+		{
+			//Left stick - down
+		}
+		if (m_controller->GetLeftStickHorisontal(m_controllerID) < -0.5f)
+		{
+			//Left stick - left
+		}
+		if (m_controller->GetLeftStickHorisontal(m_controllerID) > 0.5f)
+		{
+			// Left stick - right
+		}
+	}
+}
+
 string Player::GetName()
 {
 	return m_name;

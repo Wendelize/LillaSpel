@@ -25,6 +25,7 @@
 #include "Player.h"
 #include "Model.h"
 #include "Mesh.h"
+#include "Controller.h"
 
 //NAMESPACES
 using namespace std;
