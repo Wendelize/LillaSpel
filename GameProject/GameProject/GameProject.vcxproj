@@ -145,6 +145,7 @@
     <ClInclude Include="src\Header Files\ObjectHandler.h" />
     <ClInclude Include="src\Header Files\Platform.h" />
     <ClInclude Include="src\Header Files\Player.h" />
+    <ClInclude Include="src\Header Files\Scene.h" />
     <ClInclude Include="src\Header Files\Shader.h" />
     <ClInclude Include="src\Header Files\Window.h" />
   </ItemGroup>
