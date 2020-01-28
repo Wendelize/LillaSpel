@@ -141,3 +141,9 @@ void Shader::SetTexture2D(int id, const GLchar* name, GLuint texture)
 	glBindTexture(GL_TEXTURE_2D, texture);
 	SetUniform(name, id);
 }
+
+void Shader::SetInt(const string& name, int value)
+{
+	glUniform1i(glGetUniformLocation(m_shaderProgram, name.c_str()), value);
+}
+

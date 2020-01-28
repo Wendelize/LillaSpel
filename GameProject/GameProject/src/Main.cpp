@@ -5,6 +5,7 @@ Shader * SHADER;
 Object * OBJECT;
 Camera * CAMERA;
 mat4 VIEWMATRIX, PROJMATRIX;
+Model* MODEL;
 
 void createStuff()
 {
@@ -19,6 +20,7 @@ void createStuff()
 	SHADER = new Shader("src/Shaders/VertexShader.glsl", "src/Shaders/FragmentShader.glsl");
 	OBJECT->CreateCube();
 	OBJECT->InitObject();
+
 
 	double dArray[16] = { 0.0 };
 
