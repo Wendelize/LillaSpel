@@ -10,5 +10,5 @@ in vertex_out{
 } vi;
 
 void main(){
-	fragmentColor = vec4(vi.color, 1.0f);
+	fragmentColor = vec4(vi.normal, 1.0f);
 }

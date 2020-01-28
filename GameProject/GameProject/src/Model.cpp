@@ -50,6 +50,9 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
         vector.y = mesh->mNormals[i].y;
         vector.z = mesh->mNormals[i].z;
         _vertex.normal = vector;
+        // COLOR
+        _vertex.color = vec3(i, 0, 0);
+
         // UV-coords
         if (mesh->mTextureCoords[0]) // does the mesh contain texture coordinates?
         {
