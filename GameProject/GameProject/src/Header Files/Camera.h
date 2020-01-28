@@ -29,6 +29,7 @@ Camera::Camera(GLFWwindow * window, vec3 pos, vec3 point, vec3 up)
 	m_position = pos;
 	m_direction = normalize(m_position - point);
 	m_up = up;
+	m_parallel = { 1, 0, 0 };
 	m_window = window;
 	m_viewMatrix = lookAt(m_position, m_direction, m_up);
 }
@@ -91,11 +92,11 @@ void Camera::UpdateMovement(float deltaTime, float speed)
 		pressed = true;
 	}
 	if (glfwGetKey(m_window, GLFW_KEY_D) == GLFW_PRESS) {
-		//m_position += m_parallel * deltaTime * speed;
+		m_position += m_parallel * deltaTime * speed;
 		pressed = true;
 	}
 	if (glfwGetKey(m_window, GLFW_KEY_A) == GLFW_PRESS) {
-		//m_position -= m_parallel * deltaTime * speed;
+		m_position -= m_parallel * deltaTime * speed;
 		pressed = true;
 	}
 	m_viewMatrix = lookAt(m_position, m_direction, m_up);
