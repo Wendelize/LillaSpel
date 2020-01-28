@@ -2,7 +2,8 @@
 
 Player::Player()
 {
-	m_object = new Object(1.f, vec3(1.f, 1.f, 1.f));
+	m_controller = nullptr;
+	m_transform = nullptr;
 	m_name = "";
 	m_health = 0;
 	m_controllerID = 0;
@@ -12,7 +13,53 @@ Player::Player()
 
 Player::~Player()
 {
-	delete m_object;
+	delete m_controller;
+	delete m_transform;
+}
+
+void Player::Update()
+{
+	if (glfwJoystickPresent(m_controllerID) == 1)
+	{
+		if (m_controller->ButtonAIsPressed(m_controllerID))
+		{
+
+		}
+
+		if (m_controller->ButtonXIsPressed(m_controllerID))
+		{
+
+		}
+
+		//Triggers
+		if (m_controller->GetLefTrigger(m_controllerID) != -1)
+		{
+			//Left trigger pressed
+		}
+
+		if (m_controller->GetRightTrigger(m_controllerID) != -1)
+		{
+			//Right trigger pressed
+		}
+
+		//Joysticks
+		if (m_controller->GetLeftStickVertical(m_controllerID) < -0.5f)
+		{
+			//Left stick - up 
+		}
+		if (m_controller->GetLeftStickVertical(m_controllerID) > 0.5f)
+		{
+			//Left stick - down
+		}
+		if (m_controller->GetLeftStickHorisontal(m_controllerID) < -0.5f)
+		{
+			//Left stick - left
+		}
+		if (m_controller->GetLeftStickHorisontal(m_controllerID) > 0.5f)
+		{
+			// Left stick - right
+		}
+	}
 }
 
 string Player::GetName()
@@ -65,12 +112,10 @@ void Player::SetControllerID(int id)
 	m_controllerID = id;
 }
 
-Object* Player::GetObject()
+ObjectInfo* Player::GetObjectInfo()
 {
-	return m_object;
-}
-
-void Player::SetObject(Object* object)
-{
-	m_object = object;
+	ObjectInfo* temp = new ObjectInfo();
+	temp->modelId = m_modelId;
+	temp->modelMatrix = m_transform->GetMatrix();
+	return temp;
 }

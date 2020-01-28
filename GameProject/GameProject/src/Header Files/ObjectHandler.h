@@ -20,6 +20,6 @@ public:
 	void RemovePlatform();
 	void AddPowerUp();
 	void RemovePowerUp();
-	vector<Object*> GetObjects();
+	vector<ObjectInfo*> GetObjects();
 };
 
