@@ -46,6 +46,9 @@
     <ClCompile Include="src\Light.cpp">
       <Filter>Src</Filter>
     </ClCompile>
+    <ClCompile Include="src\Level.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Header Files\Camera.h">
@@ -93,12 +96,30 @@
     <ClInclude Include="src\Header Files\Light.h">
       <Filter>Header</Filter>
     </ClInclude>
+    <ClInclude Include="src\Header Files\stb_image.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Header Files\Level.h">
+      <Filter>Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Shaders\FragmentShader.glsl">
       <Filter>Shader</Filter>
     </None>
     <None Include="src\Shaders\VertexShader.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="src\Shaders\FragmentPlaneShader.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="src\Shaders\FragmentSkyboxShader.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="src\Shaders\VertexPlaneShader.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="src\Shaders\VertexSkyboxShader.glsl">
       <Filter>Shader</Filter>
     </None>
   </ItemGroup>

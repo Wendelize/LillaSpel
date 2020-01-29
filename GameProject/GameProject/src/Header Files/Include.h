@@ -25,6 +25,7 @@
 #include "Mesh.h"
 #include "Controller.h"
 #include "Light.h"
+#include "Level.h"
 
 //NAMESPACES
 using namespace std;
