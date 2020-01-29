@@ -24,6 +24,7 @@
 #include "Model.h"
 #include "Mesh.h"
 #include "Controller.h"
+#include "Light.h"
 
 //NAMESPACES
 using namespace std;
