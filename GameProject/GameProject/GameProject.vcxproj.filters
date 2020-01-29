@@ -1,20 +1,48 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="src\Camera.cpp" />
-    <ClCompile Include="src\Game.cpp" />
-    <ClCompile Include="src\Main.cpp" />
-    <ClCompile Include="src\Mesh.cpp" />
-    <ClCompile Include="src\Model.cpp" />
-    <ClCompile Include="src\ObjectData.cpp" />
-    <ClCompile Include="src\ObjectHandeler.cpp" />
-    <ClCompile Include="src\Platform.cpp" />
-    <ClCompile Include="src\Player.cpp" />
-    <ClCompile Include="src\Scene.cpp" />
-    <ClCompile Include="src\Shader.cpp" />
-    <ClCompile Include="src\Window.cpp" />
-    <ClCompile Include="src\Controller.cpp" />
-    <ClCompile Include="src\Transform.cpp" />
+    <ClCompile Include="src\Transform.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Main.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mesh.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Model.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ObjectData.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ObjectHandeler.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platform.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Player.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Shader.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Controller.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Camera.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Window.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Header Files\Camera.h">
@@ -61,12 +89,22 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\Shaders\FragmentShader.glsl" />
-    <None Include="src\Shaders\VertexShader.glsl" />
+    <None Include="src\Shaders\VertexShader.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="src\Shaders\FragmentShader.glsl">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header">
       <UniqueIdentifier>{8553e790-b575-46bb-ad71-2a68b6cf2a87}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source">
+      <UniqueIdentifier>{0beb72d9-8c25-4521-9d7d-1859a63f6094}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{c0b50cd3-fc7c-4a24-8e8b-c1cf34b07f1e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

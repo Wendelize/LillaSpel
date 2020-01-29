@@ -24,7 +24,7 @@ void createStuff()
 	OBJECT->CreateCube();
 	OBJECT->InitObject();
 
-	MODEL = new Model("src/Models/ape.obj");
+	MODEL = new Model("src/Models/Low-Poly-Racing-Car1.obj");
 
 }
 
