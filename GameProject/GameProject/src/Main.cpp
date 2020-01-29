@@ -25,8 +25,6 @@ void createStuff()
 	OBJECT->InitObject();
 
 	MODEL = new Model("src/Models/ape.obj");
-	
-
 
 }
 
