@@ -58,8 +58,8 @@ int main(void)
 		_curTime = (float)glfwGetTime();
 		_deltaTime = _curTime - _lastTime;
 		_lastTime = _curTime;
-		TRANS->SetScale(sin(_curTime)+1, sin(_curTime)+1, sin(_curTime)+1);
-		TRANS->Rotate(_deltaTime * 4, _deltaTime, _deltaTime );
+		// TRANS->SetScale(sin(_curTime)+1, sin(_curTime)+1, sin(_curTime)+1);
+		// TRANS->Rotate(_deltaTime * 4, _deltaTime, _deltaTime );
 		CAMERA->UpdateMovement(_deltaTime, 10);
 		render();
 	}
