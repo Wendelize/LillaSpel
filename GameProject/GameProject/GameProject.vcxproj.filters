@@ -1,47 +1,50 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="src\Transform.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Main.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Mesh.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Model.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ObjectData.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ObjectHandeler.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Platform.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Player.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Scene.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Shader.cpp">
-      <Filter>Source</Filter>
+    <ClCompile Include="src\Camera.cpp">
+      <Filter>Src</Filter>
     </ClCompile>
     <ClCompile Include="src\Controller.cpp">
-      <Filter>Source</Filter>
+      <Filter>Src</Filter>
     </ClCompile>
-    <ClCompile Include="src\Camera.cpp">
-      <Filter>Source</Filter>
+    <ClCompile Include="src\Game.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Main.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mesh.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Model.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ObjectData.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ObjectHandeler.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platform.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Player.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Shader.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Transform.cpp">
+      <Filter>Src</Filter>
     </ClCompile>
     <ClCompile Include="src\Window.cpp">
-      <Filter>Source</Filter>
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Light.cpp">
+      <Filter>Src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -87,24 +90,27 @@
     <ClInclude Include="src\Header Files\Transform.h">
       <Filter>Header</Filter>
     </ClInclude>
+    <ClInclude Include="src\Header Files\Light.h">
+      <Filter>Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\Shaders\VertexShader.glsl">
-      <Filter>Shaders</Filter>
-    </None>
     <None Include="src\Shaders\FragmentShader.glsl">
-      <Filter>Shaders</Filter>
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="src\Shaders\VertexShader.glsl">
+      <Filter>Shader</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header">
       <UniqueIdentifier>{8553e790-b575-46bb-ad71-2a68b6cf2a87}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source">
-      <UniqueIdentifier>{0beb72d9-8c25-4521-9d7d-1859a63f6094}</UniqueIdentifier>
+    <Filter Include="Src">
+      <UniqueIdentifier>{dac914e8-e606-4861-9c55-91326296e66d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Shaders">
-      <UniqueIdentifier>{c0b50cd3-fc7c-4a24-8e8b-c1cf34b07f1e}</UniqueIdentifier>
+    <Filter Include="Shader">
+      <UniqueIdentifier>{7a8efa00-ef33-410f-9022-e3aef01fe013}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
