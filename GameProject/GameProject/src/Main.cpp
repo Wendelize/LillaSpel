@@ -8,6 +8,9 @@ Camera * CAMERA;
 mat4 VIEWMATRIX, PROJMATRIX;
 Transform * TRANS;
 Model* MODEL;
+Level* LEVEL;
+Shader* PLANESHADER;
+Shader* SKYBOXSHADER;
 
 void createStuff()
 {
@@ -26,6 +29,9 @@ void createStuff()
 
 	MODEL = new Model("src/Models/Low-Poly-Racing-Car1.obj");
 
+	LEVEL = new Level(20);
+	PLANESHADER = new Shader("src/Shaders/VertexPlaneShader.glsl", "src/Shaders/FragmentPlaneShader.glsl");
+	SKYBOXSHADER = new Shader("src/Shaders/VertexSkyboxShader.glsl", "src/Shaders/FragmentSkyboxShader.glsl");
 }
 
 void render() 
@@ -37,10 +43,20 @@ void render()
 	SHADER->UseShader();
 	SHADER->SetUniform("u_View", CAMERA->GetView());
 	SHADER->SetUniform("u_Projection", PROJMATRIX);
-	//SHADER->SetUniform("u_Model", OBJECT->GetModelMat());
 	SHADER->SetUniform("u_Model", TRANS->GetMatrix());
-	//OBJECT->DrawObject(SHADER);
+
 	MODEL->Draw(SHADER);
+
+	PLANESHADER->UseShader();
+	PLANESHADER->SetUniform("u_View", CAMERA->GetView());
+	PLANESHADER->SetUniform("u_Projection", PROJMATRIX);
+	PLANESHADER->SetUniform("u_Model", LEVEL->GetModelMat());
+
+	SKYBOXSHADER->UseShader();
+	SKYBOXSHADER->SetUniform("u_View", mat4(mat3(CAMERA->GetView())));
+	SKYBOXSHADER->SetUniform("u_Projection", PROJMATRIX);
+
+	LEVEL->DrawLevel(PLANESHADER, SKYBOXSHADER);
 
 	/* Swap front and back buffers */
 	glfwSwapBuffers(WINDOW->m_window);
