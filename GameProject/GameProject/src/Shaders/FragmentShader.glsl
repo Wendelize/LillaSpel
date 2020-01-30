@@ -44,9 +44,9 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, float shininess) {
 	vec3 reflectDir = reflect(-lightDir, normal);
 	float spec = pow(max(dot(viewDir, reflectDir), 0.0), shininess);
 
-	vec3 ambient = light.ambient * vi.color;
-	vec3 diffuse = light.diffuse * diff * vi.color;
-	vec3 specular = light.specular * spec * vi.color ;
+	vec3 ambient = light.ambient * light.color;
+	vec3 diffuse = light.diffuse * diff * light.color;
+	vec3 specular = light.specular * spec * light.color;
 
 	return (ambient + diffuse + specular) * light.color;
 }
@@ -124,7 +124,7 @@ vec3 BasicLight(SpotLight light, float alpha, vec3 normal, vec3 p){
 void main(){
 	vec3 result;
 	vec3 viewDir = normalize(vec3(0, 5, -10) - vi.position);
-	result += CalcDirLight(u_DirLight, vi.normal, viewDir, 0.0 );
+	//result += CalcDirLight(u_DirLight, vi.normal, viewDir, 0.0 );
 	result += BasicLight(u_SpotLight, 5.0, vi.normal, vi.position);
 	for(int i = 0; i < NR_OF_POINTLIGHTS; i++) {
 		result += CalcPointLight(u_PointLight[i], vi.normal, vi.position, viewDir, 5.0); 

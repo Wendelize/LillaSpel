@@ -58,8 +58,8 @@ void Scene::Init()
 
 	// Lights
 	AddLights(DirLight, vec3(0, -1, 0), vec3(1));
-	AddLights(SpotLight, vec3(0, 4, 0), vec3(1, 0.5, 0));
-	AddLights(PointLight, vec3(5, 5, -3), vec3(0, 1, 0.8));
+	AddLights(SpotLight, vec3(0, 4, 0), vec3(0.6, 0, 0.3));
+	AddLights(PointLight, vec3(5, 5, -3), vec3(0, 1, 0));
 	AddLights(PointLight, vec3(-7, 3, -3), vec3(1, 0.0, 1));
 }
 

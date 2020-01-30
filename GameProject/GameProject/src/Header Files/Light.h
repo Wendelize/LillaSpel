@@ -4,7 +4,7 @@ struct DirLight
 {
 	vec3 dir, color;
 	float ambient, diffuse, specular;
-	DirLight(vec3 d = vec3( 0.0, -1.0, 0.0 ), vec3 c = vec3(0.5), float a = 0.05f, float dif = 0.5f, float s = 0.1f) {
+	DirLight(vec3 d = vec3( 0.0, -1.0, 0.0 ), vec3 c = vec3(0.5), float a = 0.01f, float dif = 0.5f, float s = 0.1f) {
 		dir = d;
 		color = c;
 		ambient = a;
