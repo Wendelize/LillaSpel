@@ -8,7 +8,7 @@ private:
 	GLFWwindow * m_window;
 
 public:
-	Camera(GLFWwindow * window, vec3 pos = { 0,0,2 }, vec3 point = { 0,0,0 }, vec3 up = { 0,1,0 });
+	Camera(GLFWwindow & window, vec3 pos = { 0,0,2 }, vec3 point = { 0,0,0 }, vec3 up = { 0,1,0 });
 	~Camera();
 
 	vec3 GetDir();
