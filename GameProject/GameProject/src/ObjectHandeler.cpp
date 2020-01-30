@@ -8,7 +8,23 @@ ObjectHandler::ObjectHandler()
 
 ObjectHandler::~ObjectHandler()
 {
+	for (int i = 0; i < m_temp.size(); i++)
+	{
+		delete m_temp.at(i);
+	}
+	m_temp.clear();
 
+	for (int i = 0; i < m_players.size(); i++)
+	{
+		delete m_players.at(i);
+	}
+	m_players.clear();
+
+	for (int i = 0; i < m_platforms.size(); i++)
+	{
+		delete m_platforms.at(i);
+	}
+	m_platforms.clear();
 }
 
 void ObjectHandler::Update(float dt)
@@ -21,7 +37,7 @@ void ObjectHandler::Update(float dt)
 
 void ObjectHandler::AddPlayer(int controllerID, int modelId)
 {
-	m_players.push_back(new Player);
+	m_players.push_back(new Player());
 	m_players.back()->SetControllerID(controllerID);
 	m_players.back()->SetModelId(modelId);
 }
@@ -60,16 +76,20 @@ void ObjectHandler::RemovePowerUp()
 
 vector<ObjectInfo*> ObjectHandler::GetObjects()
 {
-	vector<ObjectInfo*> temp;
+	for (int i = 0; i < m_temp.size(); i++)
+	{
+		delete m_temp.at(i);
+	}
+	m_temp.clear();
 
 	for (uint i = 0; i < m_players.size(); i++)
 	{
-		temp.push_back(m_players[i]->GetObjectInfo());
+		m_temp.push_back(m_players[i]->GetObjectInfo());
 	}
 
 	for (uint i = 0; i < m_platforms.size(); i++)
 	{
-		temp.push_back(m_platforms[i]->GetObjectInfo());
+		m_temp.push_back(m_platforms[i]->GetObjectInfo());
 	}
 
 	//for (int i = 0; i < m_powerUps.size; i++)
@@ -77,5 +97,5 @@ vector<ObjectInfo*> ObjectHandler::GetObjects()
 	//	  temp.push_back(m_powerUps[i]->GetObject());
 	//}
 
-	return temp;
+	return m_temp;
 }

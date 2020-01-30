@@ -13,9 +13,7 @@ private:
 	float m_speed;
 	Controller* m_controller;
 	Transform* m_transform;
-
-	float r;
-	float m;
+	ObjectInfo* m_info;
 
 public:
 	Player();

@@ -10,14 +10,11 @@ Skybox::Skybox()
 
 Skybox::~Skybox()
 {
-	if (m_verticesSkybox)
-	{
-		delete[] m_verticesSkybox;
-	}
-	if (m_indicesSkybox)
-	{
-		delete[] m_indicesSkybox;
-	}
+
+	delete[] m_verticesSkybox;
+
+	delete[] m_indicesSkybox;
+	
 }
 
 void Skybox::CreateSkybox()
