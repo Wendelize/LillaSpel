@@ -16,7 +16,7 @@ void createStuff()
 {
 	glEnable(GL_DEPTH_TEST);
 
-	CAMERA = new Camera(WINDOW->m_window, { 0,0, -10 });
+	CAMERA = new Camera(WINDOW->m_window, { 0, 10, -40 });
 
 	VIEWMATRIX = CAMERA->GetView();
 	PROJMATRIX = perspective(radians(45.0f), (float)WINDOW->GetWidht() / (float)WINDOW->GetHeight(), 0.1f, 100.0f);
@@ -27,7 +27,7 @@ void createStuff()
 	OBJECT->CreateCube();
 	OBJECT->InitObject();
 
-	MODEL = new Model("src/Models/ape.obj");
+	MODEL = new Model("src/Models/Platform2.obj");
 
 	LEVEL = new Level(20);
 	PLANESHADER = new Shader("src/Shaders/VertexPlaneShader.glsl", "src/Shaders/FragmentPlaneShader.glsl");
@@ -74,8 +74,8 @@ int main(void)
 		_curTime = (float)glfwGetTime();
 		_deltaTime = _curTime - _lastTime;
 		_lastTime = _curTime;
-		TRANS->SetScale(sin(_curTime)+1, sin(_curTime)+1, sin(_curTime)+1);
-		TRANS->Rotate(_deltaTime * 4, _deltaTime, _deltaTime );
+		// TRANS->SetScale(sin(_curTime)+1, sin(_curTime)+1, sin(_curTime)+1);
+		// TRANS->Rotate(_deltaTime * 4, _deltaTime, _deltaTime );
 		CAMERA->UpdateMovement(_deltaTime, 10);
 		render();
 	}
