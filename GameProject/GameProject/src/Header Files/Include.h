@@ -38,10 +38,12 @@ struct ObjectInfo
 	mat4 modelMatrix;
 	int modelId; //Refererar till en array med modeller i Scene 
 	int typeId; // 0 = vehicle, 1 = platform, 2 = power-up
+	vec3 hue; // Färgnyans
 
-	ObjectInfo(mat4 m, int a, int b) {
+	ObjectInfo(mat4 m, int mID, int tID, vec3 h) {
 		modelMatrix = m;
-		modelId = a;
-		typeId = b;
+		modelId = mID;
+		typeId = tID;
+		hue = h;
 	}
 };

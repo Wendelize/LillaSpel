@@ -41,7 +41,7 @@ void Scene::Init()
 	m_vehicles.push_back(new Model("src/Models/ape.obj"));
 
 	// Platforms
-	//m_platform.push_back(new Model("src/Models/Platform2.obj"));
+	m_platform.push_back(new Model("src/Models/Platform2.obj"));
 
 	// Powers
 }

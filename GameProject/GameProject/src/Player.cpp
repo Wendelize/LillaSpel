@@ -9,6 +9,7 @@ Player::Player()
 	m_controllerID = 0;
 	m_weight = 0.f;
 	m_speed = 0.f;
+	m_transform->SetScale(0.2, 0.2, 0.2);
 
 }
 
@@ -125,5 +126,5 @@ void Player::SetControllerID(int id)
 
 ObjectInfo* Player::GetObjectInfo()
 {
-	return new ObjectInfo(m_transform->GetMatrix(), m_modelId, 0);
+	return new ObjectInfo(m_transform->GetMatrix(), m_modelId, 0, vec3(1, 0, 0));
 }

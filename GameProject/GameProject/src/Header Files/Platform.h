@@ -15,5 +15,7 @@ public:
 	Platform();
 	~Platform();
 	ObjectInfo* GetObjectInfo();
+	int GetModelId();
+	void SetModelId(int id);
 };
 

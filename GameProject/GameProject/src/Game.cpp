@@ -7,7 +7,9 @@ Game::Game()
 	m_scene->Init();
 
 	m_objectHandler->AddPlayer(0, 0); // (Controller ID, model ID)
+	m_objectHandler->AddPlayer(1, 0);
 
+	m_objectHandler->AddPlatform(0);
 }
 
 Game::~Game()

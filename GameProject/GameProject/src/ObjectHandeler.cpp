@@ -37,9 +37,10 @@ void ObjectHandler::RemovePlayer(int controllerID)
 	}
 }
 
-void ObjectHandler::AddPlatform()
+void ObjectHandler::AddPlatform(int modelId)
 {
 	m_platforms.push_back(new Platform);
+	m_platforms.back()->SetModelId(modelId);
 }
 
 void ObjectHandler::RemovePlatform()
@@ -68,7 +69,7 @@ vector<ObjectInfo*> ObjectHandler::GetObjects()
 
 	for (uint i = 0; i < m_platforms.size(); i++)
 	{
-		//temp.push_back(m_platforms[i]->GetObject());
+		temp.push_back(m_platforms[i]->GetObjectInfo());
 	}
 
 	//for (int i = 0; i < m_powerUps.size; i++)
