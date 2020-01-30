@@ -112,10 +112,11 @@ void Player::SetControllerID(int id)
 	m_controllerID = id;
 }
 
-ObjectInfo* Player::GetObjectInfo()
-{
-	ObjectInfo* temp = new ObjectInfo();
-	temp->modelId = m_modelId;
-	temp->modelMatrix = m_transform->GetMatrix();
-	return temp;
-}
+//ObjectInfo* Player::GetObjectInfo()
+//{
+//	//ObjectInfo* temp = new ObjectInfo();
+//	/*temp->modelId = m_modelId;
+//	temp->typeId = 0;
+//	temp->modelMatrix = m_transform->GetMatrix();
+//	return temp;*/
+//}

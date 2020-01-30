@@ -59,7 +59,7 @@ vector<ObjectInfo*> ObjectHandler::GetObjects()
 
 	for (uint i = 0; i < m_players.size(); i++)
 	{
-		temp.push_back(m_players[i]->GetObjectInfo());
+		//temp.push_back(m_players[i]->GetObjectInfo());
 	}
 
 	for (uint i = 0; i < m_platforms.size(); i++)

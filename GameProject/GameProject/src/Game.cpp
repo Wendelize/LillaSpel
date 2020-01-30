@@ -3,7 +3,8 @@
 Game::Game()
 {
 	m_objectHandler = new ObjectHandler();
-	m_scene = nullptr;
+	m_scene = new Scene();
+	m_scene->Init();
 }
 
 Game::~Game()
@@ -25,3 +26,9 @@ void Game::Render()
 {
 	m_scene->Render(m_objectHandler->GetObjects());
 }
+
+GLFWwindow* Game::GetWindow()
+{
+	return m_scene->GetWindow();
+}
+

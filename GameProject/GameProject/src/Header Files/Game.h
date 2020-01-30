@@ -16,4 +16,5 @@ public:
 	void Update();
 	void Input();
 	void Render();
+	GLFWwindow* GetWindow();
 };

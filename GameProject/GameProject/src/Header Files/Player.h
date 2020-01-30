@@ -28,6 +28,6 @@ public:
 	void SetWeight(float weight);
 	int GetControllerID();
 	void SetControllerID(int id);
-	ObjectInfo* GetObjectInfo();
+	//ObjectInfo* GetObjectInfo();
 
 };
