@@ -13,6 +13,7 @@ void Model::LoadModel(string path)
     }
 
     ProcessNode(_scene->mRootNode, _scene);
+    _import.FreeScene();
 }
 
 void Model::ProcessNode(aiNode* node, const aiScene* scene)

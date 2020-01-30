@@ -37,7 +37,7 @@ void ObjectHandler::Update(float dt)
 
 void ObjectHandler::AddPlayer(int controllerID, int modelId)
 {
-	m_players.push_back(new Player);
+	m_players.push_back(new Player());
 	m_players.back()->SetControllerID(controllerID);
 	m_players.back()->SetModelId(modelId);
 }

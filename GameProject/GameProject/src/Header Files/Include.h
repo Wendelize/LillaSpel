@@ -15,7 +15,15 @@
 #include <string>
 #include <vector>
 #include <math.h>
-#include <crtdbg.h> // _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+#ifdef _DEBUG
+#define new new( _NORMAL_BLOCK , __FILE__ , __LINE__ )
+#else
+#define new new
+#endif
 
 //CLASSES
 #include "Window.h"
