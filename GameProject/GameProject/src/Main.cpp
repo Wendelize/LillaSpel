@@ -9,6 +9,7 @@ Game* GAME;
 
 int main(void)
 {
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	GAME = new Game();
 
 	float _deltaTime = 0.0, _curTime = 0.0, _lastTime = 0.0;
@@ -24,5 +25,6 @@ int main(void)
 
 	glfwTerminate();
 
+	delete GAME;
 	return 0;
 }

@@ -9,6 +9,7 @@ private:
 	vector<Player*> m_players;
 	vector<Platform*> m_platforms;
 	//vector<PowerUp*> m_powerUps;
+	vector<ObjectInfo*> m_temp;
 public:
 	ObjectHandler();
 	~ObjectHandler();

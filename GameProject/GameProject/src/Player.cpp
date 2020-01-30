@@ -126,5 +126,6 @@ void Player::SetControllerID(int id)
 
 ObjectInfo* Player::GetObjectInfo()
 {
-	return new ObjectInfo(m_transform->GetMatrix(), m_modelId, 0, vec3(1, 0, 0));
+	m_info = new ObjectInfo(m_transform->GetMatrix(), m_modelId, 0, vec3(1, 0, 0));
+	return m_info;
 }

@@ -46,4 +46,7 @@ struct ObjectInfo
 		typeId = tID;
 		hue = h;
 	}
+	~ObjectInfo() {
+
+	}
 };

@@ -27,6 +27,24 @@ Scene::~Scene()
 	delete m_skyboxShader;
 	delete m_camera;
 	delete m_skybox;
+
+	for (int i = 0; i < m_vehicles.size(); i++)
+	{
+		delete m_vehicles.at(i);
+	}
+	m_vehicles.clear();
+
+	for (int i = 0; i < m_platform.size(); i++)
+	{
+		delete m_platform.at(i);
+	}
+	m_platform.clear();
+
+	for (int i = 0; i < m_power.size(); i++)
+	{
+		delete m_power.at(i);
+	}
+	m_power.clear();
 }
 
 void Scene::Init()

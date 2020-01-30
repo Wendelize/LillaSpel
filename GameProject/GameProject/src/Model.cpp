@@ -98,6 +98,7 @@ Model::Model(const char* path)
 
 Model::~Model()
 {
+
 }
 
 void Model::Draw(Shader *shader)
