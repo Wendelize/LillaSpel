@@ -16,8 +16,8 @@ int main(void)
 	delete tran;
 
 	float _deltaTime = 0.0, _curTime = 0.0, _lastTime = 0.0;
-
-	while (!glfwWindowShouldClose(GAME->GetWindow()))
+	GLFWwindow* wndw = GAME->GetWindow();
+	while (!glfwWindowShouldClose(wndw))
 	{	
 		_curTime = (float)glfwGetTime();
 		_deltaTime = _curTime - _lastTime;
@@ -28,6 +28,7 @@ int main(void)
 
 	glfwTerminate();
 
+	//delete wndw;
 	delete GAME;
 
 	_CrtDumpMemoryLeaks();

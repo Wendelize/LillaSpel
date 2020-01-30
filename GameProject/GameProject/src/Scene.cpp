@@ -5,7 +5,7 @@ Scene::Scene()
 	m_window = new Window(1200, 840);
 	m_modelShader = new Shader("src/Shaders/VertexShader.glsl", "src/Shaders/FragmentShader.glsl");
 	m_skyboxShader = new Shader("src/Shaders/VertexSkyboxShader.glsl", "src/Shaders/FragmentSkyboxShader.glsl");
-	m_camera = new Camera(m_window->m_window, {0, 5, -10});
+	m_camera = new Camera(*m_window->m_window, {0, 5, -10});
 	m_skybox = new Skybox();
 
 	m_modelMatrix = mat4(1.0);
@@ -22,12 +22,6 @@ Scene::Scene()
 
 Scene::~Scene()
 {
-	delete m_window;
-	delete m_modelShader;
-	delete m_skyboxShader;
-	delete m_camera;
-	delete m_skybox;
-
 	for (int i = 0; i < m_vehicles.size(); i++)
 	{
 		delete m_vehicles.at(i);
@@ -45,6 +39,12 @@ Scene::~Scene()
 		delete m_power.at(i);
 	}
 	m_power.clear();
+
+	delete m_modelShader;
+	delete m_skyboxShader;
+	delete m_camera;
+	delete m_skybox;
+	delete m_window;
 }
 
 void Scene::Init()
