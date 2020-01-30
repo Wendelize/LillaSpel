@@ -19,9 +19,6 @@
     <ClCompile Include="src\Model.cpp">
       <Filter>Src</Filter>
     </ClCompile>
-    <ClCompile Include="src\ObjectData.cpp">
-      <Filter>Src</Filter>
-    </ClCompile>
     <ClCompile Include="src\ObjectHandeler.cpp">
       <Filter>Src</Filter>
     </ClCompile>
@@ -67,9 +64,6 @@
       <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="src\Header Files\Mesh.h">
-      <Filter>Header</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Header Files\ObjectData.h">
       <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="src\Header Files\ObjectHandler.h">
