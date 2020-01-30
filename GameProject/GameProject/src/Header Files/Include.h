@@ -27,6 +27,7 @@
 #include "Controller.h"
 #include "Light.h"
 #include "Level.h"
+#include "Skybox.h"
 
 //NAMESPACES
 using namespace std;

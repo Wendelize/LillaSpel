@@ -4,7 +4,9 @@ Scene::Scene()
 {
 	m_window = new Window(1200, 840);
 	m_modelShader = new Shader("src/Shaders/VertexShader.glsl", "src/Shaders/FragmentShader.glsl");
+	m_skyboxShader = new Shader("src/Shaders/VertexSkyboxShader.glsl", "src/Shaders/FragmentSkyboxShader.glsl");
 	m_camera = new Camera(m_window->m_window, {0, 5, -10});
+	m_skybox = new Skybox();
 
 	m_modelMatrix = mat4(1.0);
 	m_projMatrix = mat4(1.0);
@@ -20,7 +22,11 @@ Scene::Scene()
 
 Scene::~Scene()
 {
-
+	delete m_window;
+	delete m_modelShader;
+	delete m_skyboxShader;
+	delete m_camera;
+	delete m_skybox;
 }
 
 void Scene::Init()
@@ -55,7 +61,7 @@ void Scene::Render(vector<ObjectInfo*> objects)
 	// Matrix uniforms
 	m_modelShader->SetUniform("u_View", m_camera->GetView());
 	m_modelShader->SetUniform("u_Projection", m_projMatrix);
-
+	
 	// Draw all objects
 	for (uint i = 0; i < objects.size(); i++)
 	{
@@ -78,6 +84,11 @@ void Scene::Render(vector<ObjectInfo*> objects)
 			break;
 		}
 	}
+
+	m_skyboxShader->UseShader();
+	m_skyboxShader->SetUniform("u_View", mat4(mat3(m_camera->GetView())));
+	m_skyboxShader->SetUniform("u_Projection", m_projMatrix);
+	m_skybox->DrawSkybox(m_skyboxShader);
 
 	/* Swap front and back buffers */
 	glfwSwapBuffers(m_window->m_window);

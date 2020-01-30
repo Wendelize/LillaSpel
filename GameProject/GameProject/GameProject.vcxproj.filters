@@ -49,6 +49,9 @@
     <ClCompile Include="src\Level.cpp">
       <Filter>Src</Filter>
     </ClCompile>
+    <ClCompile Include="src\Header Files\Skybox.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Header Files\Camera.h">
@@ -100,6 +103,9 @@
       <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="src\Header Files\Level.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Header Files\Skybox.h">
       <Filter>Header</Filter>
     </ClInclude>
   </ItemGroup>

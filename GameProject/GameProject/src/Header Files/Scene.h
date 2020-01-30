@@ -6,7 +6,9 @@ class Scene
 private:
 	Window * m_window;
 	Shader * m_modelShader;
+	Shader * m_skyboxShader;
 	Camera * m_camera;
+	Skybox * m_skybox;
 
 	mat4 m_projMatrix,
 		m_viewMatrix,
