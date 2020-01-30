@@ -201,7 +201,7 @@ void Level::DrawLevel(Shader* shaderProgramPlane, Shader* shaderProgramSkybox)
 
 mat4 Level::GetModelMat()
 {
-	m_modelMatrix = translate(mat4(1.0f), vec3(0.0, -0.5, 0.0));
+	m_modelMatrix = translate(mat4(1.0f), vec3(0.0, -0.4, 0.0));
 	return m_modelMatrix;
 }
 

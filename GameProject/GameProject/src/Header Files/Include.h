@@ -15,6 +15,7 @@
 #include <string>
 #include <vector>
 #include <math.h>
+#include <crtdbg.h> // _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
 //CLASSES
 #include "Window.h"
@@ -35,4 +36,11 @@ struct ObjectInfo
 {
 	mat4 modelMatrix;
 	int modelId; //Refererar till en array med modeller i Scene 
+	int typeId; // 0 = vehicle, 1 = platform, 2 = power-up
+
+	ObjectInfo(mat4 m, int a, int b) {
+		modelMatrix = m;
+		modelId = a;
+		typeId = b;
+	}
 };

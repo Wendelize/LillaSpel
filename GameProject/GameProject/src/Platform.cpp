@@ -13,8 +13,5 @@ Platform::~Platform()
 
 ObjectInfo* Platform::GetObjectInfo()
 {
-	ObjectInfo* temp = new ObjectInfo();
-	temp->modelId = m_modelId;
-	temp->modelMatrix = m_transform->GetMatrix();
-	return temp;
+	return new ObjectInfo(m_transform->GetMatrix(), m_modelId, 1);
 }

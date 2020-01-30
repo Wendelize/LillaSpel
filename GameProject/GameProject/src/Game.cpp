@@ -3,7 +3,11 @@
 Game::Game()
 {
 	m_objectHandler = new ObjectHandler();
-	m_scene = nullptr;
+	m_scene = new Scene();
+	m_scene->Init();
+
+	m_objectHandler->AddPlayer(0, 0); // (Controller ID, model ID)
+
 }
 
 Game::~Game()
@@ -12,16 +16,22 @@ Game::~Game()
 	delete m_scene;
 }
 
-void Game::Update()
+void Game::Update(float dt)
 {
-}
+	m_time += dt;
 
-void Game::Input()
-{
+	m_objectHandler->Update(dt);
 
+	Render();
 }
 
 void Game::Render()
 {
 	m_scene->Render(m_objectHandler->GetObjects());
 }
+
+GLFWwindow* Game::GetWindow()
+{
+	return m_scene->GetWindow();
+}
+

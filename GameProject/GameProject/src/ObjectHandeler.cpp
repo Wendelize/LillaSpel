@@ -13,13 +13,17 @@ ObjectHandler::~ObjectHandler()
 
 void ObjectHandler::Update(float dt)
 {
-	//Ta emot controller data (från Game eller här?) och skicka vidare till rätt Player.
+	for (int i = 0; i < m_players.size(); i++)
+	{
+		m_players[i]->Update(dt);
+	}
 }
 
-void ObjectHandler::AddPlayer(int controllerID)
+void ObjectHandler::AddPlayer(int controllerID, int modelId)
 {
 	m_players.push_back(new Player);
 	m_players.back()->SetControllerID(controllerID);
+	m_players.back()->SetModelId(modelId);
 }
 
 void ObjectHandler::RemovePlayer(int controllerID)

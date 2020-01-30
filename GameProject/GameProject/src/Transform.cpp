@@ -28,13 +28,13 @@ void Transform::calculateMatrix()
 
 }
 
-void Transform::Translate(vec3& vec)
+void Transform::Translate(vec3 vec)
 {
 	m_position += vec;
 	m_isDirty = true;
 }
 
-void Transform::Rotate(vec3& vec)
+void Transform::Rotate(vec3 vec)
 {
 	m_rotation += vec;
 	m_isDirty = true;
@@ -52,7 +52,7 @@ void Transform::Scale(float x, float y, float z)
 	m_isDirty = true;
 }
 
-void Transform::SetTranslation(vec3& vec)
+void Transform::SetTranslation(vec3 vec)
 {
 	m_position = vec;
 	m_isDirty = true;
