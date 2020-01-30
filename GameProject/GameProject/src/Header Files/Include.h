@@ -15,6 +15,7 @@
 #include <string>
 #include <vector>
 #include <math.h>
+#include <crtdbg.h> // _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
 //CLASSES
 #include "Window.h"

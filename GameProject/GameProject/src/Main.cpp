@@ -5,24 +5,21 @@
 
 
 Game* GAME;
-Scene* SCENE;
+//Scene* SCENE;
 
 int main(void)
 {
-	SCENE = new Scene();
-	SCENE->Init();
+	GAME = new Game();
+
 	float _deltaTime = 0.0, _curTime = 0.0, _lastTime = 0.0;
 
-	vector<ObjectInfo*> temp;
-	
-	temp.push_back(new ObjectInfo(mat4(1.0), 0, 0));
-
-	while (!glfwWindowShouldClose(SCENE->GetWindow()))
+	while (!glfwWindowShouldClose(GAME->GetWindow()))
 	{	
-		SCENE->Render(temp);
 		_curTime = (float)glfwGetTime();
 		_deltaTime = _curTime - _lastTime;
 		_lastTime = _curTime;
+		GAME->Update(_deltaTime);
+		GAME->Render();
 	}
 
 	glfwTerminate();

@@ -15,12 +15,12 @@ public:
 	Transform();
 	~Transform();
 
-	void Translate(vec3& vec);
-	void Rotate(vec3& vec);
+	void Translate(vec3 vec);
+	void Rotate(vec3 vec);
 	void Rotate(float pitch, float yaw, float roll);
 	void Scale(float x, float y, float z);
 
-	void SetTranslation(vec3& vec);
+	void SetTranslation(vec3 vec);
 	void SetRotation(float pitch, float yaw, float roll);
 	void SetScale(float x, float y, float z);
 

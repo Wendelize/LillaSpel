@@ -14,7 +14,7 @@ public:
 	~ObjectHandler();
 
 	void Update(float dt);
-	void AddPlayer(int controllerID);
+	void AddPlayer(int controllerID, int modelId);
 	void RemovePlayer(int controllerID);
 	void AddPlatform();
 	void RemovePlatform();

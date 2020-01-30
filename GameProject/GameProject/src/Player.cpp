@@ -2,13 +2,14 @@
 
 Player::Player()
 {
-	m_controller = nullptr;
-	m_transform = nullptr;
+	m_controller = new Controller;
+	m_transform = new Transform;
 	m_name = "";
 	m_health = 0;
 	m_controllerID = 0;
 	m_weight = 0.f;
 	m_speed = 0.f;
+
 }
 
 Player::~Player()
@@ -17,13 +18,13 @@ Player::~Player()
 	delete m_transform;
 }
 
-void Player::Update()
+void Player::Update(float dt)
 {
 	if (glfwJoystickPresent(m_controllerID) == 1)
 	{
 		if (m_controller->ButtonAIsPressed(m_controllerID))
 		{
-
+			
 		}
 
 		if (m_controller->ButtonXIsPressed(m_controllerID))
@@ -34,12 +35,12 @@ void Player::Update()
 		//Triggers
 		if (m_controller->GetLefTrigger(m_controllerID) != -1)
 		{
-			//Left trigger pressed
+			m_transform->Translate(vec3(0, 0, dt));
 		}
 
 		if (m_controller->GetRightTrigger(m_controllerID) != -1)
 		{
-			//Right trigger pressed
+			m_transform->Translate(vec3(0, 0, -dt));
 		}
 
 		//Joysticks
@@ -53,11 +54,11 @@ void Player::Update()
 		}
 		if (m_controller->GetLeftStickHorisontal(m_controllerID) < -0.5f)
 		{
-			//Left stick - left
+			m_transform->Translate(vec3(dt, 0, 0));
 		}
 		if (m_controller->GetLeftStickHorisontal(m_controllerID) > 0.5f)
 		{
-			// Left stick - right
+			m_transform->Translate(vec3(-dt, 0, 0));
 		}
 	}
 }
@@ -80,6 +81,16 @@ int Player::GetHealth()
 void Player::SetHealth(int health)
 {
 	m_health = health;
+}
+
+int Player::GetModelId()
+{
+	return m_modelId;
+}
+
+void Player::SetModelId(int id)
+{
+	m_modelId = id;
 }
 
 float Player::GetSpeed()
@@ -112,11 +123,7 @@ void Player::SetControllerID(int id)
 	m_controllerID = id;
 }
 
-//ObjectInfo* Player::GetObjectInfo()
-//{
-//	//ObjectInfo* temp = new ObjectInfo();
-//	/*temp->modelId = m_modelId;
-//	temp->typeId = 0;
-//	temp->modelMatrix = m_transform->GetMatrix();
-//	return temp;*/
-//}
+ObjectInfo* Player::GetObjectInfo()
+{
+	return new ObjectInfo(m_transform->GetMatrix(), m_modelId, 0);
+}

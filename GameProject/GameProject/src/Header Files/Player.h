@@ -14,20 +14,25 @@ private:
 	Controller* m_controller;
 	Transform* m_transform;
 
+	float r;
+	float m;
+
 public:
 	Player();
 	~Player();
-	void Update();
+	void Update(float dt);
 	string GetName();
 	void SetName(string name);
 	int GetHealth();
 	void SetHealth(int health);
+	int GetModelId();
+	void SetModelId(int id);
 	float GetSpeed();
 	void SetSpeed(float speed);
 	float GetWeight();
 	void SetWeight(float weight);
 	int GetControllerID();
 	void SetControllerID(int id);
-	//ObjectInfo* GetObjectInfo();
+	ObjectInfo* GetObjectInfo();
 
 };

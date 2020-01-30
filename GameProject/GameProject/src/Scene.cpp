@@ -63,7 +63,7 @@ void Scene::Render(vector<ObjectInfo*> objects)
 		switch (objects[i]->typeId)
 		{
 		case 0:
-			m_vehicles.at(1)->Draw(m_modelShader);
+			m_vehicles.at(objects[i]->modelId)->Draw(m_modelShader);
 			break;
 
 		case 1:

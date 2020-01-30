@@ -14,6 +14,6 @@ private:
 public:
 	Platform();
 	~Platform();
-	//ObjectInfo* GetObjectInfo();
+	ObjectInfo* GetObjectInfo();
 };
 
