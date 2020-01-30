@@ -172,10 +172,8 @@
     <ClInclude Include="src\Header Files\Window.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\Shaders\FragmentPlaneShader.glsl" />
     <None Include="src\Shaders\FragmentShader.glsl" />
     <None Include="src\Shaders\FragmentSkyboxShader.glsl" />
-    <None Include="src\Shaders\VertexPlaneShader.glsl" />
     <None Include="src\Shaders\VertexShader.glsl" />
     <None Include="src\Shaders\VertexSkyboxShader.glsl" />
   </ItemGroup>

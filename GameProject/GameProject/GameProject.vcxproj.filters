@@ -110,13 +110,7 @@
     <None Include="src\Shaders\VertexShader.glsl">
       <Filter>Shader</Filter>
     </None>
-    <None Include="src\Shaders\FragmentPlaneShader.glsl">
-      <Filter>Shader</Filter>
-    </None>
     <None Include="src\Shaders\FragmentSkyboxShader.glsl">
-      <Filter>Shader</Filter>
-    </None>
-    <None Include="src\Shaders\VertexPlaneShader.glsl">
       <Filter>Shader</Filter>
     </None>
     <None Include="src\Shaders\VertexSkyboxShader.glsl">
