@@ -121,6 +121,7 @@ void Scene::Render(vector<ObjectInfo*> objects)
 	m_modelShader->UseShader();
 	// Matrix uniforms
 	LightToShader();
+	m_modelShader->SetUniform("u_ViewPos", m_camera->GetPos());
 	m_modelShader->SetUniform("u_View", m_camera->GetView());
 	m_modelShader->SetUniform("u_Projection", m_projMatrix);
 	
