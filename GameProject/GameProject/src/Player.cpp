@@ -9,6 +9,7 @@ Player::Player()
 	m_controllerID = 0;
 	m_weight = 0.f;
 	m_speed = 0.f;
+	m_transform->SetScale(0.2, 0.2, 0.2);
 
 }
 
@@ -20,47 +21,51 @@ Player::~Player()
 
 void Player::Update(float dt)
 {
+	vec3 movmentInput(0, 0, 0);
+	vec3 rotate(0, 0, 0);
+	vec3 direction(0, 0, 0);
+	float speed = 0;
+	float rotationSpeed = 2.f;
+
 	if (glfwJoystickPresent(m_controllerID) == 1)
 	{
 		if (m_controller->ButtonAIsPressed(m_controllerID))
 		{
-			
+			//Acceleration
+			speed = -10.f;
 		}
 
 		if (m_controller->ButtonXIsPressed(m_controllerID))
 		{
-
+			//Reverse
+			speed = 10.f;
 		}
 
 		//Triggers
 		if (m_controller->GetLefTrigger(m_controllerID) != -1)
 		{
-			m_transform->Translate(vec3(0, 0, dt));
+			//Left trigger pressed
+			//Power-Up
+			speed = -30.f;
 		}
 
 		if (m_controller->GetRightTrigger(m_controllerID) != -1)
 		{
-			m_transform->Translate(vec3(0, 0, -dt));
+			//Right trigger pressed
+			//Drift
 		}
 
-		//Joysticks
-		if (m_controller->GetLeftStickVertical(m_controllerID) < -0.5f)
-		{
-			//Left stick - up 
-		}
-		if (m_controller->GetLeftStickVertical(m_controllerID) > 0.5f)
-		{
-			//Left stick - down
-		}
-		if (m_controller->GetLeftStickHorisontal(m_controllerID) < -0.5f)
-		{
-			m_transform->Translate(vec3(dt, 0, 0));
-		}
-		if (m_controller->GetLeftStickHorisontal(m_controllerID) > 0.5f)
-		{
-			m_transform->Translate(vec3(-dt, 0, 0));
-		}
+			rotate.y -= m_controller->GetLeftStickHorisontal(m_controllerID);
+	
+
+		if(speed != 0)
+		direction = m_transform->TranslateDirection(rotate*dt* rotationSpeed);
 	}
+
+	m_transform->Translate(  direction*   speed* dt);
+	
+	
+	
 }
 
 string Player::GetName()
@@ -125,5 +130,6 @@ void Player::SetControllerID(int id)
 
 ObjectInfo* Player::GetObjectInfo()
 {
-	return new ObjectInfo(m_transform->GetMatrix(), m_modelId, 0);
+	m_info = new ObjectInfo(m_transform->GetMatrix(), m_modelId, 0, vec3(1, 0, 0));
+	return m_info;
 }

@@ -9,6 +9,7 @@ private:
 	vec3 m_rotation;
 	vec3 m_scale;
 	bool m_isDirty;
+	vec3 m_forward;
 
 	void calculateMatrix();
 public:
@@ -19,6 +20,7 @@ public:
 	void Rotate(vec3 vec);
 	void Rotate(float pitch, float yaw, float roll);
 	void Scale(float x, float y, float z);
+	vec3 TranslateDirection(vec3 vec);
 
 	void SetTranslation(vec3 vec);
 	void SetRotation(float pitch, float yaw, float roll);

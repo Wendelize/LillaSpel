@@ -1,12 +1,12 @@
 #include "Header Files/Include.h"
 
-Camera::Camera(GLFWwindow* window, vec3 pos, vec3 point, vec3 up)
+Camera::Camera(GLFWwindow& window, vec3 pos, vec3 point, vec3 up)
 {
 	m_position = pos;
 	m_direction = normalize(m_position - point);
 	m_up = up;
 	m_parallel = { 1, 0, 0 };
-	m_window = window;
+	m_window = &window;
 	m_viewMatrix = lookAt(m_position, m_direction, m_up);
 }
 
