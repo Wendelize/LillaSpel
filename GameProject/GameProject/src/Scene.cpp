@@ -85,30 +85,30 @@ void Scene::LightToShader()
 	m_modelShader->SetUniform("u_SpotLight.cutOff", m_lights.m_spotLights.at(0).cutOff);
 	m_modelShader->SetUniform("u_SpotLight.outerCutOff", cos(radians(30.0f)));
 
-	//for (int i = 0; i < m_lights.m_pointLights.size(); i++)
-	//{
-	//	//const GLchar* _temp = "u_PointLight[" + to_string(i) + "]";
-	//	char* _temp[(((sizeof i) * CHAR_BIT) + 2) / 3 + 2];
-	//	
 
-	//	m_modelShader->SetUniform("u_pointLight[].pos", m_lights.m_pointLights.at(i).pos);
-	//	m_modelShader->SetUniform(_temp + ".color", m_lights.m_pointLights.at(i).color);
-	//	m_modelShader->SetUniform(_temp + ".ambient", m_lights.m_pointLights.at(i).ambient);
-	//	m_modelShader->SetUniform(_temp + ".diffuse", m_lights.m_pointLights.at(i).diffuse);
-	//	m_modelShader->SetUniform(_temp + ".specular", m_lights.m_pointLights.at(i).specular);
-	//}
 
-	m_modelShader->SetUniform("u_PointLight[0].pos", m_lights.m_pointLights.at(0).pos);
-	m_modelShader->SetUniform("u_PointLight[0].color", m_lights.m_pointLights.at(0).color);
-	m_modelShader->SetUniform("u_PointLight[0].ambient", m_lights.m_pointLights.at(0).ambient);
-	m_modelShader->SetUniform("u_PointLight[0].diffuse", m_lights.m_pointLights.at(0).diffuse);
-	m_modelShader->SetUniform("u_PointLight[0].specular", m_lights.m_pointLights.at(0).specular);
+	for (int i = 0; i < m_lights.m_pointLights.size(); i++)
+	{
+		//	here to get correct numbering in the char-array 
+		//	e.g. ""u_PointLight[0].pos" "u_PointLight[1].pos" etc..
+		string _temp = "u_PointLight[" + to_string(i) + "].pos";
+		const GLchar* _charPos = _temp.c_str();
+		string _temp1 = "u_PointLight[" + to_string(i) + "].color";
+		const GLchar* _charColor = _temp1.c_str();
+		string _temp2 = "u_PointLight[" + to_string(i) + "].ambient";
+		const GLchar* _charAmbient = _temp2.c_str();
+		string _temp3 = "u_PointLight[" + to_string(i) + "].diffuse";
+		const GLchar* _charDiffuse = _temp3.c_str();
+		string _temp4 = "u_PointLight[" + to_string(i) + "].specular";
+		const GLchar* _charSpecular = _temp4.c_str();
 
-	m_modelShader->SetUniform("u_PointLight[1].pos", m_lights.m_pointLights.at(1).pos);
-	m_modelShader->SetUniform("u_PointLight[1].color", m_lights.m_pointLights.at(1).color);
-	m_modelShader->SetUniform("u_PointLight[1].ambient", m_lights.m_pointLights.at(1).ambient);
-	m_modelShader->SetUniform("u_PointLight[1].diffuse", m_lights.m_pointLights.at(1).diffuse);
-	m_modelShader->SetUniform("u_PointLight[1].specular", m_lights.m_pointLights.at(1).specular);
+		m_modelShader->SetUniform(_charPos, m_lights.m_pointLights.at(i).pos);
+		m_modelShader->SetUniform(_charColor, m_lights.m_pointLights.at(i).color);
+		m_modelShader->SetUniform(_charAmbient, m_lights.m_pointLights.at(i).ambient);
+		m_modelShader->SetUniform(_charDiffuse, m_lights.m_pointLights.at(i).diffuse);
+		m_modelShader->SetUniform(_charSpecular, m_lights.m_pointLights.at(i).specular);
+	}
+
 
 }
 
