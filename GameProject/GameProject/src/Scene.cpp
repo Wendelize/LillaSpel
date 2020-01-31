@@ -12,13 +12,6 @@ Scene::Scene()
 	m_projMatrix = mat4(1.0);
 	m_viewMatrix = mat4(1.0);
 }
-//
-//Scene::Scene()
-//{
-//	m_window = new Window(1200, 840);
-//	//m_shader = new Shader(VertexShaderFile, GeoShaderFile, FragmentShaderFile);
-//	m_camera = new Camera(m_window->m_window);
-//}
 
 Scene::~Scene()
 {
@@ -62,10 +55,60 @@ void Scene::Init()
 	m_platform.push_back(new Model("src/Models/Platform2.obj"));
 
 	// Powers
+
+	// Lights
+	AddLights(DirLight, vec3(0, -1, 0), vec3(1));
+	AddLights(SpotLight, vec3(0, 4, 0), vec3(0.6, 0, 0.3));
+	AddLights(PointLight, vec3(5, 5, -3), vec3(0, 1, 0));
+	AddLights(PointLight, vec3(-7, 3, -3), vec3(1, 0.0, 1));
 }
 
 void Scene::UseShader(Shader shader)
 {
+
+}
+
+void Scene::LightToShader()
+{
+	m_modelShader->UseShader();
+	m_modelShader->SetUniform("u_DirLight.dir", m_lights.m_dirLight.dir);
+	m_modelShader->SetUniform("u_DirLight.color", m_lights.m_dirLight.color);
+	m_modelShader->SetUniform("u_DirLight.ambient", m_lights.m_dirLight.ambient);
+	m_modelShader->SetUniform("u_DirLight.diffuse", m_lights.m_dirLight.diffuse);
+	m_modelShader->SetUniform("u_DirLight.specular", m_lights.m_dirLight.specular);
+
+	m_modelShader->SetUniform("u_SpotLight.pos", m_lights.m_spotLights.at(0).pos);
+	m_modelShader->SetUniform("u_SpotLight.color", m_lights.m_spotLights.at(0).color);
+	m_modelShader->SetUniform("u_SpotLight.ambient", m_lights.m_spotLights.at(0).ambient);
+	m_modelShader->SetUniform("u_SpotLight.diffuse", m_lights.m_spotLights.at(0).diffuse);
+	m_modelShader->SetUniform("u_SpotLight.specular", m_lights.m_spotLights.at(0).specular);
+	m_modelShader->SetUniform("u_SpotLight.cutOff", m_lights.m_spotLights.at(0).cutOff);
+	m_modelShader->SetUniform("u_SpotLight.outerCutOff", cos(radians(30.0f)));
+
+	//for (int i = 0; i < m_lights.m_pointLights.size(); i++)
+	//{
+	//	//const GLchar* _temp = "u_PointLight[" + to_string(i) + "]";
+	//	char* _temp[(((sizeof i) * CHAR_BIT) + 2) / 3 + 2];
+	//	
+
+	//	m_modelShader->SetUniform("u_pointLight[].pos", m_lights.m_pointLights.at(i).pos);
+	//	m_modelShader->SetUniform(_temp + ".color", m_lights.m_pointLights.at(i).color);
+	//	m_modelShader->SetUniform(_temp + ".ambient", m_lights.m_pointLights.at(i).ambient);
+	//	m_modelShader->SetUniform(_temp + ".diffuse", m_lights.m_pointLights.at(i).diffuse);
+	//	m_modelShader->SetUniform(_temp + ".specular", m_lights.m_pointLights.at(i).specular);
+	//}
+
+	m_modelShader->SetUniform("u_PointLight[0].pos", m_lights.m_pointLights.at(0).pos);
+	m_modelShader->SetUniform("u_PointLight[0].color", m_lights.m_pointLights.at(0).color);
+	m_modelShader->SetUniform("u_PointLight[0].ambient", m_lights.m_pointLights.at(0).ambient);
+	m_modelShader->SetUniform("u_PointLight[0].diffuse", m_lights.m_pointLights.at(0).diffuse);
+	m_modelShader->SetUniform("u_PointLight[0].specular", m_lights.m_pointLights.at(0).specular);
+
+	m_modelShader->SetUniform("u_PointLight[1].pos", m_lights.m_pointLights.at(1).pos);
+	m_modelShader->SetUniform("u_PointLight[1].color", m_lights.m_pointLights.at(1).color);
+	m_modelShader->SetUniform("u_PointLight[1].ambient", m_lights.m_pointLights.at(1).ambient);
+	m_modelShader->SetUniform("u_PointLight[1].diffuse", m_lights.m_pointLights.at(1).diffuse);
+	m_modelShader->SetUniform("u_PointLight[1].specular", m_lights.m_pointLights.at(1).specular);
 
 }
 
@@ -77,6 +120,7 @@ void Scene::Render(vector<ObjectInfo*> objects)
 
 	m_modelShader->UseShader();
 	// Matrix uniforms
+	LightToShader();
 	m_modelShader->SetUniform("u_View", m_camera->GetView());
 	m_modelShader->SetUniform("u_Projection", m_projMatrix);
 	
@@ -125,3 +169,26 @@ GLFWwindow* Scene::GetWindow()
 {
 	return m_window->m_window;
 }
+
+// a : a direction if u want a dirlight, else position
+// b : color of light
+
+void Scene::AddLights(LightType type, vec3 a, vec3 b)
+{
+	switch (type)
+	{
+	case Scene::DirLight:
+		m_lights.AddDirLight(a, b);
+		break;
+	case Scene::PointLight:
+		m_lights.AddPointLight(a, b);
+		break;
+	case Scene::SpotLight:
+		m_lights.AddSpotLight(a, b);
+		break;
+	default:
+		break;
+	}
+}
+
+
