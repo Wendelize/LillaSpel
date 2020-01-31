@@ -162,5 +162,5 @@ void main(){
 	result += CalcSpotLight(u_SpotLight, vi.normal, vi.position, viewDir, 10.0);
 	result += TestLight(u_SpotLight, vi.position, vi.normal, u_ViewPos);
 
-	fragmentColor = vec4(result * vi.color, 1.0f);
+	fragmentColor = vec4(result * (vi.color * 0.5), 1.0f);
 }
