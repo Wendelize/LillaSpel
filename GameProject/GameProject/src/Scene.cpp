@@ -48,7 +48,7 @@ void Scene::Init()
 	m_modelMatrix = mat4(1.0);
 
 	// Veichles
-	m_vehicles.push_back(new Model("src/Models/Low-Poly-Racing-Car1.obj"));
+	m_vehicles.push_back(new Model("src/Models/Low-Poly-Racing-Car.obj"));
 	m_vehicles.push_back(new Model("src/Models/ape.obj"));
 
 	// Platforms
