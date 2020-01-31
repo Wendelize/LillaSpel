@@ -8,19 +8,19 @@ ObjectHandler::ObjectHandler()
 
 ObjectHandler::~ObjectHandler()
 {
-	for (int i = 0; i < m_temp.size(); i++)
+	for (size_t i = 0; i < m_temp.size(); i++)
 	{
 		delete m_temp.at(i);
 	}
 	m_temp.clear();
 
-	for (int i = 0; i < m_players.size(); i++)
+	for (size_t i = 0; i < m_players.size(); i++)
 	{
 		delete m_players.at(i);
 	}
 	m_players.clear();
 
-	for (int i = 0; i < m_platforms.size(); i++)
+	for (size_t i = 0; i < m_platforms.size(); i++)
 	{
 		delete m_platforms.at(i);
 	}
@@ -29,17 +29,18 @@ ObjectHandler::~ObjectHandler()
 
 void ObjectHandler::Update(float dt)
 {
-	for (int i = 0; i < m_players.size(); i++)
+	for (size_t i = 0; i < m_players.size(); i++)
 	{
 		m_players[i]->Update(dt);
 	}
 }
 
-void ObjectHandler::AddPlayer(int controllerID, int modelId)
+void ObjectHandler::AddPlayer(vec3 pos, int controllerID, int modelId, vec3 color)
 {
-	m_players.push_back(new Player());
+	m_players.push_back(new Player(pos));
 	m_players.back()->SetControllerID(controllerID);
 	m_players.back()->SetModelId(modelId);
+	m_players.back()->SetColor(color);
 }
 
 void ObjectHandler::RemovePlayer(int controllerID)
@@ -76,7 +77,7 @@ void ObjectHandler::RemovePowerUp()
 
 vector<ObjectInfo*> ObjectHandler::GetObjects()
 {
-	for (int i = 0; i < m_temp.size(); i++)
+	for (size_t i = 0; i < m_temp.size(); i++)
 	{
 		delete m_temp.at(i);
 	}

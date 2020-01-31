@@ -131,5 +131,5 @@ void main(){
 	}
 	result += CalcSpotLight(u_SpotLight, vi.normal, vi.position, viewDir, 10.0);
 
-	fragmentColor = vec4(result * vec3(1), 1.0f);
+	fragmentColor = vec4(result * vi.color, 1.0f);
 }

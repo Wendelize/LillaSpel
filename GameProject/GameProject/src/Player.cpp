@@ -1,15 +1,17 @@
 #include "Header Files/Player.h"
 
-Player::Player()
+Player::Player(vec3 pos)
 {
 	m_controller = new Controller;
 	m_transform = new Transform;
+	m_transform->SetTranslation(pos);
 	m_name = "";
 	m_health = 0;
 	m_controllerID = 0;
 	m_weight = 0.f;
 	m_speed = 0.f;
-	m_transform->SetScale(0.2, 0.2, 0.2);
+
+	m_transform->SetScale(0.5, 0.5, 0.5);
 
 }
 
@@ -78,9 +80,6 @@ void Player::Update(float dt)
 	}
 
 	m_transform->Translate(  direction*  speed* dt);
-	
-	
-	
 }
 
 string Player::GetName()
@@ -123,6 +122,16 @@ void Player::SetSpeed(float speed)
 	m_speed = speed;
 }
 
+vec3 Player::GetColor()
+{
+	return m_color;
+}
+
+void Player::SetColor(vec3 color)
+{
+	m_color = color;
+}
+
 float Player::GetWeight()
 {
 	return m_weight;
@@ -145,6 +154,6 @@ void Player::SetControllerID(int id)
 
 ObjectInfo* Player::GetObjectInfo()
 {
-	m_info = new ObjectInfo(m_transform->GetMatrix(), m_modelId, 0, vec3(1, 0, 0));
+	m_info = new ObjectInfo(m_transform->GetMatrix(), m_modelId, 0, m_color);
 	return m_info;
 }

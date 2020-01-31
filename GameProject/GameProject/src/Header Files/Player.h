@@ -11,12 +11,13 @@ private:
 	int m_modelId;
 	float m_weight;
 	float m_speed;
+	vec3 m_color;
 	Controller* m_controller;
 	Transform* m_transform;
 	ObjectInfo* m_info;
 
 public:
-	Player();
+	Player(vec3 pos);
 	~Player();
 	void Update(float dt);
 	string GetName();
@@ -27,6 +28,8 @@ public:
 	void SetModelId(int id);
 	float GetSpeed();
 	void SetSpeed(float speed);
+	vec3 GetColor();
+	void SetColor(vec3 color);
 	float GetWeight();
 	void SetWeight(float weight);
 	int GetControllerID();
