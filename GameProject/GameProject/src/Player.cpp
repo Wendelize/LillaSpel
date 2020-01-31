@@ -29,6 +29,12 @@ void Player::Update(float dt)
 
 	if (glfwJoystickPresent(m_controllerID) == 1)
 	{
+		if (m_controller->ButtonOptionsIsPressed(m_controllerID))
+		{
+			//Acceleration
+			speed = -10.f;
+		}
+
 		if (m_controller->ButtonAIsPressed(m_controllerID))
 		{
 			//Acceleration
@@ -49,20 +55,29 @@ void Player::Update(float dt)
 			speed = -30.f;
 		}
 
+		if(m_controller->GetLeftStickHorisontal(m_controllerID) > 0.2f || m_controller->GetLeftStickHorisontal(m_controllerID) < -0.2f)
+			rotate.y -= m_controller->GetLeftStickHorisontal(m_controllerID);
+		
 		if (m_controller->GetRightTrigger(m_controllerID) != -1)
 		{
 			//Right trigger pressed
 			//Drift
+			if (rotate.y < -0.2)
+			{
+				rotate.y -= 1;
+			}
+			else
+			{
+				rotate.y -= (-1);
+			}
 		}
-
-			rotate.y -= m_controller->GetLeftStickHorisontal(m_controllerID);
 	
 
 		if(speed != 0)
 		direction = m_transform->TranslateDirection(rotate*dt* rotationSpeed);
 	}
 
-	m_transform->Translate(  direction*   speed* dt);
+	m_transform->Translate(  direction*  speed* dt);
 	
 	
 	

@@ -28,5 +28,6 @@ public:
 	bool ButtonBIsPressed(int ID); 
 	bool ButtonXIsPressed(int ID); 
 	bool ButtonYIsPressed(int ID); 
+	bool ButtonOptionsIsPressed(int ID);
 	 
 };

@@ -83,4 +83,15 @@ bool Controller::ButtonYIsPressed(int ID)
 		} 
 	} 
 	return false; 
-} 
+}
+bool Controller::ButtonOptionsIsPressed(int ID)
+{
+	if (glfwGetGamepadState(ID, &state))
+	{
+		if (state.buttons[GLFW_GAMEPAD_BUTTON_START])
+		{
+			return true;
+		}
+	}
+	return false;
+}
