@@ -5,9 +5,15 @@ Game::Game()
 	m_objectHandler = new ObjectHandler();
 	m_scene = new Scene();
 	m_scene->Init();
+	m_time = 0;
 
-	m_objectHandler->AddPlayer(0, 0); // (Controller ID, model ID)
-	m_objectHandler->AddPlayer(1, 0);
+	for (int i = 0; i < 10; i++)
+	{
+		for (int j = 0; j < 10; j++)
+		{
+			m_objectHandler->AddPlayer(vec3(i, 0, j), 0, 0, vec3(i, j, j));
+		}
+	}
 
 	m_objectHandler->AddPlatform(0);
 }

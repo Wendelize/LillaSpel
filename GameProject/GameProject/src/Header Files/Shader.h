@@ -20,9 +20,10 @@ public:
 	GLint GetUniform(const GLchar * name);
 	void SetUniform(const GLchar * name, const int & value);
 	void SetUniform(const GLchar * name, const float & value);
-	void SetUniform(const GLchar * name, const glm::vec2 & vector);
-	void SetUniform(const GLchar * name, const glm::vec3 & vector);
-	void SetUniform(const GLchar * name, const glm::mat4 & matrix);
+	void SetUniform(const GLchar * name, const vec2 & vector);
+	void SetUniform(const GLchar * name, const vec3 & vector);
+	void SetUniform(const GLchar * name, const mat4 & matrix);
+	//void SetUniform(const GLchar * name, )
 	void SetTexture2D(int id, const GLchar * name, GLuint texture);
 	void SetInt(const string& name, int value);
 };

@@ -1,15 +1,13 @@
 #pragma once
 
-
 class Window
 {
 private:
 	int m_width, m_height;
-	//Camera _camera;
 public:
 	GLFWwindow *m_window;
 
-	Window(int width = 640, int height = 480);
+	Window(int width = 1500, int height = 900);
 	~Window();
 
 	int GetWidht();

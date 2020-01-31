@@ -4,8 +4,10 @@
 Platform::Platform()
 {
 	m_transform = new Transform();
-	m_transform->SetScale(0.2, 0.2, 0.2);
-	m_transform->Translate(vec3(0, -1, 0));
+	m_transform->SetScale(0.4f, 0.4f, 0.4f);
+	m_transform->Translate(vec3(0.f, -2.f, 3.7));
+	m_info = nullptr;
+	m_modelId = 0;
 }
 
 Platform::~Platform()

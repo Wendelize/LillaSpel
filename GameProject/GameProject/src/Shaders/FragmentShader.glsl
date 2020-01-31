@@ -2,6 +2,7 @@
 
 out vec4 fragmentColor;
 
+// IN-DATA FROM VERTEXSHADER
 in vertex_out{
 	vec3 position;
 	vec3 normal;
@@ -9,13 +10,13 @@ in vertex_out{
 	vec2 tex_coords;
 } vi;
 
-in vec3 view;
-
+// DIRLIGHT DATA
 struct DirLight{
 	vec3 dir, color;
 	float ambient, diffuse, specular;
 };
 
+// SPOTLIGHT DATA
 struct SpotLight {
 	vec3 pos, color;
 	float ambient, diffuse, specular;
@@ -23,6 +24,7 @@ struct SpotLight {
 	float cutOff, outerCutOff;
 };
 
+// POINTLIGHT DATA
 struct PointLight {
 	vec3 pos, color;
 	float constant, linear, quadratic;
@@ -31,9 +33,12 @@ struct PointLight {
 //maybe send in a nrOfLights
 const int NR_OF_POINTLIGHTS = 2;
 
+// UNIFORMS
+uniform vec3 u_ViewPos;
 uniform DirLight u_DirLight;
 uniform SpotLight u_SpotLight;
 uniform PointLight u_PointLight[NR_OF_POINTLIGHTS];
+
 
 // DIRECTIONAL-LIGHT
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, float shininess) {
@@ -119,17 +124,43 @@ vec3 BasicLight(SpotLight light, float alpha, vec3 normal, vec3 p){
 	return light.color * (light.diffuse * dotDiff + light.specular * pow(dotSpec, alpha));
 }
 
+// TEST LIGHT 2
+vec3 TestLight(SpotLight light, vec3 p, vec3 n, vec3 eye){
+	vec3 ambient = light.ambient * light.color;
+	vec3 lightVec = normalize(vec3(2, 8, 5) - p);
+	
+	float diff = max(dot(lightVec, n), 0.0);
+	vec3 diffuse = diff * light.color;
+
+	vec3 viewVec = normalize(eye-p);
+	vec3 reflection = reflect(-lightVec, n);
+	float spec = 0.0;
+
+	//BLINN
+	vec3 halfwayDir = normalize(lightVec+viewVec);
+	spec = pow(max(dot(n, halfwayDir), 0.0), 32.0);
+
+	//PHONG
+	vec3 reflectionVec = reflect(-lightVec, n);
+	spec = pow(max(dot(viewVec, reflectionVec), 0.0), 10.0);
+
+	vec3 specular = vec3(light.specular) * spec;
+
+
+	return (ambient + diffuse + specular);
+}
 
 
 void main(){
-	vec3 result;
+	vec3 result = vec3(0.0);
 	vec3 viewDir = normalize(vec3(0, 5, -10) - vi.position);
 	//result += CalcDirLight(u_DirLight, vi.normal, viewDir, 0.0 );
-	result += BasicLight(u_SpotLight, 5.0, vi.normal, vi.position);
-	for(int i = 0; i < NR_OF_POINTLIGHTS; i++) {
-		result += CalcPointLight(u_PointLight[i], vi.normal, vi.position, viewDir, 5.0); 
-	}
+	//result += BasicLight(u_SpotLight, 5.0, vi.normal, vi.position);
+//	for(int i = 0; i < NR_OF_POINTLIGHTS; i++) {
+//		result += CalcPointLight(u_PointLight[i], vi.normal, vi.position, viewDir, 10.0); 
+//	}
 	result += CalcSpotLight(u_SpotLight, vi.normal, vi.position, viewDir, 10.0);
+	result += TestLight(u_SpotLight, vi.position, vi.normal, u_ViewPos);
 
-	fragmentColor = vec4(result * vec3(1), 1.0f);
+	fragmentColor = vec4(result * (vi.color * 0.5), 1.0f);
 }
