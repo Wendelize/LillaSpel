@@ -23,30 +23,28 @@ Player::~Player()
 
 void Player::Update(float dt)
 {
-	vec3 movmentInput(0, 0, 0);
 	vec3 rotate(0, 0, 0);
 	vec3 direction(0, 0, 0);
-	float speed = 0;
 	float rotationSpeed = 2.f;
 
 	if (glfwJoystickPresent(m_controllerID) == 1)
 	{
 		if (m_controller->ButtonOptionsIsPressed(m_controllerID))
 		{
-			//Acceleration
-			speed = -10.f;
+			//Temporary
+			m_speed = -10.f;
 		}
 
 		if (m_controller->ButtonAIsPressed(m_controllerID))
 		{
 			//Acceleration
-			speed = -10.f;
+			m_speed = -15.f;
 		}
 
 		if (m_controller->ButtonXIsPressed(m_controllerID))
 		{
 			//Reverse
-			speed = 10.f;
+			m_speed = 10.f;
 		}
 
 		//Triggers
@@ -54,7 +52,7 @@ void Player::Update(float dt)
 		{
 			//Left trigger pressed
 			//Power-Up
-			speed = -30.f;
+			m_speed = -30.f;
 		}
 
 		if(m_controller->GetLeftStickHorisontal(m_controllerID) > 0.2f || m_controller->GetLeftStickHorisontal(m_controllerID) < -0.2f)
@@ -68,18 +66,31 @@ void Player::Update(float dt)
 			{
 				rotate.y -= 1;
 			}
-			else
+			else if(rotate.y > 0.2)
 			{
 				rotate.y -= (-1);
 			}
 		}
 	
 
-		if(speed != 0)
+		if(m_speed != 0)
 		direction = m_transform->TranslateDirection(rotate*dt* rotationSpeed);
 	}
 
-	m_transform->Translate(  direction*  speed* dt);
+	m_transform->Translate(  direction* m_speed* dt);
+	if (m_speed < 0)
+	{
+		m_speed = m_speed + 9.82f * dt;
+	}
+	else if (m_speed > 0)
+	{
+		m_speed = m_speed - 9.82f * dt;
+	}
+
+	if (m_speed < 0.2 && m_speed > -0.2)
+	{
+		m_speed = 0;
+	}
 }
 
 string Player::GetName()
