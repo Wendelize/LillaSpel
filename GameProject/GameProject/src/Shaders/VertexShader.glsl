@@ -11,7 +11,6 @@ out vertex_out{
 	vec2 tex_coords;
 } vo;
 
-out vec3 view;
 
 uniform mat4 u_Model;
 uniform mat4 u_View;
@@ -27,5 +26,4 @@ void main()
 	vo.normal	  = normalize(vec3(u_Model * vec4(a_Normal, 0.0)));
 	vo.color	  = u_PlayerColor;
 	vo.tex_coords = a_UV;
-	view = vec3(u_View);
 } 
