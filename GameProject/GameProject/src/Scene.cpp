@@ -15,19 +15,19 @@ Scene::Scene()
 
 Scene::~Scene()
 {
-	for (int i = 0; i < m_vehicles.size(); i++)
+	for (uint i = 0; i < m_vehicles.size(); i++)
 	{
 		delete m_vehicles.at(i);
 	}
 	m_vehicles.clear();
 
-	for (int i = 0; i < m_platform.size(); i++)
+	for (uint i = 0; i < m_platform.size(); i++)
 	{
 		delete m_platform.at(i);
 	}
 	m_platform.clear();
 
-	for (int i = 0; i < m_power.size(); i++)
+	for (uint i = 0; i < m_power.size(); i++)
 	{
 		delete m_power.at(i);
 	}
@@ -50,6 +50,7 @@ void Scene::Init()
 	// Veichles
 	m_vehicles.push_back(new Model("src/Models/Low-Poly-Racing-Car.obj"));
 	m_vehicles.push_back(new Model("src/Models/ape.obj"));
+	m_vehicles.push_back(new Model("src/Models/CAT.obj"));
 
 	// Platforms
 	m_platform.push_back(new Model("src/Models/Platform2.obj"));
@@ -57,56 +58,46 @@ void Scene::Init()
 	// Powers
 
 	// Lights
-	AddLights(DirLight, vec3(0, -1, 0), vec3(1));
-	AddLights(SpotLight, vec3(0, 4, 0), vec3(0.6, 0, 0.3));
-	AddLights(PointLight, vec3(5, 5, -3), vec3(0, 1, 0));
-	AddLights(PointLight, vec3(-7, 3, -3), vec3(1, 0.0, 1));
-}
-
-void Scene::UseShader(Shader shader)
-{
+	AddDirLight({ 0,-1,0 }, {0,0,1});
+	AddPointLight({ 2,2,2 }, {0.6, 0, 0.9});
+	AddPointLight({ -2,2,-2 }, {1, 0.8, 0});
 
 }
+
 
 void Scene::LightToShader()
 {
-	m_modelShader->UseShader();
-	m_modelShader->SetUniform("u_DirLight.dir", m_lights.m_dirLight.dir);
-	m_modelShader->SetUniform("u_DirLight.color", m_lights.m_dirLight.color);
-	m_modelShader->SetUniform("u_DirLight.ambient", m_lights.m_dirLight.ambient);
-	m_modelShader->SetUniform("u_DirLight.diffuse", m_lights.m_dirLight.diffuse);
-	m_modelShader->SetUniform("u_DirLight.specular", m_lights.m_dirLight.specular);
+	m_modelShader->Uniform("u_NrOf", m_nrOfLights);
 
-	m_modelShader->SetUniform("u_SpotLight.pos", m_lights.m_spotLights.at(0).pos);
-	m_modelShader->SetUniform("u_SpotLight.color", m_lights.m_spotLights.at(0).color);
-	m_modelShader->SetUniform("u_SpotLight.ambient", m_lights.m_spotLights.at(0).ambient);
-	m_modelShader->SetUniform("u_SpotLight.diffuse", m_lights.m_spotLights.at(0).diffuse);
-	m_modelShader->SetUniform("u_SpotLight.specular", m_lights.m_spotLights.at(0).specular);
-	m_modelShader->SetUniform("u_SpotLight.cutOff", m_lights.m_spotLights.at(0).cutOff);
-	m_modelShader->SetUniform("u_SpotLight.outerCutOff", cos(radians(30.0f)));
-
-
-
-	for (int i = 0; i < m_lights.m_pointLights.size(); i++)
+	for (uint i = m_nrOfLights; i < m_lights.size(); i++)
 	{
-		//	here to get correct numbering in the char-array 
-		//	e.g. ""u_PointLight[0].pos" "u_PointLight[1].pos" etc..
-		string _temp = "u_PointLight[" + to_string(i) + "].pos";
-		const GLchar* _charPos = _temp.c_str();
-		string _temp1 = "u_PointLight[" + to_string(i) + "].color";
-		const GLchar* _charColor = _temp1.c_str();
-		string _temp2 = "u_PointLight[" + to_string(i) + "].ambient";
-		const GLchar* _charAmbient = _temp2.c_str();
-		string _temp3 = "u_PointLight[" + to_string(i) + "].diffuse";
-		const GLchar* _charDiffuse = _temp3.c_str();
-		string _temp4 = "u_PointLight[" + to_string(i) + "].specular";
-		const GLchar* _charSpecular = _temp4.c_str();
+		string _nr = to_string(i);
+		switch (m_lights.at(i).GetType())
+		{
+		case 0:
+			m_modelShader->Uniform("u_Lights[" + _nr + "].type", m_lights.at(i).GetType());
+			m_modelShader->Uniform("u_Lights[" + _nr + "].dir", m_lights.at(i).GetDirection());
+			m_modelShader->Uniform("u_Lights[" + _nr + "].color", m_lights.at(i).GetColor());
+			break;
+		case 1:
+			m_modelShader->Uniform("u_Lights[" + _nr + "].type", m_lights.at(i).GetType());
+			m_modelShader->Uniform("u_Lights[" + _nr + "].pos", m_lights.at(i).GetPos());
+			m_modelShader->Uniform("u_Lights[" + _nr + "].color", m_lights.at(i).GetColor());
+			break;
+		case 2:
+			m_modelShader->Uniform("u_Lights[" + _nr + "].type", m_lights.at(i).GetType());
+			m_modelShader->Uniform("u_Lights[" + _nr + "].pos", m_lights.at(i).GetPos());
+			m_modelShader->Uniform("u_Lights[" + _nr + "].dir", m_lights.at(i).GetDirection());
+			m_modelShader->Uniform("u_Lights[" + _nr + "].color", m_lights.at(i).GetColor());
+			break;
+		default:
+			break;
+		}
 
-		m_modelShader->SetUniform(_charPos, m_lights.m_pointLights.at(i).pos);
-		m_modelShader->SetUniform(_charColor, m_lights.m_pointLights.at(i).color);
-		m_modelShader->SetUniform(_charAmbient, m_lights.m_pointLights.at(i).ambient);
-		m_modelShader->SetUniform(_charDiffuse, m_lights.m_pointLights.at(i).diffuse);
-		m_modelShader->SetUniform(_charSpecular, m_lights.m_pointLights.at(i).specular);
+		m_modelShader->Uniform("u_Lights[" + _nr + "].ambient", m_lights.at(i).GetAmbient());
+		m_modelShader->Uniform("u_Lights[" + _nr + "].diffuse", m_lights.at(i).GetDiffuse());
+		m_modelShader->Uniform("u_Lights[" + _nr + "].specular", m_lights.at(i).GetSpecular());
+		m_nrOfLights += 1;
 	}
 
 
@@ -171,25 +162,20 @@ GLFWwindow* Scene::GetWindow()
 	return m_window->m_window;
 }
 
-// a : a direction if u want a dirlight, else position
-// b : color of light
-
-void Scene::AddLights(LightType type, vec3 a, vec3 b)
+void Scene::AddPointLight(vec3 pos, vec3 color)
 {
-	switch (type)
-	{
-	case Scene::DirLight:
-		m_lights.AddDirLight(a, b);
-		break;
-	case Scene::PointLight:
-		m_lights.AddPointLight(a, b);
-		break;
-	case Scene::SpotLight:
-		m_lights.AddSpotLight(a, b);
-		break;
-	default:
-		break;
-	}
+	Light _temp = Light(1, pos, pos, color);
+	m_lights.push_back(_temp);
 }
 
+void Scene::AddDirLight(vec3 dir, vec3 color)
+{
+	Light _temp = Light(0, dir, dir, color);
+	m_lights.push_back(_temp);
+}
 
+void Scene::AddSpotLight(vec3 pos, vec3 dir, vec3 color, float cutOff)
+{
+	Light _temp = Light(2, dir, pos, color, cutOff);
+	m_lights.push_back(_temp);
+}

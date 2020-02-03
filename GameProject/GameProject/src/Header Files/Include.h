@@ -15,6 +15,8 @@
 #include <string>
 #include <vector>
 #include <math.h>
+#include <cstdlib>
+#include <ctime>
 
 //MEMORY LEAK DETECTION
 #define _CRTDBG_MAP_ALLOC

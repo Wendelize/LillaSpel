@@ -1,4 +1,5 @@
 #version 430
+#define MAX_NR_OF_LIGHTS 40
 
 out vec4 fragmentColor;
 
@@ -10,156 +11,138 @@ in vertex_out{
 	vec2 tex_coords;
 } vi;
 
-// DIRLIGHT DATA
-struct DirLight{
-	vec3 dir, color;
+
+// LIGHT DATA
+struct Light{
+	int type;
+	vec3 pos, dir, color;
 	float ambient, diffuse, specular;
+    float cutOff, outerCutOff;
 };
 
-// SPOTLIGHT DATA
-struct SpotLight {
-	vec3 pos, color;
-	float ambient, diffuse, specular;
-	float constant, linear, quadratic;
-	float cutOff, outerCutOff;
-};
-
-// POINTLIGHT DATA
-struct PointLight {
-	vec3 pos, color;
-	float constant, linear, quadratic;
-	float ambient, diffuse, specular;
-};
-//maybe send in a nrOfLights
-const int NR_OF_POINTLIGHTS = 2;
 
 // UNIFORMS
+uniform int u_NrOf;
 uniform vec3 u_ViewPos;
-uniform DirLight u_DirLight;
-uniform SpotLight u_SpotLight;
-uniform PointLight u_PointLight[NR_OF_POINTLIGHTS];
+uniform int u_LightType;
+uniform Light u_Lights[MAX_NR_OF_LIGHTS];
 
 
-// DIRECTIONAL-LIGHT
-vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, float shininess) {
-	vec3 lightDir = normalize(-light.dir);
+// DIFFUSE
+vec3 CalcDiffuse(Light light, vec3 lightVec, vec3 n){
+	float diff = max(dot(lightVec, n), 0.0);
+	vec3 diffuse = diff * light.color * light.diffuse;
 
-	float diff = max(dot(normal, lightDir), 0.0);
+	return diffuse;
+}
 
-	vec3 reflectDir = reflect(-lightDir, normal);
-	float spec = pow(max(dot(viewDir, reflectDir), 0.0), shininess);
 
-	vec3 ambient = light.ambient * light.color;
-	vec3 diffuse = light.diffuse * diff * light.color;
-	vec3 specular = light.specular * spec * light.color;
+// SPECULAR
+vec3 CalcSpecular(Light light, vec3 lightVec, vec3 lookVec, vec3 n, bool blinn){
+	float spec = 0.0;
+
+	// BLINN
+	if(blinn) {
+		vec3 halfwayDir = normalize(lightVec + lookVec);
+		spec = pow(max(dot(n, halfwayDir), 0.0), 32.0);
+	} 
+	// PHONG
+	else if (!blinn) {
+		vec3 reflectionVec = reflect(-lightVec, n);
+		spec = pow(max(dot(lookVec, reflectionVec), 0.0), 10.0);
+	}
+
+	vec3 specular = vec3(light.specular) * spec;
+
+	return specular;
+}
+
+
+// DIRLIGHT
+vec3 CalcDirLight(Light light, vec3 p, vec3 n, vec3 eye, bool blinn){
+	vec3 lightVec = normalize(-light.dir);
+	vec3 lookVec = normalize(eye - p);
+
+	vec3 ambient = light.ambient * light.color * vi.color;
+
+	vec3 diffuse = CalcDiffuse(light, lightVec, n) * vi.color;
+
+	vec3 specular = CalcSpecular(light, lightVec, lookVec, n, blinn);
+
 
 	return (ambient + diffuse + specular) * light.color;
 }
 
-// POINT-LIGHT
-vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir, float alpha)
-{
-    vec3 lightDir = normalize(light.pos - fragPos);
 
-    float diff = max(dot(normal, lightDir), 0.0);
+// POINTLIGHT
+vec3 CalcPointLight(Light light, vec3 p, vec3 n, vec3 eye, bool blinn){
+    vec3 lightVec = normalize(light.pos - p);
+	vec3 lookVec = normalize(eye - p);
 
-    vec3 reflectDir = reflect(-lightDir, normal);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), alpha);
+	vec3 ambient = light.ambient * light.color * vi.color;
 
-    float distance = length(light.pos - fragPos);
+	vec3 diffuse = CalcDiffuse(light, lightVec, n) * vi.color;
+
+    vec3 specular = CalcSpecular(light, lightVec, lookVec, n, blinn);
+
+    float distance = length(light.pos - p);
     float attenuation = 1.0 / (1.0 + 0.09 * distance + 0.032 * (distance * distance));    
-
-    vec3 ambient = light.ambient * light.color;
-    vec3 diffuse = light.diffuse * diff * light.color;
-    vec3 specular = light.specular * spec * light.color;
 
     ambient *= attenuation;
     diffuse *= attenuation;
     specular *= attenuation;
-    return (ambient + diffuse + specular);
+
+    return (ambient + diffuse + specular) * light.color;
 }
 
-// SPOT-LIGHT
-vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir, float alpha)
-{
-    vec3 lightDir = normalize(light.pos - fragPos);
-    // diffuse shading
-    float diff = max(dot(normal, lightDir), 0.0);
-    // specular shading
-    vec3 reflectDir = reflect(-lightDir, normal);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), alpha);
-    // attenuation
-    float distance = length(light.pos - fragPos);
-    float attenuation = 1.0 / (1.0 + 0.09 * distance + 0.032 * (distance * distance));    
-    // spotlight intensity
-    float theta = dot(lightDir, normalize((vec3(0, 5, -5)-vec3(0)))); 
-    float epsilon = light.cutOff - light.outerCutOff;
-    float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0);
-    // combine results
-    vec3 ambient = light.ambient * light.color;
-    vec3 diffuse = light.diffuse * diff * light.color;
-    vec3 specular = light.specular * spec * light.color;
-    ambient *= attenuation * intensity;
-    diffuse *= attenuation * intensity;
-    specular *= attenuation * intensity;
-    return (ambient + diffuse + specular);
-}
 
-// TEST CALC OF LIGHT
-vec3 BasicLight(SpotLight light, float alpha, vec3 normal, vec3 p){
+// SPOTLIGHT
+vec3 CalcSpotLight(Light light, vec3 p, vec3 n, vec3 eye, bool blinn){
 	vec3 lightVec = normalize(light.pos - p);
-	vec3 lookVec = normalize(vec3(0, 5, -10) - p);
-	vec3 reflectVec = normalize(reflect(-lightVec, normal));
+    float theta = dot(lightVec, normalize(light.dir)); 
+    vec3 lookVec = normalize(eye - p);
 
-	float dotDiff = dot(lightVec, normal);
-	float dotSpec = dot(reflectVec, lookVec);
+    if(theta > light.cutOff) {
+        vec3 ambient = light.ambient * light.color * vi.color;
 
-	if(dotDiff < 0.0)
-		return light.ambient * light.color;
+        vec3 diffuse = CalcDiffuse(light, lightVec, n) * vi.color;
 
-	if(dotSpec < 0.0)
-		return light.color * dotDiff * light.diffuse;
+        vec3 specular = CalcSpecular(light, lightVec, lookVec, n, blinn);
 
+        float distance = length(light.pos - p);
+        float attenuation = 1.0 / (1.0 + 0.09 * distance + 0.032 * (distance * distance));    
+    
+        // spotlight intensity
+        float epsilon = light.cutOff - light.outerCutOff;
+        float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0);
 
-	return light.color * (light.diffuse * dotDiff + light.specular * pow(dotSpec, alpha));
+        ambient *= attenuation * intensity;
+        diffuse *= attenuation * intensity;
+        specular *= attenuation * intensity;
+
+        return (ambient + diffuse + specular);
+    }
+    else {
+        return (light.ambient * light.color);
+    }
 }
-
-// TEST LIGHT 2
-vec3 TestLight(SpotLight light, vec3 p, vec3 n, vec3 eye){
-	vec3 ambient = light.ambient * light.color;
-	vec3 lightVec = normalize(vec3(2, 8, 5) - p);
-	
-	float diff = max(dot(lightVec, n), 0.0);
-	vec3 diffuse = diff * light.color;
-
-	vec3 viewVec = normalize(eye-p);
-	vec3 reflection = reflect(-lightVec, n);
-	float spec = 0.0;
-
-	//BLINN
-	vec3 halfwayDir = normalize(lightVec+viewVec);
-	spec = pow(max(dot(n, halfwayDir), 0.0), 32.0);
-
-	//PHONG
-	vec3 reflectionVec = reflect(-lightVec, n);
-	spec = pow(max(dot(viewVec, reflectionVec), 0.0), 10.0);
-
-	vec3 specular = vec3(light.specular) * spec;
-
-
-	return (ambient + diffuse + specular);
-}
-
 
 void main(){
 	vec3 result = vec3(0.0);
-	vec3 viewDir = normalize(vec3(0, 5, -10) - vi.position);
-	//result += CalcDirLight(u_DirLight, vi.normal, viewDir, 0.0 );
-	//result += BasicLight(u_SpotLight, 5.0, vi.normal, vi.position);
-//	for(int i = 0; i < NR_OF_POINTLIGHTS; i++) {
-//		result += CalcPointLight(u_PointLight[i], vi.normal, vi.position, viewDir, 10.0); 
-//	}
-	result += CalcSpotLight(u_SpotLight, vi.normal, vi.position, viewDir, 10.0);
-	result += TestLight(u_SpotLight, vi.position, vi.normal, u_ViewPos);
+	bool blinn = true;
+    vec3 look = normalize(u_ViewPos - vi.position);
+
+	for(int i = 0; i < u_NrOf; i++)
+	{
+		if(u_Lights[i].type == 0) {
+			result += CalcDirLight(u_Lights[i], vi.position, vi.normal, u_ViewPos, false);
+		} else if (u_Lights[i].type == 1) {
+			result += CalcPointLight(u_Lights[i], vi.position, vi.normal, u_ViewPos, blinn);
+		} else if (u_Lights[i].type == 2) {
+			//result += CalcSpotLight2(u_Lights[i], vi.normal, vi.position, look);
+			result += CalcSpotLight(u_Lights[i], vi.position, vi.normal, u_ViewPos, false);
+		}
+	}
+    
 	fragmentColor = vec4(result , 1.0f);
 }

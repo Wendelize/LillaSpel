@@ -9,8 +9,8 @@ Player::Player()
 	m_controllerID = 0;
 	m_weight = 0.f;
 	m_speed = 0.f;
-	m_transform->SetScale(0.2, 0.2, 0.2);
-
+	m_transform->SetScale(0.2f, 0.2f, 0.2f);
+	//m_transform->SetScale(1, 1, 1);
 }
 
 Player::~Player()

@@ -4,7 +4,7 @@
 Platform::Platform()
 {
 	m_transform = new Transform();
-	m_transform->SetScale(0.2, 0.2, 0.2);
+	m_transform->SetScale(0.2f, 0.2f, 0.2f);
 	m_transform->Translate(vec3(0, -1, 0));
 }
 
