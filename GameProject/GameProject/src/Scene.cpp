@@ -2,10 +2,10 @@
 
 Scene::Scene()
 {
-	m_window = new Window(1200, 840);
+	m_window = new Window(1500, 900);
 	m_modelShader = new Shader("src/Shaders/VertexShader.glsl", "src/Shaders/FragmentShader.glsl");
 	m_skyboxShader = new Shader("src/Shaders/VertexSkyboxShader.glsl", "src/Shaders/FragmentSkyboxShader.glsl");
-	m_camera = new Camera(*m_window->m_window, {0, 5, -10});
+	m_camera = new Camera({0, 12, -8});
 	m_skybox = new Skybox();
 
 	m_modelMatrix = mat4(1.0);
@@ -120,6 +120,7 @@ void Scene::Render(vector<ObjectInfo*> objects)
 	for (uint i = 0; i < objects.size(); i++)
 	{
 		m_modelShader->SetUniform("u_Model", objects[i]->modelMatrix);
+		m_modelShader->SetUniform("u_PlayerColor", objects[i]->hue);
 		switch (objects[i]->typeId)
 		{
 		case 0:
