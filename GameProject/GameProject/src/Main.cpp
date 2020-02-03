@@ -27,11 +27,12 @@ int main(void)
 	}
 
 	glfwTerminate();
-
+	
 	//delete wndw;
 	delete GAME;
 
-	_CrtDumpMemoryLeaks();
+	exit(0); //Used to be called in window destructor -> caused memory leaks. This fixes it.
 
+	_CrtDumpMemoryLeaks();
 	return 0;
 }
