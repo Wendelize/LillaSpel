@@ -4,7 +4,6 @@
 #include "Header Files/Scene.h"
 #include "Header Files/Transform.h"
 
-
 Game* GAME;
 Transform* tran;
 //Scene* SCENE;

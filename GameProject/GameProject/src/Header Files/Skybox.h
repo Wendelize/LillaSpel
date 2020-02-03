@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Include.h"
-#include "stb_image.h"
 
 struct skyboxData {
 	vec3 pos;

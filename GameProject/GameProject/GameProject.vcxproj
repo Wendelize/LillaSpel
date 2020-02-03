@@ -144,8 +144,6 @@
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\Controller.cpp" />
     <ClCompile Include="src\Game.cpp" />
-    <ClCompile Include="src\Header Files\Skybox.cpp" />
-    <ClCompile Include="src\Level.cpp" />
     <ClCompile Include="src\Light.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Mesh.cpp" />
@@ -155,6 +153,7 @@
     <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\Scene.cpp" />
     <ClCompile Include="src\Shader.cpp" />
+    <ClCompile Include="src\Skybox.cpp" />
     <ClCompile Include="src\Transform.cpp" />
     <ClCompile Include="src\Window.cpp" />
   </ItemGroup>
@@ -163,7 +162,6 @@
     <ClInclude Include="src\Header Files\Controller.h" />
     <ClInclude Include="src\Header Files\Game.h" />
     <ClInclude Include="src\Header Files\Include.h" />
-    <ClInclude Include="src\Header Files\Level.h" />
     <ClInclude Include="src\Header Files\Light.h" />
     <ClInclude Include="src\Header Files\Mesh.h" />
     <ClInclude Include="src\Header Files\Model.h" />
