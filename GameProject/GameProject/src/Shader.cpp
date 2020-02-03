@@ -142,8 +142,32 @@ void Shader::SetTexture2D(int id, const GLchar* name, GLuint texture)
 	SetUniform(name, id);
 }
 
-void Shader::SetInt(const string& name, int value)
+GLint Shader::GetUniform(const string& name)
 {
-	glUniform1i(glGetUniformLocation(m_shaderProgram, name.c_str()), value);
+	if (m_activeProgram != m_shaderProgram)
+		throw printf("cant get uniform, shader not active");
+
+	GLint location = glGetUniformLocation(m_shaderProgram, name.c_str());
+
+	if (location == -1)
+		printf("cant find uniform '%s' in shader nr %d\n", name, m_shaderProgram);
+
+	return location;
 }
+
+void Shader::Uniform(const string& name, int value)
+{
+	glUniform1i(GetUniform(name), value);
+}
+
+void Shader::Uniform(const string& name, float value)
+{
+	glUniform1f(GetUniform(name), value);
+}
+
+void Shader::Uniform(const string& name, const vec3& value)
+{
+	glUniform3fv(GetUniform(name), 1, &value[0]);
+}
+
 
