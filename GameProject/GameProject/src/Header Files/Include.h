@@ -7,6 +7,7 @@
 #include "assimp/scene.h"
 #include "assimp/postprocess.h"
 #include "assimp/Importer.hpp"
+#define STB_IMAGE_IMPLEMENTATION
 
 
 //INCLUDES C++
@@ -20,11 +21,12 @@
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
 #include <crtdbg.h>
-//#ifdef _DEBUG
-//#define new new( _NORMAL_BLOCK , __FILE__ , __LINE__ )
-//#else
-//#define new new
-//#endif
+
+#ifdef _DEBUG
+#define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
+#else
+#define new new
+#endif
 
 //CLASSES
 #include "Window.h"
@@ -35,7 +37,6 @@
 #include "Mesh.h"
 #include "Controller.h"
 #include "Light.h"
-#include "Level.h"
 #include "Skybox.h"
 
 //NAMESPACES
@@ -47,7 +48,7 @@ struct ObjectInfo
 	mat4 modelMatrix;
 	int modelId; //Refererar till en array med modeller i Scene 
 	int typeId; // 0 = vehicle, 1 = platform, 2 = power-up
-	vec3 hue; // Färgnyans
+	vec3 hue; // Fï¿½rgnyans
 
 	ObjectInfo(mat4 m, int mID, int tID, vec3 h) {
 		modelMatrix = m;

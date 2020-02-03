@@ -8,6 +8,7 @@ Platform::Platform()
 	m_transform->Translate(vec3(0.f, -2.f, 3.7));
 	m_info = nullptr;
 	m_modelId = 0;
+	m_skyboxId = 0;
 }
 
 Platform::~Platform()
@@ -23,6 +24,11 @@ int Platform::GetModelId()
 void Platform::SetModelId(int id)
 {
 	m_modelId = id;
+}
+
+void Platform::SetSkyboxId(int id)
+{
+	m_skyboxId = id;
 }
 
 ObjectInfo* Platform::GetObjectInfo()

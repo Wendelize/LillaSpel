@@ -43,10 +43,10 @@
     <ClCompile Include="src\Light.cpp">
       <Filter>Src</Filter>
     </ClCompile>
-    <ClCompile Include="src\Level.cpp">
+    <ClCompile Include="src\Skybox.cpp">
       <Filter>Src</Filter>
     </ClCompile>
-    <ClCompile Include="src\Header Files\Skybox.cpp">
+    <ClCompile Include="src\Skybox.cpp">
       <Filter>Src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -94,9 +94,6 @@
       <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="src\Header Files\stb_image.h">
-      <Filter>Header</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Header Files\Level.h">
       <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="src\Header Files\Skybox.h">
