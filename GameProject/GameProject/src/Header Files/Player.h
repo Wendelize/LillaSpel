@@ -18,11 +18,13 @@ private:
 
 	//Variables 4 Fysik
 	btCollisionShape* m_carShape;
-
+	btRigidBody* m_body;
+	btTransform* m_btTransform;
+	vec3 m_currentPos;
 public:
 	Player(vec3 pos);
 	~Player();
-	void Update(float dt);
+	void Update(float dt, vec3 newPos);
 	string GetName();
 	void SetName(string name);
 	int GetHealth();
@@ -38,5 +40,7 @@ public:
 	int GetControllerID();
 	void SetControllerID(int id);
 	ObjectInfo* GetObjectInfo();
+	btRigidBody* GetBody();
+	vec3 GetCurrentPos();
 
 };

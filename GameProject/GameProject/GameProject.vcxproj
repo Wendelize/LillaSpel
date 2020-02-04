@@ -79,7 +79,6 @@
       <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\Bullet\include;$(SolutionDir)Dependencies\ASSIMP\include;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLM\glm;$(SolutionDir)Dependencies\GLEW\include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\ASSIMP\lib;$(SolutionDir)Dependencies\GLFW\lib-vc2019;$(SolutionDir)Dependencies\Bullet\lib;$(SolutionDir)Dependencies\GLEW\lib\Release\Win32</AdditionalLibraryDirectories>

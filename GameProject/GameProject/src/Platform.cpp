@@ -12,22 +12,20 @@ Platform::Platform()
 
 
 
-	m_platformShape = new btBoxShape(btVector3(btScalar(1), btScalar(2.), btScalar(1.)));
+	m_platformShape = new btBoxShape(btVector3(btScalar(20.), btScalar(2.), btScalar(20.)));
 	m_btTransform = new btTransform;
 	m_btTransform->setIdentity();
 	m_btTransform->getBasis();
 	btMatrix3x3 temp;
 
 	temp.scaled(btVector3(0.4f,0.4f,0.4f));
-	m_btTransform->setOrigin(btVector3(0.f, -2.f, 3.7));
+	m_btTransform->setOrigin(btVector3(0.f, -2.f, 3.7f));
 	btScalar mass(0.);
-	bool isDynamic = (mass != 0.f);
 	btVector3 localInertia(0, 0, 0);
 
 	btDefaultMotionState* myMotionState = new btDefaultMotionState(*m_btTransform);
 	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, m_platformShape, localInertia);
 	m_body = new btRigidBody(rbInfo);
-
 }
 
 Platform::~Platform()
@@ -57,6 +55,6 @@ void Platform::SetSkyboxId(int id)
 
 ObjectInfo* Platform::GetObjectInfo()
 {
-	m_info = new ObjectInfo(m_transform->GetPhysicsMatrix(m_btTransform->getBasis()), m_modelId, 1, vec3(1, 0, 0));
+	m_info = new ObjectInfo(m_transform->GetMatrix(), m_modelId, 1, vec3(1, 0, 0));
 	return m_info;
 }

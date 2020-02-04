@@ -37,9 +37,29 @@ ObjectHandler::~ObjectHandler()
 
 void ObjectHandler::Update(float dt)
 {
-	for (size_t i = 0; i < m_players.size(); i++)
+
+	m_dynamicsWorld->stepSimulation(dt, 10);
+
+	for (size_t i = 0; i < m_dynamicsWorld->getNumCollisionObjects(); i++)
 	{
-		m_players[i]->Update(dt);
+		btCollisionObject* obj = m_dynamicsWorld->getCollisionObjectArray()[i];
+		btRigidBody* body = btRigidBody::upcast(obj);
+		btTransform trans;
+		if (body && body->getMotionState())
+		{
+			body->getMotionState()->getWorldTransform(trans);
+		}
+		else
+		{
+			trans = obj->getWorldTransform();
+		}
+		int isPlayer = i - m_platforms.size();
+		//printf("world pos object %d = %f,%f,%f\n", i, float(trans.getOrigin().getX()), float(trans.getOrigin().getY()), float(trans.getOrigin().getZ()));
+		if (isPlayer >= 0) {
+			m_players[isPlayer]->Update(dt, vec3(trans.getOrigin().getX(), trans.getOrigin().getY(), trans.getOrigin().getZ()));
+			vec3 tempPos = m_players[isPlayer]->GetCurrentPos();
+			m_dynamicsWorld->getCollisionObjectArray()[i]->getWorldTransform().setOrigin(btVector3(tempPos.x,tempPos.y,tempPos.z));
+		}
 	}
 
 	//Check collison && Act if detected.
@@ -51,6 +71,9 @@ void ObjectHandler::AddPlayer(vec3 pos, int controllerID, int modelId, vec3 colo
 	m_players.back()->SetControllerID(controllerID);
 	m_players.back()->SetModelId(modelId);
 	m_players.back()->SetColor(color);
+
+	m_dynamicsWorld->addRigidBody(m_players.back()->GetBody());
+
 }
 
 void ObjectHandler::RemovePlayer(int controllerID)
@@ -70,7 +93,7 @@ void ObjectHandler::AddPlatform(int modelId)
 	m_platforms.back()->SetModelId(modelId);
 
 	m_dynamicsWorld->addRigidBody(m_platforms.back()->getBody());
-
+	
 }
 
 void ObjectHandler::RemovePlatform()

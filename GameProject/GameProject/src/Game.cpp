@@ -7,11 +7,11 @@ Game::Game()
 	m_scene->Init();
 	m_time = 0;
 
-
-	m_objectHandler->AddPlayer(vec3(0, 0, 2), 0, 0, vec3(0, 1, 1));
-	m_objectHandler->AddPlayer(vec3(0, 0, 0), 1, 0, vec3(1, 0, 0));
-
 	m_objectHandler->AddPlatform(0);
+
+	m_objectHandler->AddPlayer(vec3(0, 10, 2), 0, 0, vec3(0, 1, 1));
+	m_objectHandler->AddPlayer(vec3(0, 10, 0), 1, 0, vec3(1, 0, 0));
+
 }
 
 Game::~Game()
