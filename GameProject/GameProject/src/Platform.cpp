@@ -23,14 +23,17 @@ Platform::Platform()
 	btScalar mass(0.);
 	btVector3 localInertia(0, 0, 0);
 
-	btDefaultMotionState* myMotionState = new btDefaultMotionState(*m_btTransform);
-	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, m_platformShape, localInertia);
+	m_motionState = new btDefaultMotionState(*m_btTransform);
+	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, m_motionState, m_platformShape, localInertia);
 	m_body = new btRigidBody(rbInfo);
+
 }
 
 Platform::~Platform()
 {
 	delete m_transform;
+	delete m_btTransform;
+	delete m_platformShape;
 }
 
 int Platform::GetModelId()

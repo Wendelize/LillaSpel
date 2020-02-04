@@ -18,6 +18,8 @@ private:
 	btCollisionDispatcher* m_dispatcher;
 	btSequentialImpulseConstraintSolver* m_solver;
 	btDiscreteDynamicsWorld* m_dynamicsWorld;
+	DebugDrawer* m_debugDrawer;
+
 public:
 	ObjectHandler();
 	~ObjectHandler();
@@ -30,5 +32,6 @@ public:
 	void AddPowerUp();
 	void RemovePowerUp();
 	vector<ObjectInfo*> GetObjects();
+	btDiscreteDynamicsWorld* GetWorld();
+	DebugDrawer* GetDebugDrawer();
 };
-

@@ -9,10 +9,7 @@
 #include "assimp/Importer.hpp"
 #include "btBulletDynamicsCommon.h"
 #include "BulletCollision\CollisionDispatch\btCollisionWorld.h"
-
-
 #define STB_IMAGE_IMPLEMENTATION
-
 
 //INCLUDES C++
 #include <iostream>
@@ -20,6 +17,7 @@
 #include <string>
 #include <vector>
 #include <math.h>
+#include <windows.h>
 
 //MEMORY LEAK DETECTION
 #define _CRTDBG_MAP_ALLOC
@@ -42,6 +40,7 @@
 #include "Controller.h"
 #include "Light.h"
 #include "Skybox.h"
+#include "DebugDrawer.h"
 
 //NAMESPACES
 using namespace std;

@@ -11,7 +11,6 @@ Game::Game()
 
 	m_objectHandler->AddPlayer(vec3(0, 10, 2), 0, 0, vec3(0, 1, 1));
 	m_objectHandler->AddPlayer(vec3(0, 10, 0), 1, 0, vec3(1, 0, 0));
-
 }
 
 Game::~Game()
@@ -31,7 +30,7 @@ void Game::Update(float dt)
 
 void Game::Render()
 {
-	m_scene->Render(m_objectHandler->GetObjects());
+	m_scene->Render(m_objectHandler->GetObjects(), m_objectHandler->GetWorld());
 }
 
 GLFWwindow* Game::GetWindow()

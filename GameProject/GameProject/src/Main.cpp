@@ -10,7 +10,7 @@ Transform* tran;
 
 int main(void)
 {
-	
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	///-----includes_end-----
 
 	int i;
@@ -174,8 +174,9 @@ int main(void)
 	
 	
 	
-	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	
 	GAME = new Game();
+
 	delete tran;
 
 	float _deltaTime = 0.0, _curTime = 0.0, _lastTime = 0.0;

@@ -5,7 +5,7 @@ Scene::Scene()
 	m_window = new Window(1500, 900);
 	m_modelShader = new Shader("src/Shaders/VertexShader.glsl", "src/Shaders/FragmentShader.glsl");
 	m_skyboxShader = new Shader("src/Shaders/VertexSkyboxShader.glsl", "src/Shaders/FragmentSkyboxShader.glsl");
-	m_camera = new Camera({0, 20, -30});
+	m_camera = new Camera({0, 5, -10});
 	m_skybox = new Skybox();
 	m_modelMatrix = mat4(1.0);
 	m_projMatrix = mat4(1.0);
@@ -111,7 +111,7 @@ void Scene::LightToShader()
 
 }
 
-void Scene::Render(vector<ObjectInfo*> objects)
+void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
 {
 	/* Render here */
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -147,6 +147,9 @@ void Scene::Render(vector<ObjectInfo*> objects)
 			break;
 		}
 	}
+
+	if (GetAsyncKeyState(VK_LCONTROL) & 0x8000)
+		world->debugDrawWorld();
 
 	m_skyboxShader->UseShader();
 	m_skyboxShader->SetUniform("u_View", mat4(mat3(m_camera->GetView())));

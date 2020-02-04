@@ -5,13 +5,15 @@ ObjectHandler::ObjectHandler()
 {
 	m_broadphase = new btDbvtBroadphase();
 	m_collisionConfiguration = new btDefaultCollisionConfiguration();
-	m_dispatcher = new btCollisionDispatcher(m_collisionConfiguration);	// btConstraintSolver* m_solver; Kanske använda denna istället.
+	m_dispatcher = new btCollisionDispatcher(m_collisionConfiguration);
 	m_solver = new btSequentialImpulseConstraintSolver;
 	m_dynamicsWorld = new btDiscreteDynamicsWorld(m_dispatcher, m_broadphase, m_solver, m_collisionConfiguration);
 
 	m_dynamicsWorld->setGravity(btVector3(0, -9.82f, 0));
-	//m_dynamicsWorld->setInternalTickCallback(myTickCallback); Kanske använd update function istället. Callbackar collision check function  https://gamedev.stackexchange.com/questions/22442/how-get-collision-callback-of-two-specific-objects-using-bullet-physics/120881#120881
 
+	m_debugDrawer = new DebugDrawer;
+	m_debugDrawer->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
+	m_dynamicsWorld->setDebugDrawer(m_debugDrawer);
 }
 
 ObjectHandler::~ObjectHandler()
@@ -33,6 +35,47 @@ ObjectHandler::~ObjectHandler()
 		delete m_platforms.at(i);
 	}
 	m_platforms.clear();
+
+	//remove the rigidbodies from the dynamics world and delete them
+	for (int i = m_dynamicsWorld->getNumCollisionObjects() - 1; i >= 0; i--)
+	{
+		btCollisionObject* obj = m_dynamicsWorld->getCollisionObjectArray()[i];
+		btRigidBody* body = btRigidBody::upcast(obj);
+		if (body && body->getMotionState())
+		{
+			delete body->getMotionState();
+		}
+		m_dynamicsWorld->removeCollisionObject(obj);
+		delete obj;
+	}
+
+	//delete collision shapes
+	for (int j = 0; j < m_collisionShapes.size(); j++)
+	{
+		btCollisionShape* shape = m_collisionShapes[j];
+		m_collisionShapes[j] = 0;
+		delete shape;
+	}
+
+	//delete dynamics world
+	delete m_dynamicsWorld;
+
+	//delete solver
+	delete m_solver;
+
+	//delete broadphase
+	delete m_broadphase;
+
+	//delete dispatcher
+	delete m_dispatcher;
+
+	delete m_collisionConfiguration;
+
+	//next line is optional: it will be cleared by the destructor when the array goes out of scope
+	m_collisionShapes.clear();
+	
+	delete m_debugDrawer;
+
 }
 
 void ObjectHandler::Update(float dt)
@@ -60,8 +103,9 @@ void ObjectHandler::Update(float dt)
 			vec3 tempPos = m_players[isPlayer]->GetCurrentPos();
 			m_dynamicsWorld->getCollisionObjectArray()[i]->getWorldTransform().setOrigin(btVector3(tempPos.x,tempPos.y,tempPos.z));
 		}
+		// m_dynamicsWorld->debugDrawObject(m_dynamicsWorld->getCollisionObjectArray()[i]->getWorldTransform(), m_dynamicsWorld->getCollisionObjectArray()[i]->getCollisionShape(), btVector3(1, 1, 1));
 	}
-
+	
 	//Check collison && Act if detected.
 }
 
@@ -135,4 +179,14 @@ vector<ObjectInfo*> ObjectHandler::GetObjects()
 	//}
 
 	return m_temp;
+}
+
+btDiscreteDynamicsWorld* ObjectHandler::GetWorld()
+{
+	return m_dynamicsWorld;
+}
+
+DebugDrawer* ObjectHandler::GetDebugDrawer()
+{
+	return m_debugDrawer;
 }

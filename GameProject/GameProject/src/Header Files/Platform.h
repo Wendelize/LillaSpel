@@ -18,6 +18,7 @@ private:
 	btRigidBody* m_body;
 	btCollisionShape* m_platformShape;
 	btTransform* m_btTransform;
+	btDefaultMotionState* m_motionState;
 public:
 	Platform();
 	~Platform();

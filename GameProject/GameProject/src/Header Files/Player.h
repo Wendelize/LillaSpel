@@ -20,6 +20,7 @@ private:
 	btCollisionShape* m_carShape;
 	btRigidBody* m_body;
 	btTransform* m_btTransform;
+	btDefaultMotionState* m_motionState;
 	vec3 m_currentPos;
 public:
 	Player(vec3 pos);

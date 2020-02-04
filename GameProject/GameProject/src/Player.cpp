@@ -28,8 +28,8 @@ Player::Player(vec3 pos)
 		m_carShape->calculateLocalInertia(mass, localInertia);
 
 	//using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
-	btDefaultMotionState* myMotionState = new btDefaultMotionState(*m_btTransform);
-	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, m_carShape, localInertia);
+	m_motionState = new btDefaultMotionState(*m_btTransform);
+	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, m_motionState, m_carShape, localInertia);
 	m_body = new btRigidBody(rbInfo);
 	
 	m_currentPos = pos;
@@ -39,6 +39,8 @@ Player::~Player()
 {
 	delete m_controller;
 	delete m_transform;
+	delete m_btTransform;
+	delete m_carShape;
 }
 
 void Player::Update(float dt, vec3 newPos)
