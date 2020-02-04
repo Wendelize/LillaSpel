@@ -65,7 +65,7 @@ void Mesh::SetTexture(Shader shader)
 
 void Mesh::SetMaterial(Shader* shader)
 {	// 4 since material struct has 4 variables we want to get to shader
-	for (unsigned int i = 0; i < 3; i++)
+	for (unsigned int i = 0; i < 4; i++)
 	{
 		string name = "";
 		if (i == 0)
@@ -82,6 +82,11 @@ void Mesh::SetMaterial(Shader* shader)
 		{
 			name = "ambient";
 			shader->SetUniform(("u_Material." + name).c_str(), m_materials.back().Ambient);
+		}
+		else
+		{
+			name = "shininess";
+			shader->SetUniform(("u_Material." + name).c_str(), m_materials.back().Shininess);
 		}
 
 		

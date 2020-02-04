@@ -37,7 +37,7 @@ uniform Material u_Material;
 
 // DIFFUSE
 vec3 CalcDiffuse(Light light, vec3 lightVec, vec3 n){
-	float diff = max(dot(lightVec, n), 0.0);
+	float diff = max(dot(n, lightVec), 0.0);
 	vec3 diffuse = diff * light.color * light.diffuse;
 
 	return diffuse;
@@ -56,7 +56,7 @@ vec3 CalcSpecular(Light light, vec3 lightVec, vec3 lookVec, vec3 n, bool blinn){
 	// PHONG
 	else if (!blinn) {
 		vec3 reflectionVec = reflect(-lightVec, n);
-		spec = pow(max(dot(lookVec, reflectionVec), 0.0), 10.0);
+		spec = pow(max(dot(lookVec, reflectionVec), 0.0), u_Material.shininess);
 	}
 
 	vec3 specular = vec3(light.specular) * spec;
@@ -103,13 +103,12 @@ vec3 CalcPointLight(Light light, vec3 p, vec3 n, vec3 eye, bool blinn){
 }
 
 
-// SPOTLIGHT
+// SPOTLIGHT pls do not use 
 vec3 CalcSpotLight(Light light, vec3 p, vec3 n, vec3 eye, bool blinn){
 	vec3 lightVec = normalize(light.pos - p);
     float theta = dot(lightVec, normalize(-light.dir)); 
     vec3 lookVec = normalize(eye - p);
 
-    if(theta > light.cutOff) {
         vec3 ambient = light.ambient * light.color * u_Material.ambient * vi.color;
 
         vec3 diffuse = CalcDiffuse(light, lightVec, n) * u_Material.diffuse * vi.color;
@@ -128,37 +127,32 @@ vec3 CalcSpotLight(Light light, vec3 p, vec3 n, vec3 eye, bool blinn){
         specular *= attenuation * intensity;
 
         return (ambient + diffuse + specular) * light.color;
-    }
-    else {
-        return (light.ambient * light.color);
-    }
+  
 }
-
-// SPOTLIGHTv2
-vec3 CalcSpotLightV2(Light light, vec3 p, vec3 n, vec3 eye, bool blinn){
-	vec3 lightVec = normalize(light.pos - p);
-    vec3 lookVec = normalize(eye - p);
-	vec3 ambient = light.ambient * light.color * u_Material.ambient * vi.color;
-
-    vec3 diffuse = CalcDiffuse(light, lightVec, n) * u_Material.diffuse * vi.color;
-
-    vec3 specular = CalcSpecular(light, lightVec, lookVec, n, blinn) * u_Material.specular;
-
-    float distance = length(light.pos - p);
+// SPOTLIGHT pls do not use 
+vec3 CalcSpotLightV3(Light light, vec3 normal, vec3 fragPos, vec3 viewDir, bool blinn)
+{
+    vec3 lightDir = normalize(light.pos - fragPos);
+    // diffuse shading
+    float diff = max(dot(normal, lightDir), 0.0);
+    // specular shading
+    vec3 reflectDir = reflect(-lightDir, normal);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), u_Material.shininess);
+    // attenuation
+    float distance = length(light.pos - fragPos);
     float attenuation = 1.0 / (1.0 + 0.09 * distance + 0.032 * (distance * distance));    
-    
     // spotlight intensity
-        
-    float theta = dot(lightVec, normalize(-light.dir)); 
+    float theta = dot(lightDir, normalize(-light.dir)); 
     float epsilon = light.cutOff - light.outerCutOff;
     float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0);
-
+    // combine results
+    vec3 ambient = light.ambient * light.color * u_Material.ambient * vi.color;
+    vec3 diffuse = /*light.diffuse*/ CalcDiffuse(light, lightDir, normal) * u_Material.diffuse * vi.color;
+    vec3 specular = light.specular/*CalcSpecular(light, lightDir, viewDir, normal, false)*/  * spec * u_Material.specular;
     ambient *= attenuation * intensity;
     diffuse *= attenuation * intensity;
     specular *= attenuation * intensity;
-
     return (ambient + diffuse + specular) * light.color;
-      
 }
 
 
@@ -173,10 +167,10 @@ void main(){
 			result += CalcDirLight(u_Lights[i], vi.position, vi.normal, u_ViewPos, false);
 		} else if (u_Lights[i].type == 1) {
 			result += CalcPointLight(u_Lights[i], vi.position, vi.normal, u_ViewPos, blinn);
-		} else if (u_Lights[i].type == 2) {
-			//result += CalcSpotLight2(u_Lights[i], vi.normal, vi.position, look);
-			result += CalcSpotLight(u_Lights[i], vi.position, vi.normal, u_ViewPos, false);
-		}
+		} //else if (u_Lights[i].type == 2) {
+			//result += CalcSpotLight(u_Lights[i], vi.position, vi.normal, u_ViewPos, blinn);
+            //result += CalcSpotLightV3(u_Lights[i], vi.normal, vi.position, look, blinn);
+		//}
 	}
     
 	fragmentColor = vec4(result , 1.0f);
