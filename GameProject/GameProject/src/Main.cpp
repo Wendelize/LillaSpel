@@ -185,6 +185,7 @@ int main(void)
 		GAME->Update(_deltaTime);
 		GAME->Render();
 	}
+	
 
 	glfwTerminate();
 	
