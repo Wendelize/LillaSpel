@@ -6,18 +6,13 @@ Game::Game()
 	m_scene = new Scene();
 	m_scene->Init();
 	m_time = 0;
-	m_objectHandler->AddPlayer(vec3(0, 0, 0), 0, 0, vec3(0, 0, 1));
-	m_objectHandler->AddPlayer(vec3(1, 0, 0), 2, 0, vec3(1, 0, 0));
-	/*
-	for (int i = 0; i < 10; i++)
-	{
 
-		for (int j = 0; j < 10; j++)
-		{
-			m_objectHandler->AddPlayer(vec3(i, 0, j), 0, 0, vec3(i, j, j));
-		}
-	}
-	*/
+	m_objectHandler->AddPlayer(vec3(2, 0, 5), 0, 0, vec3(1, 2 ,0));
+	m_objectHandler->AddPlayer(vec3(2, 0, 0), 1, 0, vec3(0, 1, 0));
+	m_objectHandler->AddPlayer(vec3(-2, 0, 0), 2, 0, vec3(0, 0, 1));
+	m_objectHandler->AddPlayer(vec3(-2, 0, 5), 3, 0, vec3(1, 0, 1.5));
+	
+
 	m_objectHandler->AddPlatform(0);
 }
 
