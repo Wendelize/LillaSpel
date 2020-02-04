@@ -12,6 +12,13 @@ struct TextureData {
 	string type;
 };
 
+struct Material {
+	vec3 Diffuse;
+	vec3 Specular;
+	vec3 Ambient;
+	float Shininess;
+};
+
 class Mesh
 {
 private:

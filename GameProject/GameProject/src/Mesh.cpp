@@ -22,10 +22,10 @@ void Mesh::SetUpMesh()
 	glEnableVertexAttribArray(2);
 	glEnableVertexAttribArray(3);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(vertexData), 0);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(vertexData), BUFFER_OFFSET(sizeof(float) * 3));
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(vertexData), BUFFER_OFFSET(sizeof(float) * 6));
-	glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(vertexData), BUFFER_OFFSET(sizeof(float) * 9));
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(vertexData), (void*)0);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(vertexData), (void*)offsetof(VertexData, normal));// BUFFER_OFFSET(sizeof(float) * 3));
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(vertexData), (void*)offsetof(VertexData, uv));// BUFFER_OFFSET(sizeof(float) * 6));
+	glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(vertexData), (void*)offsetof(VertexData, color));// BUFFER_OFFSET(sizeof(float) * 9));
 
 	glBindVertexArray(0);
 }
@@ -55,8 +55,6 @@ void Mesh::SetTexture(Shader shader)
 		string name = m_textures[i].type;
 		if (name == "texture_diffuse")
 			number = std::to_string(_diffuseNr++);
-		else if (name == "texture_specular")
-			number = std::to_string(_specularNr++);
 
 		//shader.SetInt(("material." + name + number).c_str(), i);
 		glBindTexture(GL_TEXTURE_2D, m_textures[i].id);
