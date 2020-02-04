@@ -7,6 +7,7 @@
 #include "assimp/scene.h"
 #include "assimp/postprocess.h"
 #include "assimp/Importer.hpp"
+#include "btBulletDynamicsCommon.h"
 #define STB_IMAGE_IMPLEMENTATION
 
 
@@ -16,6 +17,8 @@
 #include <string>
 #include <vector>
 #include <math.h>
+#include <cstdlib>
+#include <ctime>
 
 //MEMORY LEAK DETECTION
 #define _CRTDBG_MAP_ALLOC

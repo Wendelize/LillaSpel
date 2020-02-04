@@ -23,7 +23,10 @@ public:
 	void SetUniform(const GLchar * name, const vec2 & vector);
 	void SetUniform(const GLchar * name, const vec3 & vector);
 	void SetUniform(const GLchar * name, const mat4 & matrix);
-	//void SetUniform(const GLchar * name, )
 	void SetTexture2D(int id, const GLchar * name, GLuint texture);
-	void SetInt(const string& name, int value);
+	GLint GetUniform(const string& name);
+	void Uniform(const string& name, int value);
+	void Uniform(const string& name, float value);
+	void Uniform(const string& name, const vec3& value);
+
 };

@@ -8,19 +8,19 @@ ObjectHandler::ObjectHandler()
 
 ObjectHandler::~ObjectHandler()
 {
-	for (size_t i = 0; i < m_temp.size(); i++)
+	for (uint i = 0; i < m_temp.size(); i++)
 	{
 		delete m_temp.at(i);
 	}
 	m_temp.clear();
 
-	for (size_t i = 0; i < m_players.size(); i++)
+	for (uint i = 0; i < m_players.size(); i++)
 	{
 		delete m_players.at(i);
 	}
 	m_players.clear();
 
-	for (size_t i = 0; i < m_platforms.size(); i++)
+	for (uint i = 0; i < m_platforms.size(); i++)
 	{
 		delete m_platforms.at(i);
 	}
@@ -29,7 +29,7 @@ ObjectHandler::~ObjectHandler()
 
 void ObjectHandler::Update(float dt)
 {
-	for (size_t i = 0; i < m_players.size(); i++)
+	for (uint i = 0; i < m_players.size(); i++)
 	{
 		m_players[i]->Update(dt);
 	}
@@ -77,7 +77,7 @@ void ObjectHandler::RemovePowerUp()
 
 vector<ObjectInfo*> ObjectHandler::GetObjects()
 {
-	for (size_t i = 0; i < m_temp.size(); i++)
+	for (uint i = 0; i < m_temp.size(); i++)
 	{
 		delete m_temp.at(i);
 	}
