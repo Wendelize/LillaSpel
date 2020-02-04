@@ -1,4 +1,4 @@
-#include "Header Files/Scene.h"
+﻿#include "Header Files/Scene.h"
 
 Scene::Scene()
 {
@@ -166,6 +166,7 @@ void Scene::Render(vector<ObjectInfo*> objects)
 		ImGui::NewFrame();
 
 		ImGui::Begin("Debug");
+		ImGui::Text("FPS: %.0f", ImGui::GetIO().Framerate);
 		//ImGui::Text("FPS:	OVER 9000");
 		for (int i = 0; i < objects.size(); i++)
 		{
@@ -176,6 +177,8 @@ void Scene::Render(vector<ObjectInfo*> objects)
 				ImGui::Text("Player %i Position: x:%.2f , z:%.2F", i + 1, objects[i]->modelMatrix[3][0], objects[i]->modelMatrix[3][2]);
 			}
 		}
+		
+		//glfwSetWindowTitle(m_window->m_window, title);
 		ImGui::End();
 
 		// Rendering
