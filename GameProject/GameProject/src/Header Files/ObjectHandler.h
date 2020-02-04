@@ -9,13 +9,14 @@ private:
 	vector<Player*> m_players;
 	vector<Platform*> m_platforms;
 	//vector<PowerUp*> m_powerUps;
-	vector<ObjectInfo*> m_temp;
+	vector<ObjectInfo*> m_structs;
 public:
 	ObjectHandler();
 	~ObjectHandler();
 
 	void Update(float dt);
 	void AddPlayer(vec3 pos, int controllerID, int modelId, vec3 color);
+	void SetScale(int id, vec3 scale);
 	void RemovePlayer(int controllerID);
 	void AddPlatform(int modelId);
 	void RemovePlatform();

@@ -8,11 +8,11 @@ ObjectHandler::ObjectHandler()
 
 ObjectHandler::~ObjectHandler()
 {
-	for (uint i = 0; i < m_temp.size(); i++)
+	for (size_t i = 0; i < m_structs.size(); i++)
 	{
-		delete m_temp.at(i);
+		delete m_structs.at(i);
 	}
-	m_temp.clear();
+	m_structs.clear();
 
 	for (uint i = 0; i < m_players.size(); i++)
 	{
@@ -41,6 +41,11 @@ void ObjectHandler::AddPlayer(vec3 pos, int controllerID, int modelId, vec3 colo
 	m_players.back()->SetControllerID(controllerID);
 	m_players.back()->SetModelId(modelId);
 	m_players.back()->SetColor(color);
+}
+
+void ObjectHandler::SetScale(int id, vec3 scale)
+{
+	m_players.at(id)->SetScale(scale);
 }
 
 void ObjectHandler::RemovePlayer(int controllerID)
@@ -77,20 +82,20 @@ void ObjectHandler::RemovePowerUp()
 
 vector<ObjectInfo*> ObjectHandler::GetObjects()
 {
-	for (uint i = 0; i < m_temp.size(); i++)
+	for (size_t i = 0; i < m_structs.size(); i++)
 	{
-		delete m_temp.at(i);
+		delete m_structs.at(i);
 	}
-	m_temp.clear();
+	m_structs.clear();
 
 	for (uint i = 0; i < m_players.size(); i++)
 	{
-		m_temp.push_back(m_players[i]->GetObjectInfo());
+		m_structs.push_back(m_players[i]->GetObjectInfo());
 	}
 
 	for (uint i = 0; i < m_platforms.size(); i++)
 	{
-		m_temp.push_back(m_platforms[i]->GetObjectInfo());
+		m_structs.push_back(m_platforms[i]->GetObjectInfo());
 	}
 
 	//for (int i = 0; i < m_powerUps.size; i++)
@@ -98,5 +103,5 @@ vector<ObjectInfo*> ObjectHandler::GetObjects()
 	//	  temp.push_back(m_powerUps[i]->GetObject());
 	//}
 
-	return m_temp;
+	return m_structs;
 }

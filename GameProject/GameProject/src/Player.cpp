@@ -12,7 +12,7 @@ Player::Player(vec3 pos)
 	m_speed = 0.f;
 
 	m_transform->SetScale(0.5, 0.5, 0.5);
-
+	
 }
 
 Player::~Player()
@@ -49,7 +49,7 @@ void Player::Update(float dt)
 		{
 			//Reverse
 			if (m_speed < maxReverseSpeed)
-			m_speed -= -0.3f;
+			m_speed -= -0.4f;
 		}
 
 		//Triggers
@@ -90,7 +90,7 @@ void Player::Update(float dt)
 		
 	
 		if(m_speed != 0)
-		direction = m_transform->TranslateDirection(rotate*dt* rotationSpeed * m_speed);
+		direction = m_transform->TranslateDirection(rotate*dt* rotationSpeed * -m_speed);
 	}
 
 	//"Friction"
@@ -170,6 +170,11 @@ float Player::GetWeight()
 void Player::SetWeight(float weight)
 {
 	m_weight = weight;
+}
+
+void Player::SetScale(vec3 scale)
+{
+	m_transform->SetScale(scale.x, scale.y, scale.z);
 }
 
 int Player::GetControllerID()
