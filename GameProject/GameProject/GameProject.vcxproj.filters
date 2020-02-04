@@ -49,6 +49,9 @@
     <ClCompile Include="src\Skybox.cpp">
       <Filter>Src</Filter>
     </ClCompile>
+    <ClCompile Include="src\ShadowMap.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Header Files\Camera.h">
@@ -99,18 +102,27 @@
     <ClInclude Include="src\Header Files\Skybox.h">
       <Filter>Header</Filter>
     </ClInclude>
+    <ClInclude Include="src\Header Files\ShadowMap.h">
+      <Filter>Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Shaders\FragmentShader.glsl">
-      <Filter>Shader</Filter>
-    </None>
-    <None Include="src\Shaders\VertexShader.glsl">
       <Filter>Shader</Filter>
     </None>
     <None Include="src\Shaders\FragmentSkyboxShader.glsl">
       <Filter>Shader</Filter>
     </None>
     <None Include="src\Shaders\VertexSkyboxShader.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="src\Shaders\ShadowFS.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="src\Shaders\VertexShader.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="src\Shaders\ShadowVS.glsl">
       <Filter>Shader</Filter>
     </None>
   </ItemGroup>

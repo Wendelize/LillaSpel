@@ -41,6 +41,7 @@
 #include "Controller.h"
 #include "Light.h"
 #include "Skybox.h"
+#include "ShadowMap.h"
 
 //NAMESPACES
 using namespace std;
