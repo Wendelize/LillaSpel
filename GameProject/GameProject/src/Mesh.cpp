@@ -30,11 +30,12 @@ void Mesh::SetUpMesh()
 	glBindVertexArray(0);
 }
 
-Mesh::Mesh(vector<VertexData> vertices, vector<unsigned int> indices, vector<TextureData> textures)
+Mesh::Mesh(vector<VertexData> vertices, vector<unsigned int> indices, vector<TextureData> textures, vector<Material> materials)
 {
     m_vertices = vertices;
     m_indices = indices;
     m_textures = textures;
+	m_materials = materials;
 
     SetUpMesh();
 }
@@ -62,9 +63,35 @@ void Mesh::SetTexture(Shader shader)
 	glActiveTexture(GL_TEXTURE0);
 }
 
+void Mesh::SetMaterial(Shader* shader)
+{	// 4 since material struct has 4 variables we want to get to shader
+	for (unsigned int i = 0; i < 3; i++)
+	{
+		string name = "";
+		if (i == 0)
+		{
+			name = "diffuse";
+			shader->SetUniform(("u_Material." + name).c_str(), m_materials.back().Diffuse);
+		}
+		else if (i == 1)
+		{
+			name = "specular";
+			shader->SetUniform(("u_Material." + name).c_str(), m_materials.back().Specular);
+		}
+		else if (i == 2)
+		{
+			name = "ambient";
+			shader->SetUniform(("u_Material." + name).c_str(), m_materials.back().Ambient);
+		}
+
+		
+	}
+}
+
 void Mesh::Draw(Shader* shader)
 {
 	//SetTexture(shader);
+	SetMaterial(shader);
 	glBindVertexArray(m_vertexArray);
 	glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);

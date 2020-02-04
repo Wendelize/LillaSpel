@@ -20,12 +20,19 @@ struct Light{
     float cutOff, outerCutOff;
 };
 
+struct Material {
+	vec3 diffuse;
+	vec3 specular;
+	vec3 ambient;
+	float shininess;
+};
 
 // UNIFORMS
 uniform int u_NrOf;
 uniform vec3 u_ViewPos;
 uniform int u_LightType;
 uniform Light u_Lights[MAX_NR_OF_LIGHTS];
+uniform Material u_Material;
 
 
 // DIFFUSE
@@ -63,9 +70,9 @@ vec3 CalcDirLight(Light light, vec3 p, vec3 n, vec3 eye, bool blinn){
 	vec3 lightVec = normalize(-light.dir);
 	vec3 lookVec = normalize(eye - p);
 
-	vec3 ambient = light.ambient * light.color * vi.color;
+	vec3 ambient = light.ambient * light.color * u_Material.ambient * vi.color;
 
-	vec3 diffuse = CalcDiffuse(light, lightVec, n) * vi.color;
+	vec3 diffuse = CalcDiffuse(light, lightVec, n) * u_Material.diffuse * vi.color;
 
 	vec3 specular = CalcSpecular(light, lightVec, lookVec, n, blinn);
 
@@ -79,9 +86,9 @@ vec3 CalcPointLight(Light light, vec3 p, vec3 n, vec3 eye, bool blinn){
     vec3 lightVec = normalize(light.pos - p);
 	vec3 lookVec = normalize(eye - p);
 
-	vec3 ambient = light.ambient * light.color * vi.color;
+	vec3 ambient = light.ambient * light.color * u_Material.ambient * vi.color;
 
-	vec3 diffuse = CalcDiffuse(light, lightVec, n) * vi.color;
+	vec3 diffuse = CalcDiffuse(light, lightVec, n) * u_Material.diffuse * vi.color;
 
     vec3 specular = CalcSpecular(light, lightVec, lookVec, n, blinn);
 
@@ -137,10 +144,10 @@ void main(){
 		if(u_Lights[i].type == 0) {
 			result += CalcDirLight(u_Lights[i], vi.position, vi.normal, u_ViewPos, false);
 		} else if (u_Lights[i].type == 1) {
-			result += CalcPointLight(u_Lights[i], vi.position, vi.normal, u_ViewPos, blinn);
+			//result += CalcPointLight(u_Lights[i], vi.position, vi.normal, u_ViewPos, blinn);
 		} else if (u_Lights[i].type == 2) {
 			//result += CalcSpotLight2(u_Lights[i], vi.normal, vi.position, look);
-			result += CalcSpotLight(u_Lights[i], vi.position, vi.normal, u_ViewPos, false);
+			//result += CalcSpotLight(u_Lights[i], vi.position, vi.normal, u_ViewPos, false);
 		}
 	}
     

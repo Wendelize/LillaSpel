@@ -48,7 +48,7 @@ void Scene::Init()
 	m_modelMatrix = mat4(1.0);
 
 	// Veichles
-	m_vehicles.push_back(new Model("src/Models/Low-Poly-Racing-Car.obj"));
+	m_vehicles.push_back(new Model("src/Models/Low-Poly-Racing-Car-Grey.obj"));
 	m_vehicles.push_back(new Model("src/Models/ape.obj"));
 	m_vehicles.push_back(new Model("src/Models/CAT.obj"));
 
@@ -58,7 +58,7 @@ void Scene::Init()
 	// Powers
 
 	// Lights
-	AddDirLight({ 0,-1,0 }, {0,0,1});
+	AddDirLight({ 0,-1,0 }, {1,1,1});
 	AddPointLight({ 2,2,2 }, {0.6, 0, 0.9});
 	AddPointLight({ -2,2,-2 }, {1, 0.8, 0});
 
