@@ -43,6 +43,11 @@ void ObjectHandler::AddPlayer(vec3 pos, int controllerID, int modelId, vec3 colo
 	m_players.back()->SetColor(color);
 }
 
+void ObjectHandler::SetScale(int id, vec3 scale)
+{
+	m_players.at(id)->SetScale(scale);
+}
+
 void ObjectHandler::RemovePlayer(int controllerID)
 {
 	for (uint i = 0; i < m_players.size(); i++)

@@ -32,6 +32,7 @@ public:
 	void SetColor(vec3 color);
 	float GetWeight();
 	void SetWeight(float weight);
+	void SetScale(vec3 scale);
 	int GetControllerID();
 	void SetControllerID(int id);
 	ObjectInfo* GetObjectInfo();

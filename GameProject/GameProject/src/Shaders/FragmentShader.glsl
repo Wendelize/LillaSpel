@@ -74,7 +74,7 @@ vec3 CalcDirLight(Light light, vec3 p, vec3 n, vec3 eye, bool blinn){
 
 	vec3 diffuse = CalcDiffuse(light, lightVec, n) * u_Material.diffuse * vi.color;
 
-	vec3 specular = CalcSpecular(light, lightVec, lookVec, n, blinn);
+	vec3 specular = CalcSpecular(light, lightVec, lookVec, n, blinn) * u_Material.specular;
 
 
 	return (ambient + diffuse + specular) * light.color;
@@ -90,7 +90,7 @@ vec3 CalcPointLight(Light light, vec3 p, vec3 n, vec3 eye, bool blinn){
 
 	vec3 diffuse = CalcDiffuse(light, lightVec, n) * u_Material.diffuse * vi.color;
 
-    vec3 specular = CalcSpecular(light, lightVec, lookVec, n, blinn);
+    vec3 specular = CalcSpecular(light, lightVec, lookVec, n, blinn) * u_Material.specular;
 
     float distance = length(light.pos - p);
     float attenuation = 1.0 / (1.0 + 0.09 * distance + 0.032 * (distance * distance));    
@@ -106,15 +106,15 @@ vec3 CalcPointLight(Light light, vec3 p, vec3 n, vec3 eye, bool blinn){
 // SPOTLIGHT
 vec3 CalcSpotLight(Light light, vec3 p, vec3 n, vec3 eye, bool blinn){
 	vec3 lightVec = normalize(light.pos - p);
-    float theta = dot(lightVec, normalize(light.dir)); 
+    float theta = dot(lightVec, normalize(-light.dir)); 
     vec3 lookVec = normalize(eye - p);
 
     if(theta > light.cutOff) {
-        vec3 ambient = light.ambient * light.color * vi.color;
+        vec3 ambient = light.ambient * light.color * u_Material.ambient * vi.color;
 
-        vec3 diffuse = CalcDiffuse(light, lightVec, n) * vi.color;
+        vec3 diffuse = CalcDiffuse(light, lightVec, n) * u_Material.diffuse * vi.color;
 
-        vec3 specular = CalcSpecular(light, lightVec, lookVec, n, blinn);
+        vec3 specular = CalcSpecular(light, lightVec, lookVec, n, blinn) * u_Material.specular;
 
         float distance = length(light.pos - p);
         float attenuation = 1.0 / (1.0 + 0.09 * distance + 0.032 * (distance * distance));    
@@ -127,12 +127,40 @@ vec3 CalcSpotLight(Light light, vec3 p, vec3 n, vec3 eye, bool blinn){
         diffuse *= attenuation * intensity;
         specular *= attenuation * intensity;
 
-        return (ambient + diffuse + specular);
+        return (ambient + diffuse + specular) * light.color;
     }
     else {
         return (light.ambient * light.color);
     }
 }
+
+// SPOTLIGHTv2
+vec3 CalcSpotLightV2(Light light, vec3 p, vec3 n, vec3 eye, bool blinn){
+	vec3 lightVec = normalize(light.pos - p);
+    vec3 lookVec = normalize(eye - p);
+	vec3 ambient = light.ambient * light.color * u_Material.ambient * vi.color;
+
+    vec3 diffuse = CalcDiffuse(light, lightVec, n) * u_Material.diffuse * vi.color;
+
+    vec3 specular = CalcSpecular(light, lightVec, lookVec, n, blinn) * u_Material.specular;
+
+    float distance = length(light.pos - p);
+    float attenuation = 1.0 / (1.0 + 0.09 * distance + 0.032 * (distance * distance));    
+    
+    // spotlight intensity
+        
+    float theta = dot(lightVec, normalize(-light.dir)); 
+    float epsilon = light.cutOff - light.outerCutOff;
+    float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0);
+
+    ambient *= attenuation * intensity;
+    diffuse *= attenuation * intensity;
+    specular *= attenuation * intensity;
+
+    return (ambient + diffuse + specular) * light.color;
+      
+}
+
 
 void main(){
 	vec3 result = vec3(0.0);
@@ -144,10 +172,10 @@ void main(){
 		if(u_Lights[i].type == 0) {
 			result += CalcDirLight(u_Lights[i], vi.position, vi.normal, u_ViewPos, false);
 		} else if (u_Lights[i].type == 1) {
-			//result += CalcPointLight(u_Lights[i], vi.position, vi.normal, u_ViewPos, blinn);
+			result += CalcPointLight(u_Lights[i], vi.position, vi.normal, u_ViewPos, blinn);
 		} else if (u_Lights[i].type == 2) {
 			//result += CalcSpotLight2(u_Lights[i], vi.normal, vi.position, look);
-			//result += CalcSpotLight(u_Lights[i], vi.position, vi.normal, u_ViewPos, false);
+			result += CalcSpotLight(u_Lights[i], vi.position, vi.normal, u_ViewPos, false);
 		}
 	}
     
