@@ -28,7 +28,6 @@ void Transform::calculateMatrix()
 		rotate(mat4(1.0f), m_rotation.z, vec3(0.f, 0.f, 1.f));
 
 	m_modelMatrix = translationMatrix * rotationMatrix * scaleMatrix;
-
 }
 
 void Transform::Translate(vec3 vec)
@@ -58,18 +57,16 @@ void Transform::Scale(float x, float y, float z)
 vec3 Transform::TranslateDirection(vec3 vec)
 {
 	Rotate(vec);
-	mat4 m_transformMatrix = mat4(1.0f);
 
-	m_transformMatrix = translate(m_transformMatrix, m_position);
-	m_transformMatrix = rotate(m_transformMatrix, m_rotation.x, vec3(1.f, 0.f, 0.f));
-	m_transformMatrix = rotate(m_transformMatrix, m_rotation.y, vec3(0.f, 1.f, 0.f));
-	m_transformMatrix = rotate(m_transformMatrix, m_rotation.z, vec3(0.f, 0.f, 1.f));
-	m_transformMatrix = scale(m_transformMatrix, m_scale);
+	mat4 transformMatrix = mat4(1.0f);
+	transformMatrix = translate(transformMatrix, m_position);
+	transformMatrix = rotate(transformMatrix, m_rotation.x, vec3(1.f, 0.f, 0.f));
+	transformMatrix = rotate(transformMatrix, m_rotation.y, vec3(0.f, 1.f, 0.f));
+	transformMatrix = rotate(transformMatrix, m_rotation.z, vec3(0.f, 0.f, 1.f));
+	transformMatrix = scale(transformMatrix, m_scale);
 	
-	
-	m_forward = vec3( m_transformMatrix * vec4(0,0,1,0));
+	m_forward = vec3( transformMatrix * vec4(0,0,1,0));
 	return m_forward;
-
 }
 
 void Transform::SetTranslation(vec3 vec)
