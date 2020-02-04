@@ -36,31 +36,32 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
     vector<VertexData> _vertices;
     vector<unsigned int> _indices;
     vector<TextureData> _textures;
+    vector<Material> _materials;
 
     for (unsigned int i = 0; i < mesh->mNumVertices; i++)
     {
         VertexData _vertex;
         // Positions
-        vec3 vector;
-        vector.x = mesh->mVertices[i].x;
-        vector.y = mesh->mVertices[i].y;
-        vector.z = mesh->mVertices[i].z;
-        _vertex.pos = vector;
+        vec3 _vector;
+        _vector.x = mesh->mVertices[i].x;
+        _vector.y = mesh->mVertices[i].y;
+        _vector.z = mesh->mVertices[i].z;
+        _vertex.pos = _vector;
         // Normals
-        vector.x = mesh->mNormals[i].x;
-        vector.y = mesh->mNormals[i].y;
-        vector.z = mesh->mNormals[i].z;
-        _vertex.normal = vector;
+        _vector.x = mesh->mNormals[i].x;
+        _vector.y = mesh->mNormals[i].y;
+        _vector.z = mesh->mNormals[i].z;
+        _vertex.normal = _vector;
         // COLOR
         _vertex.color = vec3(1, 0, 0);
 
         // UV-coords
         if (mesh->mTextureCoords[0]) // does the mesh contain texture coordinates?
         {
-            vec2 vec;
-            vec.x = mesh->mTextureCoords[0][i].x;
-            vec.y = mesh->mTextureCoords[0][i].y;
-            _vertex.uv = vec;
+            vec2 _vec;
+            _vec.x = mesh->mTextureCoords[0][i].x;
+            _vec.y = mesh->mTextureCoords[0][i].y;
+            _vertex.uv = _vec;
         }
         else
             _vertex.uv = glm::vec2(0.0f, 0.0f);
@@ -79,10 +80,12 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
     // process material
     if (mesh->mMaterialIndex >= 0)
     {
-        //TODO : Textures? Only one. 
+        aiMaterial* _material = scene->mMaterials[mesh->mMaterialIndex];
+        _materials.push_back(loadMaterial(_material));
+
     }
 
-    return Mesh(_vertices, _indices, _textures);
+    return Mesh(_vertices, _indices, _textures, _materials);
 }
 
 vector<TextureData> Model::LoadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName)
@@ -90,6 +93,27 @@ vector<TextureData> Model::LoadMaterialTextures(aiMaterial* mat, aiTextureType t
     //TODO : TEXTURE!
     vector<TextureData> _tex;
     return _tex;
+}
+
+
+Material Model::loadMaterial(aiMaterial* mat) {
+    Material _material;
+    aiColor3D _color(0.f, 0.f, 0.f);
+    float _shininess;
+
+    mat->Get(AI_MATKEY_COLOR_DIFFUSE, _color);
+    _material.Diffuse = glm::vec3(_color.r, _color.b, _color.g);
+
+    mat->Get(AI_MATKEY_COLOR_AMBIENT, _color);
+    _material.Ambient = glm::vec3(_color.r, _color.b, _color.g);
+
+    mat->Get(AI_MATKEY_COLOR_SPECULAR, _color);
+    _material.Specular = glm::vec3(_color.r, _color.b, _color.g);
+
+    mat->Get(AI_MATKEY_SHININESS, _shininess);
+    _material.Shininess = _shininess;
+
+    return _material;
 }
 
 Model::Model(const char* path)
