@@ -11,6 +11,8 @@ private:
 	Camera * m_camera;
 	Skybox * m_skybox;
 
+	bool m_debug = true;
+
 	mat4 m_projMatrix,
 		m_viewMatrix,
 		m_modelMatrix;

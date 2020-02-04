@@ -10,8 +10,14 @@
 #include "btBulletDynamicsCommon.h"
 #define STB_IMAGE_IMPLEMENTATION
 
+//IMGUI
+#include "../IMGUI/imgui.h"
+#include "../IMGUI/imgui_impl_opengl3.h"
+#include "../IMGUI/imgui_impl_glfw.h"
+
 
 //INCLUDES C++
+#include <windows.h>
 #include <iostream>
 #include <fstream>
 #include <string>
