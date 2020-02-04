@@ -8,11 +8,11 @@ ObjectHandler::ObjectHandler()
 
 ObjectHandler::~ObjectHandler()
 {
-	for (size_t i = 0; i < m_temp.size(); i++)
+	for (size_t i = 0; i < m_structs.size(); i++)
 	{
-		delete m_temp.at(i);
+		delete m_structs.at(i);
 	}
-	m_temp.clear();
+	m_structs.clear();
 
 	for (size_t i = 0; i < m_players.size(); i++)
 	{
@@ -77,20 +77,20 @@ void ObjectHandler::RemovePowerUp()
 
 vector<ObjectInfo*> ObjectHandler::GetObjects()
 {
-	for (size_t i = 0; i < m_temp.size(); i++)
+	for (size_t i = 0; i < m_structs.size(); i++)
 	{
-		delete m_temp.at(i);
+		delete m_structs.at(i);
 	}
-	m_temp.clear();
+	m_structs.clear();
 
 	for (uint i = 0; i < m_players.size(); i++)
 	{
-		m_temp.push_back(m_players[i]->GetObjectInfo());
+		m_structs.push_back(m_players[i]->GetObjectInfo());
 	}
 
 	for (uint i = 0; i < m_platforms.size(); i++)
 	{
-		m_temp.push_back(m_platforms[i]->GetObjectInfo());
+		m_structs.push_back(m_platforms[i]->GetObjectInfo());
 	}
 
 	//for (int i = 0; i < m_powerUps.size; i++)
@@ -98,5 +98,5 @@ vector<ObjectInfo*> ObjectHandler::GetObjects()
 	//	  temp.push_back(m_powerUps[i]->GetObject());
 	//}
 
-	return m_temp;
+	return m_structs;
 }

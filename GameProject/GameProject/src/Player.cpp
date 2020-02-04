@@ -12,7 +12,6 @@ Player::Player(vec3 pos)
 	m_speed = 0.f;
 
 	m_transform->SetScale(0.5, 0.5, 0.5);
-
 }
 
 Player::~Player()
