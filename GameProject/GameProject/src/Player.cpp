@@ -48,7 +48,7 @@ void Player::Update(float dt)
 		{
 			//Reverse
 			if (m_speed < maxReverseSpeed)
-			m_speed -= -0.3f;
+			m_speed -= -0.4f;
 		}
 
 		//Triggers
@@ -89,7 +89,7 @@ void Player::Update(float dt)
 		
 	
 		if(m_speed != 0)
-		direction = m_transform->TranslateDirection(rotate*dt* rotationSpeed * m_speed);
+		direction = m_transform->TranslateDirection(rotate*dt* rotationSpeed * -m_speed);
 	}
 
 	//"Friction"
