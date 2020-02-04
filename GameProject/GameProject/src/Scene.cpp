@@ -180,3 +180,29 @@ void Scene::AddSpotLight(vec3 pos, vec3 dir, vec3 color, float cutOff)
 	Light _temp = Light(2, dir, pos, color, cutOff);
 	m_lights.push_back(_temp);
 }
+
+void Scene::CameraFollowCar(ObjectInfo * object)
+{
+	//mat4 Matrix = object->modelMatrix;
+	//glGetFloatv(m_modelMatrix, Matrix); //inverse(m_modelMatrix);
+	vec3 modelTrans;
+	
+	modelTrans.x = object->modelMatrix[3][0];
+	modelTrans.y = -object->modelMatrix[3][1];
+	modelTrans.z = object->modelMatrix[3][2];
+
+	//cout << "CarPos - X:" << modelTrans.x << " Y: "<<  modelTrans.y << " Z: " << modelTrans.z << endl;
+	m_camera->ChangeDir(modelTrans);
+
+	modelTrans.x += 5;
+	modelTrans.y = 12;
+	modelTrans.z += 5;
+	m_camera->ChangePos(modelTrans);
+	
+	m_camera->UpdateMovement(0,0); // Remove dt and speed as inparameters, not used?
+	//vec3 cameraPos = m_camera->GetPos();
+	//cout << "CarPos - X:" << cameraPos.x  << " Y: " << cameraPos.y << " Z: " << cameraPos.z << endl;
+
+
+	
+}

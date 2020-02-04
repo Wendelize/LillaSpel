@@ -90,7 +90,7 @@ void Player::Update(float dt)
 		
 	
 		if(m_speed != 0)
-		direction = m_transform->TranslateDirection(rotate*dt* rotationSpeed * m_speed);
+		direction = m_transform->TranslateDirection(rotate*dt* rotationSpeed * (-m_speed));
 	}
 
 	//"Friction"

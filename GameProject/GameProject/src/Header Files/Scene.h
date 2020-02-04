@@ -35,4 +35,5 @@ public:
 	void AddPointLight(vec3 pos = { 2,2,2 }, vec3 color = { 1,0,0 });
 	void AddDirLight(vec3 dir = { 0,-1,0 }, vec3 color = { 0,1,0 });
 	void AddSpotLight(vec3 pos = { 0,10,0 }, vec3 dir = { 0,-1,0 }, vec3 color = {0,0,1}, float cutOff = 12.0);
+	void CameraFollowCar(ObjectInfo* objects);
 };

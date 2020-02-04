@@ -28,6 +28,9 @@ void Game::Update(float dt)
 
 	m_objectHandler->Update(dt);
 
+	
+	ObjectInfo* player = m_objectHandler->GetObjects().front();
+	//m_scene->CameraFollowCar(player);
 	Render();
 }
 
