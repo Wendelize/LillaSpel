@@ -33,6 +33,10 @@ Scene::~Scene()
 	}
 	m_power.clear();
 
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	//ImGui::DestroyContext(); Causing breakpoint -> Might cause memory leaks if this one is removed. -> doesn't look like it :D
+
 	delete m_modelShader;
 	delete m_skyboxShader;
 	delete m_camera;
@@ -46,6 +50,10 @@ void Scene::Init()
 	m_projMatrix = perspective(radians(45.0f), (float)m_window->GetWidht() / (float)m_window->GetHeight(), 0.1f, 100.0f);
 	m_viewMatrix = m_camera->GetView();
 	m_modelMatrix = mat4(1.0);
+
+	/*ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplGlfw_NewFrame();
+	ImGui::NewFrame();*/
 
 	// Veichles
 	m_vehicles.push_back(new Model("src/Models/Low-Poly-Racing-Car-Grey.obj"));
@@ -148,11 +156,37 @@ void Scene::Render(vector<ObjectInfo*> objects)
 	m_skyboxShader->SetUniform("u_Projection", m_projMatrix);
 	m_skybox->DrawSkybox(m_skyboxShader);
 
-	/* Swap front and back buffers */
-	glfwSwapBuffers(m_window->m_window);
-
 	/* Poll for and process events */
 	glfwPollEvents();
+
+	if (GetAsyncKeyState(VK_LCONTROL) & 0x8000)
+	{
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
+
+		ImGui::Begin("Debug");
+		//ImGui::Text("FPS:	OVER 9000");
+		for (int i = 0; i < objects.size(); i++)
+		{
+			if (objects[i]->typeId == 0)
+			{
+				char* temp;
+				//sprintf(temp, "%.0f", objects[i]->modelMatrix[0][3]);
+				ImGui::Text("Player %i Position: x:%.2f , z:%.2F", i + 1, objects[i]->modelMatrix[3][0], objects[i]->modelMatrix[3][2]);
+			}
+		}
+		ImGui::End();
+
+		// Rendering
+		ImGui::Render();
+		int display_w, display_h;
+		glfwGetFramebufferSize(m_window->m_window, &display_w, &display_h);
+		glViewport(0, 0, display_w, display_h);
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+	}
+
+	glfwSwapBuffers(m_window->m_window);
 }
 
 void Scene::SetWindowSize(int width, int height)
