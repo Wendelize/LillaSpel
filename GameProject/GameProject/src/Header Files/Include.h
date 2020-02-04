@@ -10,8 +10,14 @@
 #include "btBulletDynamicsCommon.h"
 #define STB_IMAGE_IMPLEMENTATION
 
+//IMGUI
+#include "../IMGUI/imgui.h"
+#include "../IMGUI/imgui_impl_opengl3.h"
+#include "../IMGUI/imgui_impl_glfw.h"
+
 
 //INCLUDES C++
+#include <windows.h>
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -25,11 +31,11 @@
 #include <stdlib.h>
 #include <crtdbg.h>
 
-#ifdef _DEBUG
-#define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
-#else
-#define new new
-#endif
+//#ifdef _DEBUG
+//#define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
+//#else
+//#define new new
+//#endif
 
 //CLASSES
 #include "Window.h"

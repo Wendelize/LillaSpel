@@ -2,7 +2,6 @@
 #include "Header Files/Transform.h"
 #include "Header Files/Game.h"
 #include "Header Files/Scene.h"
-#include "Header Files/Transform.h"
 
 Game* GAME;
 Transform* tran;
@@ -10,6 +9,7 @@ Transform* tran;
 
 int main(void)
 {
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	/*
 	///-----includes_end-----
 
@@ -171,20 +171,26 @@ int main(void)
 	*/
 	
 	
-	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	
 	GAME = new Game();
 	delete tran;
 
 	float _deltaTime = 0.0, _curTime = 0.0, _lastTime = 0.0;
 	GLFWwindow* wndw = GAME->GetWindow();
+
 	while (!glfwWindowShouldClose(wndw))
 	{	
 		_curTime = (float)glfwGetTime();
 		_deltaTime = _curTime - _lastTime;
 		_lastTime = _curTime;
+
 		GAME->Update(_deltaTime);
 		GAME->Render();
 	}
+	
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
 
 	glfwTerminate();
 	
