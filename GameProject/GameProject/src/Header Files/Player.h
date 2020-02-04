@@ -16,6 +16,9 @@ private:
 	Transform* m_transform;
 	ObjectInfo* m_info;
 
+	//Variables 4 Fysik
+	btCollisionShape* m_carShape;
+
 public:
 	Player(vec3 pos);
 	~Player();

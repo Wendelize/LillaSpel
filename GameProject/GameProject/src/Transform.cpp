@@ -18,6 +18,15 @@ Transform::~Transform()
 {
 }
 
+mat4 Transform::GetPhysicsMatrix(btMatrix3x3 matrix)
+{
+
+	vec3 temp1 = vec3(matrix.getColumn(0).x(), matrix.getColumn(0).y(), matrix.getColumn(0).z());
+	vec3 temp2 = vec3(matrix.getColumn(1).x(), matrix.getColumn(1).y(), matrix.getColumn(1).z());
+	vec3 temp3 = vec3(matrix.getColumn(2).x(), matrix.getColumn(2).y(), matrix.getColumn(2).z());
+	return mat4(mat3(temp1, temp2, temp3));
+}
+
 void Transform::calculateMatrix()
 {
 

@@ -3,6 +3,14 @@
 
 ObjectHandler::ObjectHandler()
 {
+	m_broadphase = new btDbvtBroadphase();
+	m_collisionConfiguration = new btDefaultCollisionConfiguration();
+	m_dispatcher = new btCollisionDispatcher(m_collisionConfiguration);	// btConstraintSolver* m_solver; Kanske använda denna istället.
+	m_solver = new btSequentialImpulseConstraintSolver;
+	m_dynamicsWorld = new btDiscreteDynamicsWorld(m_dispatcher, m_broadphase, m_solver, m_collisionConfiguration);
+
+	m_dynamicsWorld->setGravity(btVector3(0, -9.82f, 0));
+	//m_dynamicsWorld->setInternalTickCallback(myTickCallback); Kanske använd update function istället. Callbackar collision check function  https://gamedev.stackexchange.com/questions/22442/how-get-collision-callback-of-two-specific-objects-using-bullet-physics/120881#120881
 
 }
 
@@ -33,6 +41,8 @@ void ObjectHandler::Update(float dt)
 	{
 		m_players[i]->Update(dt);
 	}
+
+	//Check collison && Act if detected.
 }
 
 void ObjectHandler::AddPlayer(vec3 pos, int controllerID, int modelId, vec3 color)
@@ -58,6 +68,9 @@ void ObjectHandler::AddPlatform(int modelId)
 {
 	m_platforms.push_back(new Platform);
 	m_platforms.back()->SetModelId(modelId);
+
+	m_dynamicsWorld->addRigidBody(m_platforms.back()->getBody());
+
 }
 
 void ObjectHandler::RemovePlatform()

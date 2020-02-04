@@ -15,7 +15,7 @@ private:
 public:
 	Transform();
 	~Transform();
-
+	mat4 GetPhysicsMatrix(btMatrix3x3 matrix);
 	void Translate(vec3 vec);
 	void Rotate(vec3 vec);
 	void Rotate(float pitch, float yaw, float roll);

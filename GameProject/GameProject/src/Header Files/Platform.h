@@ -13,11 +13,17 @@ private:
 	ObjectInfo* m_info;
 	int m_modelId;
 	int m_skyboxId;
+
+	//Variables 4 Fysik
+	btRigidBody* m_body;
+	btCollisionShape* m_platformShape;
+	btTransform* m_btTransform;
 public:
 	Platform();
 	~Platform();
 	ObjectInfo* GetObjectInfo();
 	int GetModelId();
+	btRigidBody* getBody();
 	void SetModelId(int id);
 	void SetSkyboxId(int id);
 };

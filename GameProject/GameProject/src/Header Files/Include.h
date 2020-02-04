@@ -8,6 +8,9 @@
 #include "assimp/postprocess.h"
 #include "assimp/Importer.hpp"
 #include "btBulletDynamicsCommon.h"
+#include "BulletCollision\CollisionDispatch\btCollisionWorld.h"
+
+
 #define STB_IMAGE_IMPLEMENTATION
 
 

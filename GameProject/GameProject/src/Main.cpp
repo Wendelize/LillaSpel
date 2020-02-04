@@ -10,7 +10,7 @@ Transform* tran;
 
 int main(void)
 {
-	/*
+	
 	///-----includes_end-----
 
 	int i;
@@ -30,7 +30,7 @@ int main(void)
 
 	btDiscreteDynamicsWorld* dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
 
-	dynamicsWorld->setGravity(btVector3(0, -10, 0));
+	dynamicsWorld->setGravity(btVector3(0, -9.82, 0));
 
 	///-----initialization_end-----
 
@@ -43,13 +43,13 @@ int main(void)
 	//the ground is a cube of side 100 at position y = -56.
 	//the sphere will hit it at y = -6, with center at -5
 	{
-		btCollisionShape* groundShape = new btBoxShape(btVector3(btScalar(50.), btScalar(50.), btScalar(50.)));
+		btCollisionShape* groundShape = new btBoxShape(btVector3(btScalar(50.), btScalar(10.), btScalar(50.)));
 
 		collisionShapes.push_back(groundShape);
 
 		btTransform groundTransform;
 		groundTransform.setIdentity();
-		groundTransform.setOrigin(btVector3(0, -56, 0));
+		groundTransform.setOrigin(btVector3(0, -10, 0));
 
 		btScalar mass(0.);
 
@@ -67,13 +67,16 @@ int main(void)
 
 		//add the body to the dynamics world
 		dynamicsWorld->addRigidBody(body);
+
+
+
 	}
 
 	{
 		//create a dynamic rigidbody
 
 		//btCollisionShape* colShape = new btBoxShape(btVector3(1,1,1));
-		btCollisionShape* colShape = new btSphereShape(btScalar(1.));
+		btCollisionShape* colShape = new btBoxShape(btVector3(btScalar(2.), btScalar(2.), btScalar(2.)));
 		collisionShapes.push_back(colShape);
 
 		/// Create Dynamic Objects
@@ -168,7 +171,7 @@ int main(void)
 	//next line is optional: it will be cleared by the destructor when the array goes out of scope
 	collisionShapes.clear();
 	
-	*/
+	
 	
 	
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
@@ -194,5 +197,6 @@ int main(void)
 	exit(0); //Used to be called in window destructor -> caused memory leaks. This fixes it.
 
 	_CrtDumpMemoryLeaks();
+	
 	return 0;
 }
