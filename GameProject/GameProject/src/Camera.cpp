@@ -4,7 +4,7 @@ Camera::Camera(vec3 pos, vec3 point, vec3 up)
 {
 	m_position = pos;
 	m_direction = normalize(m_position - point);
-	m_up = up;
+	m_up = cross(m_direction,vec3(1,0,0));
 	m_parallel = { 1, 0, 0 };
 	m_viewMatrix = lookAt(m_position, m_direction, m_up);
 }

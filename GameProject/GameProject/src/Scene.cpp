@@ -5,7 +5,7 @@ Scene::Scene()
 	m_window = new Window(1500, 900);
 	m_modelShader = new Shader("src/Shaders/VertexShader.glsl", "src/Shaders/FragmentShader.glsl");
 	m_skyboxShader = new Shader("src/Shaders/VertexSkyboxShader.glsl", "src/Shaders/FragmentSkyboxShader.glsl");
-	m_camera = new Camera({0, 5, -10});
+	m_camera = new Camera({0, 10, 20});
 	m_skybox = new Skybox();
 	m_modelMatrix = mat4(1.0);
 	m_projMatrix = mat4(1.0);

@@ -81,7 +81,7 @@ ObjectHandler::~ObjectHandler()
 void ObjectHandler::Update(float dt)
 {
 
-	m_dynamicsWorld->stepSimulation(dt, 10);
+	m_dynamicsWorld->stepSimulation(dt, 1);
 
 	for (size_t i = 0; i < m_dynamicsWorld->getNumCollisionObjects(); i++)
 	{
@@ -97,13 +97,10 @@ void ObjectHandler::Update(float dt)
 			trans = obj->getWorldTransform();
 		}
 		int isPlayer = i - m_platforms.size();
-		//printf("world pos object %d = %f,%f,%f\n", i, float(trans.getOrigin().getX()), float(trans.getOrigin().getY()), float(trans.getOrigin().getZ()));
 		if (isPlayer >= 0) {
-			m_players[isPlayer]->Update(dt, vec3(trans.getOrigin().getX(), trans.getOrigin().getY(), trans.getOrigin().getZ()));
-			vec3 tempPos = m_players[isPlayer]->GetCurrentPos();
-			m_dynamicsWorld->getCollisionObjectArray()[i]->getWorldTransform().setOrigin(btVector3(tempPos.x,tempPos.y,tempPos.z));
+			m_players[isPlayer]->Update(dt);
 		}
-		// m_dynamicsWorld->debugDrawObject(m_dynamicsWorld->getCollisionObjectArray()[i]->getWorldTransform(), m_dynamicsWorld->getCollisionObjectArray()[i]->getCollisionShape(), btVector3(1, 1, 1));
+		 m_dynamicsWorld->debugDrawObject(m_dynamicsWorld->getCollisionObjectArray()[i]->getWorldTransform(), m_dynamicsWorld->getCollisionObjectArray()[i]->getCollisionShape(), btVector3(0, 0, 0));
 	}
 	
 	//Check collison && Act if detected.

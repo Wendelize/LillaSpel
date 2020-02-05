@@ -21,11 +21,11 @@ private:
 	btRigidBody* m_body;
 	btTransform* m_btTransform;
 	btDefaultMotionState* m_motionState;
-	vec3 m_currentPos;
+	btVector3 m_currentPos;
 public:
 	Player(vec3 pos);
 	~Player();
-	void Update(float dt, vec3 newPos);
+	void Update(float dt);
 	string GetName();
 	void SetName(string name);
 	int GetHealth();
@@ -42,6 +42,6 @@ public:
 	void SetControllerID(int id);
 	ObjectInfo* GetObjectInfo();
 	btRigidBody* GetBody();
-	vec3 GetCurrentPos();
+	btVector3 GetCurrentPos();
 
 };
