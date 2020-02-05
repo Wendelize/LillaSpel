@@ -77,6 +77,8 @@ vec3 Transform::TranslateDirection(vec3 vec)
 	
 	
 	m_forward = vec3( m_transformMatrix * vec4(0,0,1,0));
+	m_isDirty = true;
+
 	return m_forward;
 
 }

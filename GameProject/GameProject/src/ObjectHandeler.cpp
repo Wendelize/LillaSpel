@@ -9,7 +9,7 @@ ObjectHandler::ObjectHandler()
 	m_solver = new btSequentialImpulseConstraintSolver;
 	m_dynamicsWorld = new btDiscreteDynamicsWorld(m_dispatcher, m_broadphase, m_solver, m_collisionConfiguration);
 
-	m_dynamicsWorld->setGravity(btVector3(0, -9.82f, 0));
+	m_dynamicsWorld->setGravity(btVector3(0, -10.f, 0));
 
 	m_debugDrawer = new DebugDrawer;
 	m_debugDrawer->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
@@ -81,7 +81,7 @@ ObjectHandler::~ObjectHandler()
 void ObjectHandler::Update(float dt)
 {
 
-	m_dynamicsWorld->stepSimulation(dt, 1);
+	m_dynamicsWorld->stepSimulation(dt, 10);
 
 	for (size_t i = 0; i < m_dynamicsWorld->getNumCollisionObjects(); i++)
 	{

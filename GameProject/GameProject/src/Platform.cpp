@@ -26,7 +26,8 @@ Platform::Platform()
 	m_motionState = new btDefaultMotionState(*m_btTransform);
 	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, m_motionState, m_platformShape, localInertia);
 	m_body = new btRigidBody(rbInfo);
-//	m_body->setFriction(0.1);
+
+	m_body->setFriction(3);
 }
 
 Platform::~Platform()
