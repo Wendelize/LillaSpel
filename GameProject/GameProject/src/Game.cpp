@@ -36,6 +36,33 @@ void Game::Update(float dt)
 void Game::Render()
 {
 	m_scene->Render(m_objectHandler->GetObjects());
+
+	if (GetAsyncKeyState(VK_LCONTROL) & 0x8000)
+	{
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
+
+		ImGui::Begin("Debug");
+			ImGui::Text("FPS: %.0f", ImGui::GetIO().Framerate);
+			for (int i = 0; i < m_objectHandler->GetObjects().size(); i++)
+			{
+				if (m_objectHandler->GetObjects()[i]->typeId == 0)
+				{
+					ImGui::Text("Player %i Position: x:%.2f , z:%.2F", i + 1, m_objectHandler->GetObjects()[i]->modelMatrix[3][0], m_objectHandler->GetObjects()[i]->modelMatrix[3][2]);
+				}
+			}
+		ImGui::End();
+
+		// Rendering
+		ImGui::Render();
+		int display_w, display_h;
+		glfwGetFramebufferSize(m_scene->GetWindow(), &display_w, &display_h);
+		glViewport(0, 0, display_w, display_h);
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+	}
+
+	m_scene->SwapBuffer();
 }
 
 GLFWwindow* Game::GetWindow()

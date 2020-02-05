@@ -139,36 +139,11 @@ void Scene::Render(vector<ObjectInfo*> objects)
 	/* Poll for and process events */
 	glfwPollEvents();
 
-	if (GetAsyncKeyState(VK_LCONTROL) & 0x8000)
-	{
-		ImGui_ImplOpenGL3_NewFrame();
-		ImGui_ImplGlfw_NewFrame();
-		ImGui::NewFrame();
+	
+}
 
-		ImGui::Begin("Debug");
-		ImGui::Text("FPS: %.0f", ImGui::GetIO().Framerate);
-		//ImGui::Text("FPS:	OVER 9000");
-		for (int i = 0; i < objects.size(); i++)
-		{
-			if (objects[i]->typeId == 0)
-			{
-				char* temp;
-				//sprintf(temp, "%.0f", objects[i]->modelMatrix[0][3]);
-				ImGui::Text("Player %i Position: x:%.2f , z:%.2F", i + 1, objects[i]->modelMatrix[3][0], objects[i]->modelMatrix[3][2]);
-			}
-		}
-		
-		//glfwSetWindowTitle(m_window->m_window, title);
-		ImGui::End();
-
-		// Rendering
-		ImGui::Render();
-		int display_w, display_h;
-		glfwGetFramebufferSize(m_window->m_window, &display_w, &display_h);
-		glViewport(0, 0, display_w, display_h);
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-	}
-
+void Scene::SwapBuffer()
+{
 	glfwSwapBuffers(m_window->m_window);
 }
 

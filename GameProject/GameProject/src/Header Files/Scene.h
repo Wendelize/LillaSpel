@@ -34,6 +34,7 @@ public:
 	void LightToShader();
 	void Render(vector<ObjectInfo*> objects);
 	void RetardRender(Shader * shader, vector<ObjectInfo*> objects);
+	void SwapBuffer();
 	void SetWindowSize(int width, int height);
 	GLFWwindow* GetWindow();
 	void AddPointLight(vec3 pos = { 2,2,2 }, vec3 color = { 1,0,0 });
