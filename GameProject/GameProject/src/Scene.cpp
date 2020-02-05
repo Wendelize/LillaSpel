@@ -57,7 +57,7 @@ void Scene::Init()
 
 	// Veichles
 	m_vehicles.push_back(new Model("src/Models/Low-Poly-Racing-Car-Grey.obj"));
-	m_vehicles.push_back(new Model("src/Models/Lowpoly-Snowcat.obj"));
+	m_vehicles.push_back(new Model("src/Models/Lowpoly-Snowcat2.obj"));
 	m_vehicles.push_back(new Model("src/Models/Cybertruck.obj"));
 	m_vehicles.push_back(new Model("src/Models/ape.obj"));
 	m_vehicles.push_back(new Model("src/Models/CAT.obj"));
@@ -71,7 +71,8 @@ void Scene::Init()
 	AddDirLight({ 0,-1,0 }, {1,1,1});
 	AddPointLight({ 2,2,2 }, {0.6, 0, 0.9});
 	AddPointLight({ -2,2,-2 }, {1, 0.8, 0});
-	AddSpotLight({ 0, 5, -6 }, vec3(vec3(0) - vec3(0, 5, -5)), {0, 0, 1});
+	// pls do not add spotlights thanks you ^^
+	//AddSpotLight({ 0, 2, 0 }, vec3(vec3(0) - vec3(0, 2, 0)), {1, 1, 1}, 12.5);
 
 }
 
@@ -128,28 +129,7 @@ void Scene::Render(vector<ObjectInfo*> objects)
 	m_modelShader->SetUniform("u_Projection", m_projMatrix);
 	
 	// Draw all objects
-	for (uint i = 0; i < objects.size(); i++)
-	{
-		m_modelShader->SetUniform("u_Model", objects[i]->modelMatrix);
-		m_modelShader->SetUniform("u_PlayerColor", objects[i]->hue);
-		switch (objects[i]->typeId)
-		{
-		case 0:
-			m_vehicles.at(objects[i]->modelId)->Draw(m_modelShader);
-			break;
-
-		case 1:
-			m_platform.at(objects[i]->modelId)->Draw(m_modelShader);
-			break;
-
-		case 2: 
-			m_power.at(objects[i]->modelId)->Draw(m_modelShader);
-			break;
-
-		default:
-			break;
-		}
-	}
+	RetardRender(m_modelShader, objects);
 
 	m_skyboxShader->UseShader();
 	m_skyboxShader->SetUniform("u_View", mat4(mat3(m_camera->GetView())));
@@ -190,6 +170,33 @@ void Scene::Render(vector<ObjectInfo*> objects)
 	}
 
 	glfwSwapBuffers(m_window->m_window);
+}
+
+void Scene::RetardRender(Shader * shader, vector<ObjectInfo*> objects)
+{
+	// Draw all objects
+	for (uint i = 0; i < objects.size(); i++)
+	{
+		shader->SetUniform("u_Model", objects[i]->modelMatrix);
+		shader->SetUniform("u_PlayerColor", objects[i]->hue);
+		switch (objects[i]->typeId)
+		{
+		case 0:
+			m_vehicles.at(objects[i]->modelId)->Draw(shader);
+			break;
+
+		case 1:
+			m_platform.at(objects[i]->modelId)->Draw(shader);
+			break;
+
+		case 2:
+			m_power.at(objects[i]->modelId)->Draw(shader);
+			break;
+
+		default:
+			break;
+		}
+	}
 }
 
 void Scene::SetWindowSize(int width, int height)

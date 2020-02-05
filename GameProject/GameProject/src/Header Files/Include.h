@@ -41,12 +41,12 @@
 #include "Window.h"
 #include "Shader.h"
 #include "Camera.h"
-#include "ObjectData.h"
 #include "Model.h"
 #include "Mesh.h"
 #include "Controller.h"
 #include "Light.h"
 #include "Skybox.h"
+#include "ShadowMap.h"
 
 //NAMESPACES
 using namespace std;

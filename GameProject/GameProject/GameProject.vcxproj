@@ -159,6 +159,7 @@
     <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\Scene.cpp" />
     <ClCompile Include="src\Shader.cpp" />
+    <ClCompile Include="src\ShadowMap.cpp" />
     <ClCompile Include="src\Skybox.cpp" />
     <ClCompile Include="src\Transform.cpp" />
     <ClCompile Include="src\Window.cpp" />
@@ -176,6 +177,7 @@
     <ClInclude Include="src\Header Files\Player.h" />
     <ClInclude Include="src\Header Files\Scene.h" />
     <ClInclude Include="src\Header Files\Shader.h" />
+    <ClInclude Include="src\Header Files\ShadowMap.h" />
     <ClInclude Include="src\Header Files\Skybox.h" />
     <ClInclude Include="src\Header Files\stb_image.h" />
     <ClInclude Include="src\Header Files\Transform.h" />
@@ -191,8 +193,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Shaders\FragmentShader.glsl" />
+    <None Include="src\Shaders\ShadowFS.glsl" />
     <None Include="src\Shaders\FragmentSkyboxShader.glsl" />
     <None Include="src\Shaders\VertexShader.glsl" />
+    <None Include="src\Shaders\ShadowVS.glsl" />
     <None Include="src\Shaders\VertexSkyboxShader.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
