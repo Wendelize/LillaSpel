@@ -6,8 +6,8 @@ class Scene
 private:
 
 	Window * m_window;
-	Shader * m_modelShader;
-	Shader * m_skyboxShader;
+	Shader * m_modelShader,
+		   * m_skyboxShader;
 	Camera * m_camera;
 	Skybox * m_skybox;
 	ShadowMap * m_shadowMap;
@@ -19,9 +19,7 @@ private:
 		m_modelMatrix;
 
 	vector<Model*> m_vehicles, m_platform, m_power;
-	//vector<Skybox*> m_skyBox;
 	
-	//Light m_lights;
 	vector <Light> m_lights;
 	int m_nrOfLights = 0;
 
@@ -34,6 +32,7 @@ public:
 	void LightToShader();
 	void Render(vector<ObjectInfo*> objects);
 	void RetardRender(Shader * shader, vector<ObjectInfo*> objects);
+	void REEEE( vector<ObjectInfo*> objects);
 	void SetWindowSize(int width, int height);
 	GLFWwindow* GetWindow();
 	void AddPointLight(vec3 pos = { 2,2,2 }, vec3 color = { 1,0,0 });

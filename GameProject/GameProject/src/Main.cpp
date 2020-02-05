@@ -167,18 +167,17 @@ int main(void)
 
 	//next line is optional: it will be cleared by the destructor when the array goes out of scope
 	collisionShapes.clear();
-	
+	delete tran;
 	*/
-	
-	
+
+
 	
 	GAME = new Game();
-	delete tran;
 
 	float _deltaTime = 0.0, _curTime = 0.0, _lastTime = 0.0;
-	GLFWwindow* wndw = GAME->GetWindow();
+	GLFWwindow* _window = GAME->GetWindow();
 
-	while (!glfwWindowShouldClose(wndw))
+	while (!glfwWindowShouldClose(_window))
 	{	
 		_curTime = (float)glfwGetTime();
 		_deltaTime = _curTime - _lastTime;

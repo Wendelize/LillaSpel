@@ -1,8 +1,8 @@
 #version 430
+out float fragDepth;
 
-out vec4 fragmentColor;
-
-uniform sampler2D u_texture;
-
-void main(){
+void main()
+{
+	//Shadowmaps Fragmentshader should not do anything
+	fragDepth = gl_FragCoord.z;
 }

@@ -5,12 +5,15 @@ Scene::Scene()
 	m_window = new Window(1500, 900);
 	m_modelShader = new Shader("src/Shaders/VertexShader.glsl", "src/Shaders/FragmentShader.glsl");
 	m_skyboxShader = new Shader("src/Shaders/VertexSkyboxShader.glsl", "src/Shaders/FragmentSkyboxShader.glsl");
-	m_camera = new Camera({0, 12, -8});
+	m_camera = new Camera({0, 20, -15});
 	m_skybox = new Skybox();
+	m_shadowMap = new ShadowMap();
 
 	m_modelMatrix = mat4(1.0);
 	m_projMatrix = mat4(1.0);
 	m_viewMatrix = mat4(1.0);
+
+
 }
 
 Scene::~Scene()
@@ -68,9 +71,9 @@ void Scene::Init()
 	// Powers
 
 	// Lights
-	AddDirLight({ 0,-1,0 }, {1,1,1});
-	AddPointLight({ 2,2,2 }, {0.6, 0, 0.9});
-	AddPointLight({ -2,2,-2 }, {1, 0.8, 0});
+	AddDirLight(vec3(vec3(0) - vec3(3, 3, 3)), {1,1,1});
+	//AddPointLight({ 2,2,2 }, {0.6, 0, 0.9});
+	//AddPointLight({ -2,2,-2 }, {1, 0.8, 0});
 	// pls do not add spotlights thanks you ^^
 	//AddSpotLight({ 0, 2, 0 }, vec3(vec3(0) - vec3(0, 2, 0)), {1, 1, 1}, 12.5);
 
@@ -119,14 +122,37 @@ void Scene::Render(vector<ObjectInfo*> objects)
 {
 	/* Render here */
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glClearColor(0.1f, 0.3f, 0.3f, 1.0f);
+	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+
+	// Draw shadowmap
+	m_shadowMap->CalcLightSpaceMatrix(m_lights);
+		glViewport(0, 0, 1024, 1024);
+		glBindFramebuffer(GL_FRAMEBUFFER, m_shadowMap->GetFBO());
+		glClear(GL_DEPTH_BUFFER_BIT);
+	RetardRender(m_shadowMap->GetShader(), objects);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
 
 	m_modelShader->UseShader();
+	m_modelShader->SetTexture2D(0, "u_ShadowMap", m_shadowMap->GetTexture());
+
+	glViewport(0, 0, m_window->GetWidht(), m_window->GetHeight());
+
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 	// Matrix uniforms
-	LightToShader();
+	m_modelShader->UseShader();
 	m_modelShader->SetUniform("u_ViewPos", m_camera->GetPos());
 	m_modelShader->SetUniform("u_View", m_camera->GetView());
 	m_modelShader->SetUniform("u_Projection", m_projMatrix);
+	m_modelShader->SetUniform("u_LSP", m_shadowMap->GetLSP());
+
+	// Texture(shadowmap)
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, m_shadowMap->GetTexture());
+
+	// Light uniforms
+	LightToShader();
 	
 	// Draw all objects
 	RetardRender(m_modelShader, objects);
@@ -169,9 +195,11 @@ void Scene::Render(vector<ObjectInfo*> objects)
 	glfwSwapBuffers(m_window->m_window);
 }
 
+
 void Scene::RetardRender(Shader * shader, vector<ObjectInfo*> objects)
 {
 	// Draw all objects
+	shader->UseShader();
 	for (uint i = 0; i < objects.size(); i++)
 	{
 		shader->SetUniform("u_Model", objects[i]->modelMatrix);
@@ -194,6 +222,12 @@ void Scene::RetardRender(Shader * shader, vector<ObjectInfo*> objects)
 			break;
 		}
 	}
+}
+
+void Scene::REEEE(vector<ObjectInfo*> objects)
+{
+	m_shadowMap->CalcLightSpaceMatrix(m_lights);
+	RetardRender(m_shadowMap->GetShader(), objects);
 }
 
 void Scene::SetWindowSize(int width, int height)

@@ -65,6 +65,7 @@ void Mesh::SetTexture(Shader shader)
 
 void Mesh::SetMaterial(Shader* shader)
 {	// 4 since material struct has 4 variables we want to get to shader
+	shader->UseShader();
 	for (unsigned int i = 0; i < 4; i++)
 	{
 		string name = "";
@@ -96,7 +97,8 @@ void Mesh::SetMaterial(Shader* shader)
 void Mesh::Draw(Shader* shader)
 {
 	//SetTexture(shader);
-	SetMaterial(shader);
+	
+	//SetMaterial(shader);
 	glBindVertexArray(m_vertexArray);
 	glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);

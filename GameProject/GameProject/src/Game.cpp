@@ -9,10 +9,10 @@ Game::Game()
 
 	m_objectHandler->AddPlayer(vec3(2, 0, 5), 0, 2, vec3(1, 2 ,0));
 	m_objectHandler->SetScale(0, vec3(0.3));
-	m_objectHandler->AddPlayer(vec3(2, 0, 0), 1, 1, vec3(0, 1, 0));
-	m_objectHandler->SetScale(1, vec3(0.08));
-	m_objectHandler->AddPlayer(vec3(-2, 0, 0), 2, 0, vec3(0, 0, 1));
-	m_objectHandler->AddPlayer(vec3(-2, 0, 5), 3, 0, vec3(1, 0, 1.5));
+	//m_objectHandler->AddPlayer(vec3(2, 0, 0), 1, 1, vec3(0, 1, 0));
+	//m_objectHandler->SetScale(1, vec3(0.08));
+	//m_objectHandler->AddPlayer(vec3(-2, 0, 0), 2, 0, vec3(0, 0, 1));
+	//m_objectHandler->AddPlayer(vec3(-2, 0, 5), 3, 0, vec3(1, 0, 1.5));
 	
 
 	m_objectHandler->AddPlatform(0);
@@ -35,7 +35,8 @@ void Game::Update(float dt)
 
 void Game::Render()
 {
-	m_scene->Render(m_objectHandler->GetObjects());
+	//m_scene->Render(m_objectHandler->GetObjects());
+	m_scene->REEEE(m_objectHandler->GetObjects());
 }
 
 GLFWwindow* Game::GetWindow()
