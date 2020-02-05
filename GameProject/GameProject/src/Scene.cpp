@@ -203,7 +203,7 @@ void Scene::RetardRender(Shader * shader, vector<ObjectInfo*> objects)
 	for (uint i = 0; i < objects.size(); i++)
 	{
 		shader->SetUniform("u_Model", objects[i]->modelMatrix);
-		shader->SetUniform("u_PlayerColor", objects[i]->hue);
+		//shader->SetUniform("u_PlayerColor", objects[i]->hue);
 		switch (objects[i]->typeId)
 		{
 		case 0:
