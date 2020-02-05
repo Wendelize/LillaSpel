@@ -48,15 +48,9 @@ void ObjectHandler::SetScale(int id, vec3 scale)
 	m_players.at(id)->SetScale(scale);
 }
 
-void ObjectHandler::RemovePlayer(int controllerID)
+void ObjectHandler::RemovePlayer(int index)
 {
-	for (uint i = 0; i < m_players.size(); i++)
-	{
-		if (m_players[i]->GetControllerID() == controllerID)
-		{
-			m_players.erase(m_players.begin(), m_players.begin() + i);
-		}
-	}
+	m_players.erase(m_players.begin() + index);
 }
 
 void ObjectHandler::AddPlatform(int modelId)
@@ -78,6 +72,11 @@ void ObjectHandler::AddPowerUp()
 void ObjectHandler::RemovePowerUp()
 {
 	// to be continued
+}
+
+int ObjectHandler::GetNumPlayers()
+{
+	return m_players.size();
 }
 
 vec3 ObjectHandler::GetPlayerDirection(int playerId)

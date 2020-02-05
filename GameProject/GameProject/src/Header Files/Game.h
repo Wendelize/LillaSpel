@@ -8,12 +8,13 @@ class Game
 private:
 	ObjectHandler* m_objectHandler;
 	Scene* m_scene;
-	float m_time;
+	
 
 	vector<ObjectInfo*> m_objects;
 
 	//Debug variables
 	float pos[3];
+	float m_time;
 public:
 	Game();
 	~Game();
