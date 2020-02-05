@@ -56,11 +56,16 @@ void Scene::Init()
 	ImGui::NewFrame();*/
 
 	// Veichles
-	m_vehicles.push_back(new Model("src/Models/Low-Poly-Racing-Car-Grey.obj"));
-	m_vehicles.push_back(new Model("src/Models/Lowpoly-Snowcat2.obj"));
-	m_vehicles.push_back(new Model("src/Models/Cybertruck.obj"));
-	m_vehicles.push_back(new Model("src/Models/ape.obj"));
-	m_vehicles.push_back(new Model("src/Models/CAT.obj"));
+	// racingcar scale 0.5 
+	m_vehicles.push_back(new Model("src/Models/Low-Poly-Racing-Car-Grey.obj")); 
+	// snowcat scale 0.08 
+	m_vehicles.push_back(new Model("src/Models/Lowpoly-Snowcat2.obj")); 
+	// cybertruck scale 0.3 
+	m_vehicles.push_back(new Model("src/Models/Cybertruck.obj")); 
+	// shoppingcart scale 0.01 
+	m_vehicles.push_back(new Model("src/Models/shoppingcart.obj")); 
+	m_vehicles.push_back(new Model("src/Models/ape.obj")); 
+	m_vehicles.push_back(new Model("src/Models/CAT.obj")); 
 
 	// Platforms
 	m_platform.push_back(new Model("src/Models/Platform3.obj"));
