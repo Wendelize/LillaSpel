@@ -39,7 +39,7 @@ void Game::Render()
 	m_objects = m_objectHandler->GetObjects();
 	m_scene->Render(m_objects);
 
-	if (GetAsyncKeyState(VK_LCONTROL) & 0x8000 || true)
+	if (GetAsyncKeyState(VK_LCONTROL) & 0x8000)
 	{
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
