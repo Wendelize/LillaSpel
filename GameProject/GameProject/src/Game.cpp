@@ -7,6 +7,9 @@ Game::Game()
 	m_scene->Init();
 	m_time = 0;
 
+	m_debug = false;
+	m_toggle = false;
+
 	m_objectHandler->AddPlayer(vec3(2, 0, 5), 0, 2, vec3(1, 2 ,0));
 	m_objectHandler->SetScale(0, vec3(0.3));
 	m_objectHandler->AddPlayer(vec3(2, 0, 0), 1, 1, vec3(0, 1, 0));
@@ -31,6 +34,25 @@ void Game::Update(float dt)
 
 	m_objectHandler->Update(dt);
 
+	// Toggle debug window
+	SHORT keyState = GetAsyncKeyState(VK_LCONTROL);
+	if (keyState < 0)
+	{
+		if (!m_toggle)
+		{
+			if (m_debug)
+				m_debug = false;
+			else
+				m_debug = true;
+		}
+		m_toggle = true;
+	}
+	else
+	{
+		m_toggle = false;
+	}
+
+
 	Render();
 }
 
@@ -39,7 +61,8 @@ void Game::Render()
 	m_objects = m_objectHandler->GetObjects();
 	m_scene->Render(m_objects);
 
-	if (GetAsyncKeyState(VK_LCONTROL) & 0x8000)
+	//Debug window
+	if (m_debug)
 	{
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
