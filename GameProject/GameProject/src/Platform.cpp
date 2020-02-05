@@ -1,7 +1,7 @@
 #include "Header Files/Platform.h"
 
 
-Platform::Platform()
+Platform::Platform(Model* model, int platformIndex)
 {
 	m_transform = new Transform();
 	m_transform->SetScale(0.4f, 0.4f, 0.4f);
@@ -10,9 +10,14 @@ Platform::Platform()
 	m_modelId = 0;
 	m_skyboxId = 0;
 
+	vector<btVector3> points;
 
+	for (int i = 0; i < model->GetMeshes()[platformIndex].m_vertices.size(); i++)
+	{
+		points.push_back(btVector3(model->GetMeshes()[platformIndex].m_vertices[i].pos.x, model->GetMeshes()[platformIndex].m_vertices[i].pos.y, model->GetMeshes()[platformIndex].m_vertices[i].pos.z));
+	}
 
-	m_platformShape = new btBoxShape(btVector3(btScalar(10.), btScalar(2.), btScalar(10.)));
+	m_platformShape = new btConvexHullShape(&points[0].getX(), points.size(), sizeof(btVector3)); // vertexdata, numberofvertices, stride
 	m_btTransform = new btTransform;
 	m_btTransform->setIdentity();
 	m_btTransform->getBasis();

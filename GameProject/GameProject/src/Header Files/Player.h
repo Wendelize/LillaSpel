@@ -23,7 +23,7 @@ private:
 	btDefaultMotionState* m_motionState;
 	btVector3 m_currentPos;
 public:
-	Player(vec3 pos);
+	Player(Model* model, int modelId, vec3 pos);
 	~Player();
 	void Update(float dt);
 	string GetName();

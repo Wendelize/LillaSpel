@@ -1,6 +1,6 @@
 #include "Header Files/Player.h"
 
-Player::Player(vec3 pos)
+Player::Player(Model* model, int modelId, vec3 pos)
 {
 	m_controller = new Controller;
 	m_transform = new Transform;
@@ -10,10 +10,26 @@ Player::Player(vec3 pos)
 	m_name = "";
 	m_health = 0;
 	m_controllerID = 0;
+	m_modelId = modelId;
 	m_weight = 0.f;
 	m_speed = 0.f;
 
-	m_carShape = new btBoxShape(btVector3(btScalar(0.5f), btScalar(0.5f), btScalar(0.5f)));
+	/* ConvexHullShape for car. Very precise but expensive since it creates A LOT of lines.
+	vector<btVector3> points;
+
+	for (int i = 0; i < model->GetMeshes().size(); i++)
+	{
+		for (int j = 0; j < model->GetMeshes()[i].m_vertices.size(); j++)
+		{
+			points.push_back(btVector3(model->GetMeshes()[i].m_vertices[j].pos.x, model->GetMeshes()[i].m_vertices[j].pos.y, model->GetMeshes()[i].m_vertices[j].pos.z));
+		}
+	}
+	
+	m_carShape = new btConvexHullShape(&points[0].getX(), points.size(), sizeof(btVector3));
+	*/
+	// m_carShape = new btBoxShape(btVector3(btScalar(0.5f), btScalar(0.5f), btScalar(0.5f))); // BoxShape
+
+	m_carShape = new btSphereShape(1.);
 
 	m_btTransform = new btTransform;
 	m_btTransform->setIdentity();
@@ -140,6 +156,7 @@ void Player::Update(float dt)
 	btVector3 tempMove = { direction.x,0,direction.z };
 	btVector3 tempMove2 = tempMove * m_body->getLinearVelocity();
 	m_body->setLinearVelocity((tempMove * 10 * -m_speed) + btVector3(tempMove2.x(), m_body->getLinearVelocity().y() ,tempMove2.z()));
+	// m_body->applyForce(m_speed * 500 * tempMove, m_body->getWorldTransform().getOrigin());
 
 	if (vec2( m_body->getLinearVelocity().x(), m_body->getLinearVelocity().z()).length() > 7) {
 

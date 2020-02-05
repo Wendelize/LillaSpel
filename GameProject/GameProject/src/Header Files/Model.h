@@ -18,5 +18,5 @@ public:
 	~Model();
 
 	void Draw(Shader* shader);
-
+	vector<Mesh> GetMeshes();
 };
