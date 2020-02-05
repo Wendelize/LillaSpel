@@ -100,15 +100,13 @@ void ObjectHandler::Update(float dt)
 		if (isPlayer >= 0) {
 			m_players[isPlayer]->Update(dt);
 		}
-		 m_dynamicsWorld->debugDrawObject(m_dynamicsWorld->getCollisionObjectArray()[i]->getWorldTransform(), m_dynamicsWorld->getCollisionObjectArray()[i]->getCollisionShape(), btVector3(0, 0, 0));
 	}
-	
-	//Check collison && Act if detected.
 }
 
-void ObjectHandler::AddPlayer(vec3 pos, int controllerID, int modelId, vec3 color)
+void ObjectHandler::AddPlayer(vec3 pos, int controllerID, int modelId, vec3 color, Model* model)
 {
-	m_players.push_back(new Player(pos));
+	// Till players konstruktor skall meshens vertices passas + ID för att identifiera vilken modell som tillhör objektet!
+	m_players.push_back(new Player(model, modelId, pos));
 	m_players.back()->SetControllerID(controllerID);
 	m_players.back()->SetModelId(modelId);
 	m_players.back()->SetColor(color);
@@ -128,13 +126,13 @@ void ObjectHandler::RemovePlayer(int controllerID)
 	}
 }
 
-void ObjectHandler::AddPlatform(int modelId)
+void ObjectHandler::AddPlatform(int modelId, Model* model)
 {
-	m_platforms.push_back(new Platform);
+	// Till platforms konstruktor skall meshens vertices passas + ID för att identifiera vilken modell som tillhör objektet!
+	m_platforms.push_back(new Platform(model, modelId));
 	m_platforms.back()->SetModelId(modelId);
 
 	m_dynamicsWorld->addRigidBody(m_platforms.back()->getBody());
-	
 }
 
 void ObjectHandler::RemovePlatform()

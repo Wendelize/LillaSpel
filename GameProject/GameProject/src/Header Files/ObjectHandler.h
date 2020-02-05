@@ -25,9 +25,9 @@ public:
 	~ObjectHandler();
 
 	void Update(float dt);
-	void AddPlayer(vec3 pos, int controllerID, int modelId, vec3 color);
+	void AddPlayer(vec3 pos, int controllerID, int modelId, vec3 color, Model* model);
 	void RemovePlayer(int controllerID);
-	void AddPlatform(int modelId);
+	void AddPlatform(int modelId, Model* model);
 	void RemovePlatform();
 	void AddPowerUp();
 	void RemovePowerUp();

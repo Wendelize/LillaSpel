@@ -35,4 +35,5 @@ public:
 	void SetWindowSize(int width, int height);
 	GLFWwindow* GetWindow();
 	void AddLights(LightType type, vec3 a, vec3 b);
+	vector<Model*> GetModels(int index);
 };

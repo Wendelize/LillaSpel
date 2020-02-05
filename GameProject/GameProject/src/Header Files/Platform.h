@@ -20,7 +20,7 @@ private:
 	btTransform* m_btTransform;
 	btDefaultMotionState* m_motionState;
 public:
-	Platform();
+	Platform(Model* model, int platformIndex);
 	~Platform();
 	ObjectInfo* GetObjectInfo();
 	int GetModelId();

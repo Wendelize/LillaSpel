@@ -5,7 +5,7 @@ Scene::Scene()
 	m_window = new Window(1500, 900);
 	m_modelShader = new Shader("src/Shaders/VertexShader.glsl", "src/Shaders/FragmentShader.glsl");
 	m_skyboxShader = new Shader("src/Shaders/VertexSkyboxShader.glsl", "src/Shaders/FragmentSkyboxShader.glsl");
-	m_camera = new Camera({0, 10, 20});
+	m_camera = new Camera({0, 0.7, 20});
 	m_skybox = new Skybox();
 	m_modelMatrix = mat4(1.0);
 	m_projMatrix = mat4(1.0);
@@ -83,8 +83,6 @@ void Scene::LightToShader()
 	m_modelShader->SetUniform("u_SpotLight.specular", m_lights.m_spotLights.at(0).specular);
 	m_modelShader->SetUniform("u_SpotLight.cutOff", m_lights.m_spotLights.at(0).cutOff);
 	m_modelShader->SetUniform("u_SpotLight.outerCutOff", cos(radians(30.0f)));
-
-
 
 	for (int i = 0; i < m_lights.m_pointLights.size(); i++)
 	{
@@ -193,6 +191,16 @@ void Scene::AddLights(LightType type, vec3 a, vec3 b)
 	default:
 		break;
 	}
+}
+
+vector<Model*> Scene::GetModels(int index)
+{
+	if (index == 0)
+		return m_platform;
+	else if (index == 1)
+		return m_vehicles;
+	else if (index == 2)
+		return m_power;
 }
 
 
