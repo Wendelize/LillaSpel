@@ -65,7 +65,7 @@ vec3 Transform::TranslateDirection(vec3 vec)
 	transformMatrix = rotate(transformMatrix, m_rotation.z, vec3(0.f, 0.f, 1.f));
 	transformMatrix = scale(transformMatrix, m_scale);
 	
-	m_forward = vec3( transformMatrix * vec4(0,0,1,0));
+	m_forward = normalize(vec3( transformMatrix * vec4(0,0,1,0)));
 	return m_forward;
 }
 
@@ -85,6 +85,11 @@ void Transform::SetScale(float x, float y, float z)
 {
 	m_scale = vec3(x, y, z);
 	m_isDirty = true;
+}
+
+vec3 Transform::GetForward()
+{
+	return m_forward;
 }
 
 mat4 Transform::GetMatrix()

@@ -22,6 +22,7 @@ public:
 	void RemovePlatform();
 	void AddPowerUp();
 	void RemovePowerUp();
+	vec3 GetPlayerDirection(int playerId);
 	vector<ObjectInfo*> GetObjects();
 };
 

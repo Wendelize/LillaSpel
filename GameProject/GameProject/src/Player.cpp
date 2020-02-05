@@ -26,7 +26,7 @@ void Player::Update(float dt)
 	vec3 rotate(0, 0, 0);
 	vec3 direction(0, 0, 0);
 	float rotationSpeed = 0.2f;
-	float maxSpeed = -15.f;
+	float maxSpeed = -7.f;
 	float maxReverseSpeed = 7.f;
 
 	if (glfwJoystickPresent(m_controllerID) == 1)
@@ -185,6 +185,11 @@ int Player::GetControllerID()
 void Player::SetControllerID(int id)
 {
 	m_controllerID = id;
+}
+
+vec3 Player::GetDirection()
+{
+	return m_transform->GetForward();
 }
 
 ObjectInfo* Player::GetObjectInfo()

@@ -26,5 +26,7 @@ public:
 	void SetRotation(float pitch, float yaw, float roll);
 	void SetScale(float x, float y, float z);
 
+	vec3 GetForward();
+
 	mat4 GetMatrix();
 };

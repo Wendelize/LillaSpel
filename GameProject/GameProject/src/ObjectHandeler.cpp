@@ -80,6 +80,11 @@ void ObjectHandler::RemovePowerUp()
 	// to be continued
 }
 
+vec3 ObjectHandler::GetPlayerDirection(int playerId)
+{
+	return m_players[playerId]->GetDirection();
+}
+
 vector<ObjectInfo*> ObjectHandler::GetObjects()
 {
 	for (size_t i = 0; i < m_structs.size(); i++)

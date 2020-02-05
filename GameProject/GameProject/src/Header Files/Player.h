@@ -35,6 +35,7 @@ public:
 	void SetScale(vec3 scale);
 	int GetControllerID();
 	void SetControllerID(int id);
+	vec3 GetDirection();
 	ObjectInfo* GetObjectInfo();
 
 };
