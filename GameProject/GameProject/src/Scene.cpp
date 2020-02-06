@@ -148,6 +148,7 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
 		m_toggle = false;
 	}
 
+	
 	if (m_debug)
 		world->debugDrawWorld();
 

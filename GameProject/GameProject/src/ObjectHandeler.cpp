@@ -36,6 +36,7 @@ ObjectHandler::~ObjectHandler()
 	}
 	m_platforms.clear();
 
+	// MOVE TO PLAYER DESTRUCTOR SO THAT WHEN A CAR IS DELETED, ITS RIGID BODY IS DESTROYED?
 	//remove the rigidbodies from the dynamics world and delete them
 	for (int i = m_dynamicsWorld->getNumCollisionObjects() - 1; i >= 0; i--)
 	{
@@ -49,6 +50,7 @@ ObjectHandler::~ObjectHandler()
 		delete obj;
 	}
 
+	// MOVE TO PLAYER DESTRUCTOR SO THAT WHEN A CAR IS DELETED, ITS RIGID BODY IS DESTROYED?
 	//delete collision shapes
 	for (int j = 0; j < m_collisionShapes.size(); j++)
 	{

@@ -18,7 +18,7 @@ Player::Player(Model* model, int modelId, vec3 pos)
 	m_weight = 0.f;
 	m_speed = 0.f;
 	m_scale = vec3(1, 1, 1);
-	SetScale(m_scale);
+	//SetScale(m_scale);
 
 	// ConvexHullShape for car. Very precise but expensive since it creates A LOT of lines.
 	/*vector<btVector3> points;
@@ -217,8 +217,8 @@ vec3 Player::GetScale()
 
 void Player::SetScale(vec3 scale)
 {
-	m_scale = scale;
-	m_transform->SetScale(scale.x, scale.y, scale.z);
+//	m_scale = scale;
+//	m_transform->SetScale(scale.x, scale.y, scale.z);
 }
 
 int Player::GetControllerID()

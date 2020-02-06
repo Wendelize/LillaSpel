@@ -24,9 +24,6 @@ Platform::Platform(Model* model, int platformIndex)
 	m_platformShape = new btConvexHullShape(&points[0].getX(), points.size(), sizeof(btVector3)); // vertexdata, numberofvertices, stride
 	m_btTransform = new btTransform;
 	m_btTransform->setIdentity();
-	btMatrix3x3 temp;
-
-	temp.scaled(btVector3(0.4f,0.4f,0.4f));
 	m_btTransform->setOrigin(btVector3(0.f, -0.f, 0.f));
 	btScalar mass(0.);
 	btVector3 localInertia(0, 0, 0);
