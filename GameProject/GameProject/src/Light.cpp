@@ -8,7 +8,7 @@ Light::Light(int i, vec3 dir, vec3 pos, vec3 color, float cutOff)
 	case 0:
 		m_type = i;
 		m_dir = dir;
-		m_pos = vec3(3, 3, 0);
+		m_pos = vec3(5,5,0);
 		m_color = color;
 		break;
 	case 1:

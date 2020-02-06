@@ -1,11 +1,12 @@
 #include "Header Files/Scene.h"
+#include "Header Files/Transform.h"
 
 Scene::Scene()
 {
 	m_window = new Window(1500, 900);
 	m_modelShader = new Shader("src/Shaders/VertexShader.glsl", "src/Shaders/FragmentShader.glsl");
 	m_skyboxShader = new Shader("src/Shaders/VertexSkyboxShader.glsl", "src/Shaders/FragmentSkyboxShader.glsl");
-	m_camera = new Camera({0, 20, -15});
+	m_camera = new Camera({0, 20, 15});
 	m_skybox = new Skybox();
 	m_shadowMap = new ShadowMap();
 
@@ -130,10 +131,11 @@ void Scene::Render(vector<ObjectInfo*> objects)
 		glBindFramebuffer(GL_FRAMEBUFFER, m_shadowMap->GetFBO());
 		glClear(GL_DEPTH_BUFFER_BIT);
 		glActiveTexture(GL_TEXTURE0);
+		glCullFace(GL_FRONT);
 	RetardRender(m_shadowMap->GetShader(), objects);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-
+	glCullFace(GL_BACK);
 	m_modelShader->UseShader();
 	m_modelShader->SetTexture2D(0, "u_ShadowMap", m_shadowMap->GetTexture());
 
@@ -157,11 +159,10 @@ void Scene::Render(vector<ObjectInfo*> objects)
 	
 	// Draw all objects
 	RetardRender(m_modelShader, objects);
-
-	m_skyboxShader->UseShader();
-	m_skyboxShader->SetUniform("u_View", mat4(mat3(m_camera->GetView())));
-	m_skyboxShader->SetUniform("u_Projection", m_projMatrix);
-	m_skybox->DrawSkybox(m_skyboxShader);
+	//m_skyboxShader->UseShader();
+	//m_skyboxShader->SetUniform("u_View", mat4(mat3(m_camera->GetView())));
+	//m_skyboxShader->SetUniform("u_Projection", m_projMatrix);
+	//m_skybox->DrawSkybox(m_skyboxShader);
 
 	/* Poll for and process events */
 	glfwPollEvents();
@@ -203,6 +204,13 @@ void Scene::RetardRender(Shader * shader, vector<ObjectInfo*> objects)
 	shader->UseShader();
 	for (uint i = 0; i < objects.size(); i++)
 	{
+		//if (i == 1) {
+		//	mat4 _Temp = objects[i]->modelMatrix;
+		//	_Temp[3][0] = m_lights[0].GetPos().x;
+		//	_Temp[3][1] = m_lights[0].GetPos().y;
+		//	_Temp[3][2] = m_lights[0].GetPos().z;
+		//	shader->SetUniform("u_Model", _Temp);
+		//}else
 		shader->SetUniform("u_Model", objects[i]->modelMatrix);
 		shader->SetUniform("u_PlayerColor", objects[i]->hue);
 		switch (objects[i]->typeId)

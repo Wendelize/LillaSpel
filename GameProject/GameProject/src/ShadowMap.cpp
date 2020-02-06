@@ -63,7 +63,7 @@ void ShadowMap::CalcLightSpaceMatrix(vector<Light> light)
     {
         if (light.at(i).GetType() == 0) {
             mat4 _lightProj, _lightView, _lightModel;
-            _lightProj = ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 10.0f);
+            _lightProj = ortho(-30.0f, 30.0f, -30.0f, 30.0f, 1.0f, 7.5f);
             _lightView = lookAt(light.at(i).GetPos(), vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
             //_lightModel = mat4(1.0);
             m_lightSpaceMatrix = _lightProj * _lightView ;
