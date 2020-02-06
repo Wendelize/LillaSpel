@@ -4,8 +4,6 @@
 #include "Header Files/Scene.h"
 
 Game* GAME;
-Transform* tran;
-//Scene* SCENE;
 
 int main(void)
 {
@@ -14,8 +12,6 @@ int main(void)
 	srand(time(NULL));
 
 	GAME = new Game();
-
-	delete tran;
 
 	float _deltaTime = 0.0, _curTime = 0.0, _lastTime = 0.0;
 	GLFWwindow* _window = GAME->GetWindow();
