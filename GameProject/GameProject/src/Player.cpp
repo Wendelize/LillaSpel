@@ -89,6 +89,7 @@ void Player::Update(float dt)
 	vec3 rotate(0, 0, 0);
 	vec3 direction(0, 0, 0);
 	float rotationSpeed = 2.f;
+	float jump = 0;
 	m_speed = 0;
 	if (glfwJoystickPresent(m_controllerID) == 1 && m_body->getWorldTransform().getOrigin().y() < 4.0f && m_body->getWorldTransform().getOrigin().y() > -1.0f)
 	{
@@ -143,6 +144,7 @@ void Player::Update(float dt)
 	}
 	//apply force
 	btVector3 directionBt = { direction.x,0,direction.z };
+
 	m_body->applyForce(directionBt * -m_speed * dt , m_body->getWorldTransform().getOrigin());
 	m_body->applyDamping(dt);
 

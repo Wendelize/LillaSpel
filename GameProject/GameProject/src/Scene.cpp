@@ -73,8 +73,8 @@ void Scene::Init()
 
 	// Lights
 	AddDirLight(vec3(0, -1, 0), { 1,1,1 });
-	//AddPointLight({ 2,2,2 }, {0.6, 0, 0.9});
-	//AddPointLight({ -2,2,-2 }, {1, 0.8, 0});
+	AddPointLight({ 2,2,2 }, {1, 1, 1});
+	AddPointLight({ -2,2,-2 }, {1, 1, 1});
 	// pls do not add spotlights thanks you ^^
 	//AddSpotLight({ 0, 2, 0 }, vec3(vec3(0) - vec3(0, 2, 0)), {1, 1, 1}, 12.5);
 
