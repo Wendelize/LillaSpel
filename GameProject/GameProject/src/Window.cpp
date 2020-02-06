@@ -59,7 +59,7 @@ Window::Window(int width, int height)
 
 
 
-	m_window = glfwCreateWindow(m_width, m_height, "EXTERMINATOR 2000-------------------------------I think diz is a game.", NULL, NULL);
+	m_window = glfwCreateWindow(m_width, m_height, "KamiCarZe", NULL, NULL);
 	if (!m_window) {
 		glfwTerminate();
 		cout << "Could not open window" << endl;

@@ -4,8 +4,6 @@
 #include "Header Files/Scene.h"
 
 Game* GAME;
-Transform* tran;
-//Scene* SCENE;
 
 int main(void)
 {
@@ -15,12 +13,10 @@ int main(void)
 
 	GAME = new Game();
 
-	delete tran;
-
 	float _deltaTime = 0.0, _curTime = 0.0, _lastTime = 0.0;
-	GLFWwindow* wndw = GAME->GetWindow();
+	GLFWwindow* _window = GAME->GetWindow();
 
-	while (!glfwWindowShouldClose(wndw))
+	while (!glfwWindowShouldClose(_window))
 	{	
 		_curTime = (float)glfwGetTime();
 		_deltaTime = _curTime - _lastTime;

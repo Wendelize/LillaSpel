@@ -113,7 +113,7 @@ void Game::Debug()
 
 	if (ImGui::Button("Add Car"))
 	{
-		if (m_objectHandler->GetNumPlayers() < 4)
+		if (m_objectHandler->GetNumPlayers() < 40)
 		{
 			if(m_modelId < m_scene->GetNumPlayerModels())
 				m_objectHandler->AddPlayer(vec3(m_pos[0], m_pos[1], m_pos[2]), m_controllerID, m_modelId, vec3(0.5, 0.5, 0.5),m_cars[0]);
