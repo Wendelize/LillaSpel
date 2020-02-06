@@ -35,8 +35,8 @@ void Game::Update(float dt)
 
 void Game::Render()
 {
-	//m_scene->Render(m_objectHandler->GetObjects());
-	m_scene->REEEE(m_objectHandler->GetObjects());
+	m_scene->Render(m_objectHandler->GetObjects());
+	//m_scene->REEEE(m_objectHandler->GetObjects());
 }
 
 GLFWwindow* Game::GetWindow()

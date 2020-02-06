@@ -193,10 +193,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Shaders\FragmentShader.glsl" />
-    <None Include="src\Shaders\ShadowFS.glsl" />
     <None Include="src\Shaders\FragmentSkyboxShader.glsl" />
-    <None Include="src\Shaders\VertexShader.glsl" />
+    <None Include="src\Shaders\ShadowFS.glsl" />
     <None Include="src\Shaders\ShadowVS.glsl" />
+    <None Include="src\Shaders\VertexShader.glsl" />
     <None Include="src\Shaders\VertexSkyboxShader.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

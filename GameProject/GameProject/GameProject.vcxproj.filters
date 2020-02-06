@@ -152,6 +152,9 @@
     <None Include="src\Shaders\FragmentShader.glsl">
       <Filter>Shader</Filter>
     </None>
+    <None Include="src\Shaders\VertexShader.glsl">
+      <Filter>Shader</Filter>
+    </None>
     <None Include="src\Shaders\FragmentSkyboxShader.glsl">
       <Filter>Shader</Filter>
     </None>
@@ -159,9 +162,6 @@
       <Filter>Shader</Filter>
     </None>
     <None Include="src\Shaders\ShadowFS.glsl">
-      <Filter>Shader</Filter>
-    </None>
-    <None Include="src\Shaders\VertexShader.glsl">
       <Filter>Shader</Filter>
     </None>
     <None Include="src\Shaders\ShadowVS.glsl">

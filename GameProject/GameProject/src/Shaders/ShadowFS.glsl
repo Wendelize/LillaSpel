@@ -1,5 +1,5 @@
 #version 430
-out float fragDepth;
+layout(location = 0) out float fragDepth;
 
 void main()
 {
