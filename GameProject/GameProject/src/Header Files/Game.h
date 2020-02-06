@@ -8,7 +8,6 @@ class Game
 private:
 	ObjectHandler* m_objectHandler;
 	Scene* m_scene;
-	
 
 	vector<ObjectInfo*> m_objects;
 	vector<Model*> m_platforms;

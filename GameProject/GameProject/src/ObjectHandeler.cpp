@@ -37,10 +37,11 @@ ObjectHandler::~ObjectHandler()
 	m_platforms.clear();
 
 	// MOVE TO PLAYER DESTRUCTOR SO THAT WHEN A CAR IS DELETED, ITS RIGID BODY IS DESTROYED?
-	//remove the rigidbodies from the dynamics world and delete them
+//remove the rigidbodies from the dynamics world and delete them
 	for (int i = m_dynamicsWorld->getNumCollisionObjects() - 1; i >= 0; i--)
 	{
 		btCollisionObject* obj = m_dynamicsWorld->getCollisionObjectArray()[i];
+
 		btRigidBody* body = btRigidBody::upcast(obj);
 		if (body && body->getMotionState())
 		{
@@ -48,15 +49,6 @@ ObjectHandler::~ObjectHandler()
 		}
 		m_dynamicsWorld->removeCollisionObject(obj);
 		delete obj;
-	}
-
-	// MOVE TO PLAYER DESTRUCTOR SO THAT WHEN A CAR IS DELETED, ITS RIGID BODY IS DESTROYED?
-	//delete collision shapes
-	for (int j = 0; j < m_collisionShapes.size(); j++)
-	{
-		btCollisionShape* shape = m_collisionShapes[j];
-		m_collisionShapes[j] = 0;
-		delete shape;
 	}
 
 	//delete dynamics world
@@ -129,6 +121,20 @@ void ObjectHandler::RemovePlayer(int index)
 {
 	delete m_players.at(index);
 	m_players.erase(m_players.begin() + index);
+
+	// MOVE TO PLAYER DESTRUCTOR SO THAT WHEN A CAR IS DELETED, ITS RIGID BODY IS DESTROYED?
+	//remove the rigidbodies from the dynamics world and delete them
+	int removeIndex = m_dynamicsWorld->getNumCollisionObjects() - 1;
+
+	btCollisionObject* obj = m_dynamicsWorld->getCollisionObjectArray()[removeIndex];
+
+	btRigidBody* body = btRigidBody::upcast(obj);
+	if (body && body->getMotionState())
+	{
+		delete body->getMotionState();
+	}
+	m_dynamicsWorld->removeCollisionObject(obj);
+	delete obj;
 }
 
 void ObjectHandler::AddPlatform(int modelId, Model* model)

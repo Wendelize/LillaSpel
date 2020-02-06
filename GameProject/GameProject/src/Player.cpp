@@ -79,6 +79,7 @@ Player::~Player()
 	delete m_transform;
 	delete m_btTransform;
 	delete m_carShape;
+	// delete m_body; GOTTA DELETE IN dynamicsWorld. :)
 }
 
 void Player::Update(float dt)
