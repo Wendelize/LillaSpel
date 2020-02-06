@@ -98,13 +98,13 @@ void Player::Update(float dt)
 		if (m_controller->ButtonAIsPressed(m_controllerID))
 		{
 			//Acceleration
-			m_speed = 2000000.f;
+			m_speed = 1000000.f;
 
 		}
 
 		if (m_controller->ButtonXIsPressed(m_controllerID))
 		{
-			m_speed = -1800000.f;
+			m_speed = -800000.f;
 		}
 
 		//Triggers
@@ -112,13 +112,13 @@ void Player::Update(float dt)
 		{
 			//Left trigger pressed
 			//Power-Up
-			m_speed = 2800000.f;
+			m_speed = 1720000.f;
 		}
 		if (m_controller->GetLefTrigger(m_controllerID) != -1)
 		{
 			//Left trigger pressed
 			//Power-Up
-			m_speed = -2500000.f;
+			m_speed = -1200000.f;
 		}
 
 		// Left stick horisontal input
@@ -135,6 +135,7 @@ void Player::Update(float dt)
 		{
 			rotationSpeed = 2 * (m_body->getLinearVelocity().length()/3);
 		}
+		cout << "Rotation speed: " <<  rotationSpeed << endl;
 		direction = m_transform->TranslateDirection(rotate * dt * rotationSpeed);
 	}
 	//apply force

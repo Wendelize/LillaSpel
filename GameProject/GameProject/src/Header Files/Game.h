@@ -11,7 +11,8 @@ private:
 	
 
 	vector<ObjectInfo*> m_objects;
-
+	vector<Model*> m_platforms;
+	vector<Model*> m_cars;
 	//Debug variables
 	bool m_debug, m_toggle;
 	float pos[3];

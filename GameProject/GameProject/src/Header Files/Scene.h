@@ -12,7 +12,8 @@ private:
 	Skybox * m_skybox;
 	ShadowMap * m_shadowMap;
 
-	bool m_debug = true;
+	bool m_debug = false;
+	bool m_toggle = false;
 
 	mat4 m_projMatrix,
 		m_viewMatrix,

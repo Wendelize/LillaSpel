@@ -154,6 +154,7 @@ void ObjectHandler::RemovePowerUp()
 
 int ObjectHandler::GetNumPlayers()
 {
+	cout << m_players.size() << endl;
 	return m_players.size();
 }
 

@@ -10,7 +10,15 @@ private:
 	vector<Platform*> m_platforms;
 	//vector<PowerUp*> m_powerUps;
 	vector<ObjectInfo*> m_structs;
+
 	btDefaultCollisionConfiguration* m_collisionConfiguration;
+	btBroadphaseInterface* m_broadphase;
+	btCollisionDispatcher* m_dispatcher;
+	btSequentialImpulseConstraintSolver* m_solver;
+	btDiscreteDynamicsWorld* m_dynamicsWorld;
+	DebugDrawer* m_debugDrawer;
+	btAlignedObjectArray<btCollisionShape*> m_collisionShapes;
+
 public:
 	ObjectHandler();
 	~ObjectHandler();

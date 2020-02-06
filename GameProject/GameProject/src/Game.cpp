@@ -9,14 +9,14 @@ Game::Game()
 
 	m_debug = false;
 	m_toggle = false;
-	vector<Model*> platforms = m_scene->GetModels(0);
-	vector<Model*> cars = m_scene->GetModels(1); 
+	m_platforms = m_scene->GetModels(0);
+	m_cars = m_scene->GetModels(1); 
 
-	m_objectHandler->AddPlatform(0, platforms[0]); // Passa modell
+	m_objectHandler->AddPlatform(0, m_platforms[0]); // Passa modell
 
-	m_objectHandler->AddPlayer(vec3(0, 7, 2), 0, 0, vec3(0, 0, 1), cars[0]); // Passa modell
-	m_objectHandler->AddPlayer(vec3(-2, 7, -2), 1, 0, vec3(0, 1, 0), cars[0]); // Passa modell
-	m_objectHandler->AddPlayer(vec3(2, 7, -2), 2, 0, vec3(1, 1, 0), cars[0]); // Passa modell
+	m_objectHandler->AddPlayer(vec3(0, 7, 2), 0, 0, vec3(0, 0, 1), m_cars[0]); // Passa modell
+	m_objectHandler->AddPlayer(vec3(-2, 7, -2), 1, 0, vec3(0, 1, 0), m_cars[0]); // Passa modell
+	m_objectHandler->AddPlayer(vec3(2, 7, -2), 2, 0, vec3(1, 1, 0), m_cars[0]); // Passa modell
 
 }
 
@@ -57,7 +57,7 @@ void Game::Update(float dt)
 void Game::Render()
 {
 	m_objects = m_objectHandler->GetObjects();
-	m_scene->Render(m_objects);
+	m_scene->Render(m_objects, m_objectHandler->GetWorld());
 
 	//Debug window
 	if (m_debug)
@@ -85,7 +85,7 @@ void Game::Render()
 		{
 			if (m_objectHandler->GetNumPlayers() < 4)
 			{
-				m_objectHandler->AddPlayer(vec3(pos[0], pos[1], pos[2]), m_objectHandler->GetNumPlayers(), m_objectHandler->GetNumPlayers(), vec3(1, 2, 0));
+				m_objectHandler->AddPlayer(vec3(pos[0], pos[1], pos[2]), m_objectHandler->GetNumPlayers(), m_objectHandler->GetNumPlayers(), vec3(1, 2, 0), m_cars[0]);
 
 			}
 		}

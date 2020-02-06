@@ -50,7 +50,7 @@ void Scene::Init()
 	m_viewMatrix = m_camera->GetView();
 	m_modelMatrix = mat4(1.0);
 
-	m_platform.push_back(new Model("src/Models/platform3.obj"));
+	m_platform.push_back(new Model("src/Models/platform2.obj"));
 	// Veichles
 	// racingcar scale 0.5 
 	m_vehicles.push_back(new Model("src/Models/Low-Poly-Racing-Car-Grey.obj")); 
@@ -81,15 +81,6 @@ void Scene::LightToShader()
 {
 	m_modelShader->Uniform("u_NrOf", m_nrOfLights);
 
-	m_modelShader->SetUniform("u_SpotLight.pos", m_lights.m_spotLights.at(0).pos);
-	m_modelShader->SetUniform("u_SpotLight.color", m_lights.m_spotLights.at(0).color);
-	m_modelShader->SetUniform("u_SpotLight.ambient", m_lights.m_spotLights.at(0).ambient);
-	m_modelShader->SetUniform("u_SpotLight.diffuse", m_lights.m_spotLights.at(0).diffuse);
-	m_modelShader->SetUniform("u_SpotLight.specular", m_lights.m_spotLights.at(0).specular);
-	m_modelShader->SetUniform("u_SpotLight.cutOff", m_lights.m_spotLights.at(0).cutOff);
-	m_modelShader->SetUniform("u_SpotLight.outerCutOff", cos(radians(30.0f)));
-
-	for (int i = 0; i < m_lights.m_pointLights.size(); i++)
 	for (uint i = m_nrOfLights; i < m_lights.size(); i++)
 	{
 		string _nr = to_string(i);
@@ -140,14 +131,39 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
 	// Draw all objects
 	RetardRender(m_modelShader, objects);
 
+	SHORT keyState = GetAsyncKeyState(VK_LCONTROL);
+	if (keyState < 0)
+	{
+		if (!m_toggle)
+		{
+			if (m_debug)
+				m_debug = false;
+			else
+				m_debug = true;
+		}
+		m_toggle = true;
+	}
+	else
+	{
+		m_toggle = false;
+	}
+
+	if (m_debug)
+		world->debugDrawWorld();
+
 	m_skyboxShader->UseShader();
 	m_skyboxShader->SetUniform("u_View", mat4(mat3(m_camera->GetView())));
 	m_skyboxShader->SetUniform("u_Projection", m_projMatrix);
 	m_skybox->DrawSkybox(m_skyboxShader);
 
+
+
 	/* Poll for and process events */
 	glfwPollEvents();
 
+	
+	/* Swap front and back buffers */
+	//glfwSwapBuffers(m_window->m_window);
 	
 }
 
@@ -182,19 +198,7 @@ void Scene::RetardRender(Shader * shader, vector<ObjectInfo*> objects)
 		}
 	}
 
-	if (GetAsyncKeyState(VK_LCONTROL) & 0x8000)
-		world->debugDrawWorld();
 
-	m_skyboxShader->UseShader();
-	m_skyboxShader->SetUniform("u_View", mat4(mat3(m_camera->GetView())));
-	m_skyboxShader->SetUniform("u_Projection", m_projMatrix);
-	m_skybox->DrawSkybox(m_skyboxShader);
-
-	/* Swap front and back buffers */
-	glfwSwapBuffers(m_window->m_window);
-
-	/* Poll for and process events */
-	glfwPollEvents();
 }
 
 void Scene::SetWindowSize(int width, int height)
