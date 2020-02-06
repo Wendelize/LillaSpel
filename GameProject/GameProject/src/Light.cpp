@@ -8,6 +8,7 @@ Light::Light(int i, vec3 dir, vec3 pos, vec3 color, float cutOff)
 	case 0:
 		m_type = i;
 		m_dir = dir;
+		m_pos = vec3(0, 10, 0);
 		m_color = color;
 		break;
 	case 1:
@@ -21,7 +22,7 @@ Light::Light(int i, vec3 dir, vec3 pos, vec3 color, float cutOff)
 		m_dir = dir;
 		m_color = color;
 		m_cutOff = CutOff(cutOff);
-		m_outerCutOff = CutOff(13.0);
+		m_outerCutOff = CutOff(cutOff + 5.0f);
 		break;
 	default:
 		break;

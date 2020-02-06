@@ -1,13 +1,12 @@
-#include "Header Files/Scene.h"
+﻿#include "Header Files/Scene.h"
 
 Scene::Scene()
 {
-	m_window = new Window(1500, 900);
+	m_window = new Window(1920, 1080);
 	m_modelShader = new Shader("src/Shaders/VertexShader.glsl", "src/Shaders/FragmentShader.glsl");
 	m_skyboxShader = new Shader("src/Shaders/VertexSkyboxShader.glsl", "src/Shaders/FragmentSkyboxShader.glsl");
-	m_camera = new Camera({0, 12, -8});
+	m_camera = new Camera({0, 32, 45});
 	m_skybox = new Skybox();
-
 	m_modelMatrix = mat4(1.0);
 	m_projMatrix = mat4(1.0);
 	m_viewMatrix = mat4(1.0);
@@ -33,6 +32,10 @@ Scene::~Scene()
 	}
 	m_power.clear();
 
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	//ImGui::DestroyContext(); Causing breakpoint -> Might cause memory leaks if this one is removed. -> doesn't look like it :D
+
 	delete m_modelShader;
 	delete m_skyboxShader;
 	delete m_camera;
@@ -47,15 +50,20 @@ void Scene::Init()
 	m_viewMatrix = m_camera->GetView();
 	m_modelMatrix = mat4(1.0);
 
+	m_platform.push_back(new Model("src/Models/platform2.obj"));
 	// Veichles
-	m_vehicles.push_back(new Model("src/Models/Low-Poly-Racing-Car-Grey.obj"));
-	m_vehicles.push_back(new Model("src/Models/Lowpoly-Snowcat.obj"));
-	m_vehicles.push_back(new Model("src/Models/Cybertruck.obj"));
-	m_vehicles.push_back(new Model("src/Models/ape.obj"));
-	m_vehicles.push_back(new Model("src/Models/CAT.obj"));
+	// racingcar scale 0.5 
+	m_vehicles.push_back(new Model("src/Models/Low-Poly-Racing-Car-Grey.obj")); 
+	// snowcat scale 0.08 
+	m_vehicles.push_back(new Model("src/Models/Lowpoly-Snowcat2.obj")); 
+	// cybertruck scale 0.3 
+	m_vehicles.push_back(new Model("src/Models/Cybertruck.obj")); 
+	// shoppingcart scale 0.01 
+	m_vehicles.push_back(new Model("src/Models/shoppingcart.obj")); 
+	m_vehicles.push_back(new Model("src/Models/ape.obj")); 
+	m_vehicles.push_back(new Model("src/Models/CAT.obj")); 
 
 	// Platforms
-	m_platform.push_back(new Model("src/Models/Platform3.obj"));
 
 	// Powers
 
@@ -63,7 +71,8 @@ void Scene::Init()
 	AddDirLight({ 0,-1,0 }, {1,1,1});
 	AddPointLight({ 2,2,2 }, {0.6, 0, 0.9});
 	AddPointLight({ -2,2,-2 }, {1, 0.8, 0});
-	AddSpotLight({ 0, 5, -6 }, vec3(vec3(0) - vec3(0, 5, -5)), {0, 0, 1});
+	// pls do not add spotlights thanks you ^^
+	//AddSpotLight({ 0, 2, 0 }, vec3(vec3(0) - vec3(0, 2, 0)), {1, 1, 1}, 12.5);
 
 }
 
@@ -106,7 +115,7 @@ void Scene::LightToShader()
 
 }
 
-void Scene::Render(vector<ObjectInfo*> objects)
+void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
 {
 	/* Render here */
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -120,22 +129,69 @@ void Scene::Render(vector<ObjectInfo*> objects)
 	m_modelShader->SetUniform("u_Projection", m_projMatrix);
 	
 	// Draw all objects
+	RetardRender(m_modelShader, objects);
+
+	SHORT keyState = GetAsyncKeyState(VK_LCONTROL);
+	if (keyState < 0)
+	{
+		if (!m_toggle)
+		{
+			if (m_debug)
+				m_debug = false;
+			else
+				m_debug = true;
+		}
+		m_toggle = true;
+	}
+	else
+	{
+		m_toggle = false;
+	}
+
+	
+	if (m_debug)
+		world->debugDrawWorld();
+
+	m_skyboxShader->UseShader();
+	m_skyboxShader->SetUniform("u_View", mat4(mat3(m_camera->GetView())));
+	m_skyboxShader->SetUniform("u_Projection", m_projMatrix);
+	m_skybox->DrawSkybox(m_skyboxShader);
+
+
+
+	/* Poll for and process events */
+	glfwPollEvents();
+
+	
+	/* Swap front and back buffers */
+	//glfwSwapBuffers(m_window->m_window);
+	
+}
+
+void Scene::SwapBuffer()
+{
+	glfwSwapBuffers(m_window->m_window);
+}
+
+void Scene::RetardRender(Shader * shader, vector<ObjectInfo*> objects)
+{
+	// Draw all objects
 	for (uint i = 0; i < objects.size(); i++)
 	{
-		m_modelShader->SetUniform("u_Model", objects[i]->modelMatrix);
-		m_modelShader->SetUniform("u_PlayerColor", objects[i]->hue);
+		shader->SetUniform("u_Model", objects[i]->modelMatrix);
+		shader->SetUniform("u_PlayerColor", objects[i]->hue);
 		switch (objects[i]->typeId)
 		{
 		case 0:
-			m_vehicles.at(objects[i]->modelId)->Draw(m_modelShader);
+			m_vehicles.at(objects[i]->modelId)->Draw(shader);
 			break;
 
 		case 1:
-			m_platform.at(objects[i]->modelId)->Draw(m_modelShader);
+			m_platform.at(objects[i]->modelId)->Draw(shader);
 			break;
 
-		case 2: 
-			m_power.at(objects[i]->modelId)->Draw(m_modelShader);
+		case 2:
+			m_power.at(objects[i]->modelId)->Draw(shader);
 			break;
 
 		default:
@@ -143,16 +199,7 @@ void Scene::Render(vector<ObjectInfo*> objects)
 		}
 	}
 
-	m_skyboxShader->UseShader();
-	m_skyboxShader->SetUniform("u_View", mat4(mat3(m_camera->GetView())));
-	m_skyboxShader->SetUniform("u_Projection", m_projMatrix);
-	m_skybox->DrawSkybox(m_skyboxShader);
 
-	/* Swap front and back buffers */
-	glfwSwapBuffers(m_window->m_window);
-
-	/* Poll for and process events */
-	glfwPollEvents();
 }
 
 void Scene::SetWindowSize(int width, int height)
@@ -164,6 +211,21 @@ void Scene::SetWindowSize(int width, int height)
 GLFWwindow* Scene::GetWindow()
 {
 	return m_window->m_window;
+}
+
+int Scene::GetNumPlayerModels()
+{
+	return m_vehicles.size();
+}
+
+int Scene::GetNumPlatformModels()
+{
+	return m_platform.size();
+}
+
+int Scene::GetNumPowerUpModels()
+{
+	return m_power.size();
 }
 
 void Scene::AddPointLight(vec3 pos, vec3 color)
@@ -178,34 +240,19 @@ void Scene::AddDirLight(vec3 dir, vec3 color)
 	m_lights.push_back(_temp);
 }
 
+vector<Model*> Scene::GetModels(int index)
+{
+	if (index == 0)
+		return m_platform;
+	else if (index == 1)
+		return m_vehicles;
+	else if (index == 2)
+		return m_power;
+}
 void Scene::AddSpotLight(vec3 pos, vec3 dir, vec3 color, float cutOff)
 {
 	Light _temp = Light(2, dir, pos, color, cutOff);
 	m_lights.push_back(_temp);
 }
 
-void Scene::CameraFollowCar(ObjectInfo * object)
-{
-	//mat4 Matrix = object->modelMatrix;
-	//glGetFloatv(m_modelMatrix, Matrix); //inverse(m_modelMatrix);
-	vec3 modelTrans;
-	
-	modelTrans.x = object->modelMatrix[3][0];
-	modelTrans.y = -object->modelMatrix[3][1];
-	modelTrans.z = object->modelMatrix[3][2];
 
-	//cout << "CarPos - X:" << modelTrans.x << " Y: "<<  modelTrans.y << " Z: " << modelTrans.z << endl;
-	m_camera->ChangeDir(modelTrans);
-
-	modelTrans.x += 5;
-	modelTrans.y = 12;
-	modelTrans.z += 5;
-	m_camera->ChangePos(modelTrans);
-	
-	m_camera->UpdateMovement(0,0); // Remove dt and speed as inparameters, not used?
-	//vec3 cameraPos = m_camera->GetPos();
-	//cout << "CarPos - X:" << cameraPos.x  << " Y: " << cameraPos.y << " Z: " << cameraPos.z << endl;
-
-
-	
-}

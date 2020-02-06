@@ -8,15 +8,24 @@
 #include "assimp/postprocess.h"
 #include "assimp/Importer.hpp"
 #include "btBulletDynamicsCommon.h"
+#include "BulletCollision\CollisionDispatch\btCollisionWorld.h"
 #define STB_IMAGE_IMPLEMENTATION
+
+//IMGUI
+#include "../IMGUI/imgui.h"
+#include "../IMGUI/imgui_impl_opengl3.h"
+#include "../IMGUI/imgui_impl_glfw.h"
 
 
 //INCLUDES C++
+#include <windows.h>
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <vector>
 #include <math.h>
+#include <windows.h>
+#include <time.h>
 #include <cstdlib>
 #include <ctime>
 
@@ -35,12 +44,13 @@
 #include "Window.h"
 #include "Shader.h"
 #include "Camera.h"
-#include "ObjectData.h"
 #include "Model.h"
 #include "Mesh.h"
 #include "Controller.h"
 #include "Light.h"
 #include "Skybox.h"
+#include "DebugDrawer.h"
+#include "ShadowMap.h"
 
 //NAMESPACES
 using namespace std;

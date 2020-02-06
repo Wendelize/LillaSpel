@@ -8,7 +8,17 @@ class Game
 private:
 	ObjectHandler* m_objectHandler;
 	Scene* m_scene;
+
+	vector<ObjectInfo*> m_objects;
+	vector<Model*> m_platforms;
+	vector<Model*> m_cars;
+	//Debug variables
+	bool m_debug, m_toggle;
+	int m_controllerID;
+	int m_modelId;
+	float m_pos[3];
 	float m_time;
+	void Debug();
 public:
 	Game();
 	~Game();

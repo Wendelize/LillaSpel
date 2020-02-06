@@ -22,10 +22,10 @@ void Mesh::SetUpMesh()
 	glEnableVertexAttribArray(2);
 	glEnableVertexAttribArray(3);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(vertexData), (void*)0);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(vertexData), (void*)offsetof(VertexData, normal));// BUFFER_OFFSET(sizeof(float) * 3));
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(vertexData), (void*)offsetof(VertexData, uv));// BUFFER_OFFSET(sizeof(float) * 6));
-	glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(vertexData), (void*)offsetof(VertexData, color));// BUFFER_OFFSET(sizeof(float) * 9));
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*)0);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*)offsetof(VertexData, normal));// BUFFER_OFFSET(sizeof(float) * 3));
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*)offsetof(VertexData, uv));// BUFFER_OFFSET(sizeof(float) * 6));
+	glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*)offsetof(VertexData, color));// BUFFER_OFFSET(sizeof(float) * 9));
 
 	glBindVertexArray(0);
 }
@@ -65,7 +65,7 @@ void Mesh::SetTexture(Shader shader)
 
 void Mesh::SetMaterial(Shader* shader)
 {	// 4 since material struct has 4 variables we want to get to shader
-	for (unsigned int i = 0; i < 3; i++)
+	for (unsigned int i = 0; i < 4; i++)
 	{
 		string name = "";
 		if (i == 0)
@@ -82,6 +82,11 @@ void Mesh::SetMaterial(Shader* shader)
 		{
 			name = "ambient";
 			shader->SetUniform(("u_Material." + name).c_str(), m_materials.back().Ambient);
+		}
+		else
+		{
+			name = "shininess";
+			shader->SetUniform(("u_Material." + name).c_str(), m_materials.back().Shininess);
 		}
 
 		
