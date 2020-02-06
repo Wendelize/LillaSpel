@@ -8,6 +8,7 @@
 #include "assimp/postprocess.h"
 #include "assimp/Importer.hpp"
 #include "btBulletDynamicsCommon.h"
+#include "BulletCollision\CollisionDispatch\btCollisionWorld.h"
 #define STB_IMAGE_IMPLEMENTATION
 
 //IMGUI
@@ -23,6 +24,8 @@
 #include <string>
 #include <vector>
 #include <math.h>
+#include <windows.h>
+#include <time.h>
 #include <cstdlib>
 #include <ctime>
 
@@ -46,6 +49,7 @@
 #include "Controller.h"
 #include "Light.h"
 #include "Skybox.h"
+#include "DebugDrawer.h"
 #include "ShadowMap.h"
 
 //NAMESPACES

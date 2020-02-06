@@ -4,23 +4,20 @@ Game::Game()
 {
 	m_objectHandler = new ObjectHandler();
 	m_scene = new Scene();
-	m_scene->Init();
+	m_scene->Init(); // H�r skapas modellerna
 	m_time = 0;
 
 	m_debug = false;
 	m_toggle = false;
+	m_platforms = m_scene->GetModels(0);
+	m_cars = m_scene->GetModels(1); 
 
-	m_objectHandler->AddPlayer(vec3(2, 0, 5), 0, 2, vec3(1, 1 ,0));
-	m_objectHandler->SetScale(0, vec3(0.3));
-	m_objectHandler->AddPlayer(vec3(2, 0, 0), 1, 1, vec3(0, 1, 0));
-	m_objectHandler->SetScale(1, vec3(0.08));
-	m_objectHandler->AddPlayer(vec3(-2, 0, 0), 2, 3, vec3(0, 0, 1));
-	m_objectHandler->SetScale(2, vec3(0.01));
-	m_objectHandler->AddPlayer(vec3(-2, 0, 5), 3, 0, vec3(1, 0, 1));
-	m_objectHandler->SetScale(3, vec3(1));
-	
+	m_objectHandler->AddPlatform(0, m_platforms[0]); // Passa modell
 
-	m_objectHandler->AddPlatform(0);
+	m_objectHandler->AddPlayer(vec3(0, 7, 2), 0, 0, vec3(0, 0, 1), m_cars[0]); // Passa modell
+	m_objectHandler->AddPlayer(vec3(-2, 7, -2), 1, 0, vec3(0, 1, 0), m_cars[0]); // Passa modell
+	m_objectHandler->AddPlayer(vec3(2, 7, -2), 2, 0, vec3(1, 1, 0), m_cars[0]); // Passa modell
+
 }
 
 Game::~Game()
@@ -59,7 +56,7 @@ void Game::Update(float dt)
 void Game::Render()
 {
 	m_objects = m_objectHandler->GetObjects();
-	m_scene->Render(m_objects);
+	m_scene->Render(m_objects, m_objectHandler->GetWorld());
 
 	if (m_debug)
 	{

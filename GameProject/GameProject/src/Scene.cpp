@@ -2,12 +2,11 @@
 
 Scene::Scene()
 {
-	m_window = new Window(1500, 900);
+	m_window = new Window(1920, 1080);
 	m_modelShader = new Shader("src/Shaders/VertexShader.glsl", "src/Shaders/FragmentShader.glsl");
 	m_skyboxShader = new Shader("src/Shaders/VertexSkyboxShader.glsl", "src/Shaders/FragmentSkyboxShader.glsl");
-	m_camera = new Camera({0, 12, -8});
+	m_camera = new Camera({0, 32, 45});
 	m_skybox = new Skybox();
-
 	m_modelMatrix = mat4(1.0);
 	m_projMatrix = mat4(1.0);
 	m_viewMatrix = mat4(1.0);
@@ -51,10 +50,7 @@ void Scene::Init()
 	m_viewMatrix = m_camera->GetView();
 	m_modelMatrix = mat4(1.0);
 
-	/*ImGui_ImplOpenGL3_NewFrame();
-	ImGui_ImplGlfw_NewFrame();
-	ImGui::NewFrame();*/
-
+	m_platform.push_back(new Model("src/Models/platform2.obj"));
 	// Veichles
 	// racingcar scale 0.5 
 	m_vehicles.push_back(new Model("src/Models/Low-Poly-Racing-Car-Grey.obj")); 
@@ -68,7 +64,6 @@ void Scene::Init()
 	m_vehicles.push_back(new Model("src/Models/CAT.obj")); 
 
 	// Platforms
-	m_platform.push_back(new Model("src/Models/Platform3.obj"));
 
 	// Powers
 
@@ -120,7 +115,7 @@ void Scene::LightToShader()
 
 }
 
-void Scene::Render(vector<ObjectInfo*> objects)
+void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
 {
 	/* Render here */
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -136,14 +131,39 @@ void Scene::Render(vector<ObjectInfo*> objects)
 	// Draw all objects
 	RetardRender(m_modelShader, objects);
 
+	SHORT keyState = GetAsyncKeyState(VK_LCONTROL);
+	if (keyState < 0)
+	{
+		if (!m_toggle)
+		{
+			if (m_debug)
+				m_debug = false;
+			else
+				m_debug = true;
+		}
+		m_toggle = true;
+	}
+	else
+	{
+		m_toggle = false;
+	}
+
+	if (m_debug)
+		world->debugDrawWorld();
+
 	m_skyboxShader->UseShader();
 	m_skyboxShader->SetUniform("u_View", mat4(mat3(m_camera->GetView())));
 	m_skyboxShader->SetUniform("u_Projection", m_projMatrix);
 	m_skybox->DrawSkybox(m_skyboxShader);
 
+
+
 	/* Poll for and process events */
 	glfwPollEvents();
 
+	
+	/* Swap front and back buffers */
+	//glfwSwapBuffers(m_window->m_window);
 	
 }
 
@@ -177,6 +197,8 @@ void Scene::RetardRender(Shader * shader, vector<ObjectInfo*> objects)
 			break;
 		}
 	}
+
+
 }
 
 void Scene::SetWindowSize(int width, int height)
@@ -217,8 +239,19 @@ void Scene::AddDirLight(vec3 dir, vec3 color)
 	m_lights.push_back(_temp);
 }
 
+vector<Model*> Scene::GetModels(int index)
+{
+	if (index == 0)
+		return m_platform;
+	else if (index == 1)
+		return m_vehicles;
+	else if (index == 2)
+		return m_power;
+}
 void Scene::AddSpotLight(vec3 pos, vec3 dir, vec3 color, float cutOff)
 {
 	Light _temp = Light(2, dir, pos, color, cutOff);
 	m_lights.push_back(_temp);
 }
+
+
