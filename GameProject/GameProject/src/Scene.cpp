@@ -13,7 +13,7 @@ Scene::Scene()
 	m_projMatrix = mat4(1.0);
 	m_viewMatrix = mat4(1.0);
 
-
+	//glEnable(GL_CULL_FACE);
 }
 
 Scene::~Scene()
@@ -126,6 +126,8 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
 	// Draw shadowmap
+
+	//glCullFace(GL_FRONT);
 	m_shadowMap->CalcLightSpaceMatrix(m_lights);
 	glViewport(0, 0, 1024, 1024);
 	glBindFramebuffer(GL_FRAMEBUFFER, m_shadowMap->GetFBO());
@@ -133,6 +135,7 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
 	glActiveTexture(GL_TEXTURE0);
 	RetardRender(m_shadowMap->GetShader(), objects);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	//glCullFace(GL_BACK);
 
 
 	m_modelShader->UseShader();
