@@ -14,7 +14,7 @@ ShadowMap::~ShadowMap()
 
 bool ShadowMap::Init(unsigned int windowWidth, unsigned int windowHeight)
 {
-	glGenFramebuffers(1, &m_FBO);
+    glGenFramebuffers(1, &m_FBO);
     //glBindFramebuffer(GL_FRAMEBUFFER, m_FBO);
 
     glGenTextures(1, &m_shadowMap);
@@ -29,8 +29,8 @@ bool ShadowMap::Init(unsigned int windowWidth, unsigned int windowHeight)
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_shadowMap, 0);
 
 
-       glReadBuffer(GL_NONE);
-       glReadBuffer(GL_NONE);
+    glReadBuffer(GL_NONE);
+    glReadBuffer(GL_NONE);
 
 
     GLenum Status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
@@ -63,10 +63,10 @@ void ShadowMap::CalcLightSpaceMatrix(vector<Light> light)
     {
         if (light.at(i).GetType() == 0) {
             mat4 _lightProj, _lightView, _lightModel;
-            _lightProj = ortho(-30.0f, 30.0f, -30.0f, 30.0f, 1.0f, 7.5f);
+            _lightProj = ortho(-20.0f, 20.0f, -20.0f, 20.0f, 0.1f, 10.0f);
             _lightView = lookAt(light.at(i).GetPos(), vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
             //_lightModel = mat4(1.0);
-            m_lightSpaceMatrix = _lightProj * _lightView ;
+            m_lightSpaceMatrix = _lightProj * _lightView;
             m_shadowShader->UseShader();
             m_shadowShader->SetUniform("u_LSP", m_lightSpaceMatrix);
 

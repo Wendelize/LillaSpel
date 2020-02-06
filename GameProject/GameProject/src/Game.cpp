@@ -7,7 +7,7 @@ Game::Game()
 	m_scene->Init();
 	m_time = 0;
 
-	m_objectHandler->AddPlayer(vec3(2, 0, 5), 0, 2, vec3(1, 2 ,0));
+	m_objectHandler->AddPlayer(vec3(2, 0, 5), 0, 0, vec3(1, 2 ,0));
 	m_objectHandler->SetScale(0, vec3(0.3));
 	//m_objectHandler->AddPlayer(vec3(-1, 1, 0), 1, 3, vec3(1, 1, 1));
 

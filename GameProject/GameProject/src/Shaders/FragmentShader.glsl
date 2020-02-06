@@ -48,33 +48,28 @@ uniform sampler2D u_ShadowMap;
 // SHADOWS (only from driectional-light)
 float CalcShadow(Light light, vec4 positionLightSpace, vec3 p, vec3 n, vec3 eye)
 {
-    vec3 projCoords = (positionLightSpace.xyz / positionLightSpace.w);
-    projCoords = projCoords  * 0.5 + 0.5;
+    vec3 projCoords = (positionLightSpace.xyz / positionLightSpace.w) * 0.5 + 0.5;
     float closestDepth = texture(u_ShadowMap, projCoords.xy).r; 
     float currentDepth = projCoords.z;
 
-    vec3 lightDir = (light.dir - p);
-    float _length = length(lightDir) - 0.002f;
-    //float bias = max(0.05 * (1.0 - dot(n, normalize(lightDir))), 0.005);
+    vec3 lightDir = normalize(light.pos - p);
+    float bias = max(0.05 * (1.0 - dot(n, lightDir)), 0.005);
     //float shadow = currentDepth > closestDepth  ? 1.0 : 0.0;
-    float shadow =1.0;
-    if(_length <= closestDepth){
-        shadow = 0.0;}
 
-//    float shadow = 0.0;
-//    vec2 texelSize = 1.0 / textureSize(u_ShadowMap, 0);
-//    for(int x = -1; x <= 1; ++x)
-//    {
-//        for(int y = -1; y <= 1; ++y)
-//        {
-//            float pcfDepth = texture(u_ShadowMap, projCoords.xy + vec2(x, y) * texelSize).r; 
-//            shadow += currentDepth - bias > pcfDepth  ? 1.0 : 0.0;        
-//        }    
-//    }
-//    shadow /= 9.0;
-//
-//    if(projCoords.z > 1.0)
-//        shadow = 0.0;
+    float shadow = 0.0;
+    vec2 texelSize = 1.0 / textureSize(u_ShadowMap, 0);
+    for(int x = -1; x <= 1; ++x)
+    {
+        for(int y = -1; y <= 1; ++y)
+        {
+            float pcfDepth = texture(u_ShadowMap, projCoords.xy + vec2(x, y) * texelSize).r; 
+            shadow += currentDepth - bias > pcfDepth  ? 1.0 : 0.0;        
+        }    
+    }
+    shadow /= 9.0;
+
+    if(projCoords.z > 1.0)
+        shadow = 0.0;
         
     return shadow;
 }
@@ -107,7 +102,7 @@ vec3 CalcSpecular(Light light, vec3 lightVec, vec3 lookVec, vec3 n, bool blinn){
 
 // DIRLIGHT
 vec3 CalcDirLight(Light light, vec3 p, vec3 n, vec3 eye, bool blinn, bool shadow){
-	vec3 lightVec = normalize(-light.dir );
+	vec3 lightVec = normalize(-light.dir);
 	vec3 lookVec = normalize(eye - p);
 
 	vec3 ambient = light.ambient * light.color * u_Material.ambient * vi.color;
@@ -213,7 +208,6 @@ void main(){
     float c = CalcShadow(u_Lights[0], vi.positionLightSpace, vi.position, vi.normal, u_ViewPos);
     vec3 m = vi.positionLightSpace.xyz;
     //fragmentColor = vec4(vec3(texture(u_ShadowMap, vi.texCoords).x), 1.0);
-    //fragmentColor = vec4(vec3(1.0f - c), 1.0f);
 //	fragmentColor = vec4(m, 1.0);
-    fragmentColor = vec4(gl_FragCoord);
+    fragmentColor = vec4(result, 1.0);
 }
