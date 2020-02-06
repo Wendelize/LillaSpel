@@ -12,6 +12,7 @@ private:
 	Mesh ProcessMesh(aiMesh* mesh, const aiScene* scene);
 	vector<TextureData> LoadMaterialTextures(aiMaterial* mat, aiTextureType type,
 		string typeName);
+	Material loadMaterial(aiMaterial* mat);
 
 public:
 	Model(const char * path);

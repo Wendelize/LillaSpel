@@ -19,7 +19,7 @@ private:
 	int m_width, m_height, m_nrChannels;
 
 	GLsizeiptr vertexBufferSizeSkybox()const {
-		return (m_nrOfVSkybox * sizeof(vertexData));
+		return (m_nrOfVSkybox * sizeof(VertexData));
 	}
 
 	GLsizeiptr indexBufferSizeSkybox()const {

@@ -12,6 +12,13 @@ struct TextureData {
 	string type;
 };
 
+struct Material {
+	vec3 Diffuse;
+	vec3 Specular;
+	vec3 Ambient;
+	float Shininess;
+};
+
 class Mesh
 {
 private:
@@ -29,11 +36,13 @@ public:
 	vector<VertexData> m_vertices;
 	vector<unsigned int> m_indices;
 	vector<TextureData> m_textures;
+	vector<Material> m_materials;
 
-	Mesh(vector<VertexData> vertices, vector<unsigned int> indices, vector<TextureData> textures);
+	Mesh(vector<VertexData> vertices, vector<unsigned int> indices, vector<TextureData> textures, vector<Material> materials);
 	~Mesh();
 
 	void SetTexture(Shader shader);
+	void SetMaterial(Shader* shader);
 	void Draw(Shader* shader);
 
 

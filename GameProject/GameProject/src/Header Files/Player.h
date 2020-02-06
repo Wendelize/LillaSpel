@@ -39,8 +39,10 @@ public:
 	void SetColor(vec3 color);
 	float GetWeight();
 	void SetWeight(float weight);
+	void SetScale(vec3 scale);
 	int GetControllerID();
 	void SetControllerID(int id);
+	vec3 GetDirection();
 	ObjectInfo* GetObjectInfo();
 	btRigidBody* GetBody();
 	btVector3 GetCurrentPos();

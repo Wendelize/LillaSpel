@@ -207,6 +207,11 @@ void Player::SetWeight(float weight)
 	m_weight = weight;
 }
 
+void Player::SetScale(vec3 scale)
+{
+	m_transform->SetScale(scale.x, scale.y, scale.z);
+}
+
 int Player::GetControllerID()
 {
 	return m_controllerID;
@@ -215,6 +220,11 @@ int Player::GetControllerID()
 void Player::SetControllerID(int id)
 {
 	m_controllerID = id;
+}
+
+vec3 Player::GetDirection()
+{
+	return m_transform->GetForward();
 }
 
 ObjectInfo* Player::GetObjectInfo()

@@ -52,6 +52,27 @@
     <ClCompile Include="src\Header Files\DebugDrawer.cpp">
       <Filter>Src</Filter>
     </ClCompile>
+    <ClCompile Include="src\IMGUI\imgui.cpp">
+      <Filter>IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\IMGUI\imgui_demo.cpp">
+      <Filter>IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\IMGUI\imgui_draw.cpp">
+      <Filter>IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\IMGUI\imgui_impl_glfw.cpp">
+      <Filter>IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\IMGUI\imgui_impl_opengl3.cpp">
+      <Filter>IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\IMGUI\imgui_widgets.cpp">
+      <Filter>IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ShadowMap.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Header Files\Camera.h">
@@ -105,18 +126,51 @@
     <ClInclude Include="src\Header Files\DebugDrawer.h">
       <Filter>Header</Filter>
     </ClInclude>
+    <ClInclude Include="src\IMGUI\imconfig.h">
+      <Filter>IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\IMGUI\imgui.h">
+      <Filter>IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\IMGUI\imgui_impl_glfw.h">
+      <Filter>IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\IMGUI\imgui_impl_opengl3.h">
+      <Filter>IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\IMGUI\imgui_internal.h">
+      <Filter>IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\IMGUI\imstb_rectpack.h">
+      <Filter>IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\IMGUI\imstb_textedit.h">
+      <Filter>IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\IMGUI\imstb_truetype.h">
+      <Filter>IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Header Files\ShadowMap.h">
+      <Filter>Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Shaders\FragmentShader.glsl">
-      <Filter>Shader</Filter>
-    </None>
-    <None Include="src\Shaders\VertexShader.glsl">
       <Filter>Shader</Filter>
     </None>
     <None Include="src\Shaders\FragmentSkyboxShader.glsl">
       <Filter>Shader</Filter>
     </None>
     <None Include="src\Shaders\VertexSkyboxShader.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="src\Shaders\ShadowFS.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="src\Shaders\VertexShader.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="src\Shaders\ShadowVS.glsl">
       <Filter>Shader</Filter>
     </None>
   </ItemGroup>
@@ -129,6 +183,9 @@
     </Filter>
     <Filter Include="Shader">
       <UniqueIdentifier>{7a8efa00-ef33-410f-9022-e3aef01fe013}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="IMGUI">
+      <UniqueIdentifier>{4f5c5f64-7647-40a7-8821-ed53f58d2dbb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

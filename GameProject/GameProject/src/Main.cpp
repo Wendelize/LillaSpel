@@ -2,7 +2,6 @@
 #include "Header Files/Transform.h"
 #include "Header Files/Game.h"
 #include "Header Files/Scene.h"
-#include "Header Files/Transform.h"
 
 Game* GAME;
 Transform* tran;
@@ -20,14 +19,20 @@ int main(void)
 
 	float _deltaTime = 0.0, _curTime = 0.0, _lastTime = 0.0;
 	GLFWwindow* wndw = GAME->GetWindow();
+
 	while (!glfwWindowShouldClose(wndw))
 	{	
 		_curTime = (float)glfwGetTime();
 		_deltaTime = _curTime - _lastTime;
 		_lastTime = _curTime;
+
 		GAME->Update(_deltaTime);
 		GAME->Render();
 	}
+	
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
 
 	glfwTerminate();
 	

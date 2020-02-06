@@ -18,19 +18,19 @@ ObjectHandler::ObjectHandler()
 
 ObjectHandler::~ObjectHandler()
 {
-	for (size_t i = 0; i < m_temp.size(); i++)
+	for (size_t i = 0; i < m_structs.size(); i++)
 	{
-		delete m_temp.at(i);
+		delete m_structs.at(i);
 	}
-	m_temp.clear();
+	m_structs.clear();
 
-	for (size_t i = 0; i < m_players.size(); i++)
+	for (uint i = 0; i < m_players.size(); i++)
 	{
 		delete m_players.at(i);
 	}
 	m_players.clear();
 
-	for (size_t i = 0; i < m_platforms.size(); i++)
+	for (uint i = 0; i < m_platforms.size(); i++)
 	{
 		delete m_platforms.at(i);
 	}
@@ -108,7 +108,7 @@ void ObjectHandler::Update(float dt)
 
 void ObjectHandler::AddPlayer(vec3 pos, int controllerID, int modelId, vec3 color, Model* model)
 {
-	// Till players konstruktor skall meshens vertices passas + ID för att identifiera vilken modell som tillhör objektet!
+	// Till players konstruktor skall meshens vertices passas + ID fï¿½r att identifiera vilken modell som tillhï¿½r objektet!
 	m_players.push_back(new Player(model, modelId, pos));
 	m_players.back()->SetControllerID(controllerID);
 	m_players.back()->SetModelId(modelId);
@@ -118,20 +118,19 @@ void ObjectHandler::AddPlayer(vec3 pos, int controllerID, int modelId, vec3 colo
 
 }
 
-void ObjectHandler::RemovePlayer(int controllerID)
+void ObjectHandler::SetScale(int id, vec3 scale)
 {
-	for (uint i = 0; i < m_players.size(); i++)
-	{
-		if (m_players[i]->GetControllerID() == controllerID)
-		{
-			m_players.erase(m_players.begin(), m_players.begin() + i);
-		}
-	}
+	m_players.at(id)->SetScale(scale);
+}
+
+void ObjectHandler::RemovePlayer(int index)
+{
+	m_players.erase(m_players.begin() + index);
 }
 
 void ObjectHandler::AddPlatform(int modelId, Model* model)
 {
-	// Till platforms konstruktor skall meshens vertices passas + ID för att identifiera vilken modell som tillhör objektet!
+	// Till platforms konstruktor skall meshens vertices passas + ID fï¿½r att identifiera vilken modell som tillhï¿½r objektet!
 	m_platforms.push_back(new Platform(model, modelId));
 	m_platforms.back()->SetModelId(modelId);
 
@@ -153,22 +152,32 @@ void ObjectHandler::RemovePowerUp()
 	// to be continued
 }
 
+int ObjectHandler::GetNumPlayers()
+{
+	return m_players.size();
+}
+
+vec3 ObjectHandler::GetPlayerDirection(int playerId)
+{
+	return m_players[playerId]->GetDirection();
+}
+
 vector<ObjectInfo*> ObjectHandler::GetObjects()
 {
-	for (size_t i = 0; i < m_temp.size(); i++)
+	for (size_t i = 0; i < m_structs.size(); i++)
 	{
-		delete m_temp.at(i);
+		delete m_structs.at(i);
 	}
-	m_temp.clear();
+	m_structs.clear();
 
 	for (uint i = 0; i < m_players.size(); i++)
 	{
-		m_temp.push_back(m_players[i]->GetObjectInfo());
+		m_structs.push_back(m_players[i]->GetObjectInfo());
 	}
 
 	for (uint i = 0; i < m_platforms.size(); i++)
 	{
-		m_temp.push_back(m_platforms[i]->GetObjectInfo());
+		m_structs.push_back(m_platforms[i]->GetObjectInfo());
 	}
 
 	//for (int i = 0; i < m_powerUps.size; i++)
@@ -176,7 +185,7 @@ vector<ObjectInfo*> ObjectHandler::GetObjects()
 	//	  temp.push_back(m_powerUps[i]->GetObject());
 	//}
 
-	return m_temp;
+	return m_structs;
 }
 
 btDiscreteDynamicsWorld* ObjectHandler::GetWorld()
