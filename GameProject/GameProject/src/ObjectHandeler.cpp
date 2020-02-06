@@ -6,7 +6,7 @@ ObjectHandler::ObjectHandler()
 	m_broadphase = new btDbvtBroadphase();
 	m_collisionConfiguration = new btDefaultCollisionConfiguration();
 	m_dispatcher = new btCollisionDispatcher(m_collisionConfiguration);
-	m_solver = new btSequentialImpulseConstraintSolver;
+	m_solver = new btSequentialImpulseConstraintSolver();
 	m_dynamicsWorld = new btDiscreteDynamicsWorld(m_dispatcher, m_broadphase, m_solver, m_collisionConfiguration);
 
 	m_dynamicsWorld->setGravity(btVector3(0, -10.f, 0));
@@ -99,6 +99,9 @@ void ObjectHandler::Update(float dt)
 		int isPlayer = i - m_platforms.size();
 		if (isPlayer >= 0) {
 			m_players[isPlayer]->Update(dt);
+			if (m_players[isPlayer]->GetCurrentPos().y() < -20.f) {
+				m_players[isPlayer]->SetPos(vec3(rand() % 10 - 10, 3, rand() % 10 - 10));
+			}
 		}
 	}
 }

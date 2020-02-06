@@ -13,7 +13,9 @@ Game::Game()
 	m_objectHandler->AddPlatform(0, platforms[0]); // Passa modell
 
 	m_objectHandler->AddPlayer(vec3(0, 7, 2), 0, 0, vec3(0, 0, 1), cars[0]); // Passa modell
-	m_objectHandler->AddPlayer(vec3(0, 7, -2), 1, 0, vec3(0, 1, 0), cars[0]); // Passa modell
+	m_objectHandler->AddPlayer(vec3(-2, 7, -2), 1, 0, vec3(0, 1, 0), cars[0]); // Passa modell
+	m_objectHandler->AddPlayer(vec3(2, 7, -2), 2, 0, vec3(1, 1, 0), cars[0]); // Passa modell
+
 }
 
 Game::~Game()

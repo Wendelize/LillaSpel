@@ -18,6 +18,7 @@
 #include <vector>
 #include <math.h>
 #include <windows.h>
+#include <time.h>
 
 //MEMORY LEAK DETECTION
 #define _CRTDBG_MAP_ALLOC

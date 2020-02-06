@@ -11,6 +11,7 @@ private:
 	int m_modelId;
 	float m_weight;
 	float m_speed;
+	float m_restitution;
 	vec3 m_color;
 	Controller* m_controller;
 	Transform* m_transform;
@@ -43,5 +44,6 @@ public:
 	ObjectInfo* GetObjectInfo();
 	btRigidBody* GetBody();
 	btVector3 GetCurrentPos();
+	void SetPos(vec3 pos);
 
 };

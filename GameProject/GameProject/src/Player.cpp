@@ -4,7 +4,11 @@ Player::Player(Model* model, int modelId, vec3 pos)
 {
 	m_controller = new Controller;
 	m_transform = new Transform;
-	m_transform->SetScale(0.5, 0.5, 0.5);
+
+	float radius = 1.;
+	float scale = 0.609;
+	m_restitution = 1.6699;
+	m_transform->SetScale(scale, scale, scale);
 
 	//m_transform->SetTranslation(pos);
 	m_name = "";
@@ -14,8 +18,8 @@ Player::Player(Model* model, int modelId, vec3 pos)
 	m_weight = 0.f;
 	m_speed = 0.f;
 
-	/* ConvexHullShape for car. Very precise but expensive since it creates A LOT of lines.
-	vector<btVector3> points;
+	// ConvexHullShape for car. Very precise but expensive since it creates A LOT of lines.
+	/*vector<btVector3> points;
 
 	for (int i = 0; i < model->GetMeshes().size(); i++)
 	{
@@ -27,16 +31,24 @@ Player::Player(Model* model, int modelId, vec3 pos)
 	
 	m_carShape = new btConvexHullShape(&points[0].getX(), points.size(), sizeof(btVector3));
 	*/
-	// m_carShape = new btBoxShape(btVector3(btScalar(0.5f), btScalar(0.5f), btScalar(0.5f))); // BoxShape
+	if (rand() % 1 + 0 > 0.5) {
+		m_carShape = new btBoxShape(btVector3(btScalar(0.5f), btScalar(0.5f), btScalar(0.5f))); // BoxShape
 
-	m_carShape = new btSphereShape(1.);
+	}
+	else {
+		m_carShape = new btSphereShape(radius);
 
-	m_btTransform = new btTransform;
+	}
+//	m_carShape = new btBoxShape(btVector3(btScalar(0.5f), btScalar(0.5f), btScalar(0.5f))); // BoxShape
+	
+	//m_carShape = new btSphereShape(radius);
+
+	m_btTransform = new btTransform();
 	m_btTransform->setIdentity();
 
 	btScalar mass(1000.f);
 	m_btTransform->setOrigin(btVector3(pos.x,pos.y,pos.z));
-	vec3 testPos = vec3(m_btTransform->getOrigin().x(), m_btTransform->getOrigin().y()-2.f, m_btTransform->getOrigin().z());
+	vec3 testPos = vec3(m_btTransform->getOrigin().x(), m_btTransform->getOrigin().y()- radius * scale, m_btTransform->getOrigin().z());
 	m_transform->SetTranslation(testPos);
 	//rigidbody is dynamic if and only if mass is non zero, otherwise static
 	bool isDynamic = (mass != 0.f);
@@ -52,8 +64,9 @@ Player::Player(Model* model, int modelId, vec3 pos)
 	m_body = new btRigidBody(rbInfo);
 	m_body->setLinearVelocity(btVector3(0.0f, 0.0f, 0.0f));
 	m_body->setAngularVelocity(btVector3(0.0f, 0.0f, 0.0f));
+	m_body->getCollisionShape()->setLocalScaling(btVector3(scale, scale, scale));
 	m_body->clearForces();
-	m_body->setRestitution(2);
+	m_body->setRestitution(m_restitution);
 	m_currentPos = m_btTransform->getOrigin();
 	m_body->setDamping(0.1,0.9);
 }
@@ -74,7 +87,7 @@ void Player::Update(float dt)
 	vec3 direction(0, 0, 0);
 	float rotationSpeed = 2.f;
 	m_speed = 0;
-	if (glfwJoystickPresent(m_controllerID) == 1)
+	if (glfwJoystickPresent(m_controllerID) == 1 && m_body->getWorldTransform().getOrigin().y() < 4.0f && m_body->getWorldTransform().getOrigin().y() > -1.0f)
 	{
 		if (m_controller->ButtonOptionsIsPressed(m_controllerID))
 		{
@@ -85,13 +98,13 @@ void Player::Update(float dt)
 		if (m_controller->ButtonAIsPressed(m_controllerID))
 		{
 			//Acceleration
-			m_speed = 400000.f;
+			m_speed = 2000000.f;
 
 		}
 
 		if (m_controller->ButtonXIsPressed(m_controllerID))
 		{
-			m_speed = -300000.f;
+			m_speed = -1800000.f;
 		}
 
 		//Triggers
@@ -99,19 +112,24 @@ void Player::Update(float dt)
 		{
 			//Left trigger pressed
 			//Power-Up
-			m_speed = 800000.f;
+			m_speed = 2800000.f;
 		}
 		if (m_controller->GetLefTrigger(m_controllerID) != -1)
 		{
 			//Left trigger pressed
 			//Power-Up
-			m_speed = -600000.f;
+			m_speed = -2500000.f;
 		}
 
-		//Left stick horisontal input
+		// Left stick horisontal input
 		if (m_controller->GetLeftStickHorisontal(m_controllerID) > 0.2f || m_controller->GetLeftStickHorisontal(m_controllerID) < -0.2f)
-			rotate.y -= m_controller->GetLeftStickHorisontal(m_controllerID);
-
+		{
+			if (m_speed < 0)
+				rotate.y -= m_controller->GetLeftStickHorisontal(m_controllerID) * -1.0;
+			else
+				rotate.y -= m_controller->GetLeftStickHorisontal(m_controllerID);
+		}
+		
 		//Set rotationSpeed depending on your speed, less speed--> Can turn less. 
 		if (m_body->getLinearVelocity().length() < 3.f)
 		{
@@ -124,29 +142,6 @@ void Player::Update(float dt)
 	m_body->applyForce(directionBt * -m_speed * dt , m_body->getWorldTransform().getOrigin());
 	m_body->applyDamping(dt);
 
-
-	if (m_speed < 0.2 && m_speed > -0.2)
-	{
-		m_speed = 0;
-	}
-	//	m_transform->Translate(  direction* m_speed* dt);
-
-
-	btVector3 tempMove = { direction.x,0,direction.z };
-	btVector3 tempMove2 = tempMove * m_body->getLinearVelocity();
-	m_body->setLinearVelocity((tempMove * 10 * -m_speed) + btVector3(tempMove2.x(), m_body->getLinearVelocity().y() ,tempMove2.z()));
-	// m_body->applyForce(m_speed * 500 * tempMove, m_body->getWorldTransform().getOrigin());
-
-	if (vec2( m_body->getLinearVelocity().x(), m_body->getLinearVelocity().z()).length() > 7) {
-
-		vec2 temp = normalize(vec2(m_body->getLinearVelocity().x(), m_body->getLinearVelocity().z()));
-
-	//	temp = vec2(m_body->getLinearVelocity().x(), m_body->getLinearVelocity().z()) / 
-		cout << "temp: " << temp.x << ", " << temp.y << endl;
-		m_body->setLinearVelocity(btVector3(temp.x, m_body->getLinearVelocity().y(), temp.y));
-
-	}
-	cout << tempMove.x() << ", " << tempMove.y()<< ", " << tempMove.z() << endl;
 	btVector3 moveVector = m_body->getWorldTransform().getOrigin() - m_currentPos;
 	m_transform->Translate(vec3(moveVector.x(), moveVector.y(), moveVector.z()));
 	m_currentPos = m_body->getWorldTransform().getOrigin();
@@ -236,4 +231,11 @@ btRigidBody* Player::GetBody()
 btVector3 Player::GetCurrentPos()
 {
 	return m_body->getWorldTransform().getOrigin();
+}
+
+void Player::SetPos(vec3 pos)
+{
+	m_body->getWorldTransform().setOrigin(btVector3(pos.x, pos.y, pos.z));
+	m_body->setLinearVelocity(btVector3(0,0,0));
+
 }

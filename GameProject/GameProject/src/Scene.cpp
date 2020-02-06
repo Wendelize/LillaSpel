@@ -2,10 +2,10 @@
 
 Scene::Scene()
 {
-	m_window = new Window(1500, 900);
+	m_window = new Window(1920, 1080);
 	m_modelShader = new Shader("src/Shaders/VertexShader.glsl", "src/Shaders/FragmentShader.glsl");
 	m_skyboxShader = new Shader("src/Shaders/VertexSkyboxShader.glsl", "src/Shaders/FragmentSkyboxShader.glsl");
-	m_camera = new Camera({0, 0.7, 20});
+	m_camera = new Camera({0, 32, 45});
 	m_skybox = new Skybox();
 	m_modelMatrix = mat4(1.0);
 	m_projMatrix = mat4(1.0);
@@ -46,20 +46,20 @@ void Scene::Init()
 	m_viewMatrix = m_camera->GetView();
 	m_modelMatrix = mat4(1.0);
 
+	m_platform.push_back(new Model("src/Models/platform3.obj"));
 	// Veichles
 	m_vehicles.push_back(new Model("src/Models/Low-Poly-Racing-Car.obj"));
 	m_vehicles.push_back(new Model("src/Models/ape.obj"));
 
 	// Platforms
-	m_platform.push_back(new Model("src/Models/Platform2.obj"));
 
 	// Powers
 
 	// Lights
 	AddLights(DirLight, vec3(0, -1, 0), vec3(1));
-	AddLights(SpotLight, vec3(0, 4, 0), vec3(0.6, 0, 0.3));
-	AddLights(PointLight, vec3(5, 5, -3), vec3(0, 1, 0));
-	AddLights(PointLight, vec3(-7, 3, -3), vec3(1, 0.0, 1));
+	AddLights(SpotLight, vec3(0, 4, 0), vec3(1, 1, 1));
+	AddLights(PointLight, vec3(5, 5, -3), vec3(1, 1, 1));
+	AddLights(PointLight, vec3(-7, 3, -3), vec3(1, 1, 1));
 }
 
 void Scene::UseShader(Shader shader)
