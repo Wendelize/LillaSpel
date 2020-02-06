@@ -215,5 +215,5 @@ void main(){
     //fragmentColor = vec4(vec3(texture(u_ShadowMap, vi.texCoords).x), 1.0);
     //fragmentColor = vec4(vec3(1.0f - c), 1.0f);
 //	fragmentColor = vec4(m, 1.0);
-    fragmentColor = vec4(result, 1.0);
+    fragmentColor = vec4(gl_FragCoord);
 }

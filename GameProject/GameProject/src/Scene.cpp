@@ -212,7 +212,7 @@ void Scene::RetardRender(Shader * shader, vector<ObjectInfo*> objects)
 		//	shader->SetUniform("u_Model", _Temp);
 		//}else
 		shader->SetUniform("u_Model", objects[i]->modelMatrix);
-		shader->SetUniform("u_PlayerColor", objects[i]->hue);
+		//shader->SetUniform("u_PlayerColor", objects[i]->hue);
 		switch (objects[i]->typeId)
 		{
 		case 0:
