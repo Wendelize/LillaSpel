@@ -11,6 +11,7 @@ private:
 	int m_modelId;
 	float m_weight;
 	float m_speed;
+	vec3 m_scale;
 	vec3 m_color;
 	Controller* m_controller;
 	Transform* m_transform;
@@ -32,6 +33,7 @@ public:
 	void SetColor(vec3 color);
 	float GetWeight();
 	void SetWeight(float weight);
+	vec3 GetScale();
 	void SetScale(vec3 scale);
 	int GetControllerID();
 	void SetControllerID(int id);

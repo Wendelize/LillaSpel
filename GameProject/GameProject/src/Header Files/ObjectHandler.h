@@ -23,7 +23,15 @@ public:
 	void AddPowerUp();
 	void RemovePowerUp();
 	int GetNumPlayers();
-	vec3 GetPlayerDirection(int playerId);
+	vec3 GetPlayerDirection(int index);
+	int GetPlayerControllerID(int index);
+	void SetPlayerControllerID(int index, int id);
+	int GetPlayerModelID(int index);
+	void SetPlayerModelID(int index, int id);
+	vec3 GetPlayerColor(int index);
+	void SetPlayerColor(int index, vec3 color);
+	vec3 GetPlayerScale(int index);
+	void SetPlayerScale(int index, vec3 scale);
 	vector<ObjectInfo*> GetObjects();
 };
 

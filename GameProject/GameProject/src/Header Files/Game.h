@@ -12,10 +12,13 @@ private:
 
 	vector<ObjectInfo*> m_objects;
 
-	//Debug variables
+	//Debug
 	bool m_debug, m_toggle;
-	float pos[3];
+	int m_controllerID;
+	int m_modelId;
+	float m_pos[3];
 	float m_time;
+	void Debug();
 public:
 	Game();
 	~Game();

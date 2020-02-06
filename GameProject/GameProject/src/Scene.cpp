@@ -190,6 +190,21 @@ GLFWwindow* Scene::GetWindow()
 	return m_window->m_window;
 }
 
+int Scene::GetNumPlayerModels()
+{
+	return m_vehicles.size();
+}
+
+int Scene::GetNumPlatformModels()
+{
+	return m_platform.size();
+}
+
+int Scene::GetNumPowerUpModels()
+{
+	return m_power.size();
+}
+
 void Scene::AddPointLight(vec3 pos, vec3 color)
 {
 	Light _temp = Light(1, pos, pos, color);

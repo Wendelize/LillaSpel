@@ -50,6 +50,7 @@ void ObjectHandler::SetScale(int id, vec3 scale)
 
 void ObjectHandler::RemovePlayer(int index)
 {
+	delete m_players.at(index);
 	m_players.erase(m_players.begin() + index);
 }
 
@@ -79,9 +80,49 @@ int ObjectHandler::GetNumPlayers()
 	return m_players.size();
 }
 
-vec3 ObjectHandler::GetPlayerDirection(int playerId)
+vec3 ObjectHandler::GetPlayerDirection(int index)
 {
-	return m_players[playerId]->GetDirection();
+	return m_players[index]->GetDirection();
+}
+
+int ObjectHandler::GetPlayerControllerID(int index)
+{
+	return m_players[index]->GetControllerID();
+}
+
+void ObjectHandler::SetPlayerControllerID(int index, int id)
+{
+	m_players[index]->SetControllerID(id);
+}
+
+int ObjectHandler::GetPlayerModelID(int index)
+{
+	return m_players[index]->GetModelId();
+}
+
+void ObjectHandler::SetPlayerModelID(int index, int id)
+{
+	m_players[index]->SetModelId(id);
+}
+
+vec3 ObjectHandler::GetPlayerColor(int index)
+{
+	return m_players[index]->GetColor();
+}
+
+void ObjectHandler::SetPlayerColor(int index, vec3 color)
+{
+	m_players[index]->SetColor(color);
+}
+
+vec3 ObjectHandler::GetPlayerScale(int index)
+{
+	return m_players[index]->GetScale();
+}
+
+void ObjectHandler::SetPlayerScale(int index, vec3 scale)
+{
+	m_players[index]->SetScale(scale);
 }
 
 vector<ObjectInfo*> ObjectHandler::GetObjects()

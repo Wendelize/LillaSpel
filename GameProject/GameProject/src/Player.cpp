@@ -10,6 +10,8 @@ Player::Player(vec3 pos)
 	m_controllerID = 0;
 	m_weight = 0.f;
 	m_speed = 0.f;
+	m_scale = vec3(1, 1, 1);
+	SetScale(m_scale);
 
 	m_transform->SetScale(0.5, 0.5, 0.5);
 	
@@ -172,8 +174,14 @@ void Player::SetWeight(float weight)
 	m_weight = weight;
 }
 
+vec3 Player::GetScale()
+{
+	return m_scale;
+}
+
 void Player::SetScale(vec3 scale)
 {
+	m_scale = scale;
 	m_transform->SetScale(scale.x, scale.y, scale.z);
 }
 
