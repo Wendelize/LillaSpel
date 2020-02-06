@@ -161,11 +161,6 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
 
 	/* Poll for and process events */
 	glfwPollEvents();
-
-	
-	/* Swap front and back buffers */
-	//glfwSwapBuffers(m_window->m_window);
-	
 }
 
 void Scene::SwapBuffer()
