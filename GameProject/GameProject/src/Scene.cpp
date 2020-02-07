@@ -121,6 +121,8 @@ void Scene::LightToShader()
 
 void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
 {
+
+
 	/* Render here */
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -282,6 +284,10 @@ vector<Model*> Scene::GetModels(int index)
 		return m_vehicles;
 	else if (index == 2)
 		return m_power;
+}
+vector<Light> Scene::GetLight()
+{
+	return m_lights;
 }
 void Scene::AddSpotLight(vec3 pos, vec3 dir, vec3 color, float cutOff)
 {
