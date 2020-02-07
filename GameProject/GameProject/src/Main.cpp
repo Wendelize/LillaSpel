@@ -23,6 +23,7 @@ int main(void)
 		_lastTime = _curTime;
 
 		GAME->Update(_deltaTime);
+		GAME->PlayWithLights(_curTime);
 		GAME->Render();
 	}
 	
