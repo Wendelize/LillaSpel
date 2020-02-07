@@ -72,7 +72,7 @@ void Scene::Init()
 	// Powers
 
 	// Lights
-	AddDirLight(vec3(0, -1, 0), { 1,1,1 });
+	AddDirLight(vec3(-1, -1, 0), { 1,1,1 });
 	AddPointLight({ 2,2,2 }, {1, 1, 1});
 	AddPointLight({ -2,2,-2 }, {1, 1, 1});
 	// pls do not add spotlights thanks you ^^
@@ -135,9 +135,10 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
 	glBindFramebuffer(GL_FRAMEBUFFER, m_shadowMap->GetFBO());
 	glClear(GL_DEPTH_BUFFER_BIT);
 	glActiveTexture(GL_TEXTURE0);
+	glCullFace(GL_FRONT);
 	RetardRender(m_shadowMap->GetShader(), objects);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	//glCullFace(GL_BACK);
+	glCullFace(GL_BACK);
 
 
 	m_modelShader->UseShader();

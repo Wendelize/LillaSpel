@@ -62,7 +62,6 @@ void Game::PlayWithLights(float dt)
 		{
 			_temp.at(i).ChangePos(vec3(sin(dt) * 4, sin(dt) * 5, sin(dt) * 5));
 		}
-		
 	}
 }
 
