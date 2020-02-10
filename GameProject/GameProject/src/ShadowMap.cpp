@@ -10,6 +10,7 @@ ShadowMap::ShadowMap()
 
 ShadowMap::~ShadowMap()
 {
+    delete m_shadowShader;
 }
 
 bool ShadowMap::Init(unsigned int windowWidth, unsigned int windowHeight)
@@ -45,7 +46,6 @@ bool ShadowMap::Init(unsigned int windowWidth, unsigned int windowHeight)
 
     return true;
 }
-
 
 void ShadowMap::CalcLightSpaceMatrix(vector<Light> light)
 {

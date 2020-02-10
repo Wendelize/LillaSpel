@@ -42,9 +42,11 @@ Scene::~Scene()
 
 	delete m_modelShader;
 	delete m_skyboxShader;
+	delete m_shadowMap;
 	delete m_camera;
 	delete m_skybox;
 	delete m_window;
+	m_lights.clear();
 }
 
 void Scene::Init()

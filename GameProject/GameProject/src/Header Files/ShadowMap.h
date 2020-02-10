@@ -9,8 +9,6 @@ public:
 	~ShadowMap();
 
 	bool Init(unsigned int windowWidth = 1024, unsigned int windowHeight = 1024);
-	void BindForWriting();
-	void BindForReading();
 	void CalcLightSpaceMatrix(vector<Light> light);
 	mat4 GetLSP();
 	Shader* GetShader();
