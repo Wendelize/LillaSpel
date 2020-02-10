@@ -19,7 +19,6 @@ Bloom::~Bloom()
 {
 	delete m_blur;
 	delete m_bloom;
-
 }
 
 void Bloom::Init()

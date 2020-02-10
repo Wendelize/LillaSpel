@@ -37,6 +37,7 @@ Scene::~Scene()
 		delete m_power.at(i);
 	}
 	m_power.clear();
+	m_lights.clear();
 
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
@@ -44,13 +45,12 @@ Scene::~Scene()
 
 	delete m_modelShader;
 	delete m_skyboxShader;
-	delete m_shadowMap;
 	delete m_camera;
 	delete m_shadowMap;
 	delete m_skybox;
 	delete m_bloom;
 	delete m_window;
-	m_lights.clear();
+
 }
 
 void Scene::Init()
@@ -134,6 +134,7 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
 	// Render shadows
 	RenderShadows(objects);
 
+	glBindFramebuffer(GL_FRAMEBUFFER, m_bloom->getFBO());
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -160,6 +161,10 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
 
 	// Render Skybox
 	RenderSkybox();
+
+	m_bloom->PingPongRender();
+
+	m_bloom->RenderBloom();
 
 	/* Poll for and process events */
 	glfwPollEvents();
