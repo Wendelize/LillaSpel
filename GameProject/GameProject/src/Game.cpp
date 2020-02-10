@@ -53,6 +53,18 @@ void Game::Update(float dt)
 	Render();
 }
 
+void Game::PlayWithLights(float dt)
+{
+	vector<Light> _temp = m_scene->GetLight();
+	for (uint i = 0; i < _temp.size(); i++)
+	{
+		if (_temp.at(i).GetType() == 1)
+		{
+			_temp.at(i).ChangePos(vec3(sin(dt) * 4, sin(dt) * 5, sin(dt) * 5));
+		}
+	}
+}
+
 void Game::Render()
 {
 	m_objects = m_objectHandler->GetObjects();
