@@ -6,8 +6,6 @@ in vertex_out{
 	vec4 positionLightSpace;
 } vi;
 
-
-
 void main()
 {
 	//Shadowmaps Fragmentshader should not do anything
