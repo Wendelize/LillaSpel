@@ -51,6 +51,7 @@
 #include "Skybox.h"
 #include "DebugDrawer.h"
 #include "ShadowMap.h"
+#include "Bloom.h"
 
 //NAMESPACES
 using namespace std;
@@ -62,12 +63,14 @@ struct ObjectInfo
 	int modelId; //Refererar till en array med modeller i Scene 
 	int typeId; // 0 = vehicle, 1 = platform, 2 = power-up
 	vec3 hue; // F�rgnyans
+	bool glow;
 
-	ObjectInfo(mat4 m, int mID, int tID, vec3 h) {
+	ObjectInfo(mat4 m, int mID, int tID, vec3 h, bool g) {
 		modelMatrix = m;
 		modelId = mID;
 		typeId = tID;
 		hue = h;
+		glow = g;
 	}
 	~ObjectInfo() {
 

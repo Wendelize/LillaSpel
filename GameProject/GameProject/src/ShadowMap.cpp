@@ -10,6 +10,7 @@ ShadowMap::ShadowMap()
 
 ShadowMap::~ShadowMap()
 {
+    delete m_shadowShader;
 }
 
 bool ShadowMap::Init(unsigned int windowWidth, unsigned int windowHeight)

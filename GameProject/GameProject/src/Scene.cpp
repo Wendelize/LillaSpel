@@ -5,9 +5,11 @@ Scene::Scene()
 	m_window = new Window(1920, 1080);
 	m_modelShader = new Shader("src/Shaders/VertexShader.glsl", "src/Shaders/FragmentShader.glsl");
 	m_skyboxShader = new Shader("src/Shaders/VertexSkyboxShader.glsl", "src/Shaders/FragmentSkyboxShader.glsl");
-	m_camera = new Camera({0, 32, 45});
+	
+	m_camera = new Camera({0, 18, 33});
 	m_skybox = new Skybox();
 	m_shadowMap = new ShadowMap();
+	m_bloom = new Bloom();
 
 	m_modelMatrix = mat4(1.0);
 	m_projMatrix = mat4(1.0);
@@ -43,7 +45,9 @@ Scene::~Scene()
 	delete m_modelShader;
 	delete m_skyboxShader;
 	delete m_camera;
+	delete m_shadowMap;
 	delete m_skybox;
+	delete m_bloom;
 	delete m_window;
 }
 
@@ -123,9 +127,8 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
 {
 	/* Render here */
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-	// Draw shadowmap
 
 	//glCullFace(GL_FRONT);
 	m_shadowMap->CalcLightSpaceMatrix(m_lights);
@@ -134,9 +137,8 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
 	glClear(GL_DEPTH_BUFFER_BIT);
 	glActiveTexture(GL_TEXTURE0);
 	RetardRender(m_shadowMap->GetShader(), objects);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	//glCullFace(GL_BACK);
 
+	glBindFramebuffer(GL_FRAMEBUFFER, m_bloom->getFBO());
 
 	m_modelShader->UseShader();
 	m_modelShader->SetTexture2D(0, "u_ShadowMap", m_shadowMap->GetTexture());
@@ -162,7 +164,10 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
 	// Draw all objects
 	RetardRender(m_modelShader, objects);
 
-	SHORT keyState = GetAsyncKeyState(VK_LCONTROL);
+
+
+
+	/*SHORT keyState = GetAsyncKeyState(VK_LCONTROL);
 	if (keyState < 0)
 	{
 		if (!m_toggle)
@@ -179,9 +184,8 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
 		m_toggle = false;
 	}
 
-	
 	if (m_debug)
-		world->debugDrawWorld();
+		world->debugDrawWorld();*/
 
 	m_skyboxShader->UseShader();
 	m_skyboxShader->SetUniform("u_View", mat4(mat3(m_camera->GetView())));
@@ -189,7 +193,9 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
 	m_skybox->DrawSkybox(m_skyboxShader);
 
 
+	m_bloom->PingPongRender();
 
+	m_bloom->RenderBloom();
 	/* Poll for and process events */
 	glfwPollEvents();
 }
@@ -208,6 +214,7 @@ void Scene::RetardRender(Shader* shader, vector<ObjectInfo*> objects)
 	{
 		shader->SetUniform("u_Model", objects[i]->modelMatrix);
 		shader->SetUniform("u_PlayerColor", objects[i]->hue);
+		shader->SetUniform("u_Glow", objects[i]->glow);
 		switch (objects[i]->typeId)
 		{
 		case 0:
@@ -229,6 +236,7 @@ void Scene::RetardRender(Shader* shader, vector<ObjectInfo*> objects)
 
 
 }
+
 
 void Scene::REEEE(vector<ObjectInfo*> objects)
 {
@@ -288,5 +296,6 @@ void Scene::AddSpotLight(vec3 pos, vec3 dir, vec3 color, float cutOff)
 	Light _temp = Light(2, dir, pos, color, cutOff);
 	m_lights.push_back(_temp);
 }
+
 
 

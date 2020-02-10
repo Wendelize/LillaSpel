@@ -1,7 +1,8 @@
 #version 430
 #define MAX_NR_OF_LIGHTS 40
 
-out vec4 fragmentColor;
+layout (location = 0) out vec4 FragColor;
+layout (location = 1) out vec4 BrightColor;
 
 // IN-DATA FROM VERTEXSHADER
 in vertex_out{
@@ -38,6 +39,7 @@ uniform vec3 u_ViewPos;
 uniform int u_LightType;
 uniform Light u_Lights[MAX_NR_OF_LIGHTS];
 uniform Material u_Material;
+uniform bool u_Glow;
 
 uniform sampler2D u_ShadowMap;
 
@@ -209,5 +211,12 @@ void main(){
     vec3 m = vi.positionLightSpace.xyz;
     //fragmentColor = vec4(vec3(texture(u_ShadowMap, vi.texCoords).x), 1.0);
 //	fragmentColor = vec4(m, 1.0);
-    fragmentColor = vec4(result, 1.0);
+
+    FragColor = vec4(result, 1.0);
+
+    float brightness = dot(result.rgb, vec3(0.2126, 0.7152, 0.0722));
+    if(u_Glow)
+        BrightColor = vec4(result.rgb, 1.0);
+    else
+        BrightColor = vec4(0.0, 0.0, 0.0, 1.0);
 }

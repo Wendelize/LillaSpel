@@ -6,11 +6,12 @@ class Scene
 private:
 
 	Window * m_window;
-	Shader * m_modelShader,
-		   * m_skyboxShader;
+	Shader* m_modelShader,
+		* m_skyboxShader;
 	Camera * m_camera;
 	Skybox * m_skybox;
 	ShadowMap * m_shadowMap;
+	Bloom* m_bloom;
 
 	bool m_debug = false;
 	bool m_toggle = false;
