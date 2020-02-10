@@ -198,12 +198,11 @@ void Scene::RenderShadows(vector<ObjectInfo*> objects)
 {
 	m_shadowMap->CalcLightSpaceMatrix(m_lights);
 
-	m_shadowMap->BindForWriting();
-
+	glBindFramebuffer(GL_FRAMEBUFFER, m_shadowMap->GetFBO());
 	glViewport(0, 0, 1024, 1024);
 	glClear(GL_DEPTH_BUFFER_BIT);
 
-	m_shadowMap->BindForReading();
+	glActiveTexture(GL_TEXTURE0);
 
 	glCullFace(GL_FRONT);
 	RenderSceneInfo(m_shadowMap->GetShader(), objects);

@@ -46,16 +46,6 @@ bool ShadowMap::Init(unsigned int windowWidth, unsigned int windowHeight)
     return true;
 }
 
-void ShadowMap::BindForWriting()
-{
-    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_FBO);
-}
-
-void ShadowMap::BindForReading()
-{
-    glActiveTexture(m_shadowMap);
-    glBindTexture(GL_TEXTURE_2D, m_shadowMap);
-}
 
 void ShadowMap::CalcLightSpaceMatrix(vector<Light> light)
 {
