@@ -23,6 +23,7 @@ public:
 	Game();
 	~Game();
 	void Update(float dt);
+	void PlayWithLights(float dt);
 	void Render();
 	GLFWwindow* GetWindow();
 };

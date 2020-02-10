@@ -139,7 +139,6 @@ void Player::Update(float dt)
 		{
 			rotationSpeed = 2 * (m_body->getLinearVelocity().length()/3);
 		}
-		cout << "Rotation speed: " <<  rotationSpeed << endl;
 		direction = m_transform->TranslateDirection(rotate * dt * rotationSpeed);
 	}
 	//apply force

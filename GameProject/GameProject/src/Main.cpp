@@ -4,7 +4,7 @@
 #include "Header Files/Scene.h"
 
 Game* GAME;
-
+// commetn for push test
 int main(void)
 {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
@@ -23,6 +23,7 @@ int main(void)
 		_lastTime = _curTime;
 
 		GAME->Update(_deltaTime);
+		GAME->PlayWithLights(_curTime);
 		GAME->Render();
 	}
 	
