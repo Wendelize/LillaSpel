@@ -38,6 +38,8 @@ public:
 	void RenderImGui(btDiscreteDynamicsWorld* world);
 	void SwapBuffer();
 
+	void renderMenu();
+
 
 	void SetWindowSize(int width, int height);
 	GLFWwindow* GetWindow();

@@ -67,6 +67,11 @@ void Game::PlayWithLights(float dt)
 
 void Game::Render()
 {
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplGlfw_NewFrame();
+	ImGui::NewFrame();
+	ImGui::ShowDemoWindow();
+
 	m_objects = m_objectHandler->GetObjects();
 	m_scene->Render(m_objects, m_objectHandler->GetWorld());
 
@@ -74,6 +79,12 @@ void Game::Render()
 	{
 		Debug();
 	}
+
+	ImGui::Render();
+	int display_w, display_h;
+	glfwGetFramebufferSize(GetWindow(), &display_w, &display_h);
+	glViewport(0, 0, display_w, display_h);
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 	m_scene->SwapBuffer();
 }
@@ -85,9 +96,10 @@ GLFWwindow* Game::GetWindow()
 
 void Game::Debug()
 {
-	ImGui_ImplOpenGL3_NewFrame();
+	/*ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
+	ImGui::ShowDemoWindow();*/
 	bool temp = false;
 	ImGui::Begin("Stats", &temp, ImGuiWindowFlags_AlwaysAutoResize);
 
@@ -204,10 +216,10 @@ void Game::Debug()
 
 
 	// Rendering
-	ImGui::Render();
-	int display_w, display_h;
-	glfwGetFramebufferSize(m_scene->GetWindow(), &display_w, &display_h);
-	glViewport(0, 0, display_w, display_h);
-	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+	//ImGui::Render();
+	//int display_w, display_h;
+	//glfwGetFramebufferSize(m_scene->GetWindow(), &display_w, &display_h);
+	//glViewport(0, 0, display_w, display_h);
+	//ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
