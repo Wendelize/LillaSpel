@@ -23,7 +23,7 @@ int main(void)
 		_lastTime = _curTime;
 
 		GAME->Update(_deltaTime);
-		GAME->Render();
+		//GAME->Render(_deltaTime);
 	}
 	
 	ImGui_ImplOpenGL3_Shutdown();

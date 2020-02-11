@@ -11,6 +11,7 @@ private:
 	Camera * m_camera;
 	Skybox * m_skybox;
 	ShadowMap * m_shadowMap;
+	ParticleSystem *  m_particleSystem; 
 
 	bool m_debug = false;
 	bool m_toggle = false;
@@ -31,7 +32,7 @@ public:
 
 	void Init();
 	void LightToShader();
-	void Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world);
+	void Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, float dt);
 	void SwapBuffer();
 	void RetardRender(Shader * shader, vector<ObjectInfo*> objects);
 	void REEEE( vector<ObjectInfo*> objects);

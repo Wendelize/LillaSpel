@@ -5,13 +5,16 @@ Scene::Scene()
 	m_window = new Window(1920, 1080);
 	m_modelShader = new Shader("src/Shaders/VertexShader.glsl", "src/Shaders/FragmentShader.glsl");
 	m_skyboxShader = new Shader("src/Shaders/VertexSkyboxShader.glsl", "src/Shaders/FragmentSkyboxShader.glsl");
-	m_camera = new Camera({0, 32, 45});
+	m_camera = new Camera({0, 5, 20});
 	m_skybox = new Skybox();
 	m_shadowMap = new ShadowMap();
+	
 
 	m_modelMatrix = mat4(1.0);
 	m_projMatrix = mat4(1.0);
 	m_viewMatrix = mat4(1.0);
+
+	m_particleSystem = new ParticleSystem(10);
 
 	//glEnable(GL_CULL_FACE);
 }
@@ -45,6 +48,7 @@ Scene::~Scene()
 	delete m_camera;
 	delete m_skybox;
 	delete m_window;
+	delete m_particleSystem;
 }
 
 void Scene::Init()
@@ -66,6 +70,9 @@ void Scene::Init()
 	m_vehicles.push_back(new Model("src/Models/shoppingcart.obj")); 
 	m_vehicles.push_back(new Model("src/Models/ape.obj")); 
 	m_vehicles.push_back(new Model("src/Models/CAT.obj")); 
+
+
+	
 
 	// Platforms
 
@@ -119,7 +126,7 @@ void Scene::LightToShader()
 
 }
 
-void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
+void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, float dt)
 {
 	/* Render here */
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -162,6 +169,11 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
 	// Draw all objects
 	RetardRender(m_modelShader, objects);
 
+
+	//m_particleSystem->Update(dt, vec2(5.0, 5.0));
+	m_particleSystem->Render();
+
+
 	SHORT keyState = GetAsyncKeyState(VK_LCONTROL);
 	if (keyState < 0)
 	{
@@ -187,6 +199,9 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
 	m_skyboxShader->SetUniform("u_View", mat4(mat3(m_camera->GetView())));
 	m_skyboxShader->SetUniform("u_Projection", m_projMatrix);
 	m_skybox->DrawSkybox(m_skyboxShader);
+
+	
+
 
 
 

@@ -51,6 +51,7 @@
 #include "Skybox.h"
 #include "DebugDrawer.h"
 #include "ShadowMap.h"
+#include "ParticleSystem.h"
 
 //NAMESPACES
 using namespace std;
