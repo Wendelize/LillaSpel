@@ -3,8 +3,8 @@
 Scene::Scene()
 {
 	m_window = new Window(1920, 1080);
-	m_modelShader = new Shader("src/Shaders/VertexShader.glsl", "src/Shaders/FragmentShader.glsl");
-	m_skyboxShader = new Shader("src/Shaders/VertexSkyboxShader.glsl", "src/Shaders/FragmentSkyboxShader.glsl");
+	m_modelShader = new Shader("src/Shaders/SceneVS.glsl", "src/Shaders/SceneFS.glsl");
+	m_skyboxShader = new Shader("src/Shaders/SkyboxVS.glsl", "src/Shaders/SkyboxFS.glsl");
 	
 	m_camera = new Camera({0, 18, 33});
 	m_skybox = new Skybox();
@@ -15,7 +15,6 @@ Scene::Scene()
 	m_projMatrix = mat4(1.0);
 	m_viewMatrix = mat4(1.0);
 
-	//glEnable(GL_CULL_FACE);
 }
 
 Scene::~Scene()
@@ -60,11 +59,9 @@ void Scene::Init()
 	m_viewMatrix = m_camera->GetView();
 	m_modelMatrix = mat4(1.0);
 
-	m_platform.push_back(new Model("src/Models/platform2.obj"));
+
 	// Veichles
 	// racingcar scale 0.5 
-	m_power.push_back(new Model("src/Models/PowerUp.obj"));
-
 	m_vehicles.push_back(new Model("src/Models/Low-Poly-Racing-Car-Grey.obj")); 
 	// snowcat scale 0.08 
 	m_vehicles.push_back(new Model("src/Models/Lowpoly-Snowcat2.obj")); 
@@ -76,8 +73,11 @@ void Scene::Init()
 	m_vehicles.push_back(new Model("src/Models/CAT.obj")); 
 
 	// Platforms
+	m_platform.push_back(new Model("src/Models/platform2.obj"));
 
 	// Powers
+	m_power.push_back(new Model("src/Models/PowerUp.obj"));
+
 
 	// Lights
 	AddDirLight(vec3(-1, -1, 0), { 1,1,1 });

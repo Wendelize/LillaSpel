@@ -202,13 +202,13 @@
     <None Include="src\Shaders\BloomFS.glsl" />
     <None Include="src\Shaders\BloomVS.glsl" />
     <None Include="src\Shaders\GaussianBlurFS.glsl" />
-    <None Include="src\Shaders\FragmentShader.glsl" />
-    <None Include="src\Shaders\FragmentSkyboxShader.glsl" />
     <None Include="src\Shaders\GaussianBlurVS.glsl" />
+    <None Include="src\Shaders\SceneFS.glsl" />
+    <None Include="src\Shaders\SceneVS.glsl" />
     <None Include="src\Shaders\ShadowFS.glsl" />
     <None Include="src\Shaders\ShadowVS.glsl" />
-    <None Include="src\Shaders\VertexShader.glsl" />
-    <None Include="src\Shaders\VertexSkyboxShader.glsl" />
+    <None Include="src\Shaders\SkyboxFS.glsl" />
+    <None Include="src\Shaders\SkyboxVS.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

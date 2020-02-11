@@ -167,18 +167,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\Shaders\FragmentShader.glsl">
-      <Filter>Shader</Filter>
-    </None>
-    <None Include="src\Shaders\VertexShader.glsl">
-      <Filter>Shader</Filter>
-    </None>
-    <None Include="src\Shaders\FragmentSkyboxShader.glsl">
-      <Filter>Shader</Filter>
-    </None>
-    <None Include="src\Shaders\VertexSkyboxShader.glsl">
-      <Filter>Shader</Filter>
-    </None>
     <None Include="src\Shaders\ShadowFS.glsl">
       <Filter>Shader</Filter>
     </None>
@@ -195,6 +183,18 @@
       <Filter>Shader</Filter>
     </None>
     <None Include="src\Shaders\BloomVS.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="src\Shaders\SceneFS.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="src\Shaders\SceneVS.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="src\Shaders\SkyboxFS.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="src\Shaders\SkyboxVS.glsl">
       <Filter>Shader</Filter>
     </None>
   </ItemGroup>
