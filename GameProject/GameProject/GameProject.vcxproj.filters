@@ -73,6 +73,9 @@
     <ClCompile Include="src\ShadowMap.cpp">
       <Filter>Src</Filter>
     </ClCompile>
+    <ClCompile Include="src\Bloom.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
     <ClCompile Include="src\Header Files\PowerUp.cpp">
       <Filter>Src</Filter>
     </ClCompile>
@@ -156,6 +159,9 @@
     <ClInclude Include="src\Header Files\ShadowMap.h">
       <Filter>Header</Filter>
     </ClInclude>
+    <ClInclude Include="src\Header Files\Bloom.h">
+      <Filter>Header</Filter>
+    </ClInclude>
     <ClInclude Include="src\Header Files\PowerUp.h">
       <Filter>Header</Filter>
     </ClInclude>
@@ -177,6 +183,18 @@
       <Filter>Shader</Filter>
     </None>
     <None Include="src\Shaders\ShadowVS.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="src\Shaders\GaussianBlurFS.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="src\Shaders\GaussianBlurVS.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="src\Shaders\BloomFS.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="src\Shaders\BloomVS.glsl">
       <Filter>Shader</Filter>
     </None>
   </ItemGroup>

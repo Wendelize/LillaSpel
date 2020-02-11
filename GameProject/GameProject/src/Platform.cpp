@@ -63,6 +63,6 @@ void Platform::SetSkyboxId(int id)
 
 ObjectInfo* Platform::GetObjectInfo()
 {
-	m_info = new ObjectInfo(m_transform->GetMatrix(), m_modelId, 1, vec3(1, 1, 1));
+	m_info = new ObjectInfo(m_transform->GetMatrix(), m_modelId, 1, vec3(1, 1, 1), false);
 	return m_info;
 }

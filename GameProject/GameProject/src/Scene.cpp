@@ -5,9 +5,11 @@ Scene::Scene()
 	m_window = new Window(1920, 1080);
 	m_modelShader = new Shader("src/Shaders/VertexShader.glsl", "src/Shaders/FragmentShader.glsl");
 	m_skyboxShader = new Shader("src/Shaders/VertexSkyboxShader.glsl", "src/Shaders/FragmentSkyboxShader.glsl");
-	m_camera = new Camera({0, 25, 40});
+	
+	m_camera = new Camera({0, 18, 33});
 	m_skybox = new Skybox();
 	m_shadowMap = new ShadowMap();
+	m_bloom = new Bloom();
 
 	m_modelMatrix = mat4(1.0);
 	m_projMatrix = mat4(1.0);
@@ -35,6 +37,7 @@ Scene::~Scene()
 		delete m_power.at(i);
 	}
 	m_power.clear();
+	m_lights.clear();
 
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
@@ -43,9 +46,11 @@ Scene::~Scene()
 	delete m_modelShader;
 	delete m_skyboxShader;
 	delete m_camera;
-	delete m_skybox;
-	delete m_window;
 	delete m_shadowMap;
+	delete m_skybox;
+	delete m_bloom;
+	delete m_window;
+
 }
 
 void Scene::Init()
@@ -75,7 +80,7 @@ void Scene::Init()
 	// Powers
 
 	// Lights
-	AddDirLight(vec3(0, -1, 0), { 1,1,1 });
+	AddDirLight(vec3(-1, -1, 0), { 1,1,1 });
 	AddPointLight({ 2,2,2 }, {1, 1, 1});
 	AddPointLight({ -2,2,-2 }, {1, 1, 1});
 	// pls do not add spotlights thanks you ^^
@@ -126,25 +131,12 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
 {
 	/* Render here */
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-	// Draw shadowmap
+	// Render shadows
+	RenderShadows(objects);
 
-	//glCullFace(GL_FRONT);
-	m_shadowMap->CalcLightSpaceMatrix(m_lights);
-	glViewport(0, 0, 1024, 1024);
-	glBindFramebuffer(GL_FRAMEBUFFER, m_shadowMap->GetFBO());
-	glClear(GL_DEPTH_BUFFER_BIT);
-	glActiveTexture(GL_TEXTURE0);
-	RetardRender(m_shadowMap->GetShader(), objects);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	//glCullFace(GL_BACK);
-
-
-	m_modelShader->UseShader();
-	m_modelShader->SetTexture2D(0, "u_ShadowMap", m_shadowMap->GetTexture());
-
-	glViewport(0, 0, m_window->GetWidht(), m_window->GetHeight());
+	glBindFramebuffer(GL_FRAMEBUFFER, m_bloom->getFBO());
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -154,6 +146,7 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
 	m_modelShader->SetUniform("u_View", m_camera->GetView());
 	m_modelShader->SetUniform("u_Projection", m_projMatrix);
 	m_modelShader->SetUniform("u_LSP", m_shadowMap->GetLSP());
+	m_modelShader->SetTexture2D(0, "u_ShadowMap", m_shadowMap->GetTexture());
 
 	// Texture(shadowmap)
 	glActiveTexture(GL_TEXTURE0);
@@ -163,48 +156,23 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
 	LightToShader();
 
 	// Draw all objects
-	RetardRender(m_modelShader, objects);
+	RenderSceneInfo(m_modelShader, objects);
 
-	SHORT keyState = GetAsyncKeyState(VK_LCONTROL);
-	if (keyState < 0)
-	{
-		if (!m_toggle)
-		{
-			if (m_debug)
-				m_debug = false;
-			else
-				m_debug = true;
-		}
-		m_toggle = true;
-	}
-	else
-	{
-		m_toggle = false;
-	}
+	// Render Imgui
+	RenderImGui(world);
 
-	
-	if (m_debug) {
-		m_modelShader->SetUniform("u_Model", mat4(1.0f));
-		world->debugDrawWorld();
-	}
-	m_skyboxShader->UseShader();
-	m_skyboxShader->SetUniform("u_View", mat4(mat3(m_camera->GetView())));
-	m_skyboxShader->SetUniform("u_Projection", m_projMatrix);
-	m_skybox->DrawSkybox(m_skyboxShader);
+	// Render Skybox
+	RenderSkybox();
 
+	m_bloom->PingPongRender();
 
+	m_bloom->RenderBloom();
 
 	/* Poll for and process events */
 	glfwPollEvents();
 }
 
-void Scene::SwapBuffer()
-{
-	glfwSwapBuffers(m_window->m_window);
-}
-
-
-void Scene::RetardRender(Shader* shader, vector<ObjectInfo*> objects)
+void Scene::RenderSceneInfo(Shader* shader, vector<ObjectInfo*> objects)
 {
 	// Draw all objects
 	shader->UseShader();
@@ -212,6 +180,7 @@ void Scene::RetardRender(Shader* shader, vector<ObjectInfo*> objects)
 	{
 		shader->SetUniform("u_Model", objects[i]->modelMatrix);
 		shader->SetUniform("u_PlayerColor", objects[i]->hue);
+		shader->SetUniform("u_Glow", objects[i]->glow);
 		switch (objects[i]->typeId)
 		{
 		case 0:
@@ -230,14 +199,61 @@ void Scene::RetardRender(Shader* shader, vector<ObjectInfo*> objects)
 			break;
 		}
 	}
-
-
 }
 
-void Scene::REEEE(vector<ObjectInfo*> objects)
+void Scene::RenderSkybox()
+{
+	m_skyboxShader->UseShader();
+	m_skyboxShader->SetUniform("u_View", mat4(mat3(m_camera->GetView())));
+	m_skyboxShader->SetUniform("u_Projection", m_projMatrix);
+	m_skybox->DrawSkybox(m_skyboxShader);
+}
+
+void Scene::RenderShadows(vector<ObjectInfo*> objects)
 {
 	m_shadowMap->CalcLightSpaceMatrix(m_lights);
-	RetardRender(m_shadowMap->GetShader(), objects);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, m_shadowMap->GetFBO());
+	glViewport(0, 0, 1024, 1024);
+	glClear(GL_DEPTH_BUFFER_BIT);
+
+	glActiveTexture(GL_TEXTURE0);
+
+	glCullFace(GL_FRONT);
+	RenderSceneInfo(m_shadowMap->GetShader(), objects);
+	glCullFace(GL_BACK);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	glViewport(0, 0, m_window->GetWidht(), m_window->GetHeight());
+}
+
+void Scene::RenderImGui(btDiscreteDynamicsWorld* world)
+{
+	SHORT keyState = GetAsyncKeyState(VK_LCONTROL);
+	if (keyState < 0)
+	{
+		if (!m_toggle)
+		{
+			if (m_debug)
+				m_debug = false;
+			else
+				m_debug = true;
+		}
+		m_toggle = true;
+	}
+	else
+	{
+		m_toggle = false;
+	}
+
+	if (m_debug)
+		world->debugDrawWorld();
+}
+
+void Scene::SwapBuffer()
+{
+	glfwSwapBuffers(m_window->m_window);
 }
 
 void Scene::SetWindowSize(int width, int height)
@@ -266,6 +282,21 @@ int Scene::GetNumPowerUpModels()
 	return m_power.size();
 }
 
+vector<Model*> Scene::GetModels(int index)
+{
+	if (index == 0)
+		return m_platform;
+	else if (index == 1)
+		return m_vehicles;
+	else if (index == 2)
+		return m_power;
+}
+
+vector<Light> Scene::GetLight()
+{
+	return m_lights;
+}
+
 void Scene::AddPointLight(vec3 pos, vec3 color)
 {
 	Light _temp = Light(1, pos, pos, color);
@@ -278,19 +309,11 @@ void Scene::AddDirLight(vec3 dir, vec3 color)
 	m_lights.push_back(_temp);
 }
 
-vector<Model*> Scene::GetModels(int index)
-{
-	if (index == 0)
-		return m_platform;
-	else if (index == 1)
-		return m_vehicles;
-	else if (index == 2)
-		return m_power;
-}
 void Scene::AddSpotLight(vec3 pos, vec3 dir, vec3 color, float cutOff)
 {
 	Light _temp = Light(2, dir, pos, color, cutOff);
 	m_lights.push_back(_temp);
 }
+
 
 
