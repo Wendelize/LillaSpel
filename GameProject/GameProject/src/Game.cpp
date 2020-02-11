@@ -14,9 +14,11 @@ Game::Game()
 
 	m_objectHandler->AddPlatform(0, m_platforms[0]); // Passa modell
 
-	m_objectHandler->AddPlayer(vec3(0, 7, 2), 0, 0, vec3(0, 0, 1), m_cars[0]); // Passa modell
-	m_objectHandler->AddPlayer(vec3(-2, 7, -2), 1, 0, vec3(0, 1, 0), m_cars[0]); // Passa modell
-	m_objectHandler->AddPlayer(vec3(2, 7, -2), 2, 0, vec3(1, 1, 0), m_cars[0]); // Passa modell
+
+	m_objectHandler->AddPlayer(vec3(4, 7, 4), 0, 0, vec3(0, 0, 1), m_cars[0]); // Passa modell
+	//m_objectHandler->AddPlayer(vec3(-4, 7, -4), 1, 0, vec3(0, 1, 0), m_cars[0]); // Passa modell
+	//m_objectHandler->AddPlayer(vec3(4, 7, -4), 2, 0, vec3(1, 1, 0), m_cars[0]); // Passa modell
+	//m_objectHandler->AddPowerUp();
 
 }
 
@@ -29,8 +31,15 @@ Game::~Game()
 void Game::Update(float dt)
 {
 	m_time += dt;
+	m_timeSinceSpawn += dt;
+
+	if (m_timeSinceSpawn > 5) {
+		m_objectHandler->AddPowerUp();
+		m_timeSinceSpawn = 0;
+	}
 
 	m_objectHandler->Update(dt);
+	
 
 	// Toggle debug window
 	SHORT keyState = GetAsyncKeyState(VK_LCONTROL);
@@ -110,8 +119,11 @@ void Game::Debug()
 	ImGui::SameLine(0, 1);
 	ImGui::InputFloat3("", m_pos, 0, 0);
 	ImGui::EndChild();
-
-	if (ImGui::Button("Add Car"))
+	if (ImGui::Button("Add PUP"))
+	{
+		m_objectHandler->AddPowerUp();
+	}
+		if (ImGui::Button("Add Car"))
 	{
 		if (m_objectHandler->GetNumPlayers() < 40)
 		{

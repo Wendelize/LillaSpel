@@ -2,13 +2,22 @@
 #include "Include.h"
 #include "Platform.h"
 #include "Player.h"
+#include "PowerUp.h"
 
 class ObjectHandler
 {
 private:
+	bool m_usedSpawns[20];
+	btVector3 m_spawnpoints[20] = 
+	{
+	btVector3(2,1,2), btVector3(5,1,5),btVector3(-5,1,5), btVector3(9,1,9), btVector3(-9,1,9),
+	btVector3(2,1,-2), btVector3(5,1,-5), btVector3(-5,1,-5), btVector3(9,1,-9), btVector3(-9,1,-9),
+	btVector3(-2,1,2), btVector3(2,1,0), btVector3(-2,1,0), btVector3(5,1,0), btVector3(-5,1,0),
+	btVector3(-2,1,-2), btVector3(0,1,2), btVector3(0,1,5), btVector3(0,1,-2), btVector3(0,1,0)
+	};
 	vector<Player*> m_players;
 	vector<Platform*> m_platforms;
-	//vector<PowerUp*> m_powerUps;
+	vector<PowerUp*> m_powerUps;
 	vector<ObjectInfo*> m_structs;
 
 	btDefaultCollisionConfiguration* m_collisionConfiguration;
@@ -18,7 +27,7 @@ private:
 	btDiscreteDynamicsWorld* m_dynamicsWorld;
 	DebugDrawer* m_debugDrawer;
 	btAlignedObjectArray<btCollisionShape*> m_collisionShapes;
-
+	btGhostPairCallback* m_ghostCallback;
 public:
 	ObjectHandler();
 	~ObjectHandler();
@@ -30,7 +39,7 @@ public:
 	void RemovePlayer(int index);
 	void RemovePlatform();
 	void AddPowerUp();
-	void RemovePowerUp();
+	void RemovePowerUp(int index);
 	int GetNumPlayers();
 	vec3 GetPlayerDirection(int index);
 	int GetPlayerControllerID(int index);

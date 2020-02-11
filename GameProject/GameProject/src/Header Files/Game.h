@@ -18,6 +18,7 @@ private:
 	int m_modelId;
 	float m_pos[3];
 	float m_time;
+	float m_timeSinceSpawn;
 	void Debug();
 public:
 	Game();

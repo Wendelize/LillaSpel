@@ -9,6 +9,7 @@
 #include "assimp/Importer.hpp"
 #include "btBulletDynamicsCommon.h"
 #include "BulletCollision\CollisionDispatch\btCollisionWorld.h"
+#include "BulletCollision/CollisionDispatch/btGhostObject.h"
 #define STB_IMAGE_IMPLEMENTATION
 
 //IMGUI
@@ -33,7 +34,7 @@
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
 #include <crtdbg.h>
-
+//
 //#ifdef _DEBUG
 //#define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
 //#else

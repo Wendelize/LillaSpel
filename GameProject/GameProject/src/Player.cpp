@@ -6,7 +6,7 @@ Player::Player(Model* model, int modelId, vec3 pos)
 	m_transform = new Transform;
 
 	float radius = 1.;
-	float scale = 0.609;
+	float scale = 0.69;
 	m_restitution = 1.6699;
 	m_transform->SetScale(scale, scale, scale);
 
@@ -33,15 +33,10 @@ Player::Player(Model* model, int modelId, vec3 pos)
 	
 	m_carShape = new btConvexHullShape(&points[0].getX(), points.size(), sizeof(btVector3));
 	*/
-	if (rand() % 1 + 0 > 0.5) {
-		m_carShape = new btBoxShape(btVector3(btScalar(0.5f), btScalar(0.5f), btScalar(0.5f))); // BoxShape
 
-	}
-	else {
-		m_carShape = new btSphereShape(radius);
+	m_carShape = new btSphereShape(radius);
 
-	}
-//	m_carShape = new btBoxShape(btVector3(btScalar(0.5f), btScalar(0.5f), btScalar(0.5f))); // BoxShape
+	//m_carShape = new btBoxShape(btVector3(btScalar(0.5f), btScalar(0.5f), btScalar(0.5f))); // BoxShape
 	
 	//m_carShape = new btSphereShape(radius);
 
@@ -90,7 +85,8 @@ void Player::Update(float dt)
 	vec3 direction(0, 0, 0);
 	float rotationSpeed = 2.f;
 	float jump = 0;
-	m_speed = 0;
+	//m_speed = 0;
+	bool pressed = false;
 	if (glfwJoystickPresent(m_controllerID) == 1 && m_body->getWorldTransform().getOrigin().y() < 4.0f && m_body->getWorldTransform().getOrigin().y() > -1.0f)
 	{
 		if (m_controller->ButtonOptionsIsPressed(m_controllerID))
@@ -103,12 +99,14 @@ void Player::Update(float dt)
 		{
 			//Acceleration
 			m_speed = 1000000.f;
+			pressed = true;
 
 		}
 
 		if (m_controller->ButtonXIsPressed(m_controllerID))
 		{
 			m_speed = -800000.f;
+			pressed = true;
 		}
 
 		//Triggers
@@ -117,12 +115,16 @@ void Player::Update(float dt)
 			//Left trigger pressed
 			//Power-Up
 			m_speed = 1720000.f;
+			pressed = true;
+
 		}
 		if (m_controller->GetLefTrigger(m_controllerID) != -1)
 		{
 			//Left trigger pressed
 			//Power-Up
 			m_speed = -1200000.f;
+			pressed = true;
+
 		}
 
 		// Left stick horisontal input
@@ -139,13 +141,13 @@ void Player::Update(float dt)
 		{
 			rotationSpeed = 2 * (m_body->getLinearVelocity().length()/3);
 		}
-		cout << "Rotation speed: " <<  rotationSpeed << endl;
 		direction = m_transform->TranslateDirection(rotate * dt * rotationSpeed);
 	}
 	//apply force
 	btVector3 directionBt = { direction.x,0,direction.z };
-
+	if(pressed){
 	m_body->applyForce(directionBt * -m_speed * dt , m_body->getWorldTransform().getOrigin());
+	}
 	m_body->applyDamping(dt);
 
 	btVector3 moveVector = m_body->getWorldTransform().getOrigin() - m_currentPos;
@@ -260,4 +262,29 @@ void Player::SetPos(vec3 pos)
 	m_body->getWorldTransform().setOrigin(btVector3(pos.x, pos.y, pos.z));
 	m_body->setLinearVelocity(btVector3(0,0,0));
 
+}
+
+void Player::GivePower(int type)
+{
+	switch (type) {
+	case 0:
+		//
+		m_color = vec3(1, 0, 0);
+		break;
+	case 1:
+		m_color = vec3(0, 1, 0);
+		break;
+	case 2:
+		m_color = vec3(0, 0, 1);
+		break;
+	case 3:
+		m_color = vec3(1, 1, 0);
+		break;
+	case 4:
+		m_color = vec3(0, 1, 1);
+		break;
+	case 5:
+		m_color = vec3(1, 0, 1);
+		break;
+	}
 }

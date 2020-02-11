@@ -14,15 +14,16 @@ ObjectHandler::ObjectHandler()
 	m_debugDrawer = new DebugDrawer;
 	m_debugDrawer->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
 	m_dynamicsWorld->setDebugDrawer(m_debugDrawer);
+	m_ghostCallback = new btGhostPairCallback();
+	m_dynamicsWorld->getPairCache()->setInternalGhostPairCallback(m_ghostCallback);
+	for (int i = 0; i < 20; i++) {
+		m_usedSpawns[i] = false;
+	}
+
 }
 
 ObjectHandler::~ObjectHandler()
 {
-	for (size_t i = 0; i < m_structs.size(); i++)
-	{
-		delete m_structs.at(i);
-	}
-	m_structs.clear();
 
 	for (uint i = 0; i < m_players.size(); i++)
 	{
@@ -34,13 +35,25 @@ ObjectHandler::~ObjectHandler()
 	{
 		delete m_platforms.at(i);
 	}
+	int temp = m_powerUps.size();
+	for (uint i = 0; i < temp; i++) {
+		RemovePowerUp(0);
+	}
+	m_powerUps.clear();
 	m_platforms.clear();
+	for (size_t i = 0; i < m_structs.size(); i++)
+	{
+		delete m_structs.at(i);
+	}
+	m_structs.clear();
 
 	for (int i = m_dynamicsWorld->getNumCollisionObjects() - 1; i >= 0; i--)
 	{
 		btCollisionObject* obj = m_dynamicsWorld->getCollisionObjectArray()[i];
 
 		btRigidBody* body = btRigidBody::upcast(obj);
+
+		
 		if (body && body->getMotionState())
 		{
 			delete body->getMotionState();
@@ -48,7 +61,7 @@ ObjectHandler::~ObjectHandler()
 		m_dynamicsWorld->removeCollisionObject(obj);
 		delete obj;
 	}
-
+	delete m_ghostCallback;
 	//delete dynamics world
 	delete m_dynamicsWorld;
 
@@ -75,6 +88,21 @@ void ObjectHandler::Update(float dt)
 
 	m_dynamicsWorld->stepSimulation(dt, 10);
 
+	for (int i = 0; i < m_powerUps.size(); i++) {
+		btAlignedObjectArray< btCollisionObject* >& pairs = m_powerUps.at(i)->getObject()->getOverlappingPairs();
+		for (int j = 0; j < pairs.size(); j++)
+		{
+			for (int k = 0; k < m_players.size(); k++) {
+				if (m_players.at(k)->GetControllerID() == pairs.at(j)->getUserIndex()) {
+
+					//GIVE POWERUP
+				}
+			}
+			RemovePowerUp(i);
+		}
+
+	}
+
 	for (size_t i = 0; i < m_dynamicsWorld->getNumCollisionObjects(); i++)
 	{
 		btCollisionObject* obj = m_dynamicsWorld->getCollisionObjectArray()[i];
@@ -88,11 +116,17 @@ void ObjectHandler::Update(float dt)
 		{
 			trans = obj->getWorldTransform();
 		}
-		int isPlayer = i - m_platforms.size();
+		int isPlayer = i - m_platforms.size() - m_powerUps.size();
+		int isPowerUp = i - m_platforms.size() - m_players.size();
+		if (isPowerUp >= 0) {
+			if (m_powerUps[isPowerUp]->update(dt)) {
+				RemovePowerUp(isPowerUp);
+			}
+		}
 		if (isPlayer >= 0) {
 			m_players[isPlayer]->Update(dt);
 			if (m_players[isPlayer]->GetCurrentPos().y() < -20.f) {
-				m_players[isPlayer]->SetPos(vec3(rand() % 10 - 10, 3, rand() % 10 - 10));
+				m_players[isPlayer]->SetPos(vec3(rand() % 10 - 10, 15, rand() % 10 - 10));
 			}
 		}
 	}
@@ -103,6 +137,7 @@ void ObjectHandler::AddPlayer(vec3 pos, int controllerID, int modelId, vec3 colo
 	// Till players konstruktor skall meshens vertices passas + ID f�r att identifiera vilken modell som tillh�r objektet!
 	m_players.push_back(new Player(model, modelId, pos));
 	m_players.back()->SetControllerID(controllerID);
+	m_players.back()->GetBody()->setUserIndex(controllerID);
 	m_players.back()->SetModelId(modelId);
 	m_players.back()->SetColor(color);
 
@@ -151,17 +186,58 @@ void ObjectHandler::RemovePlatform()
 
 void ObjectHandler::AddPowerUp()
 {
-	// to be continued
+	srand(time(NULL));
+	int spawnLocation = rand() % (20);
+	int type = rand() % (5);
+	if (m_usedSpawns[spawnLocation] == true) {
+		bool notFound = true;
+		int i = 0;
+		while (notFound) {
+			i++;
+			spawnLocation++;
+			if (spawnLocation == 20) {
+				spawnLocation = 0;
+			}
+			if (m_usedSpawns[spawnLocation] == false) {
+				notFound = false;
+			}
+			if (i == 20) {
+				notFound = false;
+				spawnLocation = 19;
+			}
+		}
+	}
+	m_usedSpawns[spawnLocation] = true;
+		
+	m_powerUps.push_back(new PowerUp(spawnLocation, m_spawnpoints[spawnLocation], type));
+	m_dynamicsWorld->addCollisionObject(m_powerUps.back()->getObject());
 }
 
-void ObjectHandler::RemovePowerUp()
+void ObjectHandler::RemovePowerUp(int index)
 {
-	// to be continued
+	m_dynamicsWorld->removeCollisionObject(m_powerUps.at(index)->getObject());
+	m_usedSpawns[m_powerUps.at(index)->GetSpawn()] = false;
+	ObjectInfo* temp = m_powerUps.at(index)->GetObjectInfo();
+
+	for (int i = 0; i < m_structs.size(); i++) {
+		if (m_structs.at(i)->modelMatrix == temp->modelMatrix && m_structs.at(i)->typeId == temp->typeId) {
+			delete m_structs.at(i);
+			m_structs.at(i) = new ObjectInfo(mat4(0),1,1,vec3(0));
+		}
+	}
+	delete temp;
+
+	m_dynamicsWorld->removeCollisionObject(m_powerUps.at(index)->getObject());
+	delete m_powerUps.at(index)->getObject();
+	delete m_powerUps.at(index)->GetObjectInfo();
+	delete m_powerUps.at(index);
+	m_powerUps.erase(m_powerUps.begin() + index);
+
+
 }
 
 int ObjectHandler::GetNumPlayers()
 {
-	cout << m_players.size() << endl;
 	return m_players.size();
 }
 
@@ -215,6 +291,7 @@ vector<ObjectInfo*> ObjectHandler::GetObjects()
 	for (size_t i = 0; i < m_structs.size(); i++)
 	{
 		delete m_structs.at(i);
+
 	}
 	m_structs.clear();
 
@@ -222,17 +299,14 @@ vector<ObjectInfo*> ObjectHandler::GetObjects()
 	{
 		m_structs.push_back(m_players[i]->GetObjectInfo());
 	}
-
 	for (uint i = 0; i < m_platforms.size(); i++)
 	{
 		m_structs.push_back(m_platforms[i]->GetObjectInfo());
 	}
-
-	//for (int i = 0; i < m_powerUps.size; i++)
-	//{
-	//	  temp.push_back(m_powerUps[i]->GetObject());
-	//}
-
+	for (int i = 0; i < m_powerUps.size(); i++)
+	{
+		m_structs.push_back(m_powerUps[i]->GetObjectInfo());
+	}
 	return m_structs;
 }
 

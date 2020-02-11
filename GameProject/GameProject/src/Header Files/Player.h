@@ -9,6 +9,9 @@ private:
 	int m_health;
 	int m_controllerID;
 	int m_modelId;
+	bool m_powerActive;
+	int m_powerType;
+	int m_powerDuration;
 	float m_weight;
 	float m_speed;
 	float m_restitution;
@@ -17,7 +20,7 @@ private:
 	Controller* m_controller;
 	Transform* m_transform;
 	ObjectInfo* m_info;
-
+	
 	//Variables 4 Fysik
 	btCollisionShape* m_carShape;
 	btRigidBody* m_body;
@@ -49,5 +52,6 @@ public:
 	btRigidBody* GetBody();
 	btVector3 GetCurrentPos();
 	void SetPos(vec3 pos);
+	void GivePower(int type);
 
 };

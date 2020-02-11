@@ -5,7 +5,7 @@ Scene::Scene()
 	m_window = new Window(1920, 1080);
 	m_modelShader = new Shader("src/Shaders/VertexShader.glsl", "src/Shaders/FragmentShader.glsl");
 	m_skyboxShader = new Shader("src/Shaders/VertexSkyboxShader.glsl", "src/Shaders/FragmentSkyboxShader.glsl");
-	m_camera = new Camera({0, 32, 45});
+	m_camera = new Camera({0, 25, 40});
 	m_skybox = new Skybox();
 	m_shadowMap = new ShadowMap();
 
@@ -45,6 +45,7 @@ Scene::~Scene()
 	delete m_camera;
 	delete m_skybox;
 	delete m_window;
+	delete m_shadowMap;
 }
 
 void Scene::Init()
@@ -57,6 +58,8 @@ void Scene::Init()
 	m_platform.push_back(new Model("src/Models/platform2.obj"));
 	// Veichles
 	// racingcar scale 0.5 
+	m_power.push_back(new Model("src/Models/PowerUp.obj"));
+
 	m_vehicles.push_back(new Model("src/Models/Low-Poly-Racing-Car-Grey.obj")); 
 	// snowcat scale 0.08 
 	m_vehicles.push_back(new Model("src/Models/Lowpoly-Snowcat2.obj")); 
@@ -180,9 +183,10 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
 	}
 
 	
-	if (m_debug)
+	if (m_debug) {
+		m_modelShader->SetUniform("u_Model", mat4(1.0f));
 		world->debugDrawWorld();
-
+	}
 	m_skyboxShader->UseShader();
 	m_skyboxShader->SetUniform("u_View", mat4(mat3(m_camera->GetView())));
 	m_skyboxShader->SetUniform("u_Projection", m_projMatrix);

@@ -20,7 +20,6 @@ Platform::Platform(Model* model, int platformIndex)
 		}
 	}
 	
-	cout << model->GetMeshes()[platformIndex].m_vertices.size() << endl;
 	m_platformShape = new btConvexHullShape(&points[0].getX(), points.size(), sizeof(btVector3)); // vertexdata, numberofvertices, stride
 	m_btTransform = new btTransform;
 	m_btTransform->setIdentity();
