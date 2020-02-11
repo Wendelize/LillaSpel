@@ -257,7 +257,7 @@ void Scene::renderMenu()
 	case Menu::start:
 		ImGui::SetNextWindowPos(ImVec2(-2, -2));
 		ImGui::SetNextWindowSize(ImVec2(m_window->GetWidht() + 4, m_window->GetHeight() + 4));
-		if (ImGui::Begin("##MainMenu", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize) && m_menu == Menu::start)
+		if (ImGui::Begin("##MainMenu", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiNavInput_Activate) && m_menu == Menu::start)
 		{
 			float placement = (float)m_window->GetWidht() * 0.5f;
 			//ImGui::SetWindowPos(ImVec2(placement, 50));
