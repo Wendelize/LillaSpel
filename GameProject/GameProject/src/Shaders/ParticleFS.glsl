@@ -1,24 +1,17 @@
 #version 430
+// Ouput data
 out vec4 FragColor;
 
-in vec2 TexCoords;
+// Interpolated values from the vertex shaders
+in vertex_out{
+	vec4 color;
+	vec2 texCoords;
+} vi;
 
-uniform sampler2D u_Scene;
-uniform sampler2D u_BloomBlur;
-uniform bool u_Bloom;
-uniform float u_Exposure;
+uniform sampler2D u_Tex;
 
-void main()
-{             
-    const float gamma = 2.2;
-    vec3 color = texture(u_Scene, TexCoords).rgb;      
-    vec3 bloomColor = texture(u_BloomBlur, TexCoords).rgb;
-    if(u_Bloom)
-        color += bloomColor; 
-   
-   // Use for crazy
-    vec3 result = vec3(1.0) - exp(-color * u_Exposure);
-    result = pow(result, vec3(1.0 / gamma));
+void main(){
+	// Output color = color of the texture at the specified UV
+	FragColor = texture( u_Tex, vi.texCoords ) * vi.color;
 
-    FragColor = vec4(color, 1.0);
 }

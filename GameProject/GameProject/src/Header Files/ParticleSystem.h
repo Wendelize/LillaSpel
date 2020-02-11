@@ -1,33 +1,40 @@
 #pragma once
-#include "Include.h"
+#include "Include.h" 
 
-class Bloom
+struct Particle
+{
+	vec3 position, velocity, color;
+	float size, rotate, weight;
+	float life;
+	float cameraDist;
+
+	Particle()
+		: position(0), velocity(0), color(0), size(0), rotate(0), weight(0), life(0), cameraDist(0)
+	{}
+
+	bool operator<(const Particle& other) const
+	{
+		return cameraDist > other.cameraDist;
+	}
+};
+
+class ParticleSystem
 {
 private:
-	Shader *m_blur, *m_bloom;
-	unsigned int m_FBO1, m_pingPongFBO[2];
-	unsigned int m_colorBuffers[2], m_depth, m_pingPongColorBuffer[2];
-	unsigned int m_quadVAO = 0;
-	unsigned int m_quadVBO;
+	Shader* m_particleShader;
+	GLuint m_tex;
+	GLuint m_VAO;
+	GLuint m_billBoardBuffer, m_particlePosBuffer, m_particleColorBuffer;
+	int m_nrOfParticle = 100, m_lastUsedParticle = 0;
+	Particle* m_particles;
 
-	bool m_horizontal = true, m_firstIteration = true, m_bool = true;
-	float m_exposure = 1.0f;
-	
 public:
-	Bloom();
-	~Bloom();
+	//vector<Particle> m_particles;
 
-	void Init();
-	void InitPingPong();
-	void PingPongRender();
-	void RenderBloom();
-	void RenderQuad();
-	
+	ParticleSystem(int nrOfParticles);
+	~ParticleSystem();
 
-	Shader* GetBlurShader();
-	Shader* GetBloomShader();
-
-	unsigned int getFBO();
-
-
+	void Init(int nrOfParticles);
+	int FindParticle();
+	void SortParticles();
 };

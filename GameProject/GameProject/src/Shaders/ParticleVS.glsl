@@ -1,24 +1,32 @@
 #version 430
-out vec4 FragColor;
+layout(location = 0) in vec3 squareVertices;
+layout(location = 1) in vec4 xyzs; // Position of the center of the particule and size of the square
+layout(location = 2) in vec4 color; // Position of the center of the particule and size of the square
 
-in vec2 TexCoords;
 
-uniform sampler2D u_Scene;
-uniform sampler2D u_BloomBlur;
-uniform bool u_Bloom;
-uniform float u_Exposure;
+out vertex_out{
+	vec4 color;
+	vec2 texCoords;
+} vo;
+
+
+uniform vec3 u_CameraRight;
+uniform vec3 u_CameraUp;
+uniform mat4 u_View;
+uniform mat4 u_Proj;
 
 void main()
-{             
-    const float gamma = 2.2;
-    vec3 color = texture(u_Scene, TexCoords).rgb;      
-    vec3 bloomColor = texture(u_BloomBlur, TexCoords).rgb;
-    if(u_Bloom)
-        color += bloomColor; 
-   
-   // Use for crazy
-    vec3 result = vec3(1.0) - exp(-color * u_Exposure);
-    result = pow(result, vec3(1.0 / gamma));
+{
+	float particleSize = xyzs.w; 
+	vec3 particleCenter_wordspace = xyzs.xyz;
+	
+	vec3 vertexPosition_worldspace = 
+		particleCenter_wordspace
+		+ u_CameraRight * squareVertices.x * particleSize
+		+ u_CameraUp * squareVertices.y * particleSize;
 
-    FragColor = vec4(color, 1.0);
+	gl_Position = u_Proj * u_View * vec4(vertexPosition_worldspace, 1.0f);
+
+	vo.texCoords = squareVertices.xy + vec2(0.5, 0.5);
+	vo.color = color;
 }

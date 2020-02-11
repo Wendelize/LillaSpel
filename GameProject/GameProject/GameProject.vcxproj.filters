@@ -79,6 +79,9 @@
     <ClCompile Include="src\Header Files\PowerUp.cpp">
       <Filter>Src</Filter>
     </ClCompile>
+    <ClCompile Include="src\ParticleSystem.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Header Files\Camera.h">
@@ -165,6 +168,9 @@
     <ClInclude Include="src\Header Files\PowerUp.h">
       <Filter>Header</Filter>
     </ClInclude>
+    <ClInclude Include="src\Header Files\ParticleSystem.h">
+      <Filter>Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Shaders\ShadowFS.glsl">
@@ -195,6 +201,12 @@
       <Filter>Shader</Filter>
     </None>
     <None Include="src\Shaders\SkyboxVS.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="src\Shaders\ParticleFS.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="src\Shaders\ParticleVS.glsl">
       <Filter>Shader</Filter>
     </None>
   </ItemGroup>

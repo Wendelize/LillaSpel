@@ -88,7 +88,6 @@ void Scene::Init()
 
 }
 
-
 void Scene::LightToShader()
 {
 	m_modelShader->Uniform("u_NrOf", m_nrOfLights);
