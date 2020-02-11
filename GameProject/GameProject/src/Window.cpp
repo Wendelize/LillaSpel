@@ -81,6 +81,8 @@ Window::Window(int width, int height)
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	m_fonts.push_back(io.Fonts->AddFontFromFileTTF("src/IMGUI/Fonts/CFLegendsoftheFall-Regular.ttf", 20.0f));
+	m_fonts.push_back(io.Fonts->AddFontFromFileTTF("src/IMGUI/Fonts/CFLegendsoftheFall-Regular.ttf", 60.0f));
 	m_fonts.push_back(io.Fonts->AddFontFromFileTTF("src/IMGUI/Fonts/spongeboy_me_bob/Spongeboy Me Bob.ttf", 20.0f));
 	m_fonts.push_back(io.Fonts->AddFontFromFileTTF("src/IMGUI/Fonts/spongeboy_me_bob/Spongeboy Me Bob.ttf", 60.0f));
 	m_fonts.push_back(io.Fonts->AddFontFromFileTTF("src/IMGUI/Fonts/djb_crazy_goofy_cool/DJB Crazy Goofy Cool.ttf", 20));

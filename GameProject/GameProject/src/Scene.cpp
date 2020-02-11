@@ -254,7 +254,7 @@ void Scene::renderMenu()
 	// id 'r vad imgui referera till så håll koll på dem
 	ImGui::SetNextWindowPos(ImVec2(-2, -2));
 	ImGui::SetNextWindowSize(ImVec2(m_window->GetWidht() + 4, m_window->GetHeight() + 4));
-	if (ImGui::Begin("##MainMenu", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize))
+	if (ImGui::Begin("##MainMenu", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoBackground))
 	{
 		float placement = (float)m_window->GetWidht() * 0.5f - ImGui::GetWindowContentRegionWidth() * 0.5;
 		//ImGui::SetWindowPos(ImVec2(placement, 50));
@@ -274,7 +274,7 @@ void Scene::renderMenu()
 		ImGui::SetCursorPos(ImVec2(850, 460));
 		if (ImGui::Button("Exit", ImVec2(200, 75)))
 		{
-
+			glfwSetWindowShouldClose(GetWindow(), 1);
 		}
 		ImGui::PopStyleVar(1); // pop all the styles
 		ImGui::PopFont();
