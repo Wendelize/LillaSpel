@@ -246,7 +246,7 @@ void ObjectHandler::RemovePowerUp(int index)
 	for (int i = 0; i < m_structs.size(); i++) {
 		if (m_structs.at(i)->modelMatrix == temp->modelMatrix && m_structs.at(i)->typeId == temp->typeId) {
 			delete m_structs.at(i);
-			m_structs.at(i) = new ObjectInfo(mat4(0),1,1,vec3(0));
+			m_structs.at(i) = new ObjectInfo(mat4(0),1,1,vec3(0), false);
 		}
 	}
 	delete temp;

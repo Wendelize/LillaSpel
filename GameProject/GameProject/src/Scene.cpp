@@ -247,8 +247,11 @@ void Scene::RenderImGui(btDiscreteDynamicsWorld* world)
 		m_toggle = false;
 	}
 
-	if (m_debug)
+	if (m_debug) {
+		m_modelShader->SetUniform("u_Model", mat4(1));
 		world->debugDrawWorld();
+
+	}
 }
 
 void Scene::SwapBuffer()

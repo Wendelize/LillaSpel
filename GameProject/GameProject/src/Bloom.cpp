@@ -106,7 +106,6 @@ void Bloom::RenderBloom()
 	m_bloom->Uniform("u_Exposure", m_exposure);
 	RenderQuad();
 
-	std::cout << "bloom: " << (m_bool ? "on" : "off") << "| exposure: " << m_exposure << std::endl;
 }
 
 void Bloom::RenderQuad()

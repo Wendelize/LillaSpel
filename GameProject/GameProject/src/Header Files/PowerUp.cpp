@@ -87,7 +87,7 @@ btGhostObject* PowerUp::getObject()
 
 ObjectInfo* PowerUp::GetObjectInfo()
 {
-	m_info = new ObjectInfo(m_transform->GetMatrix(), 0, 2, m_color);
+	m_info = new ObjectInfo(m_transform->GetMatrix(), 0, 2, m_color, true);
 	return m_info;
 }
 
