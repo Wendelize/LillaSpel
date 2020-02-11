@@ -1,6 +1,7 @@
 #pragma once
 #include "Include.h"
 
+
 class Scene
 {
 private:
@@ -11,18 +12,6 @@ private:
 	Camera * m_camera;
 	Skybox * m_skybox;
 	ShadowMap * m_shadowMap;
-
-	enum struct Menu
-	{
-		noMenu = 0,
-		start = 1,
-		select = 2,
-		pause = 3,
-		restart = 4
-	};
-
-	Menu m_menu = Menu::start;
-
 	bool m_debug = false;
 	bool m_toggle = false;
 
@@ -49,11 +38,10 @@ public:
 	void RenderImGui(btDiscreteDynamicsWorld* world);
 	void SwapBuffer();
 
-	void renderMenu();
-
 
 	void SetWindowSize(int width, int height);
 	GLFWwindow* GetWindow();
+	Window* GetOurWindow();
 	int GetNumPlayerModels();
 	int GetNumPlatformModels();
 	int GetNumPowerUpModels();

@@ -6,6 +6,7 @@ Game::Game()
 	m_scene = new Scene();
 	m_scene->Init(); // H�r skapas modellerna
 	m_time = 0;
+	m_menu = new Menu(m_scene, m_objectHandler);
 
 	m_debug = false;
 	m_toggle = false;
@@ -28,28 +29,30 @@ Game::~Game()
 
 void Game::Update(float dt)
 {
-	m_time += dt;
-
-	m_objectHandler->Update(dt);
-
-	// Toggle debug window
-	SHORT keyState = GetAsyncKeyState(VK_LCONTROL);
-	if (keyState < 0)
+	if (!m_menu->Pause())
 	{
-		if (!m_toggle)
+		m_time += dt;
+
+		m_objectHandler->Update(dt);
+
+		// Toggle debug window
+		SHORT keyState = GetAsyncKeyState(VK_LCONTROL);
+		if (keyState < 0)
 		{
-			if (m_debug)
-				m_debug = false;
-			else
-				m_debug = true;
+			if (!m_toggle)
+			{
+				if (m_debug)
+					m_debug = false;
+				else
+					m_debug = true;
+			}
+			m_toggle = true;
 		}
-		m_toggle = true;
+		else
+		{
+			m_toggle = false;
+		}
 	}
-	else
-	{
-		m_toggle = false;
-	}
-
 	Render();
 }
 
@@ -72,9 +75,14 @@ void Game::Render()
 	ImGui::NewFrame();
 	//ImGui::ShowDemoWindow();
 
-	m_objects = m_objectHandler->GetObjects();
-	m_scene->Render(m_objects, m_objectHandler->GetWorld());
+	m_menu->RenderMenu();
+	if(!m_menu->Pause())
+	{ 
+		m_objects = m_objectHandler->GetObjects();
+		m_scene->Render(m_objects, m_objectHandler->GetWorld());
 
+	}
+	
 	if (m_debug)
 	{
 		Debug();

@@ -2,12 +2,14 @@
 #include "Include.h"
 #include "ObjectHandler.h"
 #include "Scene.h"
+#include "Menu.h"
 
 class Game
 {
 private:
 	ObjectHandler* m_objectHandler;
 	Scene* m_scene;
+	Menu* m_menu;
 
 	vector<ObjectInfo*> m_objects;
 	vector<Model*> m_platforms;

@@ -1,5 +1,4 @@
 ﻿#include "Header Files/Scene.h"
-
 Scene::Scene()
 {
 	m_window = new Window(1920, 1080);
@@ -154,8 +153,6 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
 	// Render Imgui
 	RenderImGui(world);
 
-	renderMenu();
-
 	// Render Skybox
 	RenderSkybox();
 
@@ -248,66 +245,6 @@ void Scene::SwapBuffer()
 	glfwSwapBuffers(m_window->m_window);
 }
 
-void Scene::renderMenu()
-{
-	// ## osynligtr id så fönster utan titel
-	// id 'r vad imgui referera till så håll koll på dem
-	switch (m_menu)
-	{
-	case Menu::start:
-		ImGui::SetNextWindowPos(ImVec2(-2, -2));
-		ImGui::SetNextWindowSize(ImVec2(m_window->GetWidht() + 4, m_window->GetHeight() + 4));
-		if (ImGui::Begin("##MainMenu", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiNavInput_Activate) && m_menu == Menu::start)
-		{
-			float placement = (float)m_window->GetWidht() * 0.5f;
-			//ImGui::SetWindowPos(ImVec2(placement, 50));
-			//ImGui::Spacing();
-			//ImGui::NextColumn();
-			ImGui::SetCursorPos(ImVec2(placement - 100, 15));
-			//ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(placement, 0));
-			ImGui::PushFont(m_window->m_fonts[1]);
-			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 1, 0, 1));
-			ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.5);
-			ImGui::Text("KamiCarZe");
-			ImGui::SetCursorPos(ImVec2(placement - 75, 300));
-			if (ImGui::Button("Start", ImVec2(200, 75)))
-			{
-				m_menu = Menu::noMenu;
-			}
-			ImGui::SetCursorPos(ImVec2(placement - 75, 460));
-			if (ImGui::Button("Exit", ImVec2(200, 75)))
-			{
-				glfwSetWindowShouldClose(GetWindow(), 1);
-			}
-			ImGui::PopStyleVar(1); // pop all the styles
-			ImGui::PopFont();
-			ImGui::PopStyleColor();
-
-		}
-		ImGui::End();
-		break;
-	case Menu::select:
-		break;
-	default:
-		break;
-	}
-	
-	/*
-	if (ImGui::Begin("##MainMenu", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_AlwaysAutoResize))
-	{
-		float placement = (float)m_window->GetWidht() * 0.5f - ImGui::GetWindowContentRegionWidth() * 0.5;
-		ImGui::SetWindowPos(ImVec2(placement, 50));
-		ImGui::PushFont(m_window->m_fonts[1]);
-		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 1, 0, 1));
-		ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.5);
-		ImGui::Text("KamiCarZe");
-		ImGui::PopStyleVar();
-		ImGui::PopFont();
-		ImGui::PopStyleColor();
-
-	}
-	ImGui::End();*/
-}
 
 void Scene::SetWindowSize(int width, int height)
 {
@@ -318,6 +255,11 @@ void Scene::SetWindowSize(int width, int height)
 GLFWwindow* Scene::GetWindow()
 {
 	return m_window->m_window;
+}
+
+Window* Scene::GetOurWindow()
+{
+	return m_window;
 }
 
 int Scene::GetNumPlayerModels()

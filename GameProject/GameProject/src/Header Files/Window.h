@@ -14,6 +14,7 @@ public:
 
 	int GetWidht();
 	int GetHeight();
+
 	void SetWidht(int width);
 	void SetHeight(int height);
 };
