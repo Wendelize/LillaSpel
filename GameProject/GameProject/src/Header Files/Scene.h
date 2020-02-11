@@ -12,6 +12,17 @@ private:
 	Skybox * m_skybox;
 	ShadowMap * m_shadowMap;
 
+	enum struct Menu
+	{
+		noMenu = 0,
+		start = 1,
+		select = 2,
+		pause = 3,
+		restart = 4
+	};
+
+	Menu m_menu = Menu::start;
+
 	bool m_debug = false;
 	bool m_toggle = false;
 

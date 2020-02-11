@@ -252,36 +252,46 @@ void Scene::renderMenu()
 {
 	// ## osynligtr id så fönster utan titel
 	// id 'r vad imgui referera till så håll koll på dem
-	ImGui::SetNextWindowPos(ImVec2(-2, -2));
-	ImGui::SetNextWindowSize(ImVec2(m_window->GetWidht() + 4, m_window->GetHeight() + 4));
-	if (ImGui::Begin("##MainMenu", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize))
+	switch (m_menu)
 	{
-		float placement = (float)m_window->GetWidht() * 0.5f - ImGui::GetWindowContentRegionWidth() * 0.5;
-		//ImGui::SetWindowPos(ImVec2(placement, 50));
-		//ImGui::Spacing();
-		//ImGui::NextColumn();
-		ImGui::SetCursorPos(ImVec2(800, 15));
-		//ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(placement, 0));
-		ImGui::PushFont(m_window->m_fonts[1]);
-		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 1, 0, 1));
-		ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.5);
-		ImGui::Text("KamiCarZe");
-		ImGui::SetCursorPos(ImVec2(850, 300));
-		if (ImGui::Button("Start", ImVec2(200, 75)))
+	case Menu::start:
+		ImGui::SetNextWindowPos(ImVec2(-2, -2));
+		ImGui::SetNextWindowSize(ImVec2(m_window->GetWidht() + 4, m_window->GetHeight() + 4));
+		if (ImGui::Begin("##MainMenu", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize) && m_menu == Menu::start)
 		{
+			float placement = (float)m_window->GetWidht() * 0.5f;
+			//ImGui::SetWindowPos(ImVec2(placement, 50));
+			//ImGui::Spacing();
+			//ImGui::NextColumn();
+			ImGui::SetCursorPos(ImVec2(placement - 100, 15));
+			//ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(placement, 0));
+			ImGui::PushFont(m_window->m_fonts[1]);
+			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 1, 0, 1));
+			ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.5);
+			ImGui::Text("KamiCarZe");
+			ImGui::SetCursorPos(ImVec2(placement - 75, 300));
+			if (ImGui::Button("Start", ImVec2(200, 75)))
+			{
+				m_menu = Menu::noMenu;
+			}
+			ImGui::SetCursorPos(ImVec2(placement - 75, 460));
+			if (ImGui::Button("Exit", ImVec2(200, 75)))
+			{
+				glfwSetWindowShouldClose(GetWindow(), 1);
+			}
+			ImGui::PopStyleVar(1); // pop all the styles
+			ImGui::PopFont();
+			ImGui::PopStyleColor();
 
 		}
-		ImGui::SetCursorPos(ImVec2(850, 460));
-		if (ImGui::Button("Exit", ImVec2(200, 75)))
-		{
-			glfwSetWindowShouldClose(GetWindow(), 1);
-		}
-		ImGui::PopStyleVar(1); // pop all the styles
-		ImGui::PopFont();
-		ImGui::PopStyleColor();
-
+		ImGui::End();
+		break;
+	case Menu::select:
+		break;
+	default:
+		break;
 	}
-	ImGui::End();
+	
 	/*
 	if (ImGui::Begin("##MainMenu", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_AlwaysAutoResize))
 	{
