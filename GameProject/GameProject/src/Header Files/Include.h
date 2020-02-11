@@ -53,6 +53,7 @@
 #include "DebugDrawer.h"
 #include "ShadowMap.h"
 #include "Bloom.h"
+#include "ParticleSystem.h"
 
 //NAMESPACES
 using namespace std;

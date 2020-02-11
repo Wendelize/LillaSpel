@@ -24,7 +24,7 @@ int main(void)
 
 		GAME->Update(_deltaTime);
 		GAME->PlayWithLights(_curTime);
-		GAME->Render();
+		//GAME->Render();
 	}
 	
 	ImGui_ImplOpenGL3_Shutdown();

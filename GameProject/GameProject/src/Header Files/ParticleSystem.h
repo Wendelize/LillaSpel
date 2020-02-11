@@ -3,7 +3,8 @@
 
 struct Particle
 {
-	vec3 position, velocity, color;
+	vec3 position, velocity;
+	vec4 color;
 	float size, rotate, weight;
 	float life;
 	float cameraDist;
@@ -25,16 +26,21 @@ private:
 	GLuint m_tex;
 	GLuint m_VAO;
 	GLuint m_billBoardBuffer, m_particlePosBuffer, m_particleColorBuffer;
-	int m_nrOfParticle = 100, m_lastUsedParticle = 0;
+	int m_nrOfParticle = 100, m_lastUsedParticle = 0, m_particleCount;
 	Particle* m_particles;
+	GLfloat* m_particlePos, * m_particleColor;
 
 public:
-	//vector<Particle> m_particles;
 
 	ParticleSystem(int nrOfParticles);
 	~ParticleSystem();
 
-	void Init(int nrOfParticles);
+	void InitParticles();
+	void Init();
 	int FindParticle();
 	void SortParticles();
+	void GenerateParticles(float dt);
+	void SimulateParticles(float dt);
+	void Draw();
+	Shader* GetShader();
 };

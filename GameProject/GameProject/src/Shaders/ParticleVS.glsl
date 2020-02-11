@@ -10,13 +10,14 @@ out vertex_out{
 } vo;
 
 
-uniform vec3 u_CameraRight;
-uniform vec3 u_CameraUp;
 uniform mat4 u_View;
 uniform mat4 u_Proj;
 
 void main()
 {
+	vec3 u_CameraRight = vec3(u_View[0][0], u_View[1][0], u_View[2][0]);
+	vec3 u_CameraUp	   = vec3(u_View[0][1], u_View[1][1], u_View[2][1]);
+
 	float particleSize = xyzs.w; 
 	vec3 particleCenter_wordspace = xyzs.xyz;
 	

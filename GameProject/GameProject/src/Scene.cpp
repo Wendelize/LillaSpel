@@ -10,6 +10,7 @@ Scene::Scene()
 	m_skybox = new Skybox();
 	m_shadowMap = new ShadowMap();
 	m_bloom = new Bloom();
+	m_particles = new ParticleSystem(10);
 
 	m_modelMatrix = mat4(1.0);
 	m_projMatrix = mat4(1.0);
@@ -48,6 +49,8 @@ Scene::~Scene()
 	delete m_shadowMap;
 	delete m_skybox;
 	delete m_bloom;
+	delete m_particles;
+
 	delete m_window;
 
 }
@@ -61,6 +64,7 @@ void Scene::Init()
 
 
 	// Veichles
+
 	// racingcar scale 0.5 
 	m_vehicles.push_back(new Model("src/Models/Low-Poly-Racing-Car-Grey.obj")); 
 	// snowcat scale 0.08 
@@ -83,9 +87,6 @@ void Scene::Init()
 	AddDirLight(vec3(-1, -1, 0), { 1,1,1 });
 	AddPointLight({ 2,2,2 }, {1, 1, 1});
 	AddPointLight({ -2,2,-2 }, {1, 1, 1});
-	// pls do not add spotlights thanks you ^^
-	//AddSpotLight({ 0, 2, 0 }, vec3(vec3(0) - vec3(0, 2, 0)), {1, 1, 1}, 12.5);
-
 }
 
 void Scene::LightToShader()
@@ -126,7 +127,7 @@ void Scene::LightToShader()
 
 }
 
-void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
+void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, float dt)
 {
 	/* Render here */
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -142,7 +143,7 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
 	// Matrix uniforms
 	m_modelShader->UseShader();
 	m_modelShader->SetUniform("u_ViewPos", m_camera->GetPos());
-	m_modelShader->SetUniform("u_View", m_camera->GetView());
+	m_modelShader->SetUniform("u_View", m_viewMatrix);
 	m_modelShader->SetUniform("u_Projection", m_projMatrix);
 	m_modelShader->SetUniform("u_LSP", m_shadowMap->GetLSP());
 	m_modelShader->SetTexture2D(0, "u_ShadowMap", m_shadowMap->GetTexture());
@@ -166,6 +167,8 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
 	m_bloom->PingPongRender();
 
 	m_bloom->RenderBloom();
+
+	RenderParticles(dt);
 
 	/* Poll for and process events */
 	glfwPollEvents();
@@ -253,6 +256,16 @@ void Scene::RenderImGui(btDiscreteDynamicsWorld* world)
 	}
 }
 
+void Scene::RenderParticles(float dt)
+{
+	m_particles->GetShader()->SetUniform("u_View", m_viewMatrix);
+	m_particles->GetShader()->SetUniform("u_Proj", m_projMatrix);
+
+	m_particles->GenerateParticles(dt);
+	m_particles->SimulateParticles(dt);
+	m_particles->Draw();
+}
+
 void Scene::SwapBuffer()
 {
 	glfwSwapBuffers(m_window->m_window);
@@ -316,6 +329,3 @@ void Scene::AddSpotLight(vec3 pos, vec3 dir, vec3 color, float cutOff)
 	Light _temp = Light(2, dir, pos, color, cutOff);
 	m_lights.push_back(_temp);
 }
-
-
-

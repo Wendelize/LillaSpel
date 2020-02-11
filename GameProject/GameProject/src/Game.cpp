@@ -54,7 +54,7 @@ void Game::Update(float dt)
 		m_toggle = false;
 	}
 
-	Render();
+	Render(dt);
 }
 
 void Game::PlayWithLights(float dt)
@@ -69,10 +69,10 @@ void Game::PlayWithLights(float dt)
 	}
 }
 
-void Game::Render()
+void Game::Render(float dt)
 {
 	m_objects = m_objectHandler->GetObjects();
-	m_scene->Render(m_objects, m_objectHandler->GetWorld());
+	m_scene->Render(m_objects, m_objectHandler->GetWorld(), dt);
 
 	if (m_debug)
 	{
