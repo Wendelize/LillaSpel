@@ -274,7 +274,7 @@ void Scene::renderMenu()
 		ImGui::SetCursorPos(ImVec2(850, 460));
 		if (ImGui::Button("Exit", ImVec2(200, 75)))
 		{
-
+			glfwSetWindowShouldClose(GetWindow(), 1);
 		}
 		ImGui::PopStyleVar(1); // pop all the styles
 		ImGui::PopFont();

@@ -70,7 +70,7 @@ void Game::Render()
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
-	ImGui::ShowDemoWindow();
+	//ImGui::ShowDemoWindow();
 
 	m_objects = m_objectHandler->GetObjects();
 	m_scene->Render(m_objects, m_objectHandler->GetWorld());
