@@ -48,7 +48,6 @@ PowerUp::~PowerUp()
 	delete m_btTransform;
 	delete m_transform;
 	delete m_shape;
-
 }
 
 void PowerUp::SetPos(btVector3 pos)
@@ -91,6 +90,7 @@ ObjectInfo* PowerUp::GetObjectInfo()
 	m_info = new ObjectInfo(m_transform->GetMatrix(), 0, 2, m_color);
 	return m_info;
 }
+
 bool PowerUp::update(float dt)
 {
 	bool destroy = true;

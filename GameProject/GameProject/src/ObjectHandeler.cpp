@@ -8,9 +8,7 @@ ObjectHandler::ObjectHandler()
 	m_dispatcher = new btCollisionDispatcher(m_collisionConfiguration);
 	m_solver = new btSequentialImpulseConstraintSolver();
 	m_dynamicsWorld = new btDiscreteDynamicsWorld(m_dispatcher, m_broadphase, m_solver, m_collisionConfiguration);
-
 	m_dynamicsWorld->setGravity(btVector3(0, -10.f, 0));
-
 	m_debugDrawer = new DebugDrawer;
 	m_debugDrawer->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
 	m_dynamicsWorld->setDebugDrawer(m_debugDrawer);
@@ -92,10 +90,26 @@ void ObjectHandler::Update(float dt)
 		btAlignedObjectArray< btCollisionObject* >& pairs = m_powerUps.at(i)->getObject()->getOverlappingPairs();
 		for (int j = 0; j < pairs.size(); j++)
 		{
-			for (int k = 0; k < m_players.size(); k++) {
-				if (m_players.at(k)->GetControllerID() == pairs.at(j)->getUserIndex()) {
-
-					//GIVE POWERUP
+			bool notFound = true;
+			for (int k = 0; k < m_players.size() && notFound; k++) {
+				int checkPlayer = m_players.at(k)->GetControllerID();
+				int collidingPlayer = pairs.at(j)->getUserIndex();
+				if (checkPlayer == collidingPlayer) {
+					notFound = false;
+					if (m_powerUps.at(i)->GetType() == 5 || m_powerUps.at(i)->GetType() == 4) {
+						for (int l = 0; l < m_players.size(); l++) {
+							if (l != k) {
+								m_dynamicsWorld->removeRigidBody(m_players.at(l)->GetBody());
+								m_players.at(l)->GivePower(m_powerUps.at(i)->GetType());
+								m_dynamicsWorld->addRigidBody(m_players.at(l)->GetBody());
+							}
+						}
+					}
+					else {
+						m_dynamicsWorld->removeRigidBody(m_players.at(k)->GetBody());
+						m_players.at(k)->GivePower(m_powerUps.at(i)->GetType());
+						m_dynamicsWorld->addRigidBody(m_players.at(k)->GetBody());
+					}
 				}
 			}
 			RemovePowerUp(i);
@@ -108,6 +122,7 @@ void ObjectHandler::Update(float dt)
 		btCollisionObject* obj = m_dynamicsWorld->getCollisionObjectArray()[i];
 		btRigidBody* body = btRigidBody::upcast(obj);
 		btTransform trans;
+
 		if (body && body->getMotionState())
 		{
 			body->getMotionState()->getWorldTransform(trans);
@@ -116,15 +131,24 @@ void ObjectHandler::Update(float dt)
 		{
 			trans = obj->getWorldTransform();
 		}
+
 		int isPlayer = i - m_platforms.size() - m_powerUps.size();
 		int isPowerUp = i - m_platforms.size() - m_players.size();
+
 		if (isPowerUp >= 0) {
 			if (m_powerUps[isPowerUp]->update(dt)) {
 				RemovePowerUp(isPowerUp);
 			}
 		}
+
 		if (isPlayer >= 0) {
 			m_players[isPlayer]->Update(dt);
+			if (m_players[isPlayer]->updatePower(dt)) {
+				m_dynamicsWorld->removeRigidBody(m_players[isPlayer]->GetBody());
+				m_players[isPlayer]->removePower(m_players[isPlayer]->GetActivePower());
+				m_dynamicsWorld->addRigidBody(m_players[isPlayer]->GetBody());
+
+			}
 			if (m_players[isPlayer]->GetCurrentPos().y() < -20.f) {
 				m_players[isPlayer]->SetPos(vec3(rand() % 10 - 10, 15, rand() % 10 - 10));
 			}
@@ -188,7 +212,7 @@ void ObjectHandler::AddPowerUp()
 {
 	srand(time(NULL));
 	int spawnLocation = rand() % (20);
-	int type = rand() % (5);
+	int type = rand() % (6);
 	if (m_usedSpawns[spawnLocation] == true) {
 		bool notFound = true;
 		int i = 0;
@@ -232,8 +256,6 @@ void ObjectHandler::RemovePowerUp(int index)
 	delete m_powerUps.at(index)->GetObjectInfo();
 	delete m_powerUps.at(index);
 	m_powerUps.erase(m_powerUps.begin() + index);
-
-
 }
 
 int ObjectHandler::GetNumPlayers()

@@ -14,6 +14,7 @@ private:
 	int m_powerDuration;
 	float m_weight;
 	float m_speed;
+	float m_powerMultiplier;
 	float m_restitution;
 	vec3 m_scale;
 	vec3 m_color;
@@ -27,10 +28,13 @@ private:
 	btTransform* m_btTransform;
 	btDefaultMotionState* m_motionState;
 	btVector3 m_currentPos;
+
 public:
 	Player(Model* model, int modelId, vec3 pos);
 	~Player();
+
 	void Update(float dt);
+
 	string GetName();
 	void SetName(string name);
 	int GetHealth();
@@ -53,5 +57,7 @@ public:
 	btVector3 GetCurrentPos();
 	void SetPos(vec3 pos);
 	void GivePower(int type);
-
+	void removePower(int type);
+	bool updatePower(float dt);
+	int GetActivePower();
 };

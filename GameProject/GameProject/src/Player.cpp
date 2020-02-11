@@ -10,15 +10,20 @@ Player::Player(Model* model, int modelId, vec3 pos)
 	m_restitution = 1.6699;
 	m_transform->SetScale(scale, scale, scale);
 
-	//m_transform->SetTranslation(pos);
 	m_name = "";
 	m_health = 0;
 	m_controllerID = 0;
 	m_modelId = modelId;
 	m_weight = 0.f;
 	m_speed = 0.f;
-	m_scale = vec3(1, 1, 1);
-	//SetScale(m_scale);
+	m_powerMultiplier = 1.0f;
+	m_powerActive = false;
+	m_powerType = 0;
+	m_scale = vec3(scale, scale, scale);
+	m_transform->SetScale(scale, scale, scale);
+	m_carShape = new btSphereShape(radius);
+	m_btTransform = new btTransform();
+	m_btTransform->setIdentity();
 
 	// ConvexHullShape for car. Very precise but expensive since it creates A LOT of lines.
 	/*vector<btVector3> points;
@@ -34,25 +39,14 @@ Player::Player(Model* model, int modelId, vec3 pos)
 	m_carShape = new btConvexHullShape(&points[0].getX(), points.size(), sizeof(btVector3));
 	*/
 
-	m_carShape = new btSphereShape(radius);
-
-	//m_carShape = new btBoxShape(btVector3(btScalar(0.5f), btScalar(0.5f), btScalar(0.5f))); // BoxShape
-	
-	//m_carShape = new btSphereShape(radius);
-
-	m_btTransform = new btTransform();
-	m_btTransform->setIdentity();
-
+	// MASSA FYSIK
 	btScalar mass(1000.f);
 	m_btTransform->setOrigin(btVector3(pos.x,pos.y,pos.z));
 	vec3 testPos = vec3(m_btTransform->getOrigin().x(), m_btTransform->getOrigin().y()- radius * scale, m_btTransform->getOrigin().z());
 	m_transform->SetTranslation(testPos);
-	//rigidbody is dynamic if and only if mass is non zero, otherwise static
-	bool isDynamic = (mass != 0.f);
 
 	btVector3 localInertia(0, 0, 0);
-	if (isDynamic)
-		m_carShape->calculateLocalInertia(mass, localInertia);
+	m_carShape->calculateLocalInertia(mass, localInertia);
 
 	//using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
 	m_motionState = new btDefaultMotionState(*m_btTransform);
@@ -66,6 +60,7 @@ Player::Player(Model* model, int modelId, vec3 pos)
 	m_body->setRestitution(m_restitution);
 	m_currentPos = m_btTransform->getOrigin();
 	m_body->setDamping(0.1,0.9);
+
 }
 
 Player::~Player()
@@ -74,7 +69,6 @@ Player::~Player()
 	delete m_transform;
 	delete m_btTransform;
 	delete m_carShape;
-	// delete m_body; GOTTA DELETE IN dynamicsWorld. :)
 }
 
 void Player::Update(float dt)
@@ -85,8 +79,8 @@ void Player::Update(float dt)
 	vec3 direction(0, 0, 0);
 	float rotationSpeed = 2.f;
 	float jump = 0;
-	//m_speed = 0;
 	bool pressed = false;
+
 	if (glfwJoystickPresent(m_controllerID) == 1 && m_body->getWorldTransform().getOrigin().y() < 4.0f && m_body->getWorldTransform().getOrigin().y() > -1.0f)
 	{
 		if (m_controller->ButtonOptionsIsPressed(m_controllerID))
@@ -98,14 +92,13 @@ void Player::Update(float dt)
 		if (m_controller->ButtonAIsPressed(m_controllerID))
 		{
 			//Acceleration
-			m_speed = 1000000.f;
+			m_speed = 1000000.f * m_powerMultiplier;
 			pressed = true;
-
 		}
 
 		if (m_controller->ButtonXIsPressed(m_controllerID))
 		{
-			m_speed = -800000.f;
+			m_speed = -800000.f * m_powerMultiplier;
 			pressed = true;
 		}
 
@@ -114,7 +107,7 @@ void Player::Update(float dt)
 		{
 			//Left trigger pressed
 			//Power-Up
-			m_speed = 1720000.f;
+			m_speed = 1720000.f * m_powerMultiplier;
 			pressed = true;
 
 		}
@@ -122,7 +115,7 @@ void Player::Update(float dt)
 		{
 			//Left trigger pressed
 			//Power-Up
-			m_speed = -1200000.f;
+			m_speed = -1200000.f * m_powerMultiplier;
 			pressed = true;
 
 		}
@@ -143,10 +136,11 @@ void Player::Update(float dt)
 		}
 		direction = m_transform->TranslateDirection(rotate * dt * rotationSpeed);
 	}
+
 	//apply force
 	btVector3 directionBt = { direction.x,0,direction.z };
 	if(pressed){
-	m_body->applyForce(directionBt * -m_speed * dt , m_body->getWorldTransform().getOrigin());
+		m_body->applyForce(directionBt * -m_speed * dt , m_body->getWorldTransform().getOrigin());
 	}
 	m_body->applyDamping(dt);
 
@@ -266,25 +260,126 @@ void Player::SetPos(vec3 pos)
 
 void Player::GivePower(int type)
 {
+
+	if (m_powerActive) {
+		removePower(m_powerType);
+	}
+	cout << "Activating power type " << type  << endl;
+
+	m_powerType = type;
+	m_powerDuration = 300.f;
+	m_powerActive = true;
+
+	float mass;
+	btVector3 localInertia(0, 0, 0);
+	switch (type) {
+		case 0:
+			mass = m_body->getMass() * 1.5f;
+			m_body->getCollisionShape()->calculateLocalInertia(mass, localInertia);
+			m_body->setMassProps(mass, localInertia);
+			m_transform->SetScale(m_scale.x * (1.5f), m_scale.y * (1.5f), m_scale.z * (1.5f));
+			m_powerMultiplier = 1.0f;
+			break;
+
+		case 1:
+			m_body->setRestitution(m_restitution * 1.2);
+			break;
+
+		case 2:
+			m_powerMultiplier = 0.5f;
+			break;
+
+		case 3:
+			mass = m_body->getMass() / 1.5f;
+			m_body->getCollisionShape()->calculateLocalInertia(mass, localInertia);
+			m_body->setMassProps(mass, localInertia);
+			m_transform->SetScale(m_scale.x * (0.75f), m_scale.y * (0.75f), m_scale.z * (0.75f));
+			m_powerMultiplier = 1.0f;
+			break;
+		case 4:
+			mass = m_body->getMass() * 1.5f;
+			m_body->getCollisionShape()->calculateLocalInertia(mass, localInertia);
+			m_body->setMassProps(mass, localInertia);
+			m_transform->SetScale(m_scale.x * (1.5f), m_scale.y * (1.5f), m_scale.z * (1.5f));
+			m_powerMultiplier = 1.0f;
+			break;	
+
+		case 5:
+			mass = m_body->getMass() / 1.5f;
+			m_body->getCollisionShape()->calculateLocalInertia(mass, localInertia);
+			m_body->setMassProps(mass, localInertia);
+			m_transform->SetScale(m_scale.x * (0.75f), m_scale.y * (0.75f), m_scale.z * (0.75f));
+			m_powerMultiplier = 1.0f;
+			break;
+	}
+}
+
+void Player::removePower(int type)
+{
+	float mass;
+	btVector3 localInertia(0, 0, 0);
+
+	m_powerActive = false;
+	cout << "Deactivating power type " << type << " for player " << m_controllerID << endl;
 	switch (type) {
 	case 0:
-		//
-		m_color = vec3(1, 0, 0);
+		mass = m_body->getMass() / 1.5f;
+		m_body->getCollisionShape()->calculateLocalInertia(mass, localInertia);
+		m_body->setMassProps(mass, localInertia);
+		m_powerMultiplier = 1.f;
+		m_transform->SetScale(m_scale.x, m_scale.y, m_scale.z);
 		break;
+
 	case 1:
-		m_color = vec3(0, 1, 0);
+		m_body->setRestitution(m_restitution);
 		break;
+
 	case 2:
-		m_color = vec3(0, 0, 1);
+		m_powerMultiplier = 1.f;
 		break;
+
 	case 3:
-		m_color = vec3(1, 1, 0);
+		mass = m_body->getMass() * 1.5f;
+		cout << mass << endl;
+		m_body->getCollisionShape()->calculateLocalInertia(mass, localInertia);
+		m_body->setMassProps(mass, localInertia);
+		m_powerMultiplier = 1.f;
+		m_transform->SetScale(m_scale.x, m_scale.y, m_scale.z);
 		break;
+
 	case 4:
-		m_color = vec3(0, 1, 1);
+		mass = m_body->getMass() / 1.5f;
+		cout << mass << endl;
+		m_body->getCollisionShape()->calculateLocalInertia(mass, localInertia);
+		m_body->setMassProps(mass, localInertia);
+		m_powerMultiplier = 1.f;
+		m_transform->SetScale(m_scale.x, m_scale.y, m_scale.z);
 		break;
+
 	case 5:
-		m_color = vec3(1, 0, 1);
+		mass = m_body->getMass() * 1.5f;
+		cout << mass << endl;
+		m_body->getCollisionShape()->calculateLocalInertia(mass, localInertia);
+		m_body->setMassProps(mass, localInertia);
+		m_powerMultiplier = 1.f;
+		m_transform->SetScale(m_scale.x, m_scale.y, m_scale.z);
 		break;
 	}
+}
+
+bool Player::updatePower(float dt)
+{
+	bool destroy = false;
+	m_powerDuration = m_powerDuration - dt;
+	if (m_powerDuration <= 0.f && m_powerActive == true) {
+		m_powerActive = false;
+		destroy = true;
+	}
+
+	return destroy;
+}
+
+int Player::GetActivePower()
+{
+	return m_powerType;
 }

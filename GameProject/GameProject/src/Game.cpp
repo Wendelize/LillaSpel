@@ -6,20 +6,16 @@ Game::Game()
 	m_scene = new Scene();
 	m_scene->Init(); // H�r skapas modellerna
 	m_time = 0;
-
 	m_debug = false;
 	m_toggle = false;
 	m_platforms = m_scene->GetModels(0);
 	m_cars = m_scene->GetModels(1); 
-
+	m_timeSinceSpawn = 0;
 	m_objectHandler->AddPlatform(0, m_platforms[0]); // Passa modell
 
-
 	m_objectHandler->AddPlayer(vec3(4, 7, 4), 0, 0, vec3(0, 0, 1), m_cars[0]); // Passa modell
-	//m_objectHandler->AddPlayer(vec3(-4, 7, -4), 1, 0, vec3(0, 1, 0), m_cars[0]); // Passa modell
-	//m_objectHandler->AddPlayer(vec3(4, 7, -4), 2, 0, vec3(1, 1, 0), m_cars[0]); // Passa modell
-	//m_objectHandler->AddPowerUp();
-
+	m_objectHandler->AddPlayer(vec3(-4, 7, -4), 1, 0, vec3(0, 1, 0), m_cars[0]); // Passa modell
+	m_objectHandler->AddPlayer(vec3(4, 7, -4), 2, 0, vec3(1, 1, 0), m_cars[0]); // Passa modell
 }
 
 Game::~Game()
@@ -40,7 +36,6 @@ void Game::Update(float dt)
 
 	m_objectHandler->Update(dt);
 	
-
 	// Toggle debug window
 	SHORT keyState = GetAsyncKeyState(VK_LCONTROL);
 	if (keyState < 0)
