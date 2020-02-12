@@ -31,7 +31,6 @@ Game::Game()
 			m_soundEngine->play2D("src/Audio/Music - Win.mp3", GL_TRUE);
 			m_soundEngine->play2D("src/Audio/Music - 16bit Sea Shanty 2.mp3", GL_TRUE);
 		*/
-
 		int randomNumber = rand() % 5;
 
 		if (randomNumber == 0)
@@ -48,7 +47,7 @@ Game::Game()
 		if (m_music)
 		{
 			m_music->setMinDistance(50.0f);
-			m_music->setVolume(0.6f);
+			m_music->setVolume(0.07f);
 		}
 
 		m_soundEngine->setListenerPosition(vec3df(0, 18, 33), vec3df(0, -4, 3)); // Listener position, view direction

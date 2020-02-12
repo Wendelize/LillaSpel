@@ -110,7 +110,7 @@ Player::Player(Model* model, int modelId, vec3 pos)
 		m_carSounds.push_back(m_soundEngine->addSoundSourceFromFile("src/Audio/Player - Engine.mp3"));
 		m_carSounds.push_back(m_soundEngine->addSoundSourceFromFile("src/Audio/Player - Backing.mp3"));
 
-		m_soundEngine->setSoundVolume(1.0f);
+		m_soundEngine->setSoundVolume(0.3f);
 
 		m_sound = m_soundEngine->play3D(m_carSounds[0], vec3df(GetCurrentPos().x(), GetCurrentPos().y(), GetCurrentPos().z()), true, false, true, true);
 		m_sound->setPlaybackSpeed(1.0f);
@@ -215,7 +215,7 @@ void Player::Update(float dt)
 
 	if (m_soundEngine && m_body->getLinearVelocity().y() < 0.3f && m_body->getLinearVelocity().y() > -0.3f)
 	{
-		m_soundEngine->setSoundVolume(m_body->getLinearVelocity().length() / 2.0 + 1.0f);
+		m_soundEngine->setSoundVolume(m_body->getLinearVelocity().length() * 2 + 0.3f);
 		m_sound->setPlaybackSpeed(m_body->getLinearVelocity().length() / 25 + 1.0f);
 	}
 	m_body->applyDamping(dt);
@@ -341,10 +341,6 @@ bool Player::GetFallen()
 
 void Player::GivePower(int type)
 {
-	// ADD POWERUP SOUND?
-	if(m_soundEngine)
-		m_soundEngine->play3D("src/Audio/Powerup - Pickup.mp3", vec3df(GetCurrentPos().x(), GetCurrentPos().y(), GetCurrentPos().z()));
-	
 	if (m_powerActive) {
 		removePower(m_powerType);
 	}
