@@ -10,25 +10,25 @@ PowerUp::PowerUp(int spawn, btVector3 pos, int type,float duration)
 	switch (type) {
 		case 0: 
 			m_model = 1;
-			m_color = vec3(1, 0, 0);
-			break;
-		case 1: 
 			m_color = vec3(0, 1, 0);
 			break;
+		case 1: 
+			m_color = vec3(1, 0, 0);
+			break;
 		case 2: 
-			m_color = vec3(0, 0, 1);
+			m_color = vec3(0.5, 0, 1);
 			break;
 		case 3: 
 			m_model = 1;
-			m_color = vec3(1, 1, 0);
+			m_color = vec3(1, 0.5, 0);
 			break;
 		case 4:
 			m_model = 1;
-			m_color = vec3(0, 1, 1);
+			m_color = vec3(1, 0, 0);
 			break;
 		case 5: 
 			m_model = 1;
-			m_color = vec3(1, 0, 1);
+			m_color = vec3(0, 1, 0);
 			break;
 	}
 	m_spawn = spawn;
