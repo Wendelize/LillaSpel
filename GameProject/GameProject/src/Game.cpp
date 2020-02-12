@@ -9,13 +9,15 @@ Game::Game()
 	m_debug = false;
 	m_toggle = false;
 	m_platforms = m_scene->GetModels(0);
-	m_cars = m_scene->GetModels(1); 
+	m_cars = m_scene->GetModels(1);
 	m_timeSinceSpawn = 0;
 	m_objectHandler->AddPlatform(0, m_platforms[0]); // Passa modell
-
-	m_objectHandler->AddPlayer(vec3(4, 7, 4), 0, 0, vec3(0, 0, 1), m_cars[0]); // Passa modell
-	m_objectHandler->AddPlayer(vec3(-4, 7, -4), 1, 0, vec3(0, 1, 0), m_cars[0]); // Passa modell
-	m_objectHandler->AddPlayer(vec3(4, 7, -4), 2, 0, vec3(1, 1, 0), m_cars[0]); // Passa modell
+	srand(time(NULL));
+	cout << rand() % 4 << endl;
+	m_objectHandler->AddPlayer(vec3(4, 7, 4), 0, rand() % 4, vec3(0, 0, 1), m_cars[0]); // Passa modell
+	m_objectHandler->AddPlayer(vec3(-4, 7, -4), 1, rand() % 4, vec3(0, 1, 0), m_cars[2]); // Passa modell
+	m_objectHandler->AddPlayer(vec3(4, 7, -4), 2, rand() % 4, vec3(1, 1, 0), m_cars[1]); // Passa modell
+	m_objectHandler->AddPlayer(vec3(-4, 7, -4), 3, rand() % 4, vec3(1, 1, 0), m_cars[3]); // Passa modell
 }
 
 Game::~Game()

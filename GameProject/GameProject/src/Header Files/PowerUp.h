@@ -8,6 +8,7 @@ private:
 	int m_type;
 	float m_duration;
 	int m_spawn;
+	int m_model;
 	vec3 m_color;
 	btBoxShape* m_shape;
 	ObjectInfo* m_info;

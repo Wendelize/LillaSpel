@@ -40,7 +40,27 @@ Player::Player(Model* model, int modelId, vec3 pos)
 	*/
 
 	// MASSA FYSIK
-	btScalar mass(1000.f);
+	btScalar mass;
+	switch (modelId)
+	{
+	case 0:
+		//deafult bil
+		mass = 1000.f;
+		break;
+	case 1:
+		//truck
+		mass = 1100.f;
+		break;
+	case 2:
+		mass = 1050.f;
+		break;
+	case 3:
+		mass = 950.f;
+		break;
+	default:
+		mass = 1000.f;
+		break;
+	}
 	m_btTransform->setOrigin(btVector3(pos.x,pos.y,pos.z));
 	vec3 testPos = vec3(m_btTransform->getOrigin().x(), m_btTransform->getOrigin().y()- radius * scale, m_btTransform->getOrigin().z());
 	m_transform->SetTranslation(testPos);
@@ -59,7 +79,25 @@ Player::Player(Model* model, int modelId, vec3 pos)
 	m_body->clearForces();
 	m_body->setRestitution(m_restitution);
 	m_currentPos = m_btTransform->getOrigin();
-	m_body->setDamping(0.1,0.9);
+
+	switch (modelId)
+	{
+	case 0:
+		m_body->setDamping(0.3, 1.5);
+		break;
+	case 1:
+		m_body->setDamping(0.1, 4.);
+		break;
+	case 2:
+		m_body->setDamping(0.01, 2.0);
+		break;
+	case 3:
+		m_body->setDamping(0.6, 6.8);
+		break;
+	default:
+		m_body->setDamping(0.1, 1);
+		break;
+	}
 
 }
 
@@ -92,13 +130,13 @@ void Player::Update(float dt)
 		if (m_controller->ButtonAIsPressed(m_controllerID))
 		{
 			//Acceleration
-			m_speed = 1000000.f * m_powerMultiplier;
+			m_speed = 600000.f * m_powerMultiplier;
 			pressed = true;
 		}
 
 		if (m_controller->ButtonXIsPressed(m_controllerID))
 		{
-			m_speed = -800000.f * m_powerMultiplier;
+			m_speed = -400000.f * m_powerMultiplier;
 			pressed = true;
 		}
 
@@ -107,7 +145,7 @@ void Player::Update(float dt)
 		{
 			//Left trigger pressed
 			//Power-Up
-			m_speed = 1720000.f * m_powerMultiplier;
+			m_speed = 1000000.f * m_powerMultiplier;
 			pressed = true;
 
 		}
@@ -115,7 +153,7 @@ void Player::Update(float dt)
 		{
 			//Left trigger pressed
 			//Power-Up
-			m_speed = -1200000.f * m_powerMultiplier;
+			m_speed = -800000.f * m_powerMultiplier;
 			pressed = true;
 
 		}

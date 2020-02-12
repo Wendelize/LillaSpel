@@ -176,22 +176,16 @@ void ObjectHandler::SetScale(int id, vec3 scale)
 
 void ObjectHandler::RemovePlayer(int index)
 {
+	m_dynamicsWorld->removeCollisionObject(m_players.at(index)->GetBody());
+	btRigidBody* body = m_players.at(index)->GetBody();
 	delete m_players.at(index);
 	m_players.erase(m_players.begin() + index);
 
-	// MOVE TO PLAYER DESTRUCTOR SO THAT WHEN A CAR IS DELETED, ITS RIGID BODY IS DESTROYED?
-	//remove the rigidbodies from the dynamics world and delete them
-	int removeIndex = m_dynamicsWorld->getNumCollisionObjects() - 1;
-
-	btCollisionObject* obj = m_dynamicsWorld->getCollisionObjectArray()[removeIndex];
-
-	btRigidBody* body = btRigidBody::upcast(obj);
 	if (body && body->getMotionState())
 	{
 		delete body->getMotionState();
 	}
-	m_dynamicsWorld->removeCollisionObject(obj);
-	delete obj;
+	delete body;
 }
 
 void ObjectHandler::AddPlatform(int modelId, Model* model)

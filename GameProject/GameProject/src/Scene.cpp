@@ -2,7 +2,7 @@
 
 Scene::Scene()
 {
-	m_window = new Window(1920, 1080);
+	m_window = new Window(1280, 720);
 	m_modelShader = new Shader("src/Shaders/SceneVS.glsl", "src/Shaders/SceneFS.glsl");
 	m_skyboxShader = new Shader("src/Shaders/SkyboxVS.glsl", "src/Shaders/SkyboxFS.glsl");
 	
@@ -69,14 +69,16 @@ void Scene::Init()
 	m_vehicles.push_back(new Model("src/Models/Cybertruck.obj")); 
 	// shoppingcart scale 0.01 
 	m_vehicles.push_back(new Model("src/Models/shoppingcart.obj")); 
-	m_vehicles.push_back(new Model("src/Models/ape.obj")); 
-	m_vehicles.push_back(new Model("src/Models/CAT.obj")); 
+	//m_vehicles.push_back(new Model("src/Models/ape.obj")); 
+	//m_vehicles.push_back(new Model("src/Models/CAT.obj")); 
 
 	// Platforms
 	m_platform.push_back(new Model("src/Models/platform2.obj"));
 
 	// Powers
 	m_power.push_back(new Model("src/Models/PowerUp.obj"));
+	m_power.push_back(new Model("src/Models/PowerUpCar.obj"));
+	//m_power.push_back(new Model("src/Models/PowerUp.obj"));
 
 
 	// Lights
@@ -136,7 +138,7 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
 	// Render shadows
 	RenderShadows(objects);
 
-	glBindFramebuffer(GL_FRAMEBUFFER, m_bloom->getFBO());
+	//glBindFramebuffer(GL_FRAMEBUFFER, m_bloom->getFBO());
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -164,9 +166,9 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
 	// Render Skybox
 	RenderSkybox();
 
-	m_bloom->PingPongRender();
+	//m_bloom->PingPongRender();
 
-	m_bloom->RenderBloom();
+	//m_bloom->RenderBloom();
 
 	/* Poll for and process events */
 	glfwPollEvents();
