@@ -23,6 +23,7 @@ void Menu::RenderMenu()
 			m_menu = ActiveMenu::pause;
 		}
 	}
+	double time = glfwGetTime();
 	switch (m_menu)
 	{
 	case ActiveMenu::start:
@@ -40,13 +41,13 @@ void Menu::RenderMenu()
 			ImGui::SetCursorPos(ImVec2(middle - 100, 15));
 			//ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(placement, 0));
 			ImGui::PushFont(m_scene->GetOurWindow()->m_fonts[1]);
-			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 1, 0, 1));
+			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0.6, 0.8, 1));
 			ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.5);
 			ImGui::Text("KamiCarZe");
 			ImGui::SetCursorPos(ImVec2(middle - 75, 300));
 			if (ImGui::Button("Start", ImVec2(200, 75)))
 			{
-				m_menu = ActiveMenu::playerHud;
+				m_menu = ActiveMenu::select;
 			}
 			ImGui::SetCursorPos(ImVec2(middle - 75, 460));
 			if (ImGui::Button("Exit", ImVec2(200, 75)))
@@ -61,6 +62,199 @@ void Menu::RenderMenu()
 		ImGui::End();
 		break;
 	case ActiveMenu::select:
+		ImGui::SetNextWindowPos(ImVec2(300, 25));
+		ImGui::SetNextWindowSize(ImVec2(250, 100));
+		if (ImGui::Begin("##player1Select", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_AlwaysAutoResize))
+		{
+			GLFWgamepadstate state;
+			ImGui::Text("<  Vehicle Model: %d  > ", m_p1ModelId);
+			
+			if ( time - m_p1Seconds >= 0.5 && (glfwGetGamepadState(0, &state)))
+			{
+				if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_RIGHT])
+				{
+					if ((m_p1ModelId + 1) <= m_scene->GetNumPlayerModels() - 1)
+					{
+						m_p1ModelId += 1;
+					}
+					else
+					{
+						m_p1ModelId = 0;
+					}
+					m_p1Seconds = time;
+				}
+				else if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_LEFT])
+				{
+
+					if ((m_p1ModelId - 1) >= 0)
+					{
+						m_p1ModelId -= 1;
+					}
+					else
+					{
+						m_p1ModelId = m_scene->GetNumPlayerModels() - 1;
+					}
+					m_p1Seconds = time;
+				}
+				else if (state.buttons[GLFW_GAMEPAD_BUTTON_A])
+				{
+					m_selected[0] = 1;
+				}
+				else if (m_selected[0] == 1 && state.buttons[GLFW_GAMEPAD_BUTTON_B])
+				{
+					m_selected[0] = 0;
+				}
+				
+			}
+		}
+		ImGui::End();
+
+		ImGui::SetNextWindowPos(ImVec2(w->GetWidht() - 300, 25));
+		ImGui::SetNextWindowSize(ImVec2(250, 100));
+		if (ImGui::Begin("##player2Select", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_AlwaysAutoResize))
+		{
+			GLFWgamepadstate state;
+			ImGui::Text("<  Vehicle Model: %d  > ", m_p2ModelId);
+
+			if (time - m_p2Seconds >= 0.5 && (glfwGetGamepadState(1, &state)))
+			{
+				if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_RIGHT])
+				{
+					if ((m_p2ModelId + 1) <= m_scene->GetNumPlayerModels() - 1)
+					{
+						m_p2ModelId += 1;
+					}
+					else
+					{
+						m_p2ModelId = 0;
+					}
+					m_p2Seconds = time;
+				}
+				else if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_LEFT])
+				{
+
+					if ((m_p2ModelId - 1) >= 0)
+					{
+						m_p2ModelId -= 1;
+					}
+					else
+					{
+						m_p2ModelId = m_scene->GetNumPlayerModels() - 1;
+					}
+					m_p2Seconds = time;
+				}
+				else if (state.buttons[GLFW_GAMEPAD_BUTTON_A])
+				{
+					m_selected[1] = 1;
+				}
+				else if (m_selected[0] == 1 && state.buttons[GLFW_GAMEPAD_BUTTON_B])
+				{
+					m_selected[1] = 0;
+				}
+
+			}
+		}
+		ImGui::End();
+		// TODO: Kanske Fixa så det följer kontrollerId eller nått
+		if (m_objHand->GetNumPlayers() >= 3)
+		{
+			ImGui::SetNextWindowPos(ImVec2(0, w->GetHeight() - 155));
+			ImGui::SetNextWindowSize(ImVec2(200, 100));
+			if (ImGui::Begin("##player3Select", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_AlwaysAutoResize))
+			{
+				GLFWgamepadstate state;
+				ImGui::Text("<  Vehicle Model: %d  > ", m_p3ModelId);
+
+				if (time - m_p3Seconds >= 0.5 && (glfwGetGamepadState(2, &state)))
+				{
+					if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_RIGHT])
+					{
+						if ((m_p3ModelId + 1) <= m_scene->GetNumPlayerModels() - 1)
+						{
+							m_p3ModelId += 1;
+						}
+						else
+						{
+							m_p3ModelId = 0;
+						}
+						m_p3Seconds = time;
+					}
+					else if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_LEFT])
+					{
+
+						if ((m_p3ModelId - 1) >= 0)
+						{
+							m_p3ModelId -= 1;
+						}
+						else
+						{
+							m_p3ModelId = m_scene->GetNumPlayerModels() - 1;
+						}
+						m_p3Seconds = time;
+					}
+					else if (state.buttons[GLFW_GAMEPAD_BUTTON_A])
+					{
+						m_selected[2] = 1;
+					}
+					else if (m_selected[0] == 1 && state.buttons[GLFW_GAMEPAD_BUTTON_B])
+					{
+						m_selected[2] = 0;
+					}
+
+				}
+			}
+			ImGui::End();
+		}
+
+		if (m_objHand->GetNumPlayers() >= 4)
+		{
+			ImGui::SetNextWindowPos(ImVec2(w->GetWidht() - 200, w->GetHeight() - 155));
+			ImGui::SetNextWindowSize(ImVec2(200, 100));
+			if (ImGui::Begin("##player4Select", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_AlwaysAutoResize))
+			{
+				GLFWgamepadstate state;
+				ImGui::Text("<  Vehicle Model: %d  > ", m_p4ModelId);
+
+				if (time - m_p4Seconds >= 0.5 && (glfwGetGamepadState(2, &state)))
+				{
+					if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_RIGHT])
+					{
+						if ((m_p4ModelId + 1) <= m_scene->GetNumPlayerModels() - 1)
+						{
+							m_p4ModelId += 1;
+						}
+						else
+						{
+							m_p4ModelId = 0;
+						}
+						m_p4Seconds = time;
+					}
+					else if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_LEFT])
+					{
+
+						if ((m_p4ModelId - 1) >= 0)
+						{
+							m_p4ModelId -= 1;
+						}
+						else
+						{
+							m_p4ModelId = m_scene->GetNumPlayerModels() - 1;
+						}
+						m_p4Seconds = time;
+					}
+					else if (state.buttons[GLFW_GAMEPAD_BUTTON_A])
+					{
+						m_selected[3] = 1;
+					}
+					else if (m_selected[0] == 1 && state.buttons[GLFW_GAMEPAD_BUTTON_B])
+					{
+						m_selected[3] = 0;
+					}
+
+				}
+			}
+			ImGui::End();
+		}
 		break;
 	case ActiveMenu::pause:
 		ImGui::SetNextWindowPos(ImVec2((float)w->GetWidht() / 3, w->GetHeight() / 4 ));
@@ -75,7 +269,7 @@ void Menu::RenderMenu()
 			ImGui::SetCursorPos(ImVec2(((float)w->GetWidht() / 3)/3 - 25, 15));
 			//ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(placement, 0));
 			ImGui::PushFont(m_scene->GetOurWindow()->m_fonts[1]);
-			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 1, 0, 1));
+			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0.6, 0.8, 1));
 			ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.5);
 			ImGui::Text("KamiCarZe");
 			ImGui::SetCursorPos(ImVec2(((float)w->GetWidht() / 3) /3, 115));
@@ -101,7 +295,42 @@ void Menu::RenderMenu()
 		ImGui::End();
 		break;
 	case ActiveMenu::restart:
+		ImGui::SetNextWindowPos(ImVec2((float)w->GetWidht() / 3, w->GetHeight() / 4));
+		ImGui::SetNextWindowSize(ImVec2((float)w->GetWidht() / 3 /*- 150*/, w->GetHeight() / 4 + 150));
+		if (ImGui::Begin("##RestartMenu", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiNavInput_Activate))
+		{
 
+			float middle = (float)w->GetWidht() * 0.5f;
+			//ImGui::SetWindowPos(ImVec2(placement, 50));
+			//ImGui::Spacing();
+			//ImGui::NextColumn();
+			ImGui::SetCursorPos(ImVec2(((float)w->GetWidht() / 3) / 3 - 25, 15));
+			//ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(placement, 0));
+			ImGui::PushFont(m_scene->GetOurWindow()->m_fonts[1]);
+			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0.6, 0.8, 1));
+			ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.5);
+			ImGui::Text("KamiCarZe");
+			ImGui::SetCursorPos(ImVec2(((float)w->GetWidht() / 3) / 3, 115));
+			if (ImGui::Button("Restart", ImVec2(200, 75)))
+			{
+				m_menu = ActiveMenu::playerHud;
+			}
+			ImGui::SetCursorPos(ImVec2(((float)w->GetWidht() / 3) / 3 - 25, 215));
+			if (ImGui::Button("Main Menu", ImVec2(250, 75)))
+			{
+				m_menu = ActiveMenu::start;
+			}
+			ImGui::SetCursorPos(ImVec2(((float)w->GetWidht() / 3) / 3, 315));
+			if (ImGui::Button("Exit", ImVec2(200, 75)))
+			{
+				glfwSetWindowShouldClose(m_scene->GetWindow(), 1);
+			}
+			ImGui::PopStyleVar(1); // pop all the styles
+			ImGui::PopFont();
+			ImGui::PopStyleColor();
+
+		}
+		ImGui::End();
 		break;
 	case ActiveMenu::playerHud:
 		ImGui::SetNextWindowPos(ImVec2(0, 0));
@@ -154,7 +383,7 @@ void Menu::SetActiveMenu(ActiveMenu activeMenu)
 
 bool Menu::Pause()
 {
-	if (m_menu == ActiveMenu::pause)
+	if (m_menu == ActiveMenu::pause || m_menu == ActiveMenu::start || m_menu == ActiveMenu::restart)
 		return true;
 	return false;
 }
