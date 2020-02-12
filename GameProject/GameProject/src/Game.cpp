@@ -13,15 +13,51 @@ Game::Game()
 	m_timeSinceSpawn = 0;
 	m_objectHandler->AddPlatform(0, m_platforms[0]); // Passa modell
 
-	m_objectHandler->AddPlayer(vec3(4, 7, 4), 0, 0, vec3(0, 0, 1), m_cars[0]); // Passa modell
-	m_objectHandler->AddPlayer(vec3(-4, 7, -4), 1, 0, vec3(0, 1, 0), m_cars[0]); // Passa modell
-	m_objectHandler->AddPlayer(vec3(4, 7, -4), 2, 0, vec3(1, 1, 0), m_cars[0]); // Passa modell
+	m_objectHandler->AddPlayer(vec3(0, 7, 2), 0, 0, vec3(0, 0, 1), m_cars[0]); // Passa modell
+	m_objectHandler->AddPlayer(vec3(-2, 7, -2), 1, 0, vec3(0, 1, 0), m_cars[0]); // Passa modell
+	m_objectHandler->AddPlayer(vec3(2, 7, -2), 2, 0, vec3(1, 1, 0), m_cars[0]); // Passa modell
+
+	m_soundEngine = createIrrKlangDevice();
+	/* 
+	m_soundEngine->play2D("src/Audio/Music - 16bit Deja Vu.mp3", GL_TRUE);
+	m_soundEngine->play2D("src/Audio/Music - Main Game 2 Players Left.mp3", GL_TRUE);
+	m_soundEngine->play2D("src/Audio/Music - Main Game.mp3", GL_TRUE);
+	m_soundEngine->play2D("src/Audio/Music - Menu.mp3", GL_TRUE); 
+	m_soundEngine->play2D("src/Audio/Music - Win.mp3", GL_TRUE);
+	m_soundEngine->play2D("src/Audio/Music - 16bit Sea Shanty 2.mp3", GL_TRUE);
+	*/
+
+	int randomNumber = rand() % 5;
+
+	if (randomNumber == 0)
+		m_music = m_soundEngine->play3D("src/Audio/Music - 16bit Sea Shanty 2.mp3", vec3df(0, 0, 0), true, false, true);
+	else if (randomNumber == 1)
+		m_music = m_soundEngine->play3D("src/Audio/Music - 16bit Deja Vu.mp3", vec3df(0, 0, 0), true, false, true);
+	else if (randomNumber == 2)
+		m_music = m_soundEngine->play3D("src/Audio/Music - Main Game.mp3", vec3df(0, 0, 0), true, false, true);
+	else if (randomNumber == 3)
+		m_music = m_soundEngine->play3D("src/Audio/Music - Main Game 2 Players Left.mp3", vec3df(0, 0, 0), true, false, true);
+	else
+		m_music = m_soundEngine->play3D("src/Audio/Music - Menu.mp3", vec3df(0, 0, 0), true, false, true);
+
+	if (m_music)
+	{
+		m_music->setMinDistance(50.0f);
+		m_music->setVolume(0.07f);
+	}
+
+	m_soundEngine->setListenerPosition(vec3df(0, 18, 33), vec3df(0, -4, 3)); // Listener position, view direction
+	
 }
 
 Game::~Game()
 {
 	delete m_objectHandler;
 	delete m_scene;
+	if (m_music)
+		m_music->drop();
+
+	m_soundEngine->drop();
 }
 
 void Game::Update(float dt)
@@ -54,7 +90,7 @@ void Game::Update(float dt)
 		m_toggle = false;
 	}
 
-	Render();
+
 }
 
 void Game::PlayWithLights(float dt)

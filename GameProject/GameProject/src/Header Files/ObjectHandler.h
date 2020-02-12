@@ -20,6 +20,9 @@ private:
 	vector<PowerUp*> m_powerUps;
 	vector<ObjectInfo*> m_structs;
 
+	ISoundEngine* m_soundEngine;
+	vector<ISoundSource*> m_crashes;
+
 	btDefaultCollisionConfiguration* m_collisionConfiguration;
 	btBroadphaseInterface* m_broadphase;
 	btCollisionDispatcher* m_dispatcher;

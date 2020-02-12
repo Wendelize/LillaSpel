@@ -61,6 +61,22 @@ Player::Player(Model* model, int modelId, vec3 pos)
 	m_currentPos = m_btTransform->getOrigin();
 	m_body->setDamping(0.1,0.9);
 
+	m_soundEngine = createIrrKlangDevice();
+
+	m_soundEngine->setListenerPosition(vec3df(0, 18, 33), vec3df(0, -4, 3)); // Listener position, view direction
+	m_soundEngine->setDefault3DSoundMinDistance(1.0f);
+	m_fallen = false;
+
+	m_carSounds.push_back(m_soundEngine->addSoundSourceFromFile("src/Audio/Player - Engine.mp3"));
+	m_carSounds.push_back(m_soundEngine->addSoundSourceFromFile("src/Audio/Player - Backing.mp3"));
+
+	m_soundEngine->setSoundVolume(0.0f);
+
+	m_sound = m_soundEngine->play3D(m_carSounds[0], vec3df(GetCurrentPos().x(), GetCurrentPos().y(), GetCurrentPos().z()), true, false, true, true);
+	m_sound->setPlaybackSpeed(1.0f);
+
+	m_sfx = m_sound->getSoundEffectControl();
+	m_sfx->enableDistortionSoundEffect();
 }
 
 Player::~Player()
@@ -69,6 +85,15 @@ Player::~Player()
 	delete m_transform;
 	delete m_btTransform;
 	delete m_carShape;
+
+	for (uint i = 0; i < m_carSounds.size(); i++)
+	{
+		m_carSounds[i]->drop();
+	}
+	m_carSounds.clear();
+
+	m_sound->drop();
+	// m_sfx->drop();
 }
 
 void Player::Update(float dt)
@@ -142,10 +167,17 @@ void Player::Update(float dt)
 	if(pressed){
 		m_body->applyForce(directionBt * -m_speed * dt , m_body->getWorldTransform().getOrigin());
 	}
+
+	if (m_body->getLinearVelocity().y() < 0.3f && m_body->getLinearVelocity().y() > -0.3f)
+	{
+		m_soundEngine->setSoundVolume(m_body->getLinearVelocity().length() / 6 + 0.4f);
+		m_sound->setPlaybackSpeed(m_body->getLinearVelocity().length() / 25 + 1.0f);
+	}
 	m_body->applyDamping(dt);
 
 	btVector3 moveVector = m_body->getWorldTransform().getOrigin() - m_currentPos;
-	m_transform->Translate(vec3(moveVector.x(), moveVector.y(), moveVector.z()));
+
+	m_transform->Translate(vec3(moveVector.x(), moveVector.y(), moveVector.z())); 
 	m_currentPos = m_body->getWorldTransform().getOrigin();
 }
 
@@ -255,7 +287,11 @@ void Player::SetPos(vec3 pos)
 {
 	m_body->getWorldTransform().setOrigin(btVector3(pos.x, pos.y, pos.z));
 	m_body->setLinearVelocity(btVector3(0,0,0));
+}
 
+bool Player::GetFallen()
+{
+	return m_fallen;
 }
 
 void Player::GivePower(int type)
@@ -382,4 +418,31 @@ bool Player::updatePower(float dt)
 int Player::GetActivePower()
 {
 	return m_powerType;
+}
+
+void Player::SetFallen()
+{
+	m_fallen = true;
+}
+
+void Player::SetNotFallen()
+{
+	m_fallen = false;
+}
+
+float Player::GetLinearVelocity()
+{
+	return m_body->getLinearVelocity().length();
+}
+
+void Player::StartEngineSounds()
+{
+	m_sound->setIsPaused(false);
+	m_soundEngine->setSoundVolume(0.1f);
+	m_sound->setPlaybackSpeed(1.0f);
+}
+
+void Player::StopEngineSounds()
+{
+	m_sound->setIsPaused(true);
 }

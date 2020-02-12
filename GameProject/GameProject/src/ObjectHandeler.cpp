@@ -1,6 +1,8 @@
 #include "Header Files/Include.h"
 #include "Header Files/ObjectHandler.h"
 
+inline void sleepSomeTime() { Sleep(100); }
+
 ObjectHandler::ObjectHandler()
 {
 	m_broadphase = new btDbvtBroadphase();
@@ -18,6 +20,21 @@ ObjectHandler::ObjectHandler()
 		m_usedSpawns[i] = false;
 	}
 
+
+	m_soundEngine = createIrrKlangDevice();
+	m_soundEngine->setSoundVolume(0.6f);
+
+	m_crashes.push_back(m_soundEngine->addSoundSourceFromFile("src/Audio/Player - Crash Small.mp3"));
+	m_crashes.push_back(m_soundEngine->addSoundSourceFromFile("src/Audio/Player - Crash Medium.mp3"));
+	m_crashes.push_back(m_soundEngine->addSoundSourceFromFile("src/Audio/Player - Crash Biggest.mp3"));
+
+	for (int i = 0; i < m_crashes.size(); i++)
+	{
+		m_crashes[i]->setDefaultVolume(0.55f);
+	}
+
+	m_soundEngine->setListenerPosition(vec3df(0, 18, 33), vec3df(0, -4, 3)); // Listener position, view direction
+	m_soundEngine->setDefault3DSoundMinDistance(10.0f);
 }
 
 ObjectHandler::~ObjectHandler()
@@ -44,6 +61,12 @@ ObjectHandler::~ObjectHandler()
 		delete m_structs.at(i);
 	}
 	m_structs.clear();
+
+	for (uint i = 0; i < m_crashes.size(); i++)
+	{
+		m_crashes[i]->drop();
+	}
+	m_crashes.clear();
 
 	for (int i = m_dynamicsWorld->getNumCollisionObjects() - 1; i >= 0; i--)
 	{
@@ -79,33 +102,45 @@ ObjectHandler::~ObjectHandler()
 	
 	delete m_debugDrawer;
 
+	// m_soundEngine->drop(); // Might need to delete but no memory leaks found.
+
 }
 
 void ObjectHandler::Update(float dt)
 {
+	const char* filename;
+	int randomNumber = rand() % 12;
 
 	m_dynamicsWorld->stepSimulation(dt, 10);
+	int numManifolds = m_dynamicsWorld->getDispatcher()->getNumManifolds();
 
-	for (int i = 0; i < m_powerUps.size(); i++) {
+	for (int i = 0; i < m_powerUps.size(); i++)
+	{
 		btAlignedObjectArray< btCollisionObject* >& pairs = m_powerUps.at(i)->getObject()->getOverlappingPairs();
 		for (int j = 0; j < pairs.size(); j++)
 		{
 			bool notFound = true;
-			for (int k = 0; k < m_players.size() && notFound; k++) {
+			for (int k = 0; k < m_players.size() && notFound; k++) 
+			{
 				int checkPlayer = m_players.at(k)->GetControllerID();
 				int collidingPlayer = pairs.at(j)->getUserIndex();
-				if (checkPlayer == collidingPlayer) {
+				if (checkPlayer == collidingPlayer) 
+				{
 					notFound = false;
-					if (m_powerUps.at(i)->GetType() == 5 || m_powerUps.at(i)->GetType() == 4) {
-						for (int l = 0; l < m_players.size(); l++) {
-							if (l != k) {
+					if (m_powerUps.at(i)->GetType() == 5 || m_powerUps.at(i)->GetType() == 4) 
+					{
+						for (int l = 0; l < m_players.size(); l++) 
+						{
+							if (l != k) 
+							{
 								m_dynamicsWorld->removeRigidBody(m_players.at(l)->GetBody());
 								m_players.at(l)->GivePower(m_powerUps.at(i)->GetType());
 								m_dynamicsWorld->addRigidBody(m_players.at(l)->GetBody());
 							}
 						}
 					}
-					else {
+					else 
+					{
 						m_dynamicsWorld->removeRigidBody(m_players.at(k)->GetBody());
 						m_players.at(k)->GivePower(m_powerUps.at(i)->GetType());
 						m_dynamicsWorld->addRigidBody(m_players.at(k)->GetBody());
@@ -114,7 +149,6 @@ void ObjectHandler::Update(float dt)
 			}
 			RemovePowerUp(i);
 		}
-
 	}
 
 	for (size_t i = 0; i < m_dynamicsWorld->getNumCollisionObjects(); i++)
@@ -149,8 +183,69 @@ void ObjectHandler::Update(float dt)
 				m_dynamicsWorld->addRigidBody(m_players[isPlayer]->GetBody());
 
 			}
-			if (m_players[isPlayer]->GetCurrentPos().y() < -20.f) {
-				m_players[isPlayer]->SetPos(vec3(rand() % 10 - 10, 15, rand() % 10 - 10));
+
+			if (m_players[isPlayer]->GetCurrentPos().y() < -20.f) 
+			{
+				m_players[isPlayer]->SetPos(vec3(rand() % 10 - 10, 7, rand() % 10 - 10));
+				m_players[isPlayer]->SetNotFallen();
+				m_soundEngine->play3D("src/Audio/Powerup - Spawn.mp3", vec3df(m_players[isPlayer]->GetCurrentPos().x(), m_players[isPlayer]->GetCurrentPos().y(), m_players[isPlayer]->GetCurrentPos().z()));
+				m_players[isPlayer]->StartEngineSounds();
+			}
+
+			if (m_players[isPlayer]->GetCurrentPos().y() < -0.1f && !m_players[isPlayer]->GetFallen())
+			{
+				if (randomNumber == 0)
+					filename = "src/Audio/Player - Dying 1.mp3";
+				else if (randomNumber == 1)
+					filename = "src/Audio/Player - Dying 2.mp3";
+				else if (randomNumber == 2)
+					filename = "src/Audio/Player - Dying 3.mp3";
+				else if (randomNumber == 3)
+					filename = "src/Audio/Player - Dying 4.mp3";
+				else if (randomNumber == 4)
+					filename = "src/Audio/Player - Dying 5.mp3";
+				else if (randomNumber == 5)
+					filename = "src/Audio/Player - Dying 6.mp3";
+				else if (randomNumber == 6)
+					filename = "src/Audio/Player - Dying 7.mp3";
+				else if (randomNumber == 7)
+					filename = "src/Audio/Player - Dying 8.mp3";
+				else if (randomNumber == 8)
+					filename = "src/Audio/Player - Dying 9.mp3";
+				else if (randomNumber == 9)
+					filename = "src/Audio/Player - Dying 10.mp3";
+				else if (randomNumber == 10)
+					filename = "src/Audio/Player - Dying 11.mp3";
+				else
+					filename = "src/Audio/Player - Dying 12.mp3";
+
+				m_soundEngine->play3D(filename, vec3df(m_players[isPlayer]->GetCurrentPos().x(), m_players[isPlayer]->GetCurrentPos().y(), m_players[isPlayer]->GetCurrentPos().z()));
+				m_players[isPlayer]->SetFallen();
+				m_players[isPlayer]->StopEngineSounds();
+			}
+
+			int knockableCars = 0;
+
+			for (int i = 0; i < m_players.size(); i++)
+			{
+				if ( m_players[i]->GetCurrentPos().y() > -0.1f && m_players[i]->GetCurrentPos().y() < 2.0f)
+					knockableCars++;
+			}
+
+			if (numManifolds >= knockableCars + 1) // knockableCars are cars inside collision space. +1 because of platform. 
+			{
+				if (m_players[isPlayer]->GetLinearVelocity() > 4.5f && m_players[isPlayer]->GetLinearVelocity() < 10.0f && m_players[isPlayer]->GetCurrentPos().y() > -0.1f)
+				{
+					m_soundEngine->play3D(m_crashes[0], vec3df(m_players[isPlayer]->GetCurrentPos().x(), m_players[isPlayer]->GetCurrentPos().y(), m_players[isPlayer]->GetCurrentPos().z()));
+				}
+				else if (m_players[isPlayer]->GetLinearVelocity() >= 10.0f && m_players[isPlayer]->GetLinearVelocity() < 17.0f && m_players[isPlayer]->GetCurrentPos().y() > -0.1f)
+				{
+					m_soundEngine->play3D(m_crashes[1], vec3df(m_players[isPlayer]->GetCurrentPos().x(), m_players[isPlayer]->GetCurrentPos().y(), m_players[isPlayer]->GetCurrentPos().z()));
+				}
+				else if (m_players[isPlayer]->GetLinearVelocity() >= 17.0f && m_players[isPlayer]->GetCurrentPos().y() > -0.1f)
+				{
+					m_soundEngine->play3D(m_crashes[2], vec3df(m_players[isPlayer]->GetCurrentPos().x(), m_players[isPlayer]->GetCurrentPos().y(), m_players[isPlayer]->GetCurrentPos().z()));
+				}
 			}
 		}
 	}
@@ -167,6 +262,7 @@ void ObjectHandler::AddPlayer(vec3 pos, int controllerID, int modelId, vec3 colo
 
 	m_dynamicsWorld->addRigidBody(m_players.back()->GetBody());
 
+	m_players.back()->StartEngineSounds();
 }
 
 void ObjectHandler::SetScale(int id, vec3 scale)
@@ -235,6 +331,8 @@ void ObjectHandler::AddPowerUp()
 		
 	m_powerUps.push_back(new PowerUp(spawnLocation, m_spawnpoints[spawnLocation], type));
 	m_dynamicsWorld->addCollisionObject(m_powerUps.back()->getObject());
+
+	m_soundEngine->play3D("src/Audio/Powerup - Spawn.mp3", vec3df(m_powerUps.back()->GetPos().x(), m_powerUps.back()->GetPos().y(), m_powerUps.back()->GetPos().z()));
 }
 
 void ObjectHandler::RemovePowerUp(int index)

@@ -41,6 +41,7 @@ PowerUp::PowerUp(int spawn, btVector3 pos, int type,float duration)
 	m_body->setWorldTransform(*m_btTransform);
 	vec3 testPos = vec3(m_btTransform->getOrigin().x(), m_btTransform->getOrigin().y(), m_btTransform->getOrigin().z());
 	m_transform->SetTranslation(testPos);
+
 }
 
 PowerUp::~PowerUp()
