@@ -6,11 +6,11 @@ Scene::Scene()
 	m_modelShader = new Shader("src/Shaders/SceneVS.glsl", "src/Shaders/SceneFS.glsl");
 	m_skyboxShader = new Shader("src/Shaders/SkyboxVS.glsl", "src/Shaders/SkyboxFS.glsl");
 	
-	m_camera = new Camera({0, 3, 33});
+	m_camera = new Camera({0, 10, 50});
 	m_skybox = new Skybox();
 	m_shadowMap = new ShadowMap();
 	m_bloom = new Bloom();
-	m_particles = new ParticleSystem(100);
+	m_particles = new ParticleSystem(500);
 
 	m_modelMatrix = mat4(1.0);
 	m_projMatrix = mat4(1.0);
@@ -130,51 +130,60 @@ void Scene::LightToShader()
 void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
 {
 	/* Render here */
+	cout << "RENDER" << endl;
+	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
-
-	//// Render shadows
-	//RenderShadows(objects);
-
-	//glBindFramebuffer(GL_FRAMEBUFFER, m_bloom->getFBO());
-
-	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	//// Matrix uniforms
-	//m_modelShader->UseShader();
-	//m_modelShader->SetUniform("u_ViewPos", m_camera->GetPos());
-	//m_modelShader->SetUniform("u_View", m_viewMatrix);
-	//m_modelShader->SetUniform("u_Projection", m_projMatrix);
-	//m_modelShader->SetUniform("u_LSP", m_shadowMap->GetLSP());
-	//m_modelShader->SetTexture2D(0, "u_ShadowMap", m_shadowMap->GetTexture());
-
-	//// Texture(shadowmap)
-	//glActiveTexture(GL_TEXTURE0);
-	//glBindTexture(GL_TEXTURE_2D, m_shadowMap->GetTexture());
-
-	//// Light uniforms
-	//LightToShader();
-
-	//// Draw all objects
-	//RenderSceneInfo(m_modelShader, objects);
-
-	//// Render Imgui
-	//RenderImGui(world);
-
-	////// Render Skybox
-	////RenderSkybox();
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glViewport(0, 0, m_window->GetWidht(), m_window->GetHeight());
 
 
-	//// Add glow
-	//m_bloom->PingPongRender();
+	// Render shadows
+	cout << "SHADOW " << endl;
+	RenderShadows(objects);
 
-	//m_bloom->RenderBloom();
+	glBindFramebuffer(GL_FRAMEBUFFER, m_bloom->getFBO());
 
-	// Render Particles
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	// Matrix uniforms
+	m_modelShader->UseShader();
+	m_modelShader->SetUniform("u_ViewPos", m_camera->GetPos());
+	m_modelShader->SetUniform("u_View", m_viewMatrix);
+	m_modelShader->SetUniform("u_Projection", m_projMatrix);
+	m_modelShader->SetUniform("u_LSP", m_shadowMap->GetLSP());
+	m_modelShader->SetTexture2D(0, "u_ShadowMap", m_shadowMap->GetTexture());
+
+	// Texture(shadowmap)
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, m_shadowMap->GetTexture());
+
+	// Light uniforms
+	LightToShader();
+
+	// Draw all objects
+	RenderSceneInfo(m_modelShader, objects);
+
+	// Render Imgui
+	RenderImGui(world);
+
+	//// Render Particles
+	cout << "Before p" << endl;
 	RenderParticles(0.03);
+	cout << "After p" << endl;
+
+	// Render Skybox
+	RenderSkybox();
+
+
+	// Add glow
+	m_bloom->PingPongRender();
+
+	m_bloom->RenderBloom();
+
+
 
 	/* Poll for and process events */
-	glfwPollEvents();
+	//glfwPollEvents();
 }
 
 void Scene::RenderSceneInfo(Shader* shader, vector<ObjectInfo*> objects)
@@ -228,7 +237,7 @@ void Scene::RenderShadows(vector<ObjectInfo*> objects)
 	RenderSceneInfo(m_shadowMap->GetShader(), objects);
 	glCullFace(GL_BACK);
 
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	glViewport(0, 0, m_window->GetWidht(), m_window->GetHeight());
 }

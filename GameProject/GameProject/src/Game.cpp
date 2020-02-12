@@ -80,6 +80,7 @@ void Game::Render(float dt)
 	}
 
 	m_scene->SwapBuffer();
+	glfwPollEvents();
 }
 
 GLFWwindow* Game::GetWindow()

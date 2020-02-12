@@ -20,14 +20,15 @@ void main()
 
 	float particleSize = xyzs.w; 
 	vec3 particleCenter_worldspace = xyzs.xyz;
-	
+	vec3 bla = squareVertices * 0.2;
+
 	vec3 vertexPosition_worldspace = 
 		particleCenter_worldspace
 		+ u_CameraRight * squareVertices.x * particleSize
 		+ u_CameraUp * squareVertices.y * particleSize;
 
-	gl_Position = u_Proj * u_View * vec4(squareVertices, 1.0f);
+	gl_Position = u_Proj * u_View * mat4(1) * vec4(bla + particleCenter_worldspace, 1.0f);
 
 	vo.texCoords = squareVertices.xy + vec2(0.5, 0.5);
-	vo.color = u_Proj * u_View * vec4(squareVertices, 1.0f);
+	vo.color = color;
 }

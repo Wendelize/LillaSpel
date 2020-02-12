@@ -52,8 +52,6 @@ void ParticleSystem::Init()
 	glGenBuffers(1, &m_particleColorBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, m_particleColorBuffer);
 	glBufferData(GL_ARRAY_BUFFER, m_nrOfParticle * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
-
-
 }
 
 int ParticleSystem::FindParticle()
@@ -89,11 +87,11 @@ void ParticleSystem::GenerateParticles(float dt)
 
 	for (int i = 0; i < newparticles; i++) {
 		int particleIndex = FindParticle();
-		m_particles[particleIndex].life = 5.0f; // This particle will live 5 seconds.
-		m_particles[particleIndex].position = glm::vec3(0, 0, 0);
+		m_particles[particleIndex].life = 2.0f; // This particle will live 5 seconds.
+		m_particles[particleIndex].position = glm::vec3(0, 5, 0);
 
 		float spread = 1.5f;
-		glm::vec3 maindir = glm::vec3(0.0f, 10.0f, 0.0f);
+		glm::vec3 maindir = glm::vec3(0.0f, 5.0f, 0.0f);
 		glm::vec3 randomdir = glm::vec3(
 			(rand() % 2000 - 1000.0f) / 1000.0f,
 			(rand() % 2000 - 1000.0f) / 1000.0f,
@@ -107,7 +105,7 @@ void ParticleSystem::GenerateParticles(float dt)
 		m_particles[particleIndex].color.z = rand() % 256;
 		m_particles[particleIndex].color.w = (rand() % 256) / 3;
 
-		m_particles[particleIndex].size = 50  ;//(rand() % 1000) / 2000.0f + 0.1f;
+		m_particles[particleIndex].size = 1;// (rand() % 1000) / 2000.0f + 0.1f;
 
 	}
 }
@@ -163,7 +161,9 @@ void ParticleSystem::SimulateParticles(float dt)
 }
 
 void ParticleSystem::Draw()
-{
+{	 
+
+	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glBindBuffer(GL_ARRAY_BUFFER, m_particlePosBuffer);
 	glBufferData(GL_ARRAY_BUFFER, m_nrOfParticle * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW); 
 	glBufferSubData(GL_ARRAY_BUFFER, 0, m_particleCount * sizeof(GLfloat) * 4, m_particlePos);
@@ -197,12 +197,12 @@ void ParticleSystem::Draw()
 	glVertexAttribDivisor(1, 1); // positions : one per quad (its center)                 -> 1
 	glVertexAttribDivisor(2, 1); // color : one per quad                                  -> 1
 
-
 	glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, m_particleCount);
 
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);
 	glDisableVertexAttribArray(2);
+	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 Shader* ParticleSystem::GetShader()

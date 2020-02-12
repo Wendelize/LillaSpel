@@ -97,7 +97,6 @@ void Mesh::SetMaterial(Shader* shader)
 void Mesh::Draw(Shader* shader)
 {
 	//SetTexture(shader);
-	
 	SetMaterial(shader);
 	glBindVertexArray(m_vertexArray);
 	glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, 0);
