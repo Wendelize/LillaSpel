@@ -83,16 +83,16 @@ Player::Player(Model* model, int modelId, vec3 pos)
 	switch (modelId)
 	{
 	case 0:
-		m_body->setDamping(0.3, 1.5);
+		m_body->setDamping(0.1, 0.7);
 		break;
 	case 1:
-		m_body->setDamping(0.1, 4.);
+		m_body->setDamping(0.1, 0.7);
 		break;
 	case 2:
-		m_body->setDamping(0.01, 2.0);
+		m_body->setDamping(0.01, 0.7);
 		break;
 	case 3:
-		m_body->setDamping(0.6, 6.8);
+		m_body->setDamping(0.1, 0.7);
 		break;
 	default:
 		m_body->setDamping(0.1, 1);
@@ -101,20 +101,24 @@ Player::Player(Model* model, int modelId, vec3 pos)
 
 	m_soundEngine = createIrrKlangDevice();
 
-	m_soundEngine->setListenerPosition(vec3df(0, 18, 33), vec3df(0, -4, 3)); // Listener position, view direction
-	m_soundEngine->setDefault3DSoundMinDistance(1.0f);
-	m_fallen = false;
+	if (m_soundEngine)
+	{
+		m_soundEngine->setListenerPosition(vec3df(0, 18, 33), vec3df(0, -4, 3)); // Listener position, view direction
+		m_soundEngine->setDefault3DSoundMinDistance(1.0f);
+		m_fallen = false;
 
-	m_carSounds.push_back(m_soundEngine->addSoundSourceFromFile("src/Audio/Player - Engine.mp3"));
-	m_carSounds.push_back(m_soundEngine->addSoundSourceFromFile("src/Audio/Player - Backing.mp3"));
+		m_carSounds.push_back(m_soundEngine->addSoundSourceFromFile("src/Audio/Player - Engine.mp3"));
+		m_carSounds.push_back(m_soundEngine->addSoundSourceFromFile("src/Audio/Player - Backing.mp3"));
 
-	m_soundEngine->setSoundVolume(0.0f);
+		m_soundEngine->setSoundVolume(1.0f);
 
-	m_sound = m_soundEngine->play3D(m_carSounds[0], vec3df(GetCurrentPos().x(), GetCurrentPos().y(), GetCurrentPos().z()), true, false, true, true);
-	m_sound->setPlaybackSpeed(1.0f);
+		m_sound = m_soundEngine->play3D(m_carSounds[0], vec3df(GetCurrentPos().x(), GetCurrentPos().y(), GetCurrentPos().z()), true, false, true, true);
+		m_sound->setPlaybackSpeed(1.0f);
 
-	m_sfx = m_sound->getSoundEffectControl();
-	m_sfx->enableDistortionSoundEffect();
+		m_sfx = m_sound->getSoundEffectControl();
+		m_sfx->enableDistortionSoundEffect();
+	}
+
 }
 
 Player::~Player()
@@ -124,14 +128,17 @@ Player::~Player()
 	delete m_btTransform;
 	delete m_carShape;
 
-	for (uint i = 0; i < m_carSounds.size(); i++)
+	if (m_soundEngine) 
 	{
-		m_carSounds[i]->drop();
-	}
-	m_carSounds.clear();
+		for (uint i = 0; i < m_carSounds.size(); i++)
+		{
+			m_carSounds[i]->drop();
+		}
+		m_carSounds.clear();
 
-	m_sound->drop();
-	// m_sfx->drop();
+		m_sound->drop();
+		// m_sfx->drop();
+	}
 }
 
 void Player::Update(float dt)
@@ -155,13 +162,13 @@ void Player::Update(float dt)
 		if (m_controller->ButtonAIsPressed(m_controllerID))
 		{
 			//Acceleration
-			m_speed = 600000.f * m_powerMultiplier;
+			m_speed = 700000.f * m_powerMultiplier;
 			pressed = true;
 		}
 
 		if (m_controller->ButtonXIsPressed(m_controllerID))
 		{
-			m_speed = -400000.f * m_powerMultiplier;
+			m_speed = -500000.f * m_powerMultiplier;
 			pressed = true;
 		}
 
@@ -170,7 +177,7 @@ void Player::Update(float dt)
 		{
 			//Left trigger pressed
 			//Power-Up
-			m_speed = 1000000.f * m_powerMultiplier;
+			m_speed = 1100000.f * m_powerMultiplier;
 			pressed = true;
 
 		}
@@ -178,7 +185,7 @@ void Player::Update(float dt)
 		{
 			//Left trigger pressed
 			//Power-Up
-			m_speed = -800000.f * m_powerMultiplier;
+			m_speed = -900000.f * m_powerMultiplier;
 			pressed = true;
 
 		}
@@ -206,9 +213,9 @@ void Player::Update(float dt)
 		m_body->applyForce(directionBt * -m_speed * dt , m_body->getWorldTransform().getOrigin());
 	}
 
-	if (m_body->getLinearVelocity().y() < 0.3f && m_body->getLinearVelocity().y() > -0.3f)
+	if (m_soundEngine && m_body->getLinearVelocity().y() < 0.3f && m_body->getLinearVelocity().y() > -0.3f)
 	{
-		m_soundEngine->setSoundVolume(m_body->getLinearVelocity().length() / 6 + 0.4f);
+		m_soundEngine->setSoundVolume(m_body->getLinearVelocity().length() / 2.0 + 1.0f);
 		m_sound->setPlaybackSpeed(m_body->getLinearVelocity().length() / 25 + 1.0f);
 	}
 	m_body->applyDamping(dt);
@@ -334,7 +341,10 @@ bool Player::GetFallen()
 
 void Player::GivePower(int type)
 {
-
+	// ADD POWERUP SOUND?
+	if(m_soundEngine)
+		m_soundEngine->play3D("src/Audio/Powerup - Pickup.mp3", vec3df(GetCurrentPos().x(), GetCurrentPos().y(), GetCurrentPos().z()));
+	
 	if (m_powerActive) {
 		removePower(m_powerType);
 	}
@@ -475,12 +485,16 @@ float Player::GetLinearVelocity()
 
 void Player::StartEngineSounds()
 {
-	m_sound->setIsPaused(false);
-	m_soundEngine->setSoundVolume(0.1f);
-	m_sound->setPlaybackSpeed(1.0f);
+	if (m_soundEngine)
+	{
+		m_sound->setIsPaused(false);
+		m_soundEngine->setSoundVolume(0.3f);
+		m_sound->setPlaybackSpeed(1.0f);
+	}
 }
 
 void Player::StopEngineSounds()
 {
-	m_sound->setIsPaused(true);
+	if (m_soundEngine)
+		m_sound->setIsPaused(true);
 }

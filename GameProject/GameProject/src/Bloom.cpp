@@ -78,7 +78,7 @@ void Bloom::PingPongRender()
 	m_horizontal = true;
 	m_firstIteration = true;
 
-	unsigned int amount = 10;
+	unsigned int amount = 1;
 	m_blur->UseShader();
 	for (unsigned int i = 0; i < amount; i++)
 	{
