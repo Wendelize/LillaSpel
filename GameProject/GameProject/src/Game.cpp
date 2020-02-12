@@ -34,20 +34,19 @@ Game::Game()
 		int randomNumber = rand() % 5;
 
 		if (randomNumber == 0)
-			m_music = m_soundEngine->play3D("src/Audio/Music - 16bit Sea Shanty 2.mp3", vec3df(0, 0, 0), true, false, true);
-		else if (randomNumber == 1)
-			m_music = m_soundEngine->play3D("src/Audio/Music - 16bit Deja Vu.mp3", vec3df(0, 0, 0), true, false, true);
-		else if (randomNumber == 2)
-			m_music = m_soundEngine->play3D("src/Audio/Music - Main Game.mp3", vec3df(0, 0, 0), true, false, true);
-		else if (randomNumber == 3)
-			m_music = m_soundEngine->play3D("src/Audio/Music - Main Game 2 Players Left.mp3", vec3df(0, 0, 0), true, false, true);
-		else
-			m_music = m_soundEngine->play3D("src/Audio/Music - Menu.mp3", vec3df(0, 0, 0), true, false, true);
+			m_music = m_soundEngine->play2D("src/Audio/Music - 16bit Sea Shanty 2.mp3", true);
+		else if (randomNumber == 1)		 
+			m_music = m_soundEngine->play2D("src/Audio/Music - 16bit Deja Vu.mp3", true);
+		else if (randomNumber == 2)		 
+			m_music = m_soundEngine->play2D("src/Audio/Music - Main Game.mp3", true);
+		else if (randomNumber == 3)		 
+			m_music = m_soundEngine->play2D("src/Audio/Music - Main Game 2 Players Left.mp3", true);
+		else							 
+			m_music = m_soundEngine->play2D("src/Audio/Music - Menu.mp3", true);
 
 		if (m_music)
 		{
-			m_music->setMinDistance(50.0f);
-			m_music->setVolume(0.07f);
+			m_music->setVolume(0.5f);
 		}
 
 		m_soundEngine->setListenerPosition(vec3df(0, 18, 33), vec3df(0, -4, 3)); // Listener position, view direction
