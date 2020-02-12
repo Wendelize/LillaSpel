@@ -24,7 +24,6 @@ private:
 	ISoundEngine* m_soundEngine;
 	vector<ISoundSource*> m_carSounds;
 	ISound* m_sound;
-	ISoundEffectControl* m_sfx;
 	bool m_fallen;
 
 	//Variables 4 Fysik

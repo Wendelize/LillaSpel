@@ -23,7 +23,7 @@ ObjectHandler::ObjectHandler()
 	m_soundEngine = createIrrKlangDevice();
 	if (m_soundEngine)
 	{
-		m_soundEngine->setSoundVolume(0.6f);
+		m_soundEngine->setSoundVolume(1.3f);
 
 		m_crashes.push_back(m_soundEngine->addSoundSourceFromFile("src/Audio/Player - Crash Small.mp3"));
 		m_crashes.push_back(m_soundEngine->addSoundSourceFromFile("src/Audio/Player - Crash Medium.mp3"));
@@ -35,7 +35,7 @@ ObjectHandler::ObjectHandler()
 		}
 
 		m_soundEngine->setListenerPosition(vec3df(0, 18, 33), vec3df(0, -4, 3)); // Listener position, view direction
-		m_soundEngine->setDefault3DSoundMinDistance(7.0f);
+		m_soundEngine->setDefault3DSoundMinDistance(70.0f);
 	}
 }
 
@@ -141,7 +141,7 @@ void ObjectHandler::Update(float dt)
 								m_players.at(l)->GivePower(m_powerUps.at(i)->GetType());
 
 								if (m_soundEngine)
-									m_soundEngine->play3D("src/Audio/Powerup - Pickup.mp3", vec3df(m_powerUps.at(i)->GetPos().x(), m_powerUps.at(i)->GetPos().y(), m_powerUps.at(i)->GetPos().z()));
+									m_soundEngine->play2D("src/Audio/Powerup - Pickup.mp3", false);
 								m_dynamicsWorld->addRigidBody(m_players.at(l)->GetBody());
 
 							}
@@ -153,8 +153,8 @@ void ObjectHandler::Update(float dt)
 						m_players.at(k)->GivePower(m_powerUps.at(i)->GetType());
 
 						if (m_soundEngine)
-							m_soundEngine->play3D("src/Audio/Powerup - Pickup.mp3", vec3df(m_powerUps.at(i)->GetPos().x(), m_powerUps.at(i)->GetPos().y(), m_powerUps.at(i)->GetPos().z()));
-						
+							m_soundEngine->play2D("src/Audio/Powerup - Pickup.mp3", false);
+
 						m_dynamicsWorld->addRigidBody(m_players.at(k)->GetBody());
 					}
 				}
@@ -203,7 +203,7 @@ void ObjectHandler::Update(float dt)
 					m_players[isPlayer]->SetPos(vec3(rand() % 10 - 10, 7, rand() % 10 - 10));
 					m_players[isPlayer]->SetNotFallen();
 					m_soundEngine->setSoundVolume(1.4f);
-					m_soundEngine->play3D("src/Audio/Powerup - Spawn.mp3", vec3df(m_players[isPlayer]->GetCurrentPos().x(), m_players[isPlayer]->GetCurrentPos().y(), m_players[isPlayer]->GetCurrentPos().z()));
+					m_soundEngine->play2D("src/Audio/Powerup - Spawn.mp3", false);
 					m_soundEngine->setSoundVolume(0.6f);
 					m_players[isPlayer]->StartEngineSounds();
 				}
@@ -349,7 +349,7 @@ void ObjectHandler::AddPowerUp()
 	if (m_soundEngine)
 	{
 		m_soundEngine->setSoundVolume(1.4f);
-		m_soundEngine->play3D("src/Audio/Powerup - Spawn.mp3", vec3df(m_powerUps.back()->GetPos().x(), m_powerUps.back()->GetPos().y(), m_powerUps.back()->GetPos().z()));
+		m_soundEngine->play2D("src/Audio/Powerup - Spawn.mp3", false);
 		m_soundEngine->setSoundVolume(0.6f);
 	}
 }
