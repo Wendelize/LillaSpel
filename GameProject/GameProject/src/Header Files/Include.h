@@ -17,6 +17,9 @@
 #include "../IMGUI/imgui_impl_opengl3.h"
 #include "../IMGUI/imgui_impl_glfw.h"
 
+//AUDIO
+// irrKlang is not Creative Commons. If we want to release the game we need to change audio library. OpenAL perhaps.
+#include "irrKlang.h"
 
 //INCLUDES C++
 #include <windows.h>
@@ -57,6 +60,9 @@
 //NAMESPACES
 using namespace std;
 using namespace glm;
+using namespace irrklang;
+
+#pragma comment(lib, "irrKlang.lib")
 
 struct ObjectInfo
 {

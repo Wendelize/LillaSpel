@@ -21,7 +21,12 @@ private:
 	Controller* m_controller;
 	Transform* m_transform;
 	ObjectInfo* m_info;
-	
+	ISoundEngine* m_soundEngine;
+	vector<ISoundSource*> m_carSounds;
+	ISound* m_sound;
+	ISoundEffectControl* m_sfx;
+	bool m_fallen;
+
 	//Variables 4 Fysik
 	btCollisionShape* m_carShape;
 	btRigidBody* m_body;
@@ -56,6 +61,12 @@ public:
 	btRigidBody* GetBody();
 	btVector3 GetCurrentPos();
 	void SetPos(vec3 pos);
+	bool GetFallen();
+	void SetFallen();
+	void SetNotFallen();
+	float GetLinearVelocity();
+	void StartEngineSounds();
+	void StopEngineSounds();
 	void GivePower(int type);
 	void removePower(int type);
 	bool updatePower(float dt);
