@@ -11,6 +11,6 @@ uniform sampler2D u_Tex;
 
 void main(){
 	// Output color = color of the texture at the specified UV
-	FragColor = vi.color; //texture( u_Tex, vi.texCoords ) * vi.color;
+	FragColor = vec4(1,0,0,1); //vi.color; //texture( u_Tex, vi.texCoords ) * vi.color;
 
 }

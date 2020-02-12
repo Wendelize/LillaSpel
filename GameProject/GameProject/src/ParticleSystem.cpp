@@ -90,7 +90,7 @@ void ParticleSystem::GenerateParticles(float dt)
 	for (int i = 0; i < newparticles; i++) {
 		int particleIndex = FindParticle();
 		m_particles[particleIndex].life = 5.0f; // This particle will live 5 seconds.
-		m_particles[particleIndex].position = glm::vec3(0, 0, -20.0f);
+		m_particles[particleIndex].position = glm::vec3(0, 0, 0);
 
 		float spread = 1.5f;
 		glm::vec3 maindir = glm::vec3(0.0f, 10.0f, 0.0f);
@@ -107,7 +107,7 @@ void ParticleSystem::GenerateParticles(float dt)
 		m_particles[particleIndex].color.z = rand() % 256;
 		m_particles[particleIndex].color.w = (rand() % 256) / 3;
 
-		m_particles[particleIndex].size = (rand() % 1000) / 2000.0f + 0.1f;
+		m_particles[particleIndex].size = 50  ;//(rand() % 1000) / 2000.0f + 0.1f;
 
 	}
 }
@@ -119,16 +119,18 @@ void ParticleSystem::SimulateParticles(float dt)
 
 		Particle& p = m_particles[i]; // shortcut
 
-		if (p.life > 0.0f) {
+		if (p.life > 0.0f) 
+		{
 
 			// Decrease life
 			p.life -= dt;
-			if (p.life > 0.0f) {
+			if (p.life > 0.0f) 
+			{
 
 				// Simulate simple physics : gravity only, no collisions
 				p.velocity += glm::vec3(0.0f, -9.81f, 0.0f) * (float)dt * 0.5f;
 				p.position += p.velocity * (float)dt;
-				p.cameraDist = length(p.position - vec3(0, 18, 33));
+				p.cameraDist = length(p.position - vec3(0, 3, 33));
 				//ParticlesContainer[i].pos += glm::vec3(0.0f,10.0f, 0.0f) * (float)delta;
 
 				// Fill the GPU buffer
@@ -155,20 +157,22 @@ void ParticleSystem::SimulateParticles(float dt)
 	}
 
 	SortParticles();
-	cout << "Particle count : " << m_particleCount;
+	cout << "Particle count : " << m_particleCount << endl;
+
+	
 }
 
 void ParticleSystem::Draw()
 {
 	glBindBuffer(GL_ARRAY_BUFFER, m_particlePosBuffer);
-	glBufferData(GL_ARRAY_BUFFER, m_nrOfParticle * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW); // Buffer orphaning, a common way to improve streaming perf. See above link for details.
+	glBufferData(GL_ARRAY_BUFFER, m_nrOfParticle * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW); 
 	glBufferSubData(GL_ARRAY_BUFFER, 0, m_particleCount * sizeof(GLfloat) * 4, m_particlePos);
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_particleColorBuffer);
-	glBufferData(GL_ARRAY_BUFFER, m_nrOfParticle * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW); // Buffer orphaning, a common way to improve streaming perf. See above link for details.
+	glBufferData(GL_ARRAY_BUFFER, m_nrOfParticle * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW); 
 	glBufferSubData(GL_ARRAY_BUFFER, 0, m_particleCount * sizeof(GLubyte) * 4, m_particleColor);
 
-	m_particleShader->UseShader();
+	//m_particleShader->UseShader();
 	//glActiveTexture(GL_TEXTURE0);
 	//glBindTexture(GL_TEXTURE_2D, m_tex);
 	//m_particleShader->SetTexture2D(0, "u_Tex", m_tex);
@@ -204,4 +208,39 @@ void ParticleSystem::Draw()
 Shader* ParticleSystem::GetShader()
 {
 	return m_particleShader;
+}
+
+GLfloat* ParticleSystem::GetParticlePos()
+{
+	return m_particlePos;
+}
+
+GLfloat* ParticleSystem::GetParticleColor()
+{
+	return m_particleColor;
+}
+
+GLuint ParticleSystem::GetBillBoardBuffer()
+{
+	return m_billBoardBuffer;
+}
+
+GLuint ParticleSystem::GetParticlePosBuffer()
+{
+	return m_particlePosBuffer;
+}
+
+GLuint ParticleSystem::GetParticleColorBuffer()
+{
+	return m_particleColorBuffer;
+}
+
+int ParticleSystem::GetNrOfParticles()
+{
+	return m_nrOfParticle;
+}
+
+int ParticleSystem::GetAliveParticles()
+{
+	return m_particleCount;
 }

@@ -19,15 +19,15 @@ void main()
 	vec3 u_CameraUp	   = vec3(u_View[0][1], u_View[1][1], u_View[2][1]);
 
 	float particleSize = xyzs.w; 
-	vec3 particleCenter_wordspace = xyzs.xyz;
+	vec3 particleCenter_worldspace = xyzs.xyz;
 	
 	vec3 vertexPosition_worldspace = 
-		particleCenter_wordspace
+		particleCenter_worldspace
 		+ u_CameraRight * squareVertices.x * particleSize
 		+ u_CameraUp * squareVertices.y * particleSize;
 
-	gl_Position = u_Proj * u_View * vec4(vertexPosition_worldspace, 1.0f);
+	gl_Position = u_Proj * u_View * vec4(squareVertices, 1.0f);
 
 	vo.texCoords = squareVertices.xy + vec2(0.5, 0.5);
-	vo.color = color;
+	vo.color = u_Proj * u_View * vec4(squareVertices, 1.0f);
 }

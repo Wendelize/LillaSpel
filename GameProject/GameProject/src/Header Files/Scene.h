@@ -23,7 +23,7 @@ private:
 
 	vector<Model*> m_vehicles, m_platform, m_power;
 	
-	vector <Light> m_lights;
+	vector<Light> m_lights;
 	int m_nrOfLights = 0;
 
 public:
@@ -33,7 +33,7 @@ public:
 
 	void Init();
 	void LightToShader();
-	void Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, float dt);
+	void Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world);
 	void RenderSceneInfo(Shader * shader, vector<ObjectInfo*> objects);
 	void RenderSkybox();
 	void RenderShadows(vector<ObjectInfo*> objects);

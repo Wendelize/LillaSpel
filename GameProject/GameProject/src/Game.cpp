@@ -72,7 +72,7 @@ void Game::PlayWithLights(float dt)
 void Game::Render(float dt)
 {
 	m_objects = m_objectHandler->GetObjects();
-	m_scene->Render(m_objects, m_objectHandler->GetWorld(), dt);
+	m_scene->Render(m_objects, m_objectHandler->GetWorld());
 
 	if (m_debug)
 	{
