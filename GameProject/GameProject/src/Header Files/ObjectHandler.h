@@ -53,6 +53,7 @@ public:
 	void SetPlayerColor(int index, vec3 color);
 	vec3 GetPlayerScale(int index);
 	void SetPlayerScale(int index, vec3 scale);
+	void StopAllSound();
 	vector<ObjectInfo*> GetObjects();
 	btDiscreteDynamicsWorld* GetWorld();
 	DebugDrawer* GetDebugDrawer();

@@ -10,6 +10,7 @@ Player::Player(Model* model, int modelId, vec3 pos)
 	m_restitution = 1.6699;
 	m_transform->SetScale(scale, scale, scale);
 
+	m_lives = 3;
 	m_name = "";
 	m_health = 0;
 	m_controllerID = 0;
@@ -83,16 +84,16 @@ Player::Player(Model* model, int modelId, vec3 pos)
 	switch (modelId)
 	{
 	case 0:
-		m_body->setDamping(0.1, 0.7);
+		m_body->setDamping(0.1, 0.9);
 		break;
 	case 1:
-		m_body->setDamping(0.1, 0.7);
+		m_body->setDamping(0.1, 0.9);
 		break;
 	case 2:
-		m_body->setDamping(0.01, 0.7);
+		m_body->setDamping(0.01, 0.9);
 		break;
 	case 3:
-		m_body->setDamping(0.1, 0.7);
+		m_body->setDamping(0.1, 0.9);
 		break;
 	default:
 		m_body->setDamping(0.1, 1);
@@ -211,8 +212,7 @@ void Player::Update(float dt)
 
 	if (m_soundEngine && m_body->getLinearVelocity().y() < 0.3f && m_body->getLinearVelocity().y() > -0.3f)
 	{
-		m_soundEngine->setSoundVolume(m_body->getLinearVelocity().length() / 20 + 0.3f);
-		cout << "CURRENT CAR VOLUME: " << m_soundEngine->getSoundVolume() << endl;
+		m_soundEngine->setSoundVolume(m_body->getLinearVelocity().length() / 40 + 0.3f);
 		m_sound->setPlaybackSpeed(m_body->getLinearVelocity().length() / 25 + 1.0f);
 	}
 	m_body->applyDamping(dt);
@@ -221,6 +221,16 @@ void Player::Update(float dt)
 
 	m_transform->Translate(vec3(moveVector.x(), moveVector.y(), moveVector.z())); 
 	m_currentPos = m_body->getWorldTransform().getOrigin();
+}
+
+int Player::GetLives()
+{
+	return m_lives;
+}
+
+void Player::ReduceLife()
+{
+	m_lives--;
 }
 
 string Player::GetName()

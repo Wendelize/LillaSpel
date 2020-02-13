@@ -198,16 +198,6 @@ void ObjectHandler::Update(float dt)
 
 			if (m_soundEngine)
 			{
-				if (m_players[isPlayer]->GetCurrentPos().y() < -20.f)
-				{
-					m_players[isPlayer]->SetPos(vec3(rand() % 10 - 10, 7, rand() % 10 - 10));
-					m_players[isPlayer]->SetNotFallen();
-					m_soundEngine->setSoundVolume(1.4f);
-					m_soundEngine->play2D("src/Audio/Powerup - Spawn.mp3", false);
-					m_soundEngine->setSoundVolume(0.6f);
-					m_players[isPlayer]->StartEngineSounds();
-				}
-
 				if (m_players[isPlayer]->GetCurrentPos().y() < -0.1f && !m_players[isPlayer]->GetFallen())
 				{
 					if (randomNumber == 0)
@@ -235,11 +225,29 @@ void ObjectHandler::Update(float dt)
 					else
 						filename = "src/Audio/Player - Dying 12.mp3";
 
-					m_soundEngine->play3D(filename, vec3df(m_players[isPlayer]->GetCurrentPos().x(), m_players[isPlayer]->GetCurrentPos().y(), m_players[isPlayer]->GetCurrentPos().z()));
+					m_soundEngine->play2D(filename, false);
 					m_players[isPlayer]->SetFallen();
 					m_players[isPlayer]->StopEngineSounds();
-				}
 
+
+				}
+				if (m_players[isPlayer]->GetCurrentPos().y() < -20.f && m_players[isPlayer]->GetLives() > 0)
+				{
+					m_players[isPlayer]->SetPos(vec3(rand() % 10 - 10, 7, rand() % 10 - 10));
+					m_players[isPlayer]->ReduceLife();
+					m_players[isPlayer]->SetNotFallen();
+					m_soundEngine->setSoundVolume(1.4f);
+					m_soundEngine->play2D("src/Audio/Powerup - Spawn.mp3", false);
+					m_soundEngine->setSoundVolume(0.6f);
+					m_players[isPlayer]->StartEngineSounds();
+				}
+				else {
+					if (m_players[isPlayer]->GetLives() == 0) {
+						RemovePlayer(isPlayer);
+						isPlayer--;
+
+					}
+				}
 				/*
 				int knockableCars = 0;
 
@@ -292,6 +300,7 @@ void ObjectHandler::SetScale(int id, vec3 scale)
 
 void ObjectHandler::RemovePlayer(int index)
 {
+	m_players[index]->StopEngineSounds();
 	m_dynamicsWorld->removeCollisionObject(m_players.at(index)->GetBody());
 	btRigidBody* body = m_players.at(index)->GetBody();
 	delete m_players.at(index);
@@ -423,6 +432,14 @@ vec3 ObjectHandler::GetPlayerScale(int index)
 void ObjectHandler::SetPlayerScale(int index, vec3 scale)
 {
 	m_players[index]->SetScale(scale);
+}
+
+void ObjectHandler::StopAllSound()
+{
+	m_soundEngine->stopAllSounds();
+	for (int i = 0; i < m_players.size(); i++) {
+		m_players[i]->StopEngineSounds();
+	}
 }
 
 vector<ObjectInfo*> ObjectHandler::GetObjects()

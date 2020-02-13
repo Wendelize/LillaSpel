@@ -16,6 +16,7 @@ private:
 	float m_speed;
 	float m_powerMultiplier;
 	float m_restitution;
+	int m_lives;
 	vec3 m_scale;
 	vec3 m_color;
 	Controller* m_controller;
@@ -39,6 +40,8 @@ public:
 
 	void Update(float dt);
 
+	int GetLives();
+	void ReduceLife();
 	string GetName();
 	void SetName(string name);
 	int GetHealth();

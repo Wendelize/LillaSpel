@@ -6,6 +6,7 @@ Game::Game()
 	m_scene = new Scene();
 	m_scene->Init(); // H�r skapas modellerna
 	m_time = 0;
+	m_maxTime = 120.f;
 	m_debug = false;
 	m_toggle = false;
 	m_platforms = m_scene->GetModels(0);
@@ -16,8 +17,8 @@ Game::Game()
 	cout << rand() % 4 << endl;
 	m_objectHandler->AddPlayer(vec3(4, 7, 4), 0, rand() % 4, vec3(0, 0, 1), m_cars[0]); // Passa modell
 	m_objectHandler->AddPlayer(vec3(-4, 7, -4), 1, rand() % 4, vec3(0, 1, 0), m_cars[2]); // Passa modell
-	m_objectHandler->AddPlayer(vec3(4, 7, -4), 2, rand() % 4, vec3(1, 1, 0), m_cars[1]); // Passa modell
-	m_objectHandler->AddPlayer(vec3(-4, 7, -4), 3, rand() % 4, vec3(1, 1, 0), m_cars[3]); // Passa modell
+	//m_objectHandler->AddPlayer(vec3(4, 7, -4), 2, rand() % 4, vec3(1, 1, 0), m_cars[1]); // Passa modell
+	//m_objectHandler->AddPlayer(vec3(-4, 7, -4), 3, rand() % 4, vec3(1, 1, 0), m_cars[3]); // Passa modell
 	
 	m_soundEngine = createIrrKlangDevice();
 
@@ -31,7 +32,7 @@ Game::Game()
 			m_soundEngine->play2D("src/Audio/Music - Win.mp3", GL_TRUE);
 			m_soundEngine->play2D("src/Audio/Music - 16bit Sea Shanty 2.mp3", GL_TRUE);
 		*/
-		int randomNumber = rand() % 5;
+		int randomNumber = 5;
 
 		if (randomNumber == 0)
 			m_music = m_soundEngine->play2D("src/Audio/Music - 16bit Sea Shanty 2.mp3", true);
@@ -41,12 +42,14 @@ Game::Game()
 			m_music = m_soundEngine->play2D("src/Audio/Music - Main Game.mp3", true);
 		else if (randomNumber == 3)		 
 			m_music = m_soundEngine->play2D("src/Audio/Music - Main Game 2 Players Left.mp3", true);
+		else if(randomNumber == 4)
+			m_music = m_soundEngine->play2D("src/Audio/Music - Win.mp3", true);
 		else							 
 			m_music = m_soundEngine->play2D("src/Audio/Music - Menu.mp3", true);
 
 		if (m_music)
 		{
-			m_music->setVolume(0.5f);
+			m_music->setVolume(0.3f);
 		}
 
 		m_soundEngine->setListenerPosition(vec3df(0, 18, 33), vec3df(0, -4, 3)); // Listener position, view direction
@@ -71,14 +74,30 @@ void Game::Update(float dt)
 {
 	m_time += dt;
 	m_timeSinceSpawn += dt;
-
-	if (m_timeSinceSpawn > 5) {
+	if (m_timeSinceSpawn > 5 && !m_gameOver) {
 		m_objectHandler->AddPowerUp();
 		m_timeSinceSpawn = 0;
 	}
 
-	m_objectHandler->Update(dt);
+	if(!m_gameOver)
+		m_objectHandler->Update(dt);
 	
+	if (m_objectHandler->GetNumPlayers() == 1 && !m_gameOver) {
+		m_gameOver = true;
+		if (m_soundEngine) {
+			m_soundEngine->stopAllSounds();
+			m_soundEngine->play2D("src/Audio/Music - Win.mp3", true);
+			m_objectHandler->StopAllSound();
+		}
+	}
+	if (m_time > m_maxTime && !m_gameOver) {
+		m_gameOver = true;
+		if (m_soundEngine) {
+			m_soundEngine->stopAllSounds();
+			m_soundEngine->play2D("src/Audio/Music - Win.mp3", true);
+			m_objectHandler->StopAllSound();
+		}
+	}
 	// Toggle debug window
 	SHORT keyState = GetAsyncKeyState(VK_LCONTROL);
 	if (keyState < 0)

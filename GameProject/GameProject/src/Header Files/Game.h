@@ -22,7 +22,9 @@ private:
 	int m_modelId;
 	float m_pos[3];
 	float m_time;
+	float m_maxTime;
 	float m_timeSinceSpawn;
+	bool m_gameOver = false;
 	void Debug();
 public:
 	Game();
