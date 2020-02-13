@@ -1,10 +1,10 @@
 #include "Header Files/ShadowMap.h"
 
-ShadowMap::ShadowMap()
+ShadowMap::ShadowMap(int width, int height)
 {
     m_FBO = 0;
     m_shadowMap = 0;
-    Init();
+    Init(width, height);
     m_shadowShader = new Shader("src/Shaders/ShadowVS.glsl", "src/Shaders/ShadowFS.glsl");
 }
 
@@ -47,14 +47,14 @@ bool ShadowMap::Init(unsigned int windowWidth, unsigned int windowHeight)
     return true;
 }
 
-void ShadowMap::CalcLightSpaceMatrix(vector<Light> light)
+void ShadowMap::CalcLightSpaceMatrix(vector<Light*> light)
 {
     for (uint i = 0; i < light.size(); i++)
     {
-        if (light.at(i).GetType() == 0) {
+        if (light[i]->GetType() == 0) {
             mat4 _lightProj, _lightView, _lightModel;
             _lightProj = ortho(-40.0f, 40.0f, -40.0f, 40.0f, 0.1f, 60.0f);
-            _lightView = lookAt(light.at(i).GetPos(), vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
+            _lightView = lookAt(light[i]->GetPos(), vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
             //_lightModel = mat4(1.0);
             m_lightSpaceMatrix = _lightProj * _lightView;
             m_shadowShader->UseShader();

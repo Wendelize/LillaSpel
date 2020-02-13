@@ -6,7 +6,7 @@ Camera::Camera(vec3 pos, vec3 point, vec3 up)
 	m_direction = normalize(m_position - point);
 	m_parallel = normalize(cross({ 0,1,0 }, m_direction));
 	m_up = normalize(cross(m_direction, m_parallel));
-	m_viewMatrix = lookAt(m_position, vec3(0, -4, 3), m_up);
+	m_viewMatrix = lookAt(m_position, vec3(0, -6, 3), m_up);
 }
 
 Camera::~Camera()
