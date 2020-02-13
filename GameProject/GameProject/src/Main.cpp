@@ -2,6 +2,7 @@
 #include "Header Files/Transform.h"
 #include "Header Files/Game.h"
 #include "Header Files/Scene.h"
+#define STB_IMAGE_IMPLEMENTATION
 
 /* 
 inline void sleepSomeTime() { Sleep(100); }
