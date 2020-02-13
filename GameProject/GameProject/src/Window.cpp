@@ -81,8 +81,8 @@ Window::Window(int width, int height)
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	m_fonts.push_back(io.Fonts->AddFontFromFileTTF("src/IMGUI/Fonts/muscle_cre/muscle_cre.ttf", 20.0f));
-	m_fonts.push_back(io.Fonts->AddFontFromFileTTF("src/IMGUI/Fonts/muscle_cre/muscle_cre.ttf", 60.0f));
+	m_fonts.push_back(io.Fonts->AddFontFromFileTTF("src/IMGUI/Fonts/outrun_future/outrun-future-Bold.ttf", 40.0f));
+	m_fonts.push_back(io.Fonts->AddFontFromFileTTF("src/IMGUI/Fonts/outrun_future/outrun-future-Bold.ttf", 80.0f));
 	m_fonts.push_back(io.Fonts->AddFontFromFileTTF("src/IMGUI/Fonts/CFLegendsoftheFall-Regular.ttf", 20.0f));
 	m_fonts.push_back(io.Fonts->AddFontFromFileTTF("src/IMGUI/Fonts/CFLegendsoftheFall-Regular.ttf", 60.0f));
 	m_fonts.push_back(io.Fonts->AddFontFromFileTTF("src/IMGUI/Fonts/spongeboy_me_bob/Spongeboy Me Bob.ttf", 20.0f));

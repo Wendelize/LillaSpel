@@ -1,10 +1,14 @@
 #include "Header Files/Menu.h"
+#include "Header Files/stb_image.h"
 
 
 Menu::Menu(Scene* scene, ObjectHandler* objHand)
 {
 	m_scene = scene;
 	m_objHand = objHand;
+
+
+	
 }
 
 Menu::~Menu()
@@ -12,10 +16,14 @@ Menu::~Menu()
 }
 
 
-void Menu::RenderMenu()
+void Menu::RenderMenu(bool gameOver)
 {
 	GLFWgamepadstate state;
 	Window* w = m_scene->GetOurWindow();
+	if (gameOver)
+	{
+		m_menu = ActiveMenu::restart;
+	}
 	if (m_menu == ActiveMenu::playerHud && glfwGetGamepadState(0, &state))
 	{
 		if (state.buttons[GLFW_GAMEPAD_BUTTON_START])
@@ -28,10 +36,18 @@ void Menu::RenderMenu()
 	{
 	case ActiveMenu::start:
 		//ImGui::Image((void*)wowTexture, ImVec2(width, height));
+		// Background pic
+		ImGui::SetNextWindowPos(ImVec2(-2, -2));
+		ImGui::SetNextWindowSize(ImVec2((float)w->GetWidht() + 4, w->GetHeight() + 4));
+		if (ImGui::Begin("##Backgorund", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_AlwaysAutoResize | ImGuiNavInput_Activate))
+		{
+			ImGui::Image((void*)m_mainMenuPic, ImVec2(300, 200), ImVec2(0, 0), ImVec2(1, 1));
+		}
+		ImGui::End();
 
 		ImGui::SetNextWindowPos(ImVec2(-2, -2));
 		ImGui::SetNextWindowSize(ImVec2((float)w->GetWidht() + 4, w->GetHeight() + 4));
-		if (ImGui::Begin("##MainMenu", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiNavInput_Activate))
+		if (ImGui::Begin("##MainMenu", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_AlwaysAutoResize | ImGuiNavInput_Activate))
 		{
 
 			float middle = (float)w->GetWidht() * 0.5f;
@@ -47,7 +63,7 @@ void Menu::RenderMenu()
 			ImGui::SetCursorPos(ImVec2(middle - 75, 300));
 			if (ImGui::Button("Start", ImVec2(200, 75)))
 			{
-				m_menu = ActiveMenu::select;
+				m_menu = ActiveMenu::playerHud;
 				m_p1Seconds = time;
 				m_p2Seconds = time;
 				m_p3Seconds = time;
@@ -67,14 +83,14 @@ void Menu::RenderMenu()
 		break;
 	case ActiveMenu::select:
 		ImGui::SetNextWindowPos(ImVec2(50, 25));
-		ImGui::SetNextWindowSize(ImVec2(250, 100));
+		ImGui::SetNextWindowSize(ImVec2(400, 100));
 		if (ImGui::Begin("##player1Select", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoNavInputs))
 		{
 			GLFWgamepadstate state;
 			//TODO: Get player color on HUD and Select vehicle model
 			vec3 p1Col  = m_objHand->GetPlayerColor(0);
 			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(p1Col.x, p1Col.y, p1Col.z, 1));
-			ImGui::Text("<  Vehicle Model: %d  > ", m_p1ModelId);
+			ImGui::Text("\t<  Vehicle Model: %d  > ", m_p1ModelId);
 			
 			if ( time - m_p1Seconds >= 0.5 && (glfwGetGamepadState(0, &state)))
 			{
@@ -120,13 +136,13 @@ void Menu::RenderMenu()
 		if (m_objHand->GetNumPlayers() >= 2)
 		{
 			ImGui::SetNextWindowPos(ImVec2(w->GetWidht() - 300, 25));
-			ImGui::SetNextWindowSize(ImVec2(250, 100));
+			ImGui::SetNextWindowSize(ImVec2(400, 100));
 			if (ImGui::Begin("##player2Select", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoNavInputs))
 			{
 				GLFWgamepadstate state;
 				vec3 p2Col = m_objHand->GetPlayerColor(1);
 				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(p2Col.x, p2Col.y, p2Col.z, 1));
-				ImGui::Text("<  Vehicle Model: %d  > ", m_p2ModelId);
+				ImGui::Text("\t<  Vehicle Model: %d  > ", m_p2ModelId);
 
 				if (time - m_p2Seconds >= 0.5 && (glfwGetGamepadState(1, &state)))
 				{
@@ -173,7 +189,7 @@ void Menu::RenderMenu()
 		if (m_objHand->GetNumPlayers() >= 3)
 		{
 			ImGui::SetNextWindowPos(ImVec2(50, w->GetHeight() - 155));
-			ImGui::SetNextWindowSize(ImVec2(250, 100));
+			ImGui::SetNextWindowSize(ImVec2(350, 100));
 			if (ImGui::Begin("##player3Select", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoNavInputs))
 			{
 				GLFWgamepadstate state;
@@ -241,7 +257,7 @@ void Menu::RenderMenu()
 		if (m_objHand->GetNumPlayers() >= 4)
 		{
 			ImGui::SetNextWindowPos(ImVec2(w->GetWidht() - 300, w->GetHeight() - 155));
-			ImGui::SetNextWindowSize(ImVec2(250, 100));
+			ImGui::SetNextWindowSize(ImVec2(350, 100));
 			if (ImGui::Begin("##player4Select", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoNavInputs))
 			{
 				GLFWgamepadstate state;
@@ -364,9 +380,10 @@ void Menu::RenderMenu()
 			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0.6, 0.8, 1));
 			ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.5);
 			ImGui::Text("KamiCarZe");
-			ImGui::SetCursorPos(ImVec2(((float)w->GetWidht() / 3) / 3, 115));
-			if (ImGui::Button("Restart", ImVec2(200, 75)))
+			ImGui::SetCursorPos(ImVec2(((float)w->GetWidht() / 3) / 3 - 25, 115));
+			if (ImGui::Button("Restart", ImVec2(250, 75)))
 			{
+				// TODO: Fixa så spelet resettas
 				m_menu = ActiveMenu::playerHud;
 			}
 			ImGui::SetCursorPos(ImVec2(((float)w->GetWidht() / 3) / 3 - 100, 215));
@@ -388,40 +405,40 @@ void Menu::RenderMenu()
 		break;
 	case ActiveMenu::playerHud:
 		ImGui::SetNextWindowPos(ImVec2(0, 0));
-		ImGui::SetNextWindowSize(ImVec2(210, 100));
+		ImGui::SetNextWindowSize(ImVec2(250, 100));
 		if (ImGui::Begin("##player1Hud", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize))
 		{
 			//TODO: get this from player maybe pull main to get their function?
-			ImGui::Text("Player One lives: %d", 3);
+			ImGui::Text("Player One lives: %d", m_objHand->GetPlayerLives(0));
 		}
 		ImGui::End();
 
-		ImGui::SetNextWindowPos(ImVec2(w->GetWidht()-218, 0));
-		ImGui::SetNextWindowSize(ImVec2(210, 100));
+		ImGui::SetNextWindowPos(ImVec2(w->GetWidht()-258, 0));
+		ImGui::SetNextWindowSize(ImVec2(250, 100));
 		if (ImGui::Begin("##player2Hud", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize))
 		{
-			ImGui::Text("Player Two lives: %d", 3);
+			ImGui::Text("Player Two lives: %d", m_objHand->GetPlayerLives(1));
 		}
 		ImGui::End();
 		// TODO: Kanske Fixa så det följer kontrollerId eller nått
 		if (m_objHand->GetNumPlayers() >= 3) 
 		{
 			ImGui::SetNextWindowPos(ImVec2(0, w->GetHeight() - 155));
-			ImGui::SetNextWindowSize(ImVec2(210, 100));
+			ImGui::SetNextWindowSize(ImVec2(250, 100));
 			if (ImGui::Begin("##player3Hud", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize))
 			{
-				ImGui::Text("Player Three lives: %d", 3);
+				ImGui::Text("Player Three lives: %d", m_objHand->GetPlayerLives(2));
 			}
 			ImGui::End();
 		}
 		
 		if (m_objHand->GetNumPlayers() >= 4)
 		{
-			ImGui::SetNextWindowPos(ImVec2(w->GetWidht() - 218, w->GetHeight() - 155));
-			ImGui::SetNextWindowSize(ImVec2(210, 100));
+			ImGui::SetNextWindowPos(ImVec2(w->GetWidht() - 258, w->GetHeight() - 155));
+			ImGui::SetNextWindowSize(ImVec2(250, 100));
 			if (ImGui::Begin("##player4Hud", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize))
 			{
-				ImGui::Text("Player Four lives: %d", 3);
+				ImGui::Text("Player Four lives: %d", m_objHand->GetPlayerLives(3));
 			}
 			ImGui::End();
 		}
@@ -434,6 +451,35 @@ void Menu::RenderMenu()
 void Menu::SetActiveMenu(ActiveMenu activeMenu)
 {
 	m_menu = activeMenu;
+}
+
+void Menu::LoadMenuPic()
+{
+
+	// Main menu background 
+	glGenTextures(0, &m_mainMenuPic);
+	glBindTexture(GL_TEXTURE_2D, m_mainMenuPic);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	Window* w = m_scene->GetOurWindow();
+
+	m_menuPicWidth = 0;
+	m_menuPicHeight = 0;
+	unsigned char* data = stbi_load("src/Textures/wow.png", &m_menuPicWidth, &m_menuPicHeight, NULL, 4);
+	if (data)
+	{
+		glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+		glTexImage2D(GL_TEXTURE_2D,
+			0, GL_RGB, m_menuPicWidth, m_menuPicHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, data
+		);
+		stbi_image_free(data);
+
+	}
+	else
+	{
+		std::cout << "MainMenu texture failed to load at path: " << "src/Textures/wow.png" << std::endl;
+		stbi_image_free(data);
+	}
 }
 
 bool Menu::Pause()

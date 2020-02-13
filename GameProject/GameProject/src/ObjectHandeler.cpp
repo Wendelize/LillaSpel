@@ -396,6 +396,11 @@ int ObjectHandler::GetNumPlayers()
 	return m_players.size();
 }
 
+int ObjectHandler::GetPlayerLives(int index)
+{
+	return m_players[index]->GetLives();
+}
+
 vec3 ObjectHandler::GetPlayerDirection(int index)
 {
 	return m_players[index]->GetDirection();

@@ -46,6 +46,7 @@ public:
 	void AddPowerUp();
 	void RemovePowerUp(int index);
 	int GetNumPlayers();
+	int GetPlayerLives(int index);
 	vec3 GetPlayerDirection(int index);
 	int GetPlayerControllerID(int index);
 	void SetPlayerControllerID(int index, int id);

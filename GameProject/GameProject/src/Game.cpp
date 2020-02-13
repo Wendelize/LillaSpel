@@ -7,8 +7,11 @@ Game::Game()
 	m_scene = new Scene();
 	m_scene->Init(); // H�r skapas modellerna
 	m_time = 0;
-	m_maxTime = 60.f;
+	m_maxTime = 240.f;
 	m_menu = new Menu(m_scene, m_objectHandler);
+	// noMenu, start, select, pause, stats, restart, playerHud;
+	m_menu->SetActiveMenu(Menu::ActiveMenu::start);
+	m_menu->LoadMenuPic();
 
 	m_debug = false;
 	m_toggle = false;
@@ -147,7 +150,7 @@ void Game::Render()
 	ImGui::NewFrame();
 	//ImGui::ShowDemoWindow();
 
-	m_menu->RenderMenu();
+	m_menu->RenderMenu(m_gameOver);
 	if(!m_menu->Pause())
 	{ 
 		m_objects = m_objectHandler->GetObjects();

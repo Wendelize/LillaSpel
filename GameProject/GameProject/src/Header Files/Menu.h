@@ -3,9 +3,10 @@
 #include "ObjectHandler.h"
 class Menu
 {
-private:
-	Scene* m_scene;
-	ObjectHandler* m_objHand;
+public:
+	Menu(Scene* scene, ObjectHandler* objHand);
+	~Menu();
+
 	enum struct ActiveMenu
 	{
 		noMenu = 0,
@@ -16,6 +17,19 @@ private:
 		restart = 5,
 		playerHud = 6
 	};
+
+	void RenderMenu(bool gameOver);
+	void SetActiveMenu(ActiveMenu activeMenu);
+	void LoadMenuPic();
+	bool Pause();
+
+
+private:
+	Scene* m_scene;
+	ObjectHandler* m_objHand;
+	GLuint m_mainMenuPic;
+	int m_menuPicWidth, m_menuPicHeight;
+
 	int m_selected[4] = { 0, 0, 0, 0 };
 	int m_continue = 0;
 
@@ -35,15 +49,6 @@ private:
 
 	ActiveMenu m_menu = ActiveMenu::start;
 
-public:
-
-	Menu(Scene* scene, ObjectHandler* objHand);
-	~Menu();
-
-	void RenderMenu();
-	void SetActiveMenu(ActiveMenu activeMenu);
-	bool Pause();
-	
 
 
 };
