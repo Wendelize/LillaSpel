@@ -1,12 +1,15 @@
 #include "Header Files/Bloom.h"
 
-Bloom::Bloom()
+Bloom::Bloom(int width, int height, float resScale)
 {
+	m_width = width;
+	m_height = height;
+	m_resolutionScale = resScale;
+
 	m_blur = new Shader("src/Shaders/GaussianBlurVS.glsl", "src/Shaders/GaussianBlurFS.glsl");
 	m_bloom = new Shader("src/Shaders/BloomVS.glsl", "src/Shaders/BloomFS.glsl");
 	Init();
 	InitPingPong();
-
 
 	m_blur->UseShader();
 	m_blur->Uniform("u_BrightImage", 0);
@@ -28,10 +31,10 @@ void Bloom::Init()
 
 	glGenTextures(2, m_colorBuffers);
 
-	for (unsigned int i = 0; i < 2; i++)
+	for (int i = 0; i < 2; i++)
 	{
 		glBindTexture(GL_TEXTURE_2D, m_colorBuffers[i]);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, 1920, 1080, 0, GL_RGB, GL_FLOAT, NULL);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, m_width, m_height, 0, GL_RGB, GL_FLOAT, NULL);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -41,7 +44,7 @@ void Bloom::Init()
 
 	glGenRenderbuffers(1, &m_depth);
 	glBindRenderbuffer(GL_RENDERBUFFER, m_depth);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, 1920, 1080);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, m_width, m_height);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_depth);
 
 	unsigned int attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
@@ -49,6 +52,7 @@ void Bloom::Init()
 
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		std::cout << "Framebuffer not complete!" << std::endl;
+
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
@@ -60,7 +64,7 @@ void Bloom::InitPingPong()
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, m_pingPongFBO[i]);
 		glBindTexture(GL_TEXTURE_2D, m_pingPongColorBuffer[i]);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, 1920, 1080, 0, GL_RGB, GL_FLOAT, NULL);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, m_width * m_resolutionScale, m_height * m_resolutionScale, 0, GL_RGB, GL_FLOAT, NULL);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); // we clamp to the edge as the blur filter would otherwise sample repeated texture values!
@@ -71,16 +75,18 @@ void Bloom::InitPingPong()
 			std::cout << "Framebuffer not complete!" << std::endl;
 	}
 
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void Bloom::PingPongRender()
+void Bloom::PingPongRender(int nrOfSteps) //gaussian blur on the bloom texture
 {
+	glViewport(0, 0, m_width * m_resolutionScale, m_height * m_resolutionScale);
+
 	m_horizontal = true;
 	m_firstIteration = true;
 
-	unsigned int amount = 1;
 	m_blur->UseShader();
-	for (unsigned int i = 0; i < amount; i++)
+	for (unsigned int i = 0; i < nrOfSteps; i++)
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, m_pingPongFBO[m_horizontal]);
 		m_blur->Uniform("u_Horizontal", m_horizontal);
@@ -91,11 +97,17 @@ void Bloom::PingPongRender()
 			m_firstIteration = false;
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	
+
 }
 
-void Bloom::RenderBloom()
+void Bloom::RenderBloom(GLFWwindow* w)
 {
+	int width;
+	int height;
+	glfwGetWindowSize(w, &width, &height);
+
+
+	glViewport(0, 0, width, height);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	m_bloom->UseShader();
 	glActiveTexture(GL_TEXTURE0);
