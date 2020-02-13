@@ -1,6 +1,5 @@
 #include "Header Files/Skybox.h"
 #include "Header Files/stb_image.h"
-
 Skybox::Skybox()
 {
     m_verticesSkybox = NULL;

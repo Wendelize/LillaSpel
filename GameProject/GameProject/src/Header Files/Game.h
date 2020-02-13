@@ -14,7 +14,7 @@ private:
 	vector<Model*> m_cars;
 	ISoundEngine* m_soundEngine;
 	ISound* m_music;
-	// ISound* 
+	vector<ISoundSource*> m_songs;
 
 	//Debug variables
 	bool m_debug, m_toggle;
@@ -22,7 +22,10 @@ private:
 	int m_modelId;
 	float m_pos[3];
 	float m_time;
+	float m_maxTime;
 	float m_timeSinceSpawn;
+	bool m_gameOver = false;
+	bool m_fastMusic = false;
 	void Debug();
 public:
 	Game();
