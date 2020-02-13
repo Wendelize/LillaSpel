@@ -2,8 +2,8 @@
 
 Scene::Scene()
 {
-	m_screenWidth = 1024;
-	m_screenHeight = 576;
+	m_screenWidth = 1920;
+	m_screenHeight = 1080;
 	m_shadowMapWidth = 1500;
 	m_shadowMapHeight = 1500;
 	m_bloomTextureScale = 0.4f;

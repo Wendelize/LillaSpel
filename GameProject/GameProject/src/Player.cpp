@@ -159,13 +159,13 @@ void Player::Update(float dt)
 		if (m_controller->ButtonAIsPressed(m_controllerID))
 		{
 			//Acceleration
-			m_speed = 700000.f * m_powerMultiplier;
+			m_speed = 700000.f * m_powerMultiplier / (dt*60) ;
 			pressed = true;
 		}
 
 		if (m_controller->ButtonXIsPressed(m_controllerID))
 		{
-			m_speed = -500000.f * m_powerMultiplier;
+			m_speed = -500000.f * m_powerMultiplier / (dt * 60);
 			pressed = true;
 		}
 
@@ -174,7 +174,7 @@ void Player::Update(float dt)
 		{
 			//Left trigger pressed
 			//Power-Up
-			m_speed = 1100000.f * m_powerMultiplier;
+			m_speed = 1100000.f * m_powerMultiplier / (dt * 60);
 			pressed = true;
 
 		}
@@ -182,7 +182,7 @@ void Player::Update(float dt)
 		{
 			//Left trigger pressed
 			//Power-Up
-			m_speed = -900000.f * m_powerMultiplier;
+			m_speed = -900000.f * m_powerMultiplier / (dt * 60);
 			pressed = true;
 
 		}
