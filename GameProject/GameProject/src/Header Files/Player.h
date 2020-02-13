@@ -9,14 +9,23 @@ private:
 	int m_health;
 	int m_controllerID;
 	int m_modelId;
+	bool m_powerActive;
+	int m_powerType;
+	int m_powerDuration;
 	float m_weight;
 	float m_speed;
+	float m_powerMultiplier;
 	float m_restitution;
+	int m_lives;
 	vec3 m_scale;
 	vec3 m_color;
 	Controller* m_controller;
 	Transform* m_transform;
 	ObjectInfo* m_info;
+	ISoundEngine* m_soundEngine;
+	vector<ISoundSource*> m_carSounds;
+	ISound* m_sound;
+	bool m_fallen;
 
 	//Variables 4 Fysik
 	btCollisionShape* m_carShape;
@@ -24,10 +33,15 @@ private:
 	btTransform* m_btTransform;
 	btDefaultMotionState* m_motionState;
 	btVector3 m_currentPos;
+
 public:
 	Player(Model* model, int modelId, vec3 pos);
 	~Player();
+
 	void Update(float dt);
+
+	int GetLives();
+	void ReduceLife();
 	string GetName();
 	void SetName(string name);
 	int GetHealth();
@@ -49,5 +63,14 @@ public:
 	btRigidBody* GetBody();
 	btVector3 GetCurrentPos();
 	void SetPos(vec3 pos);
-
+	bool GetFallen();
+	void SetFallen();
+	void SetNotFallen();
+	float GetLinearVelocity();
+	void StartEngineSounds();
+	void StopEngineSounds();
+	void GivePower(int type);
+	void removePower(int type);
+	bool updatePower(float dt);
+	int GetActivePower();
 };

@@ -5,11 +5,11 @@ class ShadowMap
 {
 public:
 
-	ShadowMap();
+	ShadowMap(int width, int height);
 	~ShadowMap();
 
-	bool Init(unsigned int windowWidth = 1024, unsigned int windowHeight = 1024);
-	void CalcLightSpaceMatrix(vector<Light> light);
+	bool Init(unsigned int windowWidth = 2000, unsigned int windowHeight = 2000);
+	void CalcLightSpaceMatrix(vector<Light*> light);
 	mat4 GetLSP();
 	Shader* GetShader();
 	GLuint GetTexture();
@@ -20,5 +20,5 @@ private:
 	GLuint m_shadowMap = 0;
 
 	mat4 m_lightSpaceMatrix = mat4(0);
-	Shader * m_shadowShader;
+	Shader* m_shadowShader;
 };

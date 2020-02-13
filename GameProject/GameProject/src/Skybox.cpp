@@ -1,6 +1,5 @@
 #include "Header Files/Skybox.h"
 #include "Header Files/stb_image.h"
-
 Skybox::Skybox()
 {
     m_verticesSkybox = NULL;
@@ -117,8 +116,9 @@ void Skybox::LoadSkyboxTexture()
         "src/Textures/left.tga", // LEFT TEXTURE
         "src/Textures/top.tga", // UP TEXTURE
         "src/Textures/bottom.tga", // DOWN TEXTURE
-        "src/Textures/back.tga", // BACK TEXTURE
         "src/Textures/front.tga", // FRONT TEXTURE
+        "src/Textures/back.tga", // BACK TEXTURE
+
     };
 
     vector<string> faces2{
@@ -126,8 +126,8 @@ void Skybox::LoadSkyboxTexture()
         "src/Textures/moondust_lf.tga", // LEFT TEXTURE
         "src/Textures/moondust_up.tga", // UP TEXTURE
         "src/Textures/moondust_dn.tga", // DOWN TEXTURE
-        "src/Textures/moondust_bk.tga", // BACK TEXTURE
         "src/Textures/moondust_ft.tga", // FRONT TEXTURE
+        "src/Textures/moondust_bk.tga", // BACK TEXTURE
     };
 
     vector<string> faces3{
@@ -135,8 +135,8 @@ void Skybox::LoadSkyboxTexture()
         "src/Textures/negx.jpg", // LEFT TEXTURE
         "src/Textures/posy.jpg", // UP TEXTURE
         "src/Textures/negy.jpg", // DOWN TEXTURE
-        "src/Textures/posz.jpg", // BACK TEXTURE
         "src/Textures/negz.jpg", // FRONT TEXTURE
+        "src/Textures/posz.jpg", // BACK TEXTURE
     };
 
     vector<string> faces4{
@@ -144,8 +144,8 @@ void Skybox::LoadSkyboxTexture()
         "src/Textures/n_left.jpg", // LEFT TEXTURE
         "src/Textures/n_top.jpg", // UP TEXTURE
         "src/Textures/n_bottom.jpg", // DOWN TEXTURE
-        "src/Textures/n_back.jpg", // BACK TEXTURE
         "src/Textures/n_front.jpg", // FRONT TEXTURE
+        "src/Textures/n_back.jpg", // BACK TEXTURE
     };
 
     glGenTextures(1, &m_textureSkybox);

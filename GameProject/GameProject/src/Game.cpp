@@ -1,38 +1,113 @@
 #include "Header Files/Game.h"
-
+#define STB_IMAGE_IMPLEMENTATION    
+#include "Header Files/stb_image.h"
 Game::Game()
 {
 	m_objectHandler = new ObjectHandler();
 	m_scene = new Scene();
 	m_scene->Init(); // H�r skapas modellerna
 	m_time = 0;
+	m_maxTime = 60.f;
 	m_menu = new Menu(m_scene, m_objectHandler);
 
 	m_debug = false;
 	m_toggle = false;
 	m_platforms = m_scene->GetModels(0);
-	m_cars = m_scene->GetModels(1); 
-
+	m_cars = m_scene->GetModels(1);
+	m_timeSinceSpawn = 0;
 	m_objectHandler->AddPlatform(0, m_platforms[0]); // Passa modell
+	srand(time(NULL));
+	cout << rand() % 4 << endl;
+	m_objectHandler->AddPlayer(vec3(4, 7, 4), 0, rand() % 4, vec3(0, 0, 1), m_cars[0]); // Passa modell
+	m_objectHandler->AddPlayer(vec3(-4, 7, -4), 1, rand() % 4, vec3(0, 1, 0), m_cars[2]); // Passa modell
+	//m_objectHandler->AddPlayer(vec3(4, 7, -4), 2, rand() % 4, vec3(1, 1, 0), m_cars[1]); // Passa modell
+	//m_objectHandler->AddPlayer(vec3(-4, 7, -4), 3, rand() % 4, vec3(1, 1, 0), m_cars[3]); // Passa modell
+	
+	m_soundEngine = createIrrKlangDevice();
 
-	m_objectHandler->AddPlayer(vec3(0, 7, 2), 0, 0, vec3(0, 0, 1), m_cars[0]); // Passa modell
-	m_objectHandler->AddPlayer(vec3(-2, 7, -2), 1, 0, vec3(0, 1, 0), m_cars[0]); // Passa modell
-	m_objectHandler->AddPlayer(vec3(2, 7, -2), 2, 0, vec3(1, 1, 0), m_cars[0]); // Passa modell
+	if (m_soundEngine)
+	{
+		/*
+			m_soundEngine->play2D("src/Audio/Music - 16bit Deja Vu.mp3", GL_TRUE);
+			m_soundEngine->play2D("src/Audio/Music - Main Game 2 Players Left.mp3", GL_TRUE);
+			m_soundEngine->play2D("src/Audio/Music - Main Game.mp3", GL_TRUE);
+			m_soundEngine->play2D("src/Audio/Music - Menu.mp3", GL_TRUE);
+			m_soundEngine->play2D("src/Audio/Music - Win.mp3", GL_TRUE);
+			m_soundEngine->play2D("src/Audio/Music - 16bit Sea Shanty 2.mp3", GL_TRUE);
+		*/
+		int randomNumber = 4;
+		m_songs.push_back(m_soundEngine->addSoundSourceFromFile("src/Audio/Music - 16bit Sea Shanty 2.mp3"));
+		m_songs.push_back(m_soundEngine->addSoundSourceFromFile("src/Audio/Music - 16bit Deja Vu.mp3"));
+		m_songs.push_back(m_soundEngine->addSoundSourceFromFile("src/Audio/Music - Main Game.mp3"));
+		m_songs.push_back(m_soundEngine->addSoundSourceFromFile("src/Audio/Music - Main Game 2 Players Left.mp3"));
+		m_songs.push_back(m_soundEngine->addSoundSourceFromFile("src/Audio/Music - Menu.mp3"));
 
+		m_music = m_soundEngine->play2D(m_songs[randomNumber], true, true);
+
+		if (m_music)
+		{
+			m_music->setVolume(0.9f);
+		}
+
+		m_soundEngine->setListenerPosition(vec3df(0, 18, 33), vec3df(0, -4, 3)); // Listener position, view direction
+		m_music->setIsPaused(false);
+	}
 }
 
 Game::~Game()
 {
 	delete m_objectHandler;
 	delete m_scene;
+
+	if (m_soundEngine)
+	{
+		if (m_music)
+			m_music->drop();
+
+		m_soundEngine->drop();
+	}
 }
 
 void Game::Update(float dt)
 {
+	m_time += dt;
+	m_timeSinceSpawn += dt;
+	if (m_timeSinceSpawn > 5 && !m_gameOver) {
+		m_objectHandler->AddPowerUp();
+		m_timeSinceSpawn = 0;
+	}
 	if (!m_menu->Pause())
 	{
 		m_time += dt;
 
+	if(!m_gameOver)
+		m_objectHandler->Update(dt);
+	
+	if (m_objectHandler->GetNumPlayers() == 1 && !m_gameOver) {
+		m_gameOver = true;
+		if (m_soundEngine) {
+			m_soundEngine->stopAllSounds();
+			m_soundEngine->play2D("src/Audio/Music - Win.mp3", true);
+			m_objectHandler->StopAllSound();
+		}
+	}
+	if (m_maxTime - m_time <= 30.f && !m_fastMusic) {
+		m_music->setPlaybackSpeed(1.4);
+		m_fastMusic = true;
+	}
+	if (m_time > m_maxTime && !m_gameOver) {
+		m_gameOver = true;
+		if (m_soundEngine) {
+			m_soundEngine->stopAllSounds();
+			m_soundEngine->play2D("src/Audio/Music - Win.mp3", true);
+			m_objectHandler->StopAllSound();
+		}
+	}
+	// Toggle debug window
+	SHORT keyState = GetAsyncKeyState(VK_LCONTROL);
+	if (keyState < 0)
+	{
+		if (!m_toggle)
 		m_objectHandler->Update(dt);
 
 		// Toggle debug window
@@ -53,19 +128,14 @@ void Game::Update(float dt)
 			m_toggle = false;
 		}
 	}
+	else
+	{
+		m_toggle = false;
+	}
+
 	Render();
 }
 
-void Game::PlayWithLights(float dt)
-{
-	vector<Light> _temp = m_scene->GetLight();
-	for (uint i = 0; i < _temp.size(); i++)
-	{
-		if (_temp.at(i).GetType() == 1)
-		{
-			_temp.at(i).ChangePos(vec3(sin(dt) * 4, sin(dt) * 5, sin(dt) * 5));
-		}
-	}
 }
 
 void Game::Render()
@@ -142,8 +212,11 @@ void Game::Debug()
 	ImGui::SameLine(0, 1);
 	ImGui::InputFloat3("", m_pos, 0, 0);
 	ImGui::EndChild();
-
-	if (ImGui::Button("Add Car"))
+	if (ImGui::Button("Add PUP"))
+	{
+		m_objectHandler->AddPowerUp();
+	}
+		if (ImGui::Button("Add Car"))
 	{
 		if (m_objectHandler->GetNumPlayers() < 40)
 		{
@@ -221,7 +294,6 @@ void Game::Debug()
 
 	//vec3 col = vec3((cos(m_time) + 1)/2, (cos(m_time * 0.7f) + 1)/2, (cos(m_time * 0.4f) + 1)/2);
 	//m_objectHandler->SetPlayerColor(0, col);
-
 
 	// Rendering
 	//ImGui::Render();
