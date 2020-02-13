@@ -17,6 +17,7 @@ private:
 		playerHud = 6
 	};
 	int m_selected[4] = { 0, 0, 0, 0 };
+	int m_continue = 0;
 
 	int m_p1ModelId = 0;
 	double m_p1Seconds = 1;
@@ -26,9 +27,11 @@ private:
 
 	int m_p3ModelId = 0;
 	double m_p3Seconds = 1;
+	bool m_p3Joined = false;
 
 	int m_p4ModelId = 0;
 	double m_p4Seconds = 1;
+	bool m_p4Joined = false;
 
 	ActiveMenu m_menu = ActiveMenu::start;
 
