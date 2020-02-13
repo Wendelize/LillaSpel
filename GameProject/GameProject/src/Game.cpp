@@ -49,7 +49,7 @@ Game::Game()
 
 		if (m_music)
 		{
-			m_music->setVolume(0.3f);
+			m_music->setVolume(0.2f);
 		}
 
 		m_soundEngine->setListenerPosition(vec3df(0, 18, 33), vec3df(0, -4, 3)); // Listener position, view direction

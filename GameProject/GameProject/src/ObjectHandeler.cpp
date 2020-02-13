@@ -37,6 +37,38 @@ ObjectHandler::ObjectHandler()
 		m_soundEngine->setListenerPosition(vec3df(0, 18, 33), vec3df(0, -4, 3)); // Listener position, view direction
 		m_soundEngine->setDefault3DSoundMinDistance(70.0f);
 	}
+
+
+	m_soundFiles[0] = "src/Audio/Player - Dying 1.mp3";
+	m_soundFiles[1] = "src/Audio/Player - Dying 2.mp3"; 
+	m_soundFiles[2] = "src/Audio/Player - Dying 3.mp3";
+	m_soundFiles[3] = "src/Audio/Player - Dying 4.mp3";
+	m_soundFiles[4] = "src/Audio/Player - Dying 5.mp3";
+	m_soundFiles[5] = "src/Audio/Player - Dying 6.mp3";
+	m_soundFiles[6] = "src/Audio/Player - Dying 7.mp3";
+	m_soundFiles[7] = "src/Audio/Player - Dying 8.mp3";
+	m_soundFiles[8] = "src/Audio/Player - Dying 9.mp3";
+	m_soundFiles[9] = "src/Audio/Player - Dying 10.mp3";
+	m_soundFiles[10] = "src/Audio/Player - Dying 11.mp3";
+	m_soundFiles[11] = "src/Audio/Player - Dying 12.mp3";
+	m_soundFiles[12] = "src/Audio/Player - Dying 13.mp3";
+	m_soundFiles[13] = "src/Audio/Player - Dying 14.mp3";
+	m_soundFiles[14] = "src/Audio/Player - Dying 15.mp3";
+	m_soundFiles[15] = "src/Audio/Player - Dying 16.mp3";
+	m_soundFiles[16] = "src/Audio/Player - Dying 17.mp3";
+	m_soundFiles[17] = "src/Audio/Player - Dying 18.mp3";
+	m_soundFiles[18] = "src/Audio/Player - Dying 19.mp3";
+	m_soundFiles[19] = "src/Audio/Player - Dying 20.mp3";
+	m_soundFiles[20] = "src/Audio/Player - Dying 21.mp3";
+	m_soundFiles[21] = "src/Audio/Player - Dying 22.mp3";
+	m_soundFiles[22] = "src/Audio/Player - Dying 23.mp3";
+	m_soundFiles[23] = "src/Audio/Player - Dying 24.mp3";
+	m_soundFiles[24] = "src/Audio/Player - Dying 25.mp3";
+	m_soundFiles[25] = "src/Audio/Player - Dying 26.mp3";
+	m_soundFiles[26] = "src/Audio/Player - Dying 27.mp3";
+	m_soundFiles[27] = "src/Audio/Player - Dying 28.mp3";
+	m_soundFiles[28] = "src/Audio/Player - Dying 29.mp3";
+	m_soundFiles[29] = "src/Audio/Player - Dying 30.mp3";
 }
 
 ObjectHandler::~ObjectHandler()
@@ -113,7 +145,7 @@ ObjectHandler::~ObjectHandler()
 void ObjectHandler::Update(float dt)
 {
 	const char* filename;
-	int randomNumber = rand() % 12;
+	int randomNumber = rand() % NRDEATHSOUNDS;
 
 	m_dynamicsWorld->stepSimulation(dt, 10);
 	int numManifolds = m_dynamicsWorld->getDispatcher()->getNumManifolds();
@@ -200,36 +232,11 @@ void ObjectHandler::Update(float dt)
 			{
 				if (m_players[isPlayer]->GetCurrentPos().y() < -0.1f && !m_players[isPlayer]->GetFallen())
 				{
-					if (randomNumber == 0)
-						filename = "src/Audio/Player - Dying 1.mp3";
-					else if (randomNumber == 1)
-						filename = "src/Audio/Player - Dying 2.mp3";
-					else if (randomNumber == 2)
-						filename = "src/Audio/Player - Dying 3.mp3";
-					else if (randomNumber == 3)
-						filename = "src/Audio/Player - Dying 4.mp3";
-					else if (randomNumber == 4)
-						filename = "src/Audio/Player - Dying 5.mp3";
-					else if (randomNumber == 5)
-						filename = "src/Audio/Player - Dying 6.mp3";
-					else if (randomNumber == 6)
-						filename = "src/Audio/Player - Dying 7.mp3";
-					else if (randomNumber == 7)
-						filename = "src/Audio/Player - Dying 8.mp3";
-					else if (randomNumber == 8)
-						filename = "src/Audio/Player - Dying 9.mp3";
-					else if (randomNumber == 9)
-						filename = "src/Audio/Player - Dying 10.mp3";
-					else if (randomNumber == 10)
-						filename = "src/Audio/Player - Dying 11.mp3";
-					else
-						filename = "src/Audio/Player - Dying 12.mp3";
+					filename = m_soundFiles[randomNumber];
 
 					m_soundEngine->play2D(filename, false);
 					m_players[isPlayer]->SetFallen();
 					m_players[isPlayer]->StopEngineSounds();
-
-
 				}
 				if (m_players[isPlayer]->GetCurrentPos().y() < -20.f && m_players[isPlayer]->GetLives() > 0)
 				{

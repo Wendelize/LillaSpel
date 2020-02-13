@@ -14,7 +14,6 @@ private:
 	vector<Model*> m_cars;
 	ISoundEngine* m_soundEngine;
 	ISound* m_music;
-	// ISound* 
 
 	//Debug variables
 	bool m_debug, m_toggle;

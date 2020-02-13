@@ -23,6 +23,8 @@ private:
 	ISoundEngine* m_soundEngine;
 	vector<ISoundSource*> m_crashes;
 
+	const char* m_soundFiles[NRDEATHSOUNDS];
+
 	btDefaultCollisionConfiguration* m_collisionConfiguration;
 	btBroadphaseInterface* m_broadphase;
 	btCollisionDispatcher* m_dispatcher;

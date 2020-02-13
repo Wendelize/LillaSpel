@@ -57,6 +57,9 @@
 #include "ShadowMap.h"
 #include "Bloom.h"
 
+//DEFINES 
+#define NRDEATHSOUNDS 30
+
 //NAMESPACES
 using namespace std;
 using namespace glm;
