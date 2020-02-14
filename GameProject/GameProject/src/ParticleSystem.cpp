@@ -60,7 +60,6 @@ void ParticleSystem::Init()
 
 int ParticleSystem::FindParticle()
 {
-
 	for (int i = m_lastUsedParticle; i < m_nrOfParticle; i++) {
 		if (m_particles[i].life < 0) {
 			m_lastUsedParticle = i;
@@ -97,7 +96,7 @@ void ParticleSystem::GenerateParticles(float dt)
 		m_particles[particleIndex].position = glm::vec3(0, 5, 0);
 
 		float spread = 1.5f;
-		glm::vec3 maindir = glm::vec3(0.0f, 5.0f, 0.0f);
+		glm::vec3 maindir = glm::vec3(5.0f, 2.0f, 0.0f);
 		glm::vec3 randomdir = glm::vec3(
 			(rand() % 2000 - 1000.0f) / 1000.0f,
 			(rand() % 2000 - 1000.0f) / 1000.0f,
@@ -107,7 +106,7 @@ void ParticleSystem::GenerateParticles(float dt)
 		m_particles[particleIndex].velocity = maindir + randomdir * spread;
 
 		m_particles[particleIndex].color.x = rand() % 256;
-		m_particles[particleIndex].color.y = 0;
+		m_particles[particleIndex].color.y = rand() % 256;
 		m_particles[particleIndex].color.z = rand() % 256;
 		m_particles[particleIndex].color.w = (rand() % 256) / 3;
 
@@ -131,7 +130,7 @@ void ParticleSystem::SimulateParticles(float dt, vec3 emitterPos)
 				p.velocity += glm::vec3(0.0f, -9.81f, 0.0f) * (float)dt * 0.5f;
 				p.position += p.velocity * (float)dt;
 				p.cameraDist = length(p.position - vec3(0, 3, 33));
-				p.size *= 0.97; //Istället  för transparens minska efterhand
+				p.size *= 0.97; //Istï¿½llet  fï¿½r transparens minska efterhand
 				//ParticlesContainer[i].pos += glm::vec3(0.0f,10.0f, 0.0f) * (float)delta;
 
 				// Fill the GPU buffer
@@ -164,14 +163,14 @@ void ParticleSystem::SimulateParticles(float dt, vec3 emitterPos)
 				p.color.x = rand() % 256;
 				p.color.y = 0;
 				p.color.z = rand() % 256;
-				//p.color.w = (rand() % 256) / 3; Gör ingen skilland,vi kan inte ha transparens. 
+				//p.color.w = (rand() % 256) / 3; Gï¿½r ingen skilland,vi kan inte ha transparens. 
 
 				p.size = 0.3;
 			}
 			m_particleCount++;
 	
 	}
-	//SortParticles();	//Behöver inte sortera om vi revivar partikeln så fort vi hittar att den är död.
+	//SortParticles();	//Behï¿½ver inte sortera om vi revivar partikeln sï¿½ fort vi hittar att den ï¿½r dï¿½d.
 }
 
 void ParticleSystem::Draw()
@@ -214,39 +213,4 @@ void ParticleSystem::Draw()
 Shader* ParticleSystem::GetShader()
 {
 	return m_particleShader;
-}
-
-GLfloat* ParticleSystem::GetParticlePos()
-{
-	return m_particlePos;
-}
-
-GLfloat* ParticleSystem::GetParticleColor()
-{
-	return m_particleColor;
-}
-
-GLuint ParticleSystem::GetBillBoardBuffer()
-{
-	return m_billBoardBuffer;
-}
-
-GLuint ParticleSystem::GetParticlePosBuffer()
-{
-	return m_particlePosBuffer;
-}
-
-GLuint ParticleSystem::GetParticleColorBuffer()
-{
-	return m_particleColorBuffer;
-}
-
-int ParticleSystem::GetNrOfParticles()
-{
-	return m_nrOfParticle;
-}
-
-int ParticleSystem::GetAliveParticles()
-{
-	return m_particleCount;
 }

@@ -44,13 +44,8 @@ public:
 	void Draw();
 	Shader* GetShader();
 
-	GLfloat* GetParticlePos();
-	GLfloat* GetParticleColor();
-	GLuint GetBillBoardBuffer();
-	GLuint GetParticlePosBuffer();
-	GLuint GetParticleColorBuffer();
-	int GetNrOfParticles();
-	int GetAliveParticles();
+	void DriftParticles();
+	void Collision();
+	void Victory();
 
-		
 };

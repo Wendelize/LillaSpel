@@ -147,7 +147,6 @@ void Scene::LightToShader()
 void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
 {
 	/* Render here */
-	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glViewport(0, 0, m_window->GetWidht(), m_window->GetHeight());
@@ -182,6 +181,7 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
 	RenderImGui(world);
 
 	//// Render Particles
+	RenderParticles(0.03);
 
 
 		std::map<btCollisionObject*, CollisionInfo> newContacts;
@@ -294,7 +294,6 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
 	//}
 	// Render Skybox
 	RenderSkybox();
-
 
 	// Add glow
 	m_bloom->PingPongRender();
