@@ -10,7 +10,7 @@ Scene::Scene()
 	m_skybox = new Skybox();
 	m_shadowMap = new ShadowMap();
 	m_bloom = new Bloom();
-	m_particles = new ParticleSystem(500);
+	m_particles = new ParticleSystem(30);
 
 	m_modelMatrix = mat4(1.0);
 	m_projMatrix = mat4(1.0);
@@ -130,15 +130,12 @@ void Scene::LightToShader()
 void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
 {
 	/* Render here */
-	cout << "RENDER" << endl;
-	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glViewport(0, 0, m_window->GetWidht(), m_window->GetHeight());
 
 
 	// Render shadows
-	cout << "SHADOW " << endl;
 	RenderShadows(objects);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, m_bloom->getFBO());
@@ -167,13 +164,10 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
 	RenderImGui(world);
 
 	//// Render Particles
-	cout << "Before p" << endl;
 	RenderParticles(0.03);
-	cout << "After p" << endl;
 
 	// Render Skybox
 	RenderSkybox();
-
 
 	// Add glow
 	m_bloom->PingPongRender();
@@ -278,47 +272,6 @@ void Scene::RenderParticles(float dt)
 	m_particles->GenerateParticles(dt);
 	m_particles->SimulateParticles(dt);
 	m_particles->Draw();
-
-	//glBindBuffer(GL_ARRAY_BUFFER, m_particles->GetParticlePosBuffer());
-	//glBufferData(GL_ARRAY_BUFFER, m_particles->GetNrOfParticles() * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW); // Buffer orphaning, a common way to improve streaming perf. See above link for details.
-	//glBufferSubData(GL_ARRAY_BUFFER, 0, m_particles->GetAliveParticles() * sizeof(GLfloat) * 4, m_particles->GetParticlePos());
-
-	//glBindBuffer(GL_ARRAY_BUFFER, m_particles->GetParticleColorBuffer());
-	//glBufferData(GL_ARRAY_BUFFER, m_particles->GetNrOfParticles() * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW); // Buffer orphaning, a common way to improve streaming perf. See above link for details.
-	//glBufferSubData(GL_ARRAY_BUFFER, 0, m_particles->GetAliveParticles() * sizeof(GLubyte) * 4, m_particles->GetParticleColor());
-
-	////m_particleShader->UseShader();
-	////glActiveTexture(GL_TEXTURE0);
-	////glBindTexture(GL_TEXTURE_2D, m_tex);
-	////m_particleShader->SetTexture2D(0, "u_Tex", m_tex);
-
-
-	//// 1rst attribute buffer : vertices
-	//glEnableVertexAttribArray(0);
-	//glBindBuffer(GL_ARRAY_BUFFER, m_particles->GetBillBoardBuffer());
-	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-	//// 2nd attribute buffer : positions of particles' centers
-	//glEnableVertexAttribArray(1);
-	//glBindBuffer(GL_ARRAY_BUFFER, m_particles->GetParticlePosBuffer());
-	//glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-	//// 3rd attribute buffer : particles' colors
-	//glEnableVertexAttribArray(2);
-	//glBindBuffer(GL_ARRAY_BUFFER, m_particles->GetParticleColorBuffer());
-	//glVertexAttribPointer(2, 4, GL_UNSIGNED_BYTE, GL_TRUE, 0, (void*)0);
-
-	//glVertexAttribDivisor(0, 0); // particles vertices : always reuse the same 4 vertices -> 0
-	//glVertexAttribDivisor(1, 1); // positions : one per quad (its center)                 -> 1
-	//glVertexAttribDivisor(2, 1); // color : one per quad                                  -> 1
-
-
-	//glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, m_particles->GetAliveParticles());
-
-	//glDisableVertexAttribArray(0);
-	//glDisableVertexAttribArray(1);
-	//glDisableVertexAttribArray(2);
-
 }
 
 void Scene::SwapBuffer()

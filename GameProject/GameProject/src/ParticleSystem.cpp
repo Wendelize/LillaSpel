@@ -9,11 +9,15 @@ ParticleSystem::ParticleSystem(int nrOfParticles)
 	m_particleColor = new GLfloat[4 * m_nrOfParticle];
 
 	this->Init();
+	GenerateParticles(0.03);
 }
 
 ParticleSystem::~ParticleSystem()
 {
 	delete m_particleShader;
+	delete m_particleColor;
+	delete m_particlePos;
+	delete m_particles;
 }
 
 void ParticleSystem::InitParticles()
@@ -56,7 +60,6 @@ void ParticleSystem::Init()
 
 int ParticleSystem::FindParticle()
 {
-
 	for (int i = m_lastUsedParticle; i < m_nrOfParticle; i++) {
 		if (m_particles[i].life < 0) {
 			m_lastUsedParticle = i;
@@ -87,11 +90,11 @@ void ParticleSystem::GenerateParticles(float dt)
 
 	for (int i = 0; i < newparticles; i++) {
 		int particleIndex = FindParticle();
-		m_particles[particleIndex].life = 2.0f; // This particle will live 5 seconds.
-		m_particles[particleIndex].position = glm::vec3(0, 5, 0);
+		m_particles[particleIndex].life = 1.0f; // This particle will live 5 seconds.
+		m_particles[particleIndex].position = glm::vec3(0, 3, 0);
 
 		float spread = 1.5f;
-		glm::vec3 maindir = glm::vec3(0.0f, 5.0f, 0.0f);
+		glm::vec3 maindir = glm::vec3(5.0f, 2.0f, 0.0f);
 		glm::vec3 randomdir = glm::vec3(
 			(rand() % 2000 - 1000.0f) / 1000.0f,
 			(rand() % 2000 - 1000.0f) / 1000.0f,
@@ -101,12 +104,11 @@ void ParticleSystem::GenerateParticles(float dt)
 		m_particles[particleIndex].velocity = maindir + randomdir * spread;
 
 		m_particles[particleIndex].color.x = rand() % 256;
-		m_particles[particleIndex].color.y = 0;
+		m_particles[particleIndex].color.y = rand() % 256;
 		m_particles[particleIndex].color.z = rand() % 256;
 		m_particles[particleIndex].color.w = (rand() % 256) / 3;
 
-		m_particles[particleIndex].size = 1;// (rand() % 1000) / 2000.0f + 0.1f;
-
+		m_particles[particleIndex].size = (rand() % 1000) / 2000.0f + 0.1f;
 	}
 }
 
@@ -208,39 +210,4 @@ void ParticleSystem::Draw()
 Shader* ParticleSystem::GetShader()
 {
 	return m_particleShader;
-}
-
-GLfloat* ParticleSystem::GetParticlePos()
-{
-	return m_particlePos;
-}
-
-GLfloat* ParticleSystem::GetParticleColor()
-{
-	return m_particleColor;
-}
-
-GLuint ParticleSystem::GetBillBoardBuffer()
-{
-	return m_billBoardBuffer;
-}
-
-GLuint ParticleSystem::GetParticlePosBuffer()
-{
-	return m_particlePosBuffer;
-}
-
-GLuint ParticleSystem::GetParticleColorBuffer()
-{
-	return m_particleColorBuffer;
-}
-
-int ParticleSystem::GetNrOfParticles()
-{
-	return m_nrOfParticle;
-}
-
-int ParticleSystem::GetAliveParticles()
-{
-	return m_particleCount;
 }
