@@ -181,34 +181,30 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
 	RenderImGui(world);
 
 	//// Render Particles
-	RenderParticles(0.03);
+	//RenderParticles(0.03, objects[0]);
 
 
 		std::map<btCollisionObject*, CollisionInfo> newContacts;
 
 		/* Browse all collision pairs */
 		int numManifolds = world->getDispatcher()->getNumManifolds();
-		if (numManifolds > 3)
+
+		for (int i = 0; i < numManifolds; i++)
 		{
-			//RenderParticles(0.03, objects[0]);
-		}
+			btPersistentManifold* contactManifold = world->getDispatcher()->getManifoldByIndexInternal(i);
+			btCollisionObject* obA = const_cast<btCollisionObject*>(contactManifold->getBody0());
+			btCollisionObject* obB = const_cast<btCollisionObject*>(contactManifold->getBody1());
 
-		//for (int i = 0; i < numManifolds; i++)
-		//{
-		//	btPersistentManifold* contactManifold = world->getDispatcher()->getManifoldByIndexInternal(i);
-		//	btCollisionObject* obA = const_cast<btCollisionObject*>(contactManifold->getBody0());
-		//	btCollisionObject* obB = const_cast<btCollisionObject*>(contactManifold->getBody1());
+			/* Check all contacts points */
+			int numContacts = contactManifold->getNumContacts();
+			cout <<"Number of contacts for manifol#"<<i << ": " <<  numContacts << endl;
 
-		//	/* Check all contacts points */
-		//	int numContacts = contactManifold->getNumContacts();
-		//	cout <<"Number of contacts for manifol#"<<i << ": " <<  numContacts << endl;
+			if (numContacts > 3)
+			{
+				if(objects[i]->typeId == 0)
+				RenderParticles(0.03, objects[i]);
 
-		//	if (numContacts > 3)
-		//	{
-		//		if(objects[i]->typeId == 0)
-		//		RenderParticles(0.03, objects[i]);
-
-		//	}
+			}
 			//for (int j = 0; j < numContacts; j++)
 			//{
 			//	btManifoldPoint& pt = contactManifold->getContactPoint(j);
@@ -259,7 +255,7 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
 		//		// TODO: signal
 		//	}
 		//	m_contacts.clear();
-		//}
+		}
 
 		//m_contacts = newContacts;
 	
