@@ -18,7 +18,7 @@ public:
 		playerHud = 6
 	};
 
-	void RenderMenu(bool gameOver);
+	void RenderMenu(bool gameOver, float time, float maxTime);
 	void SetActiveMenu(ActiveMenu activeMenu);
 	void LoadMenuPic();
 	bool Pause();

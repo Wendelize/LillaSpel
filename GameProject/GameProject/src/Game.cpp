@@ -150,7 +150,7 @@ void Game::Render()
 	ImGui::NewFrame();
 	//ImGui::ShowDemoWindow();
 
-	m_menu->RenderMenu(m_gameOver);
+	m_menu->RenderMenu(m_gameOver, m_time, m_maxTime);
 	if(!m_menu->Pause())
 	{ 
 		m_objects = m_objectHandler->GetObjects();
