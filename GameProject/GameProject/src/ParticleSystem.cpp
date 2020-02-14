@@ -9,21 +9,25 @@ ParticleSystem::ParticleSystem(int nrOfParticles)
 	m_particleColor = new GLfloat[4 * m_nrOfParticle];
 
 	this->Init();
+
+	//GenerateParticles(float(nrOfParticles));
 }
 
 ParticleSystem::~ParticleSystem()
 {
 	delete m_particleShader;
+	delete m_particlePos;
+	delete m_particleColor;
+	delete m_particles;
+
 }
 
 void ParticleSystem::InitParticles()
 {
-	
-
-
 	for (int i = 0; i < m_nrOfParticle; i++) {
-		m_particles[i].life = -1.0f;
+		m_particles[i].life = 0.f;
 		m_particles[i].cameraDist = -1.0f;
+
 	}
 }
 
@@ -81,13 +85,15 @@ void ParticleSystem::SortParticles()
 
 void ParticleSystem::GenerateParticles(float dt)
 {
-	int newparticles = (int)(dt * 10000.0);
+	/*int newparticles = (int)(dt * 10000.0);
 	if (newparticles > (int)(0.016f * 10000.0))
-		newparticles = (int)(0.016f * 10000.0);
+		newparticles = (int)(0.016f * 10000.0);*/
+
+	int newparticles = dt;
 
 	for (int i = 0; i < newparticles; i++) {
 		int particleIndex = FindParticle();
-		m_particles[particleIndex].life = 2.0f; // This particle will live 5 seconds.
+		m_particles[particleIndex].life = 2.5f; // This particle will live 5 seconds.
 		m_particles[particleIndex].position = glm::vec3(0, 5, 0);
 
 		float spread = 1.5f;
@@ -105,30 +111,27 @@ void ParticleSystem::GenerateParticles(float dt)
 		m_particles[particleIndex].color.z = rand() % 256;
 		m_particles[particleIndex].color.w = (rand() % 256) / 3;
 
-		m_particles[particleIndex].size = 1;// (rand() % 1000) / 2000.0f + 0.1f;
+		m_particles[particleIndex].size = 0.3;// (rand() % 1000) / 2000.0f + 0.1f;
 
 	}
 }
 
-void ParticleSystem::SimulateParticles(float dt)
+void ParticleSystem::SimulateParticles(float dt, vec3 emitterPos)
 {
 	m_particleCount = 0;
 	for (int i = 0; i < m_nrOfParticle; i++) {
 
 		Particle& p = m_particles[i]; // shortcut
 
-		if (p.life > 0.0f) 
-		{
-
 			// Decrease life
 			p.life -= dt;
 			if (p.life > 0.0f) 
 			{
-
 				// Simulate simple physics : gravity only, no collisions
 				p.velocity += glm::vec3(0.0f, -9.81f, 0.0f) * (float)dt * 0.5f;
 				p.position += p.velocity * (float)dt;
 				p.cameraDist = length(p.position - vec3(0, 3, 33));
+				p.size *= 0.97; //Istället  för transparens minska efterhand
 				//ParticlesContainer[i].pos += glm::vec3(0.0f,10.0f, 0.0f) * (float)delta;
 
 				// Fill the GPU buffer
@@ -141,29 +144,38 @@ void ParticleSystem::SimulateParticles(float dt)
 				m_particleColor[4 * m_particleCount + 0] = p.color.x;
 				m_particleColor[4 * m_particleCount + 1] = p.color.y;
 				m_particleColor[4 * m_particleCount + 2] = p.color.z;
-				m_particleColor[4 * m_particleCount + 3] = p.color.w;
-
+				m_particleColor[4 * m_particleCount + 3] = p.color.w; 
 			}
 			else {
-				// Particles that just died will be put at the end of the buffer in SortParticles();
-				p.cameraDist = -1.0f;
+
+				p.life = 2.5f; // This particle will live 5 seconds.
+				p.position = emitterPos;
+
+				float spread = 1.5f;
+				glm::vec3 maindir = glm::vec3(0.0f, 5.0f, 0.0f);
+				glm::vec3 randomdir = glm::vec3(
+					(rand() % 2000 - 1000.0f) / 1000.0f,
+					(rand() % 2500 - 1000.0f) / 1000.0f,
+					(rand() % 1500 - 1000.0f) / 1000.0f
+				);
+
+				p.velocity = maindir + randomdir * spread;
+
+				p.color.x = rand() % 256;
+				p.color.y = 0;
+				p.color.z = rand() % 256;
+				//p.color.w = (rand() % 256) / 3; Gör ingen skilland,vi kan inte ha transparens. 
+
+				p.size = 0.3;
 			}
-
 			m_particleCount++;
-
-		}
-	}
-
-	SortParticles();
-	cout << "Particle count : " << m_particleCount << endl;
-
 	
+	}
+	//SortParticles();	//Behöver inte sortera om vi revivar partikeln så fort vi hittar att den är död.
 }
 
 void ParticleSystem::Draw()
 {	 
-
-	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glBindBuffer(GL_ARRAY_BUFFER, m_particlePosBuffer);
 	glBufferData(GL_ARRAY_BUFFER, m_nrOfParticle * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW); 
 	glBufferSubData(GL_ARRAY_BUFFER, 0, m_particleCount * sizeof(GLfloat) * 4, m_particlePos);
@@ -171,12 +183,6 @@ void ParticleSystem::Draw()
 	glBindBuffer(GL_ARRAY_BUFFER, m_particleColorBuffer);
 	glBufferData(GL_ARRAY_BUFFER, m_nrOfParticle * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW); 
 	glBufferSubData(GL_ARRAY_BUFFER, 0, m_particleCount * sizeof(GLubyte) * 4, m_particleColor);
-
-	//m_particleShader->UseShader();
-	//glActiveTexture(GL_TEXTURE0);
-	//glBindTexture(GL_TEXTURE_2D, m_tex);
-	//m_particleShader->SetTexture2D(0, "u_Tex", m_tex);
-
 
 	// 1rst attribute buffer : vertices
 	glEnableVertexAttribArray(0);
@@ -202,7 +208,7 @@ void ParticleSystem::Draw()
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);
 	glDisableVertexAttribArray(2);
-	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	
 }
 
 Shader* ParticleSystem::GetShader()

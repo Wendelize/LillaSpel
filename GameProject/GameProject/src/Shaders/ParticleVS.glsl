@@ -1,14 +1,12 @@
 #version 430
 layout(location = 0) in vec3 squareVertices;
 layout(location = 1) in vec4 xyzs; // Position of the center of the particule and size of the square
-layout(location = 2) in vec4 color; // Position of the center of the particule and size of the square
-
+layout(location = 2) in vec4 color; 
 
 out vertex_out{
 	vec4 color;
-	vec2 texCoords;
+	//vec2 texCoords;
 } vo;
-
 
 uniform mat4 u_View;
 uniform mat4 u_Proj;
@@ -20,7 +18,7 @@ void main()
 
 	float particleSize = xyzs.w; 
 	vec3 particleCenter_worldspace = xyzs.xyz;
-	vec3 bla = squareVertices * 0.2;
+	vec3 bla = squareVertices * particleSize;
 
 	vec3 vertexPosition_worldspace = 
 		particleCenter_worldspace
@@ -29,6 +27,6 @@ void main()
 
 	gl_Position = u_Proj * u_View * mat4(1) * vec4(bla + particleCenter_worldspace, 1.0f);
 
-	vo.texCoords = squareVertices.xy + vec2(0.5, 0.5);
-	vo.color = color;
+	//vo.texCoords = squareVertices.xy + vec2(0.5, 0.5);
+	vo.color = vec4(0, color.z, 0, 0);
 }

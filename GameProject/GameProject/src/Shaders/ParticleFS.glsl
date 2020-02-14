@@ -4,7 +4,7 @@ out vec4 FragColor;
 
 in vertex_out{
 	vec4 color;
-	vec2 texCoords;
+	//vec2 texCoords;
 } vi;
 
 uniform sampler2D u_Tex;

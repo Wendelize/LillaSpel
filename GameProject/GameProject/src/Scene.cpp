@@ -1,4 +1,21 @@
 ﻿#include "Header Files/Scene.h"
+#include <Map>
+struct CollisionInfo
+{
+	btCollisionObject* object;
+	btVector3 ptA;
+	btVector3 ptB;
+	btVector3 normalOnB;
+
+	CollisionInfo(btCollisionObject *object = NULL, btVector3 ptA = btVector3(NULL, NULL, NULL), btVector3 ptB = btVector3(NULL, NULL, NULL), btVector3 normalOnB = btVector3(NULL,NULL,NULL))
+	{
+		this->object = object;
+		this->ptA = ptA;
+		this->ptB = ptB;
+		this->normalOnB = normalOnB;
+	}
+};
+
 
 Scene::Scene()
 {
@@ -10,7 +27,7 @@ Scene::Scene()
 	m_skybox = new Skybox();
 	m_shadowMap = new ShadowMap();
 	m_bloom = new Bloom();
-	m_particles = new ParticleSystem(500);
+	m_particles = new ParticleSystem(100);
 
 	m_modelMatrix = mat4(1.0);
 	m_projMatrix = mat4(1.0);
@@ -130,15 +147,13 @@ void Scene::LightToShader()
 void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
 {
 	/* Render here */
-	cout << "RENDER" << endl;
 	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glViewport(0, 0, m_window->GetWidht(), m_window->GetHeight());
 
-
 	// Render shadows
-	cout << "SHADOW " << endl;
+
 	RenderShadows(objects);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, m_bloom->getFBO());
@@ -167,10 +182,116 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
 	RenderImGui(world);
 
 	//// Render Particles
-	cout << "Before p" << endl;
-	RenderParticles(0.03);
-	cout << "After p" << endl;
 
+
+		std::map<btCollisionObject*, CollisionInfo> newContacts;
+
+		/* Browse all collision pairs */
+		int numManifolds = world->getDispatcher()->getNumManifolds();
+		if (numManifolds > 3)
+		{
+			//RenderParticles(0.03, objects[0]);
+		}
+
+		//for (int i = 0; i < numManifolds; i++)
+		//{
+		//	btPersistentManifold* contactManifold = world->getDispatcher()->getManifoldByIndexInternal(i);
+		//	btCollisionObject* obA = const_cast<btCollisionObject*>(contactManifold->getBody0());
+		//	btCollisionObject* obB = const_cast<btCollisionObject*>(contactManifold->getBody1());
+
+		//	/* Check all contacts points */
+		//	int numContacts = contactManifold->getNumContacts();
+		//	cout <<"Number of contacts for manifol#"<<i << ": " <<  numContacts << endl;
+
+		//	if (numContacts > 3)
+		//	{
+		//		if(objects[i]->typeId == 0)
+		//		RenderParticles(0.03, objects[i]);
+
+		//	}
+			//for (int j = 0; j < numContacts; j++)
+			//{
+			//	btManifoldPoint& pt = contactManifold->getContactPoint(j);
+			//	
+			//	if (pt.getDistance() < 0.f)
+			//	{
+			//		//std::cout << "Contact found" << std::endl;
+
+			//		const btVector3& ptA = pt.getPositionWorldOnA();
+			//		const btVector3& ptB = pt.getPositionWorldOnB();
+			//		const btVector3& normalOnB = pt.m_normalWorldOnB;
+
+			//		if (newContacts.find(obB) == newContacts.end())
+			//		{
+			//			RenderParticles(0.03, objects[i]);
+			//			newContacts[obB] = CollisionInfo(obA, ptA, ptB, normalOnB);
+			//		}
+			//	}
+			//}
+		//}
+
+		//vector<CollisionInfo>::iterator m_contacts;
+		///* Check for added contacts ... */
+		//map<btCollisionObject*, CollisionInfo>::iterator it;
+		//if (!newContacts.empty())
+		//{
+		//	for (it = newContacts.begin(); it != newContacts.end(); it++)
+		//	{
+		//		if (m_contacts.find((*it).first) == m_contacts.end())
+		//		{
+		//			std::cout << "Collision detected" << std::endl;
+		//			// TODO: signal
+		//		}
+		//		else
+		//		{
+		//			// Remove to filter no more active contacts
+		//			m_contacts.erase((*it).first);
+		//		}
+		//	}
+		//}
+
+		///* ... and removed contacts */
+		//if (!m_contacts.empty())
+		//{
+		//	for (it = m_contacts.begin(); it != m_contacts.end(); it++)
+		//	{
+		//		std::cout << "End of collision detected" << std::endl;
+		//		// TODO: signal
+		//	}
+		//	m_contacts.clear();
+		//}
+
+		//m_contacts = newContacts;
+	
+	//for (size_t i = 0; i < world->getNumCollisionObjects(); i++)
+	//{
+	//
+	//	if (objects[i]->typeId == 0) // Is veichle
+	//	{
+	//		
+	//		btCollisionObject* car = world->getCollisionObjectArray()[i];
+	//		//RenderParticles(0.03, objects[i]);
+
+	//		for (int j = 0; j < world->getNumCollisionObjects(); j++)
+	//		{
+	//			if (objects[j]->typeId == 1 )
+	//			{
+	//				btCollisionObject* obj = world->getCollisionObjectArray()[j];
+	//				if ( car != obj)
+	//				{
+	//					world->performDiscreteCollisionDetection();
+
+
+	//					
+	//					RenderParticles(0.03, objects[i]);
+	//				}
+	//			}
+
+	//		}
+	//			
+	//		
+	//	}
+	//}
 	// Render Skybox
 	RenderSkybox();
 
@@ -268,57 +389,16 @@ void Scene::RenderImGui(btDiscreteDynamicsWorld* world)
 	}
 }
 
-void Scene::RenderParticles(float dt)
+void Scene::RenderParticles(float dt, ObjectInfo* object)
 {
 	mat4 temp = m_viewMatrix;
 	m_particles->GetShader()->UseShader();
 	m_particles->GetShader()->SetUniform("u_View", temp);
 	m_particles->GetShader()->SetUniform("u_Proj", m_projMatrix);
 
-	m_particles->GenerateParticles(dt);
-	m_particles->SimulateParticles(dt);
+	//m_particles->GenerateParticles(dt);
+	m_particles->SimulateParticles(dt, vec3(object->modelMatrix[3][0], object->modelMatrix[3][1], object->modelMatrix[3][2]));
 	m_particles->Draw();
-
-	//glBindBuffer(GL_ARRAY_BUFFER, m_particles->GetParticlePosBuffer());
-	//glBufferData(GL_ARRAY_BUFFER, m_particles->GetNrOfParticles() * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW); // Buffer orphaning, a common way to improve streaming perf. See above link for details.
-	//glBufferSubData(GL_ARRAY_BUFFER, 0, m_particles->GetAliveParticles() * sizeof(GLfloat) * 4, m_particles->GetParticlePos());
-
-	//glBindBuffer(GL_ARRAY_BUFFER, m_particles->GetParticleColorBuffer());
-	//glBufferData(GL_ARRAY_BUFFER, m_particles->GetNrOfParticles() * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW); // Buffer orphaning, a common way to improve streaming perf. See above link for details.
-	//glBufferSubData(GL_ARRAY_BUFFER, 0, m_particles->GetAliveParticles() * sizeof(GLubyte) * 4, m_particles->GetParticleColor());
-
-	////m_particleShader->UseShader();
-	////glActiveTexture(GL_TEXTURE0);
-	////glBindTexture(GL_TEXTURE_2D, m_tex);
-	////m_particleShader->SetTexture2D(0, "u_Tex", m_tex);
-
-
-	//// 1rst attribute buffer : vertices
-	//glEnableVertexAttribArray(0);
-	//glBindBuffer(GL_ARRAY_BUFFER, m_particles->GetBillBoardBuffer());
-	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-	//// 2nd attribute buffer : positions of particles' centers
-	//glEnableVertexAttribArray(1);
-	//glBindBuffer(GL_ARRAY_BUFFER, m_particles->GetParticlePosBuffer());
-	//glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-	//// 3rd attribute buffer : particles' colors
-	//glEnableVertexAttribArray(2);
-	//glBindBuffer(GL_ARRAY_BUFFER, m_particles->GetParticleColorBuffer());
-	//glVertexAttribPointer(2, 4, GL_UNSIGNED_BYTE, GL_TRUE, 0, (void*)0);
-
-	//glVertexAttribDivisor(0, 0); // particles vertices : always reuse the same 4 vertices -> 0
-	//glVertexAttribDivisor(1, 1); // positions : one per quad (its center)                 -> 1
-	//glVertexAttribDivisor(2, 1); // color : one per quad                                  -> 1
-
-
-	//glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, m_particles->GetAliveParticles());
-
-	//glDisableVertexAttribArray(0);
-	//glDisableVertexAttribArray(1);
-	//glDisableVertexAttribArray(2);
-
 }
 
 void Scene::SwapBuffer()

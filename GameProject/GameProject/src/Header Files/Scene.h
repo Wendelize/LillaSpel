@@ -38,9 +38,8 @@ public:
 	void RenderSkybox();
 	void RenderShadows(vector<ObjectInfo*> objects);
 	void RenderImGui(btDiscreteDynamicsWorld* world);
-	void RenderParticles(float dt);
+	void RenderParticles(float dt, ObjectInfo* object);
 	void SwapBuffer();
-
 
 	void SetWindowSize(int width, int height);
 	GLFWwindow* GetWindow();

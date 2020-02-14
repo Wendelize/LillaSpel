@@ -40,7 +40,7 @@ public:
 	int FindParticle();
 	void SortParticles();
 	void GenerateParticles(float dt);
-	void SimulateParticles(float dt);
+	void SimulateParticles(float dt, vec3 emitterPos);
 	void Draw();
 	Shader* GetShader();
 
