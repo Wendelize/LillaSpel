@@ -87,8 +87,11 @@ void Game::Update(float dt)
 		}
 	}
 	if (m_maxTime - m_time <= 30.f && !m_fastMusic) {
-		m_music->setPlaybackSpeed(1.4);
-		m_fastMusic = true;
+		if (m_soundEngine)
+		{
+			m_music->setPlaybackSpeed(1.4);
+			m_fastMusic = true;
+		}
 	}
 	if (m_time > m_maxTime && !m_gameOver) {
 		m_gameOver = true;
