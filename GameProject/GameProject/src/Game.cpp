@@ -21,8 +21,8 @@ Game::Game()
 	m_objectHandler->AddPlatform(0, m_platforms[0]); // Passa modell
 	srand(time(NULL));
 	cout << rand() % 4 << endl;
-	m_objectHandler->AddPlayer(vec3(4, 7, 4), 0, rand() % 4, vec3(0, 0, 1), m_cars[0]); // Passa modell
-	m_objectHandler->AddPlayer(vec3(-4, 7, -4), 1, rand() % 4, vec3(0, 1, 0), m_cars[2]); // Passa modell
+	m_objectHandler->AddPlayer(vec3(-10, 2, 3), 0, rand() % 4, vec3(0, 0, 1), m_cars[0]); // Passa modell
+	m_objectHandler->AddPlayer(vec3(10, 2, 3), 1, rand() % 4, vec3(0, 1, 0), m_cars[2]); // Passa modell
 	//m_objectHandler->AddPlayer(vec3(4, 7, -4), 2, rand() % 4, vec3(1, 1, 0), m_cars[1]); // Passa modell
 	//m_objectHandler->AddPlayer(vec3(-4, 7, -4), 3, rand() % 4, vec3(1, 1, 0), m_cars[3]); // Passa modell
 	
@@ -73,73 +73,84 @@ Game::~Game()
 
 void Game::Update(float dt)
 {
-	m_time += dt;
-	m_timeSinceSpawn += dt;
-	if (m_timeSinceSpawn > 5 && !m_gameOver) {
-		m_objectHandler->AddPowerUp();
-		m_timeSinceSpawn = 0;
+	if (m_menu->selectMenuActive())
+	{
+		SelectionMenu();
 	}
-	if (!m_menu->Pause())
+	else if (m_menu->selectMenuActive() == false && m_wasSelect == true)
+	{
+		m_wasSelect = false;
+		m_scene->SetCameraPos(vec3(0, 16, 25));
+	}
+	if ((!m_menu->Pause() && !m_wasSelect))//|| (!m_wasSelect && !m_menu->Pause()))
 	{
 		m_time += dt;
-
-	if(!m_gameOver)
-		m_objectHandler->Update(dt);
-	
-	if (m_objectHandler->GetNumPlayers() == 1 && !m_gameOver) {
-		m_gameOver = true;
-		if (m_soundEngine) {
-			m_soundEngine->stopAllSounds();
-			m_soundEngine->play2D("src/Audio/Music - Win.mp3", true);
-			m_objectHandler->StopAllSound();
+		m_timeSinceSpawn += dt;
+		if (m_timeSinceSpawn > 5 && !m_gameOver) {
+			m_objectHandler->AddPowerUp();
+			m_timeSinceSpawn = 0;
 		}
-	}
-	if (m_maxTime - m_time <= 30.f && !m_fastMusic) {
-		if (m_soundEngine) {
-			m_music->setPlaybackSpeed(1.4);
-		}
-		m_fastMusic = true;
-	}
-	if (m_time > m_maxTime && !m_gameOver) {
-		m_gameOver = true;
-		if (m_soundEngine) {
-			m_soundEngine->stopAllSounds();
-			m_soundEngine->play2D("src/Audio/Music - Win.mp3", true);
-			m_objectHandler->StopAllSound();
-		}
-	}
-	// Toggle debug window
-	SHORT keyState = GetAsyncKeyState(VK_LCONTROL);
-	if (keyState < 0)
-	{
-		if (!m_toggle)
-		m_objectHandler->Update(dt);
-
-		// Toggle debug window
-		SHORT keyState = GetAsyncKeyState(VK_LCONTROL);
-		if (keyState < 0)
+		if (!m_menu->Pause())
 		{
-			if (!m_toggle)
-			{
-				if (m_debug)
-					m_debug = false;
-				else
-					m_debug = true;
+			m_time += dt;
+
+			if (!m_gameOver)
+				m_objectHandler->Update(dt);
+
+			if (m_objectHandler->GetNumPlayers() == 1 && !m_gameOver) {
+				m_gameOver = true;
+				if (m_soundEngine) {
+					m_soundEngine->stopAllSounds();
+					m_soundEngine->play2D("src/Audio/Music - Win.mp3", true);
+					m_objectHandler->StopAllSound();
+				}
 			}
-			m_toggle = true;
-		}
-		else
-		{
-			m_toggle = false;
-		}
-	}
-	else
-	{
-		m_toggle = false;
-	}
+			if (m_maxTime - m_time <= 30.f && !m_fastMusic) {
+				if (m_soundEngine) {
+					m_music->setPlaybackSpeed(1.4);
+				}
+				m_fastMusic = true;
+			}
+			if (m_time > m_maxTime && !m_gameOver) {
+				m_gameOver = true;
+				if (m_soundEngine) {
+					m_soundEngine->stopAllSounds();
+					m_soundEngine->play2D("src/Audio/Music - Win.mp3", true);
+					m_objectHandler->StopAllSound();
+				}
+			}
+			// Toggle debug window
+			SHORT keyState = GetAsyncKeyState(VK_LCONTROL);
+			if (keyState < 0)
+			{
+				if (!m_toggle)
+					m_objectHandler->Update(dt);
 
-	Render();
-}
+				// Toggle debug window
+				SHORT keyState = GetAsyncKeyState(VK_LCONTROL);
+				if (keyState < 0)
+				{
+					if (!m_toggle)
+					{
+						if (m_debug)
+							m_debug = false;
+						else
+							m_debug = true;
+					}
+					m_toggle = true;
+				}
+				else
+				{
+					m_toggle = false;
+				}
+			}
+			else
+			{
+				m_toggle = false;
+			}
+		}
+		Render();
+	}
 
 }
 
@@ -150,7 +161,7 @@ void Game::Render()
 	ImGui::NewFrame();
 	//ImGui::ShowDemoWindow();
 
-	m_menu->RenderMenu(m_gameOver, m_time, m_maxTime);
+	m_menu->RenderMenu(m_gameOver, m_time, m_maxTime, m_cars[0]);
 	if(!m_menu->Pause())
 	{ 
 		m_objects = m_objectHandler->GetObjects();
@@ -307,4 +318,16 @@ void Game::Debug()
 	//glViewport(0, 0, display_w, display_h);
 	//ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
+
+void Game::SelectionMenu()
+{
+	if (m_wasSelect == false)
+	{
+		m_scene->SetCameraPos(vec3(0, 10, 20));
+		m_wasSelect = true;
+	}
+	
+	
+}
+
 

@@ -47,6 +47,7 @@ public:
 	void RenderImGui(btDiscreteDynamicsWorld* world);
 	void SwapBuffer();
 
+	void SetCameraPos(vec3 pos);
 
 	void SetWindowSize(int width, int height);
 	GLFWwindow* GetWindow();

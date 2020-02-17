@@ -155,6 +155,9 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
+	// TODO: hitta bätter plats för getView()
+	m_viewMatrix = m_camera->GetView();
+
 	// Render shadows
 	RenderShadows(objects);
 
@@ -281,6 +284,11 @@ void Scene::RenderImGui(btDiscreteDynamicsWorld* world)
 void Scene::SwapBuffer()
 {
 	glfwSwapBuffers(m_window->m_window);
+}
+
+void Scene::SetCameraPos(vec3 pos)
+{
+	m_camera->ChangePos(pos);
 }
 
 

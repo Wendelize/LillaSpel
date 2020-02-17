@@ -16,7 +16,7 @@ Menu::~Menu()
 }
 
 
-void Menu::RenderMenu(bool gameOver, float timer, float maxTime)
+void Menu::RenderMenu(bool gameOver, float timer, float maxTime, Model* model)
 {
 	GLFWgamepadstate state;
 	Window* w = m_scene->GetOurWindow();
@@ -24,8 +24,9 @@ void Menu::RenderMenu(bool gameOver, float timer, float maxTime)
 	{
 		m_menu = ActiveMenu::restart;
 	}
-	if (m_menu == ActiveMenu::playerHud && glfwGetGamepadState(0, &state))
+	else if (m_menu == ActiveMenu::playerHud && glfwGetGamepadState(0, &state))
 	{
+		// TODO: maybe one should be able to access the pause menu from more places?
 		if (state.buttons[GLFW_GAMEPAD_BUTTON_START])
 		{
 			m_menu = ActiveMenu::pause;
@@ -69,7 +70,7 @@ void Menu::RenderMenu(bool gameOver, float timer, float maxTime)
 			ImGui::SetCursorPos(ImVec2(middle - 75, 500));
 			if (ImGui::Button("Start", ImVec2(200, 75 )))
 			{
-				m_menu = ActiveMenu::playerHud;
+				m_menu = ActiveMenu::select;
 				m_p1Seconds = time;
 				m_p2Seconds = time;
 				m_p3Seconds = time;
@@ -89,18 +90,35 @@ void Menu::RenderMenu(bool gameOver, float timer, float maxTime)
 		break;
 	case ActiveMenu::select:
 		ImGui::SetNextWindowPos(ImVec2(50, 25));
-		ImGui::SetNextWindowSize(ImVec2(400, 100));
+		ImGui::SetNextWindowSize(ImVec2(800, 100));
 		if (ImGui::Begin("##player1Select", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoNavInputs))
 		{
 			GLFWgamepadstate state;
-			//TODO: Get player color on HUD and Select vehicle model
-			vec3 p1Col  = m_objHand->GetPlayerColor(0);
-			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(p1Col.x, p1Col.y, p1Col.z, 1));
-			ImGui::Text("\t<  Vehicle Model: %d  > ", m_p1ModelId);
+			// letar upp rätt index för modellen för de deletas och addas om och om ien så de behåller ej standard
+			// just nu sätts färgera en gång och ändras aldrig men man kanske vill ändra dem senare
+			// så därför finns detta (for-loopen som letar upp rätt index) inbyggt
+			int index = 0;
+			for (int i = 0; i < m_objHand->GetNumPlayers(); i++)
+			{
+				if (m_objHand->GetPlayerControllerID(i) == 0)
+				{
+					index = i;
+				}
+			}
+			m_p1Col = m_objHand->GetPlayerColor(index);
+			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(m_p1Col.x, m_p1Col.y, m_p1Col.z, 1));
+			if (m_selected[0] == 0)
+			{
+				ImGui::Text("\t<  Vehicle Model : %d  > ", m_p1ModelId);
+			}
+			else
+			{
+				ImGui::Text("\tVehicle Selected! Press \"B\" to Unselect!");
+			}
 			
 			if ( time - m_p1Seconds >= 0.5 && (glfwGetGamepadState(0, &state)))
 			{
-				if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_RIGHT])
+				if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_RIGHT] && m_selected[0] == 0)
 				{
 					if ((m_p1ModelId + 1) <= m_scene->GetNumPlayerModels() - 1)
 					{
@@ -110,9 +128,13 @@ void Menu::RenderMenu(bool gameOver, float timer, float maxTime)
 					{
 						m_p1ModelId = 0;
 					}
+
+					m_objHand->RemovePlayer(index);
+					m_objHand->AddPlayer(vec3(-10, 2, 3), 0, m_p1ModelId, m_p1Col, model);
+
 					m_p1Seconds = time;
 				}
-				else if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_LEFT])
+				else if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_LEFT] && m_selected[0] == 0)
 				{
 
 					if ((m_p1ModelId - 1) >= 0)
@@ -123,6 +145,10 @@ void Menu::RenderMenu(bool gameOver, float timer, float maxTime)
 					{
 						m_p1ModelId = m_scene->GetNumPlayerModels() - 1;
 					}
+					
+					m_objHand->RemovePlayer(index);
+					m_objHand->AddPlayer(vec3(-10, 2, 3), 0, m_p1ModelId, m_p1Col, model);
+
 					m_p1Seconds = time;
 				}
 				else if (state.buttons[GLFW_GAMEPAD_BUTTON_A])
@@ -141,18 +167,39 @@ void Menu::RenderMenu(bool gameOver, float timer, float maxTime)
 
 		if (m_objHand->GetNumPlayers() >= 2)
 		{
-			ImGui::SetNextWindowPos(ImVec2(w->GetWidht() - 300, 25));
-			ImGui::SetNextWindowSize(ImVec2(400, 100));
+			int filler = 0;
+			if (m_selected[1] == 1)
+			{
+				filler = 250;
+			}
+			ImGui::SetNextWindowPos(ImVec2(w->GetWidht() - 300 - filler, 25));
+			ImGui::SetNextWindowSize(ImVec2(800, 100));
 			if (ImGui::Begin("##player2Select", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoNavInputs))
 			{
 				GLFWgamepadstate state;
-				vec3 p2Col = m_objHand->GetPlayerColor(1);
-				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(p2Col.x, p2Col.y, p2Col.z, 1));
-				ImGui::Text("\t<  Vehicle Model: %d  > ", m_p2ModelId);
+				int index = 1;
+				for (int i = 0; i < m_objHand->GetNumPlayers(); i++)
+				{
+					if (m_objHand->GetPlayerControllerID(i) == 1)
+					{
+						index = i;
+					}
+				}
+				m_p2Col = m_objHand->GetPlayerColor(index);
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(m_p2Col.x, m_p2Col.y, m_p2Col.z, 1));
+				if (m_selected[1] == 0)
+				{
+					ImGui::Text("\t<  Vehicle Model : %d  > ", m_p2ModelId);
+				}
+				else 
+				{
+					ImGui::Text("\tVehicle Selected! Press \"B\" to Unselect!");
+
+				}
 
 				if (time - m_p2Seconds >= 0.5 && (glfwGetGamepadState(1, &state)))
 				{
-					if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_RIGHT])
+					if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_RIGHT] && m_selected[1] == 0)
 					{
 						if ((m_p2ModelId + 1) <= m_scene->GetNumPlayerModels() - 1)
 						{
@@ -162,9 +209,11 @@ void Menu::RenderMenu(bool gameOver, float timer, float maxTime)
 						{
 							m_p2ModelId = 0;
 						}
+						m_objHand->RemovePlayer(index);
+						m_objHand->AddPlayer(vec3(10, 2, 3), 1, m_p2ModelId, m_p2Col, model);
 						m_p2Seconds = time;
 					}
-					else if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_LEFT])
+					else if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_LEFT] && m_selected[1] == 0)
 					{
 
 						if ((m_p2ModelId - 1) >= 0)
@@ -175,13 +224,16 @@ void Menu::RenderMenu(bool gameOver, float timer, float maxTime)
 						{
 							m_p2ModelId = m_scene->GetNumPlayerModels() - 1;
 						}
+
+						m_objHand->RemovePlayer(index);
+						m_objHand->AddPlayer(vec3(10, 2, 3), 1, m_p2ModelId, m_p2Col, model);
 						m_p2Seconds = time;
 					}
 					else if (state.buttons[GLFW_GAMEPAD_BUTTON_A])
 					{
 						m_selected[1] = 1;
 					}
-					else if (m_selected[0] == 1 && state.buttons[GLFW_GAMEPAD_BUTTON_B])
+					else if (m_selected[1] == 1 && state.buttons[GLFW_GAMEPAD_BUTTON_B])
 					{
 						m_selected[1] = 0;
 					}
@@ -192,33 +244,52 @@ void Menu::RenderMenu(bool gameOver, float timer, float maxTime)
 			ImGui::End();
 		}
 		// TODO: Kanske Fixa så det följer kontrollerId eller nått
-		if (m_objHand->GetNumPlayers() >= 3)
+		if (true)//m_objHand->GetNumPlayers() >= 3)
 		{
 			ImGui::SetNextWindowPos(ImVec2(50, w->GetHeight() - 155));
-			ImGui::SetNextWindowSize(ImVec2(350, 100));
+			ImGui::SetNextWindowSize(ImVec2(800, 100));
 			if (ImGui::Begin("##player3Select", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoNavInputs))
 			{
 				GLFWgamepadstate state;
-				vec3 p3Col = m_objHand->GetPlayerColor(2);
-				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(p3Col.x, p3Col.y, p3Col.z, 1));
 				if (m_p3Joined == false)
 				{
-					if (state.buttons[GLFW_GAMEPAD_BUTTON_A])
-					{
-						ImGui::Text(" Press \"A\" Button to Join! ");
-					}
+					ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 0, 0, 1));
 					if (time - m_p3Seconds >= 0.5 && (glfwGetGamepadState(2, &state)))
 					{
-						m_p3Joined = true;
+						ImGui::Text(" Press \"A\" Button to Join! ");
+						if (state.buttons[GLFW_GAMEPAD_BUTTON_A])
+						{
+							m_p3Joined = true;
+							m_objHand->AddPlayer(vec3(-7, 2, 15), 2, 0, vec3(1, 0, 0), model);
+							m_p3Seconds = time;
+						}
+
 					}
 				}
 				else 
 				{
-					ImGui::Text("<  Vehicle Model: %d  > ", m_p3ModelId);
+					int index = 2;
+					for (int i = 0; i < m_objHand->GetNumPlayers(); i++)
+					{
+						if (m_objHand->GetPlayerControllerID(i) == 2)
+						{
+							index = i;
+						}
+					}
+					m_p3Col = m_objHand->GetPlayerColor(index);
+					ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(m_p3Col.x, m_p3Col.y, m_p3Col.z, 1));
+					if (m_selected[2] == 0)
+					{
+						ImGui::Text("\t<  Vehicle Model : %d  > ", m_p3ModelId);
+					}
+					else
+					{
+						ImGui::Text("\tVehicle Selected! Press \"B\" to Unselect!");
+					}
 
 					if (time - m_p3Seconds >= 0.5 && (glfwGetGamepadState(2, &state)))
 					{
-						if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_RIGHT])
+						if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_RIGHT] && m_selected[2] == 0)
 						{
 							if ((m_p3ModelId + 1) <= m_scene->GetNumPlayerModels() - 1)
 							{
@@ -228,9 +299,12 @@ void Menu::RenderMenu(bool gameOver, float timer, float maxTime)
 							{
 								m_p3ModelId = 0;
 							}
+
+							m_objHand->RemovePlayer(index);
+							m_objHand->AddPlayer(vec3(-7, 2, 15), 2, m_p3ModelId, m_p3Col, model);
 							m_p3Seconds = time;
 						}
-						else if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_LEFT])
+						else if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_LEFT] && m_selected[2] == 0)
 						{
 
 							if ((m_p3ModelId - 1) >= 0)
@@ -241,13 +315,16 @@ void Menu::RenderMenu(bool gameOver, float timer, float maxTime)
 							{
 								m_p3ModelId = m_scene->GetNumPlayerModels() - 1;
 							}
+
+							m_objHand->RemovePlayer(index);
+							m_objHand->AddPlayer(vec3(-7, 2, 15), 2, m_p3ModelId, m_p3Col, model);
 							m_p3Seconds = time;
 						}
 						else if (state.buttons[GLFW_GAMEPAD_BUTTON_A])
 						{
 							m_selected[2] = 1;
 						}
-						else if (m_selected[0] == 1 && state.buttons[GLFW_GAMEPAD_BUTTON_B])
+						else if (m_selected[2] == 1 && state.buttons[GLFW_GAMEPAD_BUTTON_B])
 						{
 							m_selected[2] = 0;
 						}
@@ -260,54 +337,101 @@ void Menu::RenderMenu(bool gameOver, float timer, float maxTime)
 			ImGui::End();
 		}
 
-		if (m_objHand->GetNumPlayers() >= 4)
+		if (m_p3Joined)//m_objHand->GetNumPlayers() >= 4)
 		{
-			ImGui::SetNextWindowPos(ImVec2(w->GetWidht() - 300, w->GetHeight() - 155));
-			ImGui::SetNextWindowSize(ImVec2(350, 100));
+			int filler = 0;
+			if(m_selected[3] == 1)
+			{
+				filler = 250;
+			}
+			
+			ImGui::SetNextWindowPos(ImVec2(w->GetWidht() - 320 - filler, w->GetHeight() - 155));
+			ImGui::SetNextWindowSize(ImVec2(800, 100));
 			if (ImGui::Begin("##player4Select", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoNavInputs))
 			{
 				GLFWgamepadstate state;
-				vec3 p4Col = m_objHand->GetPlayerColor(3);
-				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(p4Col.x, p4Col.y, p4Col.z, 1));
-				ImGui::Text("<  Vehicle Model: %d  > ", m_p4ModelId);
-
-				if (time - m_p4Seconds >= 0.5 && (glfwGetGamepadState(2, &state)))
+				if (m_p4Joined == false)
 				{
-					if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_RIGHT])
+					ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 1, 0, 1));
+					if (time - m_p4Seconds >= 0.5 && (glfwGetGamepadState(3, &state)))
 					{
-						if ((m_p4ModelId + 1) <= m_scene->GetNumPlayerModels() - 1)
+						ImGui::Text(" Press \"A\" Button to Join! ");
+						if (state.buttons[GLFW_GAMEPAD_BUTTON_A])
 						{
-							m_p4ModelId += 1;
+							m_p4Joined = true;
+							m_objHand->AddPlayer(vec3(7, 2, 15), 3, 0, vec3(1, 1, 0), model);
+							m_p4Seconds = time;
 						}
-						else
-						{
-							m_p4ModelId = 0;
-						}
-						m_p4Seconds = time;
-					}
-					else if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_LEFT])
-					{
 
-						if ((m_p4ModelId - 1) >= 0)
-						{
-							m_p4ModelId -= 1;
-						}
-						else
-						{
-							m_p4ModelId = m_scene->GetNumPlayerModels() - 1;
-						}
-						m_p4Seconds = time;
 					}
-					else if (state.buttons[GLFW_GAMEPAD_BUTTON_A])
-					{
-						m_selected[3] = 1;
-					}
-					else if (m_selected[0] == 1 && state.buttons[GLFW_GAMEPAD_BUTTON_B])
-					{
-						m_selected[3] = 0;
-					}
-
+					//ImGui::PopStyleColor();
 				}
+				else
+				{
+					int index = 3;
+					for (int i = 0; i < m_objHand->GetNumPlayers(); i++)
+					{
+						if (m_objHand->GetPlayerControllerID(i) == 3)
+						{
+							index = i;
+						}
+					}
+					m_p4Col = m_objHand->GetPlayerColor(index);
+					ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(m_p4Col.x, m_p4Col.y, m_p4Col.z, 1));
+					if (m_selected[3] == 0)
+					{
+						ImGui::Text("\t<  Vehicle Model : %d  > ", m_p4ModelId);
+					}
+					else
+					{
+						ImGui::Text("\tVehicle Selected! Press \"B\" to Unselect!");
+					}
+
+					if (time - m_p4Seconds >= 0.5 && (glfwGetGamepadState(3, &state)))
+					{
+						if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_RIGHT] && m_selected[3] == 0)
+						{
+							if ((m_p4ModelId + 1) <= m_scene->GetNumPlayerModels() - 1)
+							{
+								m_p4ModelId += 1;
+							}
+							else
+							{
+								m_p4ModelId = 0;
+							}
+
+							m_objHand->RemovePlayer(index);
+							m_objHand->AddPlayer(vec3(7, 2, 15), 3, m_p4ModelId, m_p4Col, model);
+							m_p4Seconds = time;
+						}
+						else if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_LEFT] && m_selected[3] == 0)
+						{
+
+							if ((m_p4ModelId - 1) >= 0)
+							{
+								m_p4ModelId -= 1;
+							}
+							else
+							{
+								m_p4ModelId = m_scene->GetNumPlayerModels() - 1;
+							}
+
+							m_objHand->RemovePlayer(index);
+							m_objHand->AddPlayer(vec3(7, 2, 15), 3, m_p4ModelId, m_p4Col, model);
+							m_p4Seconds = time;
+						}
+						else if (state.buttons[GLFW_GAMEPAD_BUTTON_A])
+						{
+							m_selected[3] = 1;
+						}
+						else if (m_selected[3] == 1 && state.buttons[GLFW_GAMEPAD_BUTTON_B])
+						{
+							m_selected[3] = 0;
+						}
+
+					}
+				}
+				
 				ImGui::PopStyleColor();
 			}
 			ImGui::End();
@@ -424,47 +548,96 @@ void Menu::RenderMenu(bool gameOver, float timer, float maxTime)
 		ImGui::SetNextWindowSize(ImVec2(250, 100));
 		if (ImGui::Begin("##player1Hud", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_AlwaysAutoResize))
 		{
-			vec3 p1Col = m_objHand->GetPlayerColor(0);
-			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(p1Col.x, p1Col.y, p1Col.z, 1));
-			ImGui::Text("Player One lives: %d", m_objHand->GetPlayerLives(0));
+			int index = -1;
+			int lives = 0;
+			for (int i = 0; i < m_objHand->GetNumPlayers(); i++)
+			{
+				if (m_objHand->GetPlayerControllerID(i) == 0)
+				{
+					index = i;
+				}
+			}
+			if (index != -1)
+			{
+				lives = m_objHand->GetPlayerLives(index);
+			}
+
+			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(m_p1Col.x, m_p1Col.y, m_p1Col.z, 1));
+			ImGui::Text("Player One lives: %d", lives);
 			ImGui::PopStyleColor();
 		}
 		ImGui::End();
 
-		ImGui::SetNextWindowPos(ImVec2(w->GetWidht()-258, 0));
+		ImGui::SetNextWindowPos(ImVec2(w->GetWidht() - 258, 0));
 		ImGui::SetNextWindowSize(ImVec2(250, 100));
 		if (ImGui::Begin("##player2Hud", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_AlwaysAutoResize))
 		{
-			vec3 p2Col = m_objHand->GetPlayerColor(1);
-			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(p2Col.x, p2Col.y, p2Col.z, 1));
-			ImGui::Text("Player Two lives: %d", m_objHand->GetPlayerLives(1));
+			int index = -1;
+			int lives = 0;
+			for (int i = 0; i < m_objHand->GetNumPlayers(); i++)
+			{
+				if (m_objHand->GetPlayerControllerID(i) == 1)
+				{
+					index = i;
+				}
+			}
+			if (index != -1)
+			{
+				lives = m_objHand->GetPlayerLives(index);
+			}
+			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(m_p2Col.x, m_p2Col.y, m_p2Col.z, 1));
+			ImGui::Text("Player Two lives: %d", lives);
 			ImGui::PopStyleColor();
 		}
 		ImGui::End();
 		// TODO: Kanske Fixa så det följer kontrollerId eller nått
-		if (m_objHand->GetNumPlayers() >= 3) 
+		if (m_p3Joined)//m_objHand->GetNumPlayers() >= 3) 
 		{
 			ImGui::SetNextWindowPos(ImVec2(0, w->GetHeight() - 155));
 			ImGui::SetNextWindowSize(ImVec2(250, 100));
 			if (ImGui::Begin("##player3Hud", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_AlwaysAutoResize))
 			{
-				vec3 p3Col = m_objHand->GetPlayerColor(2);
-				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(p3Col.x, p3Col.y, p3Col.z, 1));
-				ImGui::Text("Player Three lives: %d", m_objHand->GetPlayerLives(2));
+				int index = -1;
+				int lives = 0;
+				for (int i = 0; i < m_objHand->GetNumPlayers(); i++)
+				{
+					if (m_objHand->GetPlayerControllerID(i) == 2)
+					{
+						index = i;
+					}
+				}
+				if (index != -1)
+				{
+					lives = m_objHand->GetPlayerLives(index);
+				}
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(m_p3Col.x, m_p3Col.y, m_p3Col.z, 1));
+				ImGui::Text("Player Three lives: %d", lives);
 				ImGui::PopStyleColor();
 			}
 			ImGui::End();
 		}
 		
-		if (m_objHand->GetNumPlayers() >= 4)
+		if (m_p4Joined)//m_objHand->GetNumPlayers() >= 4)
 		{
 			ImGui::SetNextWindowPos(ImVec2(w->GetWidht() - 258, w->GetHeight() - 155));
 			ImGui::SetNextWindowSize(ImVec2(250, 100));
 			if (ImGui::Begin("##player4Hud", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_AlwaysAutoResize))
 			{
-				vec3 p4Col = m_objHand->GetPlayerColor(3);
-				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(p4Col.x, p4Col.y, p4Col.z, 1));
-				ImGui::Text("Player Four lives: %d", m_objHand->GetPlayerLives(3));
+				int index = -1;
+				int lives = 0;
+				for (int i = 0; i < m_objHand->GetNumPlayers(); i++)
+				{
+					if (m_objHand->GetPlayerControllerID(i) == 3)
+					{
+						index = i;
+					}
+				}
+				if (index != -1)
+				{
+					lives = m_objHand->GetPlayerLives(index);
+				}
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(m_p4Col.x, m_p4Col.y, m_p4Col.z, 1));
+				ImGui::Text("Player Four lives: %d", lives);
 				ImGui::PopStyleColor();
 			}
 			ImGui::End();
@@ -478,6 +651,14 @@ void Menu::RenderMenu(bool gameOver, float timer, float maxTime)
 void Menu::SetActiveMenu(ActiveMenu activeMenu)
 {
 	m_menu = activeMenu;
+}
+
+bool Menu::selectMenuActive()
+{
+	if (m_menu == ActiveMenu::select)
+		return true;
+	else
+		return false;
 }
 
 void Menu::LoadMenuPic()
