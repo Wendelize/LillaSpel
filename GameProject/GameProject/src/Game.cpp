@@ -92,7 +92,6 @@ void Game::Update(float dt)
 		}
 		if (!m_menu->Pause())
 		{
-			m_time += dt;
 
 			if (!m_gameOver)
 				m_objectHandler->Update(dt);
@@ -108,8 +107,9 @@ void Game::Update(float dt)
 			if (m_maxTime - m_time <= 30.f && !m_fastMusic) {
 				if (m_soundEngine) {
 					m_music->setPlaybackSpeed(1.4);
+					m_fastMusic = true;
 				}
-				m_fastMusic = true;
+
 			}
 			if (m_time > m_maxTime && !m_gameOver) {
 				m_gameOver = true;
@@ -190,6 +190,8 @@ GLFWwindow* Game::GetWindow()
 
 void Game::Debug()
 {
+	// TODO: BUG: fixa så debug inte crashar om det är uppe och nån spelare deletas (förlorar alla liv)
+
 	/*ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
