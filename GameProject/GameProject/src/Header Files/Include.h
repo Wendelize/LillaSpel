@@ -10,13 +10,16 @@
 #include "btBulletDynamicsCommon.h"
 #include "BulletCollision\CollisionDispatch\btCollisionWorld.h"
 #include "BulletCollision/CollisionDispatch/btGhostObject.h"
-#define STB_IMAGE_IMPLEMENTATION
 
 //IMGUI
 #include "../IMGUI/imgui.h"
 #include "../IMGUI/imgui_impl_opengl3.h"
 #include "../IMGUI/imgui_impl_glfw.h"
+//include "stb_image.h"
 
+//AUDIO
+// irrKlang is not Creative Commons. If we want to release the game we need to change audio library. OpenAL perhaps.
+#include "irrKlang.h"
 
 //INCLUDES C++
 #include <windows.h>
@@ -55,9 +58,15 @@
 #include "Bloom.h"
 #include "ParticleSystem.h"
 
+//DEFINES 
+#define NRDEATHSOUNDS 30
+
 //NAMESPACES
 using namespace std;
 using namespace glm;
+using namespace irrklang;
+
+#pragma comment(lib, "irrKlang.lib")
 
 struct ObjectInfo
 {

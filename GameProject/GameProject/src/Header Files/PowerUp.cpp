@@ -6,24 +6,29 @@ PowerUp::PowerUp(int spawn, btVector3 pos, int type,float duration)
 	m_type = type;
 	m_duration = duration;
 	m_transform = new Transform;
+	m_model = 0;
 	switch (type) {
 		case 0: 
-			m_color = vec3(1, 0, 0);
-			break;
-		case 1: 
+			m_model = 1;
 			m_color = vec3(0, 1, 0);
 			break;
+		case 1: 
+			m_color = vec3(1, 0, 0);
+			break;
 		case 2: 
-			m_color = vec3(0, 0, 1);
+			m_color = vec3(0.5, 0, 1);
 			break;
 		case 3: 
-			m_color = vec3(1, 1, 0);
+			m_model = 1;
+			m_color = vec3(1, 0.5, 0);
 			break;
 		case 4:
-			m_color = vec3(0, 1, 1);
+			m_model = 1;
+			m_color = vec3(1, 0, 0);
 			break;
 		case 5: 
-			m_color = vec3(1, 0, 1);
+			m_model = 1;
+			m_color = vec3(0, 1, 0);
 			break;
 	}
 	m_spawn = spawn;
@@ -41,6 +46,7 @@ PowerUp::PowerUp(int spawn, btVector3 pos, int type,float duration)
 	m_body->setWorldTransform(*m_btTransform);
 	vec3 testPos = vec3(m_btTransform->getOrigin().x(), m_btTransform->getOrigin().y(), m_btTransform->getOrigin().z());
 	m_transform->SetTranslation(testPos);
+
 }
 
 PowerUp::~PowerUp()
@@ -87,7 +93,7 @@ btGhostObject* PowerUp::getObject()
 
 ObjectInfo* PowerUp::GetObjectInfo()
 {
-	m_info = new ObjectInfo(m_transform->GetMatrix(), 0, 2, m_color, true);
+	m_info = new ObjectInfo(m_transform->GetMatrix(), m_model, 2, m_color, true);
 	return m_info;
 }
 

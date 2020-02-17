@@ -23,8 +23,15 @@ private:
 
 	vector<Model*> m_vehicles, m_platform, m_power;
 	
-	vector<Light> m_lights;
+	vector <Light*> m_lights;
 	int m_nrOfLights = 0;
+
+	int m_screenWidth;
+	int m_screenHeight;
+	int m_shadowMapWidth;
+	int m_shadowMapHeight;
+	float m_bloomTextureScale;
+	int m_bloomNrOfGaussianBlur;
 
 public:
 
@@ -48,8 +55,9 @@ public:
 	int GetNumPowerUpModels();
 	vector<Model*> GetModels(int index);
 
-	vector<Light> GetLight();
+	vector<Light*> GetLight();
 	void AddPointLight(vec3 pos = { 2,2,2 }, vec3 color = { 1,0,0 });
 	void AddDirLight(vec3 dir = { 0,-1,0 }, vec3 color = { 0,1,0 });
 	void AddSpotLight(vec3 pos = { 0,10,0 }, vec3 dir = { 0,-1,0 }, vec3 color = {0,0,1}, float cutOff = 12.0);
+	void CameraFollowCar(ObjectInfo* objects);
 };

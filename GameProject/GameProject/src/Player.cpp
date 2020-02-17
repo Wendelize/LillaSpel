@@ -10,6 +10,7 @@ Player::Player(Model* model, int modelId, vec3 pos)
 	m_restitution = 1.6699;
 	m_transform->SetScale(scale, scale, scale);
 
+	m_lives = 3;
 	m_name = "";
 	m_health = 0;
 	m_controllerID = 0;
@@ -40,7 +41,27 @@ Player::Player(Model* model, int modelId, vec3 pos)
 	*/
 
 	// MASSA FYSIK
-	btScalar mass(1000.f);
+	btScalar mass;
+	switch (modelId)
+	{
+	case 0:
+		//deafult bil
+		mass = 1000.f;
+		break;
+	case 1:
+		//truck
+		mass = 1100.f;
+		break;
+	case 2:
+		mass = 1050.f;
+		break;
+	case 3:
+		mass = 950.f;
+		break;
+	default:
+		mass = 1000.f;
+		break;
+	}
 	m_btTransform->setOrigin(btVector3(pos.x,pos.y,pos.z));
 	vec3 testPos = vec3(m_btTransform->getOrigin().x(), m_btTransform->getOrigin().y()- radius * scale, m_btTransform->getOrigin().z());
 	m_transform->SetTranslation(testPos);
@@ -59,7 +80,42 @@ Player::Player(Model* model, int modelId, vec3 pos)
 	m_body->clearForces();
 	m_body->setRestitution(m_restitution);
 	m_currentPos = m_btTransform->getOrigin();
-	m_body->setDamping(0.1,0.9);
+
+	switch (modelId)
+	{
+	case 0:
+		m_body->setDamping(0.1, 0.9);
+		break;
+	case 1:
+		m_body->setDamping(0.1, 0.9);
+		break;
+	case 2:
+		m_body->setDamping(0.01, 0.9);
+		break;
+	case 3:
+		m_body->setDamping(0.1, 0.9);
+		break;
+	default:
+		m_body->setDamping(0.1, 1);
+		break;
+	}
+
+	m_soundEngine = createIrrKlangDevice();
+
+	if (m_soundEngine)
+	{
+		m_soundEngine->setListenerPosition(vec3df(0, 18, 33), vec3df(0, -4, 3)); // Listener position, view direction
+		m_soundEngine->setDefault3DSoundMinDistance(1.0f);
+		m_fallen = false;
+
+		m_carSounds.push_back(m_soundEngine->addSoundSourceFromFile("src/Audio/Player - Engine2.0.mp3"));
+		m_carSounds.push_back(m_soundEngine->addSoundSourceFromFile("src/Audio/Player - Backing.mp3"));
+
+		m_soundEngine->setSoundVolume(0.3f);
+
+		m_sound = m_soundEngine->play2D(m_carSounds[0], true, true);
+		m_sound->setPlaybackSpeed(1.0f);
+	}
 
 }
 
@@ -69,6 +125,17 @@ Player::~Player()
 	delete m_transform;
 	delete m_btTransform;
 	delete m_carShape;
+
+	if (m_soundEngine) 
+	{
+		for (uint i = 0; i < m_carSounds.size(); i++)
+		{
+			m_carSounds[i]->drop();
+		}
+		m_carSounds.clear();
+
+		m_sound->drop();
+	}
 }
 
 void Player::Update(float dt)
@@ -92,13 +159,13 @@ void Player::Update(float dt)
 		if (m_controller->ButtonAIsPressed(m_controllerID))
 		{
 			//Acceleration
-			m_speed = 1000000.f * m_powerMultiplier;
+			m_speed = 700000.f * m_powerMultiplier / (dt*60) ;
 			pressed = true;
 		}
 
 		if (m_controller->ButtonXIsPressed(m_controllerID))
 		{
-			m_speed = -800000.f * m_powerMultiplier;
+			m_speed = -500000.f * m_powerMultiplier / (dt * 60);
 			pressed = true;
 		}
 
@@ -107,7 +174,7 @@ void Player::Update(float dt)
 		{
 			//Left trigger pressed
 			//Power-Up
-			m_speed = 1720000.f * m_powerMultiplier;
+			m_speed = 1100000.f * m_powerMultiplier / (dt * 60);
 			pressed = true;
 
 		}
@@ -115,7 +182,7 @@ void Player::Update(float dt)
 		{
 			//Left trigger pressed
 			//Power-Up
-			m_speed = -1200000.f * m_powerMultiplier;
+			m_speed = -900000.f * m_powerMultiplier / (dt * 60);
 			pressed = true;
 
 		}
@@ -142,11 +209,28 @@ void Player::Update(float dt)
 	if(pressed){
 		m_body->applyForce(directionBt * -m_speed * dt , m_body->getWorldTransform().getOrigin());
 	}
+
+	if (m_soundEngine && m_body->getLinearVelocity().y() < 0.3f && m_body->getLinearVelocity().y() > -0.3f)
+	{
+		m_soundEngine->setSoundVolume(m_body->getLinearVelocity().length() / 40 + 0.3f);
+		m_sound->setPlaybackSpeed(m_body->getLinearVelocity().length() / 25 + 1.0f);
+	}
 	m_body->applyDamping(dt);
 
 	btVector3 moveVector = m_body->getWorldTransform().getOrigin() - m_currentPos;
-	m_transform->Translate(vec3(moveVector.x(), moveVector.y(), moveVector.z()));
+
+	m_transform->Translate(vec3(moveVector.x(), moveVector.y(), moveVector.z())); 
 	m_currentPos = m_body->getWorldTransform().getOrigin();
+}
+
+int Player::GetLives()
+{
+	return m_lives;
+}
+
+void Player::ReduceLife()
+{
+	m_lives--;
 }
 
 string Player::GetName()
@@ -255,12 +339,15 @@ void Player::SetPos(vec3 pos)
 {
 	m_body->getWorldTransform().setOrigin(btVector3(pos.x, pos.y, pos.z));
 	m_body->setLinearVelocity(btVector3(0,0,0));
+}
 
+bool Player::GetFallen()
+{
+	return m_fallen;
 }
 
 void Player::GivePower(int type)
 {
-
 	if (m_powerActive) {
 		removePower(m_powerType);
 	}
@@ -382,4 +469,35 @@ bool Player::updatePower(float dt)
 int Player::GetActivePower()
 {
 	return m_powerType;
+}
+
+void Player::SetFallen()
+{
+	m_fallen = true;
+}
+
+void Player::SetNotFallen()
+{
+	m_fallen = false;
+}
+
+float Player::GetLinearVelocity()
+{
+	return m_body->getLinearVelocity().length();
+}
+
+void Player::StartEngineSounds()
+{
+	if (m_soundEngine)
+	{
+		m_sound->setIsPaused(false);
+		m_soundEngine->setSoundVolume(0.3f);
+		m_sound->setPlaybackSpeed(1.0f);
+	}
+}
+
+void Player::StopEngineSounds()
+{
+	if (m_soundEngine)
+		m_sound->setIsPaused(true);
 }

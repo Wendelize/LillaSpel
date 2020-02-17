@@ -114,7 +114,7 @@ vec3 CalcDirLight(Light light, vec3 p, vec3 n, vec3 eye, bool blinn, bool shadow
     }
     else if(shadow) {
         float shadow = CalcShadow(light, vi.positionLightSpace, p, n, eye);
-        return (ambient + (1.0 - shadow) * (diffuse + specular)) * light.color;
+        return (ambient + (0.3 - shadow) * (diffuse + specular)) * light.color;
     }
 }
 
@@ -129,7 +129,7 @@ vec3 CalcPointLight(Light light, vec3 p, vec3 n, vec3 eye, bool blinn){
     vec3 specular = CalcSpecular(light, lightVec, lookVec, n, blinn) * u_Material.specular;
 
     float distance = length(light.pos - p);
-    float attenuation = 1.0 / (1.0 + 0.09 * distance + 0.032 * (distance * distance));    
+    float attenuation = 1.0 / (1.0 + 0.09 * distance + 0.0022 * (distance * distance));    
 
     ambient *= attenuation;
     diffuse *= attenuation;
@@ -149,15 +149,16 @@ void main(){
 		if(u_Lights[i].type == 0) {
 			result += CalcDirLight(u_Lights[i], vi.position, vi.normal, u_ViewPos, true, true);
 		} else if (u_Lights[i].type == 1) {
-			result += CalcPointLight(u_Lights[i], vi.position, vi.normal, u_ViewPos, blinn);
+			result += CalcPointLight(u_Lights[i], vi.position, vi.normal, u_ViewPos, blinn); 
 		}
 	}
     float c = CalcShadow(u_Lights[0], vi.positionLightSpace, vi.position, vi.normal, u_ViewPos);
     vec3 m = vi.positionLightSpace.xyz;
+
     FragColor = vec4(result, 1.0);
 
     float brightness = dot(result.rgb, vec3(0.2126, 0.7152, 0.0722));
-    if(u_Glow)
+    if(u_Glow)// && brightness > 1)
         BrightColor = vec4(result.rgb, 1.0);
     else
         BrightColor = vec4(0.0, 0.0, 0.0, 1.0);

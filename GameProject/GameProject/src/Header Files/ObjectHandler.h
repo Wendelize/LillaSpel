@@ -20,6 +20,11 @@ private:
 	vector<PowerUp*> m_powerUps;
 	vector<ObjectInfo*> m_structs;
 
+	ISoundEngine* m_soundEngine;
+	vector<ISoundSource*> m_crashes;
+
+	const char* m_soundFiles[NRDEATHSOUNDS];
+
 	btDefaultCollisionConfiguration* m_collisionConfiguration;
 	btBroadphaseInterface* m_broadphase;
 	btCollisionDispatcher* m_dispatcher;
@@ -50,6 +55,7 @@ public:
 	void SetPlayerColor(int index, vec3 color);
 	vec3 GetPlayerScale(int index);
 	void SetPlayerScale(int index, vec3 scale);
+	void StopAllSound();
 	vector<ObjectInfo*> GetObjects();
 	btDiscreteDynamicsWorld* GetWorld();
 	DebugDrawer* GetDebugDrawer();
