@@ -12,7 +12,7 @@ private:
 	Skybox * m_skybox;
 	Bloom  * m_bloom;
 	ShadowMap * m_shadowMap;
-	ParticleSystem* m_particles;
+	vector<ParticleSystem*> m_particles;
 
 	bool m_debug = false;
 	bool m_toggle = false;
@@ -38,7 +38,7 @@ public:
 	void RenderSkybox();
 	void RenderShadows(vector<ObjectInfo*> objects);
 	void RenderImGui(btDiscreteDynamicsWorld* world);
-	void RenderParticles(float dt, ObjectInfo* object);
+	void RenderParticles(float dt, btDiscreteDynamicsWorld* world);
 	void SwapBuffer();
 
 	void SetWindowSize(int width, int height);

@@ -28,5 +28,5 @@ void main()
 	gl_Position = u_Proj * u_View * mat4(1) * vec4(bla + particleCenter_worldspace, 1.0f);
 
 	//vo.texCoords = squareVertices.xy + vec2(0.5, 0.5);
-	vo.color = vec4(0, color.z, 0, 0);
+	vo.color = vec4(color.z, color.z*0.35, 0, 0);
 }

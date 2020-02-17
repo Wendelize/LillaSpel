@@ -1,21 +1,4 @@
 ﻿#include "Header Files/Scene.h"
-#include <Map>
-struct CollisionInfo
-{
-	btCollisionObject* object;
-	btVector3 ptA;
-	btVector3 ptB;
-	btVector3 normalOnB;
-
-	CollisionInfo(btCollisionObject *object = NULL, btVector3 ptA = btVector3(NULL, NULL, NULL), btVector3 ptB = btVector3(NULL, NULL, NULL), btVector3 normalOnB = btVector3(NULL,NULL,NULL))
-	{
-		this->object = object;
-		this->ptA = ptA;
-		this->ptB = ptB;
-		this->normalOnB = normalOnB;
-	}
-};
-
 
 Scene::Scene()
 {
@@ -23,11 +6,12 @@ Scene::Scene()
 	m_modelShader = new Shader("src/Shaders/SceneVS.glsl", "src/Shaders/SceneFS.glsl");
 	m_skyboxShader = new Shader("src/Shaders/SkyboxVS.glsl", "src/Shaders/SkyboxFS.glsl");
 	
-	m_camera = new Camera({0, 10, 50});
+	m_camera = new Camera({0, 18, 33});
 	m_skybox = new Skybox();
 	m_shadowMap = new ShadowMap();
 	m_bloom = new Bloom();
-	m_particles = new ParticleSystem(100);
+	for(int i =0; i< 4 ; i++)
+	m_particles.push_back(new ParticleSystem(50));
 
 	m_modelMatrix = mat4(1.0);
 	m_projMatrix = mat4(1.0);
@@ -56,6 +40,13 @@ Scene::~Scene()
 	m_power.clear();
 	m_lights.clear();
 
+	for (uint i = 0; i < m_particles.size(); i++)
+	{
+		delete m_particles.at(i);
+	}
+	m_particles.clear();
+
+
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
 	//ImGui::DestroyContext(); Causing breakpoint -> Might cause memory leaks if this one is removed. -> doesn't look like it :D
@@ -66,8 +57,8 @@ Scene::~Scene()
 	delete m_shadowMap;
 	delete m_skybox;
 	delete m_bloom;
-	delete m_particles;
 
+	
 	delete m_window;
 
 }
@@ -152,7 +143,6 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
 	glViewport(0, 0, m_window->GetWidht(), m_window->GetHeight());
 
 	// Render shadows
-
 	RenderShadows(objects);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, m_bloom->getFBO());
@@ -181,113 +171,8 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
 	RenderImGui(world);
 
 	//// Render Particles
-	//RenderParticles(0.03, objects[0]);
+	RenderParticles(0.03, world);
 
-
-		std::map<btCollisionObject*, CollisionInfo> newContacts;
-
-		/* Browse all collision pairs */
-		int numManifolds = world->getDispatcher()->getNumManifolds();
-
-		for (int i = 0; i < numManifolds; i++)
-		{
-			btPersistentManifold* contactManifold = world->getDispatcher()->getManifoldByIndexInternal(i);
-			btCollisionObject* obA = const_cast<btCollisionObject*>(contactManifold->getBody0());
-			btCollisionObject* obB = const_cast<btCollisionObject*>(contactManifold->getBody1());
-
-			/* Check all contacts points */
-			int numContacts = contactManifold->getNumContacts();
-			cout <<"Number of contacts for manifol#"<<i << ": " <<  numContacts << endl;
-
-			if (numContacts > 3)
-			{
-				if(objects[i]->typeId == 0)
-				RenderParticles(0.03, objects[i]);
-
-			}
-			//for (int j = 0; j < numContacts; j++)
-			//{
-			//	btManifoldPoint& pt = contactManifold->getContactPoint(j);
-			//	
-			//	if (pt.getDistance() < 0.f)
-			//	{
-			//		//std::cout << "Contact found" << std::endl;
-
-			//		const btVector3& ptA = pt.getPositionWorldOnA();
-			//		const btVector3& ptB = pt.getPositionWorldOnB();
-			//		const btVector3& normalOnB = pt.m_normalWorldOnB;
-
-			//		if (newContacts.find(obB) == newContacts.end())
-			//		{
-			//			RenderParticles(0.03, objects[i]);
-			//			newContacts[obB] = CollisionInfo(obA, ptA, ptB, normalOnB);
-			//		}
-			//	}
-			//}
-		//}
-
-		//vector<CollisionInfo>::iterator m_contacts;
-		///* Check for added contacts ... */
-		//map<btCollisionObject*, CollisionInfo>::iterator it;
-		//if (!newContacts.empty())
-		//{
-		//	for (it = newContacts.begin(); it != newContacts.end(); it++)
-		//	{
-		//		if (m_contacts.find((*it).first) == m_contacts.end())
-		//		{
-		//			std::cout << "Collision detected" << std::endl;
-		//			// TODO: signal
-		//		}
-		//		else
-		//		{
-		//			// Remove to filter no more active contacts
-		//			m_contacts.erase((*it).first);
-		//		}
-		//	}
-		//}
-
-		///* ... and removed contacts */
-		//if (!m_contacts.empty())
-		//{
-		//	for (it = m_contacts.begin(); it != m_contacts.end(); it++)
-		//	{
-		//		std::cout << "End of collision detected" << std::endl;
-		//		// TODO: signal
-		//	}
-		//	m_contacts.clear();
-		}
-
-		//m_contacts = newContacts;
-	
-	//for (size_t i = 0; i < world->getNumCollisionObjects(); i++)
-	//{
-	//
-	//	if (objects[i]->typeId == 0) // Is veichle
-	//	{
-	//		
-	//		btCollisionObject* car = world->getCollisionObjectArray()[i];
-	//		//RenderParticles(0.03, objects[i]);
-
-	//		for (int j = 0; j < world->getNumCollisionObjects(); j++)
-	//		{
-	//			if (objects[j]->typeId == 1 )
-	//			{
-	//				btCollisionObject* obj = world->getCollisionObjectArray()[j];
-	//				if ( car != obj)
-	//				{
-	//					world->performDiscreteCollisionDetection();
-
-
-	//					
-	//					RenderParticles(0.03, objects[i]);
-	//				}
-	//			}
-
-	//		}
-	//			
-	//		
-	//	}
-	//}
 	// Render Skybox
 	RenderSkybox();
 
@@ -384,16 +269,91 @@ void Scene::RenderImGui(btDiscreteDynamicsWorld* world)
 	}
 }
 
-void Scene::RenderParticles(float dt, ObjectInfo* object)
+void Scene::RenderParticles(float dt, btDiscreteDynamicsWorld* world)
 {
-	mat4 temp = m_viewMatrix;
-	m_particles->GetShader()->UseShader();
-	m_particles->GetShader()->SetUniform("u_View", temp);
-	m_particles->GetShader()->SetUniform("u_Proj", m_projMatrix);
+	// Browse all collision pairs 
+	int numManifolds = world->getDispatcher()->getNumManifolds();
+	for (int i = 0; i < numManifolds; ++i)
+	{
+		btPersistentManifold* contactManifold = world->getDispatcher()->getManifoldByIndexInternal(i);
+		btCollisionObject* obA = const_cast<btCollisionObject*>(contactManifold->getBody0());
+		btCollisionObject* obB = const_cast<btCollisionObject*>(contactManifold->getBody1());
 
-	//m_particles->GenerateParticles(dt);
-	m_particles->SimulateParticles(dt, vec3(object->modelMatrix[3][0], object->modelMatrix[3][1], object->modelMatrix[3][2]));
-	m_particles->Draw();
+		btCollisionShape* shapeA = obA->getCollisionShape();
+		btCollisionShape* shapeB = obB->getCollisionShape();
+
+		//Collision between spheres(cars)
+		if (shapeA->getShapeType() == 8 && shapeB->getShapeType() == 8)
+		{
+			bool A = false;
+			bool B = false;
+			vec3 particlePos;
+
+			//Check for available particlesystem
+			for (auto ps : m_particles)
+			{
+				//Car A
+				if (ps->getActive() == false && A == false)
+				{
+
+					btTransform matA = obA->getWorldTransform();
+					btVector3 vecA = matA.getOrigin();
+
+					particlePos = vec3(vecA.x(), vecA.y(), vecA.z());
+
+					btVector3 spread = obA->getInterpolationLinearVelocity();
+
+					float fspread = (spread.x() + spread.y() + spread.z()) / 3.f;
+					if (fspread < 1.f)
+					{
+						fspread = 6.f;
+					}
+
+					//Set of particlesystem for collider A
+					ps->setActive();
+					ps->GenerateParticlesForCollision(particlePos, fspread);
+					A = true;	
+				}
+				//Car B
+				if (ps->getActive() == false && B == false)
+				{
+					btTransform matB = obB->getWorldTransform();
+					btVector3 vecB = matB.getOrigin();
+					particlePos = vec3(vecB.x(), vecB.y(), vecB.z());
+
+					btVector3 spread = obB->getInterpolationLinearVelocity();
+
+					float fspread = (spread.x() + spread.y() + spread.z()) / 3.f;
+					if (fspread < 1.f)
+					{
+						fspread = 6.f;
+					}
+
+					//Set of particlesystem for collider B
+					ps->setActive();
+					ps->GenerateParticlesForCollision(particlePos, fspread);
+					B = true;
+					//Both particlesystem are set of, no need to search futher
+					break;
+				}
+			}
+		}
+	}
+		
+	// Render the active particlesystems
+	for (auto ps : m_particles)
+	{
+		if (ps->getActive() == true)
+		{
+			mat4 temp = m_viewMatrix;
+			ps->GetShader()->UseShader();
+			ps->GetShader()->SetUniform("u_View", temp);
+			ps->GetShader()->SetUniform("u_Proj", m_projMatrix);
+
+			ps->Collision(dt);
+			ps->Draw();
+		}
+	}
 }
 
 void Scene::SwapBuffer()

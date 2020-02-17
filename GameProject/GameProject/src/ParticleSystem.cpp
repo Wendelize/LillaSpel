@@ -7,6 +7,7 @@ ParticleSystem::ParticleSystem(int nrOfParticles)
 	m_particleShader = new Shader("src/Shaders/ParticleVS.glsl", "src/Shaders/ParticleFS.glsl");
 	m_particlePos	= new GLfloat[4 * m_nrOfParticle];
 	m_particleColor = new GLfloat[4 * m_nrOfParticle];
+	m_active = false;
 
 	this->Init();
 
@@ -15,11 +16,11 @@ ParticleSystem::ParticleSystem(int nrOfParticles)
 
 ParticleSystem::~ParticleSystem()
 {
+	delete m_particles;
 	delete m_particleShader;
 	delete m_particlePos;
 	delete m_particleColor;
-	delete m_particles;
-
+	
 }
 
 void ParticleSystem::InitParticles()
@@ -27,7 +28,6 @@ void ParticleSystem::InitParticles()
 	for (int i = 0; i < m_nrOfParticle; i++) {
 		m_particles[i].life = 0.f;
 		m_particles[i].cameraDist = -1.0f;
-
 	}
 }
 
@@ -82,35 +82,36 @@ void ParticleSystem::SortParticles()
 	std::sort(&m_particles[0], &m_particles[m_nrOfParticle]);
 }
 
-void ParticleSystem::GenerateParticles(float dt)
+void ParticleSystem::GenerateParticles(float dt, vec3 emitterPos, float velocity)
 {
 	/*int newparticles = (int)(dt * 10000.0);
 	if (newparticles > (int)(0.016f * 10000.0))
 		newparticles = (int)(0.016f * 10000.0);*/
 
-	int newparticles = dt;
+	int newparticles = m_nrOfParticle;
+	cout << "Generate particles: " << m_nrOfParticle << endl;
+	for (int i = 0; i < newparticles; i++) 
+	{
+		//int particleIndex = FindParticle();
+		m_particles[i].life = 2.5f; // This particle will live 5 seconds.
+		m_particles[i].position = emitterPos;
 
-	for (int i = 0; i < newparticles; i++) {
-		int particleIndex = FindParticle();
-		m_particles[particleIndex].life = 2.5f; // This particle will live 5 seconds.
-		m_particles[particleIndex].position = glm::vec3(0, 5, 0);
-
-		float spread = 1.5f;
-		glm::vec3 maindir = glm::vec3(5.0f, 2.0f, 0.0f);
+		float spread = velocity;
+		glm::vec3 maindir = glm::vec3(0.0f, 8.0f, 0.0f);
 		glm::vec3 randomdir = glm::vec3(
 			(rand() % 2000 - 1000.0f) / 1000.0f,
 			(rand() % 2000 - 1000.0f) / 1000.0f,
 			(rand() % 2000 - 1000.0f) / 1000.0f
 		);
 
-		m_particles[particleIndex].velocity = maindir + randomdir * spread;
+		m_particles[i].velocity = maindir + randomdir * spread;
 
-		m_particles[particleIndex].color.x = rand() % 256;
-		m_particles[particleIndex].color.y = rand() % 256;
-		m_particles[particleIndex].color.z = rand() % 256;
-		m_particles[particleIndex].color.w = (rand() % 256) / 3;
+		m_particles[i].color.x = rand() % 256;
+		m_particles[i].color.y = rand() % 256;
+		m_particles[i].color.z = rand() % 256;
+		m_particles[i].color.w = (rand() % 256) / 3;
 
-		m_particles[particleIndex].size = 0.3;// (rand() % 1000) / 2000.0f + 0.1f;
+		m_particles[i].size = 0.3;// (rand() % 1000) / 2000.0f + 0.1f;
 
 	}
 }
@@ -213,4 +214,87 @@ void ParticleSystem::Draw()
 Shader* ParticleSystem::GetShader()
 {
 	return m_particleShader;
+}
+
+void ParticleSystem::GenerateParticlesForCollision( vec3 emitterPos, float velocity)
+{
+	for (int i = 0; i < m_nrOfParticle; i++)
+	{
+		m_particles[i].life = 1.f; 
+		m_particles[i].position = emitterPos;
+
+		float spread = velocity;
+		glm::vec3 maindir = glm::vec3(0.0f, 8.0f, 0.0f);
+		glm::vec3 randomdir = glm::vec3(
+			(rand() % 2000 - 1000.0f) / 1000.0f,
+			(rand() % 2000 - 1000.0f) / 1000.0f,
+			(rand() % 2000 - 1000.0f) / 1000.0f
+		);
+
+		m_particles[i].velocity = maindir + randomdir * spread;
+
+		m_particles[i].color.x = rand() % 256;
+		m_particles[i].color.y = rand() % 256;
+		m_particles[i].color.z = rand() % 256;
+		m_particles[i].color.w = (rand() % 256) / 3;
+
+		m_particles[i].size = 0.25;
+	}
+}
+
+void ParticleSystem::Collision(float dt)
+{
+	int nrOfDead = 0;
+	m_particleCount = 0;
+	for (int i = 0; i < m_nrOfParticle; i++) {
+
+		Particle& p = m_particles[i]; // shortcut
+
+		if (p.life > 0.0f)
+		{
+			// Decrease life
+			p.life -= dt;
+
+			// Simulate simple physics : gravity only, no collisions
+			p.velocity += glm::vec3(0.0f, -70.f, 0.0f) * (float)dt * 0.5f;
+			p.position += p.velocity * (float)dt;
+			p.cameraDist = length(p.position - vec3(0, 3, 33));
+			p.size *= 0.95; //Ist�llet  f�r transparens minska storlek
+			
+
+			// Fill the GPU buffer
+			m_particlePos[4 * m_particleCount + 0] = p.position.x;
+			m_particlePos[4 * m_particleCount + 1] = p.position.y;
+			m_particlePos[4 * m_particleCount + 2] = p.position.z;
+
+			m_particlePos[4 * m_particleCount + 3] = p.size;
+
+			m_particleColor[4 * m_particleCount + 0] = p.color.x;
+			m_particleColor[4 * m_particleCount + 1] = p.color.y;
+			m_particleColor[4 * m_particleCount + 2] = p.color.z;
+			m_particleColor[4 * m_particleCount + 3] = p.color.w;
+
+			m_particleCount++;
+			
+		}
+		else {
+			p.life = 0;
+			nrOfDead++;
+			
+			if (nrOfDead >= m_nrOfParticle)
+			{
+				m_active = false;
+			}
+		}
+	}
+}
+
+void ParticleSystem::setActive()
+{
+	m_active = true;
+}
+
+bool ParticleSystem::getActive()
+{
+	return m_active;
 }

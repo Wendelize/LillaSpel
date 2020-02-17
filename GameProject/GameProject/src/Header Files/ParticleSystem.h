@@ -29,6 +29,7 @@ private:
 	GLuint m_VAO;
 	int m_nrOfParticle = 100, m_lastUsedParticle = 0, m_particleCount;
 	Particle* m_particles;
+	bool m_active;
 
 public:
 
@@ -39,13 +40,18 @@ public:
 	void Init();
 	int FindParticle();
 	void SortParticles();
-	void GenerateParticles(float dt);
+	void GenerateParticles(float dt, vec3 emitterPos, float velocity);
 	void SimulateParticles(float dt, vec3 emitterPos);
 	void Draw();
 	Shader* GetShader();
 
 	void DriftParticles();
-	void Collision();
+	void GenerateParticlesForCollision( vec3 emitterPos, float velocity);
+	void Collision(float dt);
 	void Victory();
+
+	void setActive();
+	bool getActive();
+
 
 };
