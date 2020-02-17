@@ -9,13 +9,17 @@
 #include "assimp/Importer.hpp"
 #include "btBulletDynamicsCommon.h"
 #include "BulletCollision\CollisionDispatch\btCollisionWorld.h"
-#define STB_IMAGE_IMPLEMENTATION
+#include "BulletCollision/CollisionDispatch/btGhostObject.h"
 
 //IMGUI
 #include "../IMGUI/imgui.h"
 #include "../IMGUI/imgui_impl_opengl3.h"
 #include "../IMGUI/imgui_impl_glfw.h"
+//include "stb_image.h"
 
+//AUDIO
+// irrKlang is not Creative Commons. If we want to release the game we need to change audio library. OpenAL perhaps.
+#include "irrKlang.h"
 
 //INCLUDES C++
 #include <windows.h>
@@ -33,7 +37,7 @@
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
 #include <crtdbg.h>
-
+//
 //#ifdef _DEBUG
 //#define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
 //#else
@@ -51,10 +55,17 @@
 #include "Skybox.h"
 #include "DebugDrawer.h"
 #include "ShadowMap.h"
+#include "Bloom.h"
+
+//DEFINES 
+#define NRDEATHSOUNDS 30
 
 //NAMESPACES
 using namespace std;
 using namespace glm;
+using namespace irrklang;
+
+#pragma comment(lib, "irrKlang.lib")
 
 struct ObjectInfo
 {
@@ -62,12 +73,14 @@ struct ObjectInfo
 	int modelId; //Refererar till en array med modeller i Scene 
 	int typeId; // 0 = vehicle, 1 = platform, 2 = power-up
 	vec3 hue; // F�rgnyans
+	bool glow;
 
-	ObjectInfo(mat4 m, int mID, int tID, vec3 h) {
+	ObjectInfo(mat4 m, int mID, int tID, vec3 h, bool g) {
 		modelMatrix = m;
 		modelId = mID;
 		typeId = tID;
 		hue = h;
+		glow = g;
 	}
 	~ObjectInfo() {
 

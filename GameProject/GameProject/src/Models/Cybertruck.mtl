@@ -1,4 +1,4 @@
-# Blender MTL File: 'Cybertruck.blend'
+# Blender MTL File: 'None'
 # Material Count: 8
 
 newmtl Black_Chrome
@@ -15,7 +15,7 @@ newmtl Glass
 Ns 225.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.000000 0.000000 0.000000
-Ks 5.00000 5.000000 5.000000
+Ks 1.000000 1.000000 1.000000
 Ke 0.014670 0.014670 0.014670
 Ni 1.450000
 d 1.000000

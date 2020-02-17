@@ -20,7 +20,6 @@ Platform::Platform(Model* model, int platformIndex)
 		}
 	}
 	
-	cout << model->GetMeshes()[platformIndex].m_vertices.size() << endl;
 	m_platformShape = new btConvexHullShape(&points[0].getX(), points.size(), sizeof(btVector3)); // vertexdata, numberofvertices, stride
 	m_btTransform = new btTransform;
 	m_btTransform->setIdentity();
@@ -64,6 +63,6 @@ void Platform::SetSkyboxId(int id)
 
 ObjectInfo* Platform::GetObjectInfo()
 {
-	m_info = new ObjectInfo(m_transform->GetMatrix(), m_modelId, 1, vec3(1, 1, 1));
+	m_info = new ObjectInfo(m_transform->GetMatrix(), m_modelId, 1, vec3(1, 1, 1), false);
 	return m_info;
 }

@@ -73,6 +73,12 @@
     <ClCompile Include="src\ShadowMap.cpp">
       <Filter>Src</Filter>
     </ClCompile>
+    <ClCompile Include="src\Bloom.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Header Files\PowerUp.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Header Files\Camera.h">
@@ -153,24 +159,42 @@
     <ClInclude Include="src\Header Files\ShadowMap.h">
       <Filter>Header</Filter>
     </ClInclude>
+    <ClInclude Include="src\Header Files\Bloom.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Header Files\PowerUp.h">
+      <Filter>Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\Shaders\FragmentShader.glsl">
-      <Filter>Shader</Filter>
-    </None>
-    <None Include="src\Shaders\VertexShader.glsl">
-      <Filter>Shader</Filter>
-    </None>
-    <None Include="src\Shaders\FragmentSkyboxShader.glsl">
-      <Filter>Shader</Filter>
-    </None>
-    <None Include="src\Shaders\VertexSkyboxShader.glsl">
-      <Filter>Shader</Filter>
-    </None>
     <None Include="src\Shaders\ShadowFS.glsl">
       <Filter>Shader</Filter>
     </None>
     <None Include="src\Shaders\ShadowVS.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="src\Shaders\GaussianBlurFS.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="src\Shaders\GaussianBlurVS.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="src\Shaders\BloomFS.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="src\Shaders\BloomVS.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="src\Shaders\SceneFS.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="src\Shaders\SceneVS.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="src\Shaders\SkyboxFS.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="src\Shaders\SkyboxVS.glsl">
       <Filter>Shader</Filter>
     </None>
   </ItemGroup>

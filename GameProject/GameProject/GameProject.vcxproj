@@ -76,13 +76,13 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\Bullet\include;$(SolutionDir)Dependencies\ASSIMP\include;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLM\glm;$(SolutionDir)Dependencies\GLEW\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\Bullet\include;$(SolutionDir)Dependencies\ASSIMP\include;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLM\glm;$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\IRRKLANG\include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\ASSIMP\lib;$(SolutionDir)Dependencies\GLFW\lib-vc2019;$(SolutionDir)Dependencies\Bullet\lib;$(SolutionDir)Dependencies\GLEW\lib\Release\Win32</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32s.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;assimp-vc142-mtd.lib;BulletCollision_Debug.lib;BulletDynamics_Debug.lib;BulletSoftBody_Debug.lib;LinearMath_Debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\ASSIMP\lib;$(SolutionDir)Dependencies\GLFW\lib-vc2019;$(SolutionDir)Dependencies\Bullet\lib;$(SolutionDir)Dependencies\GLEW\lib\Release\Win32;$(SolutionDir)Dependencies\IRRKLANG\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32s.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;assimp-vc142-mtd.lib;irrKlang.lib;BulletCollision_Debug.lib;BulletDynamics_Debug.lib;BulletSoftBody_Debug.lib;LinearMath_Debug.lib;irrKlang.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -108,15 +108,15 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\Bullet\include;$(SolutionDir)Dependencies\ASSIMP\include;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLM\glm;$(SolutionDir)Dependencies\GLEW\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\Bullet\include;$(SolutionDir)Dependencies\ASSIMP\include;$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLM\glm;$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\IRRKLANG\include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\ASSIMP\lib;$(SolutionDir)Dependencies\GLFW\lib-vc2019;$(SolutionDir)Dependencies\Bullet\lib;$(SolutionDir)Dependencies\GLEW\lib\Release\Win32</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32s.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;assimp-vc142-mtd.lib;BulletCollision.lib;BulletDynamics.lib;BulletSoftBody.lib;LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\ASSIMP\lib;$(SolutionDir)Dependencies\GLFW\lib-vc2019;$(SolutionDir)Dependencies\Bullet\lib;$(SolutionDir)Dependencies\GLEW\lib\Release\Win32;$(SolutionDir)Dependencies\IRRKLANG\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32s.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;assimp-vc142-mtd.lib;irrKlang.lib;BulletCollision.lib;BulletDynamics.lib;BulletSoftBody.lib;LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>false</LinkLibraryDependencies>
@@ -142,10 +142,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Bloom.cpp" />
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\Controller.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\Header Files\DebugDrawer.cpp" />
+    <ClCompile Include="src\Header Files\PowerUp.cpp" />
     <ClCompile Include="src\IMGUI\imgui.cpp" />
     <ClCompile Include="src\IMGUI\imgui_demo.cpp" />
     <ClCompile Include="src\IMGUI\imgui_draw.cpp" />
@@ -167,6 +169,7 @@
     <ClCompile Include="src\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Header Files\Bloom.h" />
     <ClInclude Include="src\Header Files\Camera.h" />
     <ClInclude Include="src\Header Files\Controller.h" />
     <ClInclude Include="src\Header Files\DebugDrawer.h" />
@@ -178,6 +181,7 @@
     <ClInclude Include="src\Header Files\ObjectHandler.h" />
     <ClInclude Include="src\Header Files\Platform.h" />
     <ClInclude Include="src\Header Files\Player.h" />
+    <ClInclude Include="src\Header Files\PowerUp.h" />
     <ClInclude Include="src\Header Files\Scene.h" />
     <ClInclude Include="src\Header Files\Shader.h" />
     <ClInclude Include="src\Header Files\ShadowMap.h" />
@@ -195,12 +199,16 @@
     <ClInclude Include="src\IMGUI\imstb_truetype.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\Shaders\FragmentShader.glsl" />
-    <None Include="src\Shaders\FragmentSkyboxShader.glsl" />
+    <None Include="src\Shaders\BloomFS.glsl" />
+    <None Include="src\Shaders\BloomVS.glsl" />
+    <None Include="src\Shaders\GaussianBlurFS.glsl" />
+    <None Include="src\Shaders\GaussianBlurVS.glsl" />
+    <None Include="src\Shaders\SceneFS.glsl" />
+    <None Include="src\Shaders\SceneVS.glsl" />
     <None Include="src\Shaders\ShadowFS.glsl" />
     <None Include="src\Shaders\ShadowVS.glsl" />
-    <None Include="src\Shaders\VertexShader.glsl" />
-    <None Include="src\Shaders\VertexSkyboxShader.glsl" />
+    <None Include="src\Shaders\SkyboxFS.glsl" />
+    <None Include="src\Shaders\SkyboxVS.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

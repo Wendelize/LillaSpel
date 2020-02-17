@@ -2,9 +2,15 @@
 #include "Header Files/Transform.h"
 #include "Header Files/Game.h"
 #include "Header Files/Scene.h"
+#define STB_IMAGE_IMPLEMENTATION
+
+/* 
+inline void sleepSomeTime() { Sleep(100); }
+ISoundEngine* SoundEngine = createIrrKlangDevice();
+*/
 
 Game* GAME;
-
+// commetn for push test
 int main(void)
 {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);

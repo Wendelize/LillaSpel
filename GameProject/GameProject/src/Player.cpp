@@ -6,19 +6,25 @@ Player::Player(Model* model, int modelId, vec3 pos)
 	m_transform = new Transform;
 
 	float radius = 1.;
-	float scale = 0.609;
+	float scale = 0.69;
 	m_restitution = 1.6699;
 	m_transform->SetScale(scale, scale, scale);
 
-	//m_transform->SetTranslation(pos);
+	m_lives = 3;
 	m_name = "";
 	m_health = 0;
 	m_controllerID = 0;
 	m_modelId = modelId;
 	m_weight = 0.f;
 	m_speed = 0.f;
-	m_scale = vec3(1, 1, 1);
-	//SetScale(m_scale);
+	m_powerMultiplier = 1.0f;
+	m_powerActive = false;
+	m_powerType = 0;
+	m_scale = vec3(scale, scale, scale);
+	m_transform->SetScale(scale, scale, scale);
+	m_carShape = new btSphereShape(radius);
+	m_btTransform = new btTransform();
+	m_btTransform->setIdentity();
 
 	// ConvexHullShape for car. Very precise but expensive since it creates A LOT of lines.
 	/*vector<btVector3> points;
@@ -33,31 +39,35 @@ Player::Player(Model* model, int modelId, vec3 pos)
 	
 	m_carShape = new btConvexHullShape(&points[0].getX(), points.size(), sizeof(btVector3));
 	*/
-	if (rand() % 1 + 0 > 0.5) {
-		m_carShape = new btBoxShape(btVector3(btScalar(0.5f), btScalar(0.5f), btScalar(0.5f))); // BoxShape
 
+	// MASSA FYSIK
+	btScalar mass;
+	switch (modelId)
+	{
+	case 0:
+		//deafult bil
+		mass = 1000.f;
+		break;
+	case 1:
+		//truck
+		mass = 1100.f;
+		break;
+	case 2:
+		mass = 1050.f;
+		break;
+	case 3:
+		mass = 950.f;
+		break;
+	default:
+		mass = 1000.f;
+		break;
 	}
-	else {
-		m_carShape = new btSphereShape(radius);
-
-	}
-//	m_carShape = new btBoxShape(btVector3(btScalar(0.5f), btScalar(0.5f), btScalar(0.5f))); // BoxShape
-	
-	//m_carShape = new btSphereShape(radius);
-
-	m_btTransform = new btTransform();
-	m_btTransform->setIdentity();
-
-	btScalar mass(1000.f);
 	m_btTransform->setOrigin(btVector3(pos.x,pos.y,pos.z));
 	vec3 testPos = vec3(m_btTransform->getOrigin().x(), m_btTransform->getOrigin().y()- radius * scale, m_btTransform->getOrigin().z());
 	m_transform->SetTranslation(testPos);
-	//rigidbody is dynamic if and only if mass is non zero, otherwise static
-	bool isDynamic = (mass != 0.f);
 
 	btVector3 localInertia(0, 0, 0);
-	if (isDynamic)
-		m_carShape->calculateLocalInertia(mass, localInertia);
+	m_carShape->calculateLocalInertia(mass, localInertia);
 
 	//using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
 	m_motionState = new btDefaultMotionState(*m_btTransform);
@@ -70,7 +80,43 @@ Player::Player(Model* model, int modelId, vec3 pos)
 	m_body->clearForces();
 	m_body->setRestitution(m_restitution);
 	m_currentPos = m_btTransform->getOrigin();
-	m_body->setDamping(0.1,0.9);
+
+	switch (modelId)
+	{
+	case 0:
+		m_body->setDamping(0.1, 0.9);
+		break;
+	case 1:
+		m_body->setDamping(0.1, 0.9);
+		break;
+	case 2:
+		m_body->setDamping(0.01, 0.9);
+		break;
+	case 3:
+		m_body->setDamping(0.1, 0.9);
+		break;
+	default:
+		m_body->setDamping(0.1, 1);
+		break;
+	}
+
+	m_soundEngine = createIrrKlangDevice();
+
+	if (m_soundEngine)
+	{
+		m_soundEngine->setListenerPosition(vec3df(0, 18, 33), vec3df(0, -4, 3)); // Listener position, view direction
+		m_soundEngine->setDefault3DSoundMinDistance(1.0f);
+		m_fallen = false;
+
+		m_carSounds.push_back(m_soundEngine->addSoundSourceFromFile("src/Audio/Player - Engine2.0.mp3"));
+		m_carSounds.push_back(m_soundEngine->addSoundSourceFromFile("src/Audio/Player - Backing.mp3"));
+
+		m_soundEngine->setSoundVolume(0.3f);
+
+		m_sound = m_soundEngine->play2D(m_carSounds[0], true, true);
+		m_sound->setPlaybackSpeed(1.0f);
+	}
+
 }
 
 Player::~Player()
@@ -79,7 +125,17 @@ Player::~Player()
 	delete m_transform;
 	delete m_btTransform;
 	delete m_carShape;
-	// delete m_body; GOTTA DELETE IN dynamicsWorld. :)
+
+	if (m_soundEngine) 
+	{
+		for (uint i = 0; i < m_carSounds.size(); i++)
+		{
+			m_carSounds[i]->drop();
+		}
+		m_carSounds.clear();
+
+		m_sound->drop();
+	}
 }
 
 void Player::Update(float dt)
@@ -90,7 +146,8 @@ void Player::Update(float dt)
 	vec3 direction(0, 0, 0);
 	float rotationSpeed = 2.f;
 	float jump = 0;
-	m_speed = 0;
+	bool pressed = false;
+
 	if (glfwJoystickPresent(m_controllerID) == 1 && m_body->getWorldTransform().getOrigin().y() < 4.0f && m_body->getWorldTransform().getOrigin().y() > -1.0f)
 	{
 		if (m_controller->ButtonOptionsIsPressed(m_controllerID))
@@ -102,13 +159,14 @@ void Player::Update(float dt)
 		if (m_controller->ButtonAIsPressed(m_controllerID))
 		{
 			//Acceleration
-			m_speed = 1000000.f;
-
+			m_speed = 700000.f * m_powerMultiplier / (dt*60) ;
+			pressed = true;
 		}
 
 		if (m_controller->ButtonXIsPressed(m_controllerID))
 		{
-			m_speed = -800000.f;
+			m_speed = -500000.f * m_powerMultiplier / (dt * 60);
+			pressed = true;
 		}
 
 		//Triggers
@@ -116,13 +174,17 @@ void Player::Update(float dt)
 		{
 			//Left trigger pressed
 			//Power-Up
-			m_speed = 1720000.f;
+			m_speed = 1100000.f * m_powerMultiplier / (dt * 60);
+			pressed = true;
+
 		}
 		if (m_controller->GetLefTrigger(m_controllerID) != -1)
 		{
 			//Left trigger pressed
 			//Power-Up
-			m_speed = -1200000.f;
+			m_speed = -900000.f * m_powerMultiplier / (dt * 60);
+			pressed = true;
+
 		}
 
 		// Left stick horisontal input
@@ -139,18 +201,36 @@ void Player::Update(float dt)
 		{
 			rotationSpeed = 2 * (m_body->getLinearVelocity().length()/3);
 		}
-		cout << "Rotation speed: " <<  rotationSpeed << endl;
 		direction = m_transform->TranslateDirection(rotate * dt * rotationSpeed);
 	}
+
 	//apply force
 	btVector3 directionBt = { direction.x,0,direction.z };
+	if(pressed){
+		m_body->applyForce(directionBt * -m_speed * dt , m_body->getWorldTransform().getOrigin());
+	}
 
-	m_body->applyForce(directionBt * -m_speed * dt , m_body->getWorldTransform().getOrigin());
+	if (m_soundEngine && m_body->getLinearVelocity().y() < 0.3f && m_body->getLinearVelocity().y() > -0.3f)
+	{
+		m_soundEngine->setSoundVolume(m_body->getLinearVelocity().length() / 40 + 0.3f);
+		m_sound->setPlaybackSpeed(m_body->getLinearVelocity().length() / 25 + 1.0f);
+	}
 	m_body->applyDamping(dt);
 
 	btVector3 moveVector = m_body->getWorldTransform().getOrigin() - m_currentPos;
-	m_transform->Translate(vec3(moveVector.x(), moveVector.y(), moveVector.z()));
+
+	m_transform->Translate(vec3(moveVector.x(), moveVector.y(), moveVector.z())); 
 	m_currentPos = m_body->getWorldTransform().getOrigin();
+}
+
+int Player::GetLives()
+{
+	return m_lives;
+}
+
+void Player::ReduceLife()
+{
+	m_lives--;
 }
 
 string Player::GetName()
@@ -241,7 +321,7 @@ vec3 Player::GetDirection()
 
 ObjectInfo* Player::GetObjectInfo()
 {
-	m_info = new ObjectInfo(m_transform->GetMatrix(), m_modelId, 0, m_color);
+	m_info = new ObjectInfo(m_transform->GetMatrix(), m_modelId, 0, m_color, true);
 	return m_info;
 }
 
@@ -259,5 +339,165 @@ void Player::SetPos(vec3 pos)
 {
 	m_body->getWorldTransform().setOrigin(btVector3(pos.x, pos.y, pos.z));
 	m_body->setLinearVelocity(btVector3(0,0,0));
+}
 
+bool Player::GetFallen()
+{
+	return m_fallen;
+}
+
+void Player::GivePower(int type)
+{
+	if (m_powerActive) {
+		removePower(m_powerType);
+	}
+	cout << "Activating power type " << type  << endl;
+
+	m_powerType = type;
+	m_powerDuration = 300.f;
+	m_powerActive = true;
+
+	float mass;
+	btVector3 localInertia(0, 0, 0);
+	switch (type) {
+		case 0:
+			mass = m_body->getMass() * 1.5f;
+			m_body->getCollisionShape()->calculateLocalInertia(mass, localInertia);
+			m_body->setMassProps(mass, localInertia);
+			m_transform->SetScale(m_scale.x * (1.5f), m_scale.y * (1.5f), m_scale.z * (1.5f));
+			m_powerMultiplier = 1.0f;
+			break;
+
+		case 1:
+			m_body->setRestitution(m_restitution * 1.2);
+			break;
+
+		case 2:
+			m_powerMultiplier = 0.5f;
+			break;
+
+		case 3:
+			mass = m_body->getMass() / 1.5f;
+			m_body->getCollisionShape()->calculateLocalInertia(mass, localInertia);
+			m_body->setMassProps(mass, localInertia);
+			m_transform->SetScale(m_scale.x * (0.75f), m_scale.y * (0.75f), m_scale.z * (0.75f));
+			m_powerMultiplier = 1.0f;
+			break;
+		case 4:
+			mass = m_body->getMass() * 1.5f;
+			m_body->getCollisionShape()->calculateLocalInertia(mass, localInertia);
+			m_body->setMassProps(mass, localInertia);
+			m_transform->SetScale(m_scale.x * (1.5f), m_scale.y * (1.5f), m_scale.z * (1.5f));
+			m_powerMultiplier = 1.0f;
+			break;	
+
+		case 5:
+			mass = m_body->getMass() / 1.5f;
+			m_body->getCollisionShape()->calculateLocalInertia(mass, localInertia);
+			m_body->setMassProps(mass, localInertia);
+			m_transform->SetScale(m_scale.x * (0.75f), m_scale.y * (0.75f), m_scale.z * (0.75f));
+			m_powerMultiplier = 1.0f;
+			break;
+	}
+}
+
+void Player::removePower(int type)
+{
+	float mass;
+	btVector3 localInertia(0, 0, 0);
+
+	m_powerActive = false;
+	cout << "Deactivating power type " << type << " for player " << m_controllerID << endl;
+	switch (type) {
+	case 0:
+		mass = m_body->getMass() / 1.5f;
+		m_body->getCollisionShape()->calculateLocalInertia(mass, localInertia);
+		m_body->setMassProps(mass, localInertia);
+		m_powerMultiplier = 1.f;
+		m_transform->SetScale(m_scale.x, m_scale.y, m_scale.z);
+		break;
+
+	case 1:
+		m_body->setRestitution(m_restitution);
+		break;
+
+	case 2:
+		m_powerMultiplier = 1.f;
+		break;
+
+	case 3:
+		mass = m_body->getMass() * 1.5f;
+		cout << mass << endl;
+		m_body->getCollisionShape()->calculateLocalInertia(mass, localInertia);
+		m_body->setMassProps(mass, localInertia);
+		m_powerMultiplier = 1.f;
+		m_transform->SetScale(m_scale.x, m_scale.y, m_scale.z);
+		break;
+
+	case 4:
+		mass = m_body->getMass() / 1.5f;
+		cout << mass << endl;
+		m_body->getCollisionShape()->calculateLocalInertia(mass, localInertia);
+		m_body->setMassProps(mass, localInertia);
+		m_powerMultiplier = 1.f;
+		m_transform->SetScale(m_scale.x, m_scale.y, m_scale.z);
+		break;
+
+	case 5:
+		mass = m_body->getMass() * 1.5f;
+		cout << mass << endl;
+		m_body->getCollisionShape()->calculateLocalInertia(mass, localInertia);
+		m_body->setMassProps(mass, localInertia);
+		m_powerMultiplier = 1.f;
+		m_transform->SetScale(m_scale.x, m_scale.y, m_scale.z);
+		break;
+	}
+}
+
+bool Player::updatePower(float dt)
+{
+	bool destroy = false;
+	m_powerDuration = m_powerDuration - dt;
+	if (m_powerDuration <= 0.f && m_powerActive == true) {
+		m_powerActive = false;
+		destroy = true;
+	}
+
+	return destroy;
+}
+
+int Player::GetActivePower()
+{
+	return m_powerType;
+}
+
+void Player::SetFallen()
+{
+	m_fallen = true;
+}
+
+void Player::SetNotFallen()
+{
+	m_fallen = false;
+}
+
+float Player::GetLinearVelocity()
+{
+	return m_body->getLinearVelocity().length();
+}
+
+void Player::StartEngineSounds()
+{
+	if (m_soundEngine)
+	{
+		m_sound->setIsPaused(false);
+		m_soundEngine->setSoundVolume(0.3f);
+		m_sound->setPlaybackSpeed(1.0f);
+	}
+}
+
+void Player::StopEngineSounds()
+{
+	if (m_soundEngine)
+		m_sound->setIsPaused(true);
 }
