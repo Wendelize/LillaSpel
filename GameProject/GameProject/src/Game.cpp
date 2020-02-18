@@ -73,6 +73,10 @@ Game::~Game()
 
 void Game::Update(float dt)
 {
+	if (m_menu->Reset())
+	{
+		Reset();
+	}
 	if (m_menu->selectMenuActive())
 	{
 		SelectionMenu();
@@ -80,40 +84,48 @@ void Game::Update(float dt)
 	else if (m_menu->selectMenuActive() == false && m_wasSelect == true)
 	{
 		m_wasSelect = false;
+		// TODO: fixa snyggare kamera transition?
 		m_scene->SetCameraPos(vec3(0, 16, 25));
 	}
-	if ((!m_menu->Pause() && !m_wasSelect))//|| (!m_wasSelect && !m_menu->Pause()))
+	if ((!m_menu->Pause() && !m_wasSelect)) // Vet inte om det kan göras snyggare?
 	{
 		m_time += dt;
 		m_timeSinceSpawn += dt;
-		if (m_timeSinceSpawn > 5 && !m_gameOver) {
+		if (m_timeSinceSpawn > 5 && !m_gameOver) 
+		{
 			m_objectHandler->AddPowerUp();
 			m_timeSinceSpawn = 0;
 		}
-		if (!m_menu->Pause())
-		{
+		//if (!m_menu->Pause())
+		//{
 
 			if (!m_gameOver)
 				m_objectHandler->Update(dt);
 
-			if (m_objectHandler->GetNumPlayers() == 1 && !m_gameOver) {
+			if (m_objectHandler->GetNumPlayers() == 1 && !m_gameOver) 
+			{
 				m_gameOver = true;
-				if (m_soundEngine) {
+				if (m_soundEngine) 
+				{
 					m_soundEngine->stopAllSounds();
 					m_soundEngine->play2D("src/Audio/Music - Win.mp3", true);
 					m_objectHandler->StopAllSound();
 				}
 			}
-			if (m_maxTime - m_time <= 30.f && !m_fastMusic) {
-				if (m_soundEngine) {
+			if (m_maxTime - m_time <= 30.f && !m_fastMusic) 
+			{
+				if (m_soundEngine) 
+				{
 					m_music->setPlaybackSpeed(1.4);
 					m_fastMusic = true;
 				}
 
 			}
-			if (m_time > m_maxTime && !m_gameOver) {
+			if (m_time > m_maxTime && !m_gameOver) 
+			{
 				m_gameOver = true;
-				if (m_soundEngine) {
+				if (m_soundEngine) 
+				{
 					m_soundEngine->stopAllSounds();
 					m_soundEngine->play2D("src/Audio/Music - Win.mp3", true);
 					m_objectHandler->StopAllSound();
@@ -148,9 +160,10 @@ void Game::Update(float dt)
 			{
 				m_toggle = false;
 			}
-		}
-		Render();
+		//}
+		
 	}
+	Render();
 
 }
 
@@ -181,6 +194,28 @@ void Game::Render()
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 	m_scene->SwapBuffer();
+}
+
+void Game::Reset()
+{
+	m_menu->ResetReset();
+	m_gameOver = false;
+	m_time = 0;
+	m_maxTime = 240.f;
+	m_timeSinceSpawn = 0;
+	// delete remeaning players so we can spawn them back att spawn positions
+	for (int i = 0; i < 4; i++)
+	{
+		if (m_objectHandler->GetNumPlayers() > 0)
+		{
+			m_objectHandler->RemovePlayer(m_objectHandler->GetNumPlayers() - 1);
+
+		}
+	}
+	srand(time(NULL));
+	cout << rand() % 4 << endl;
+	m_objectHandler->AddPlayer(vec3(-10, 2, 3), 0, rand() % 4, vec3(0, 0, 1), m_cars[0]); // Passa modell
+	m_objectHandler->AddPlayer(vec3(10, 2, 3), 1, rand() % 4, vec3(0, 1, 0), m_cars[2]);
 }
 
 GLFWwindow* Game::GetWindow()

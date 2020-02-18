@@ -23,6 +23,8 @@ public:
 	bool selectMenuActive();
 	void LoadMenuPic();
 	bool Pause();
+	bool Reset();
+	void ResetReset();
 
 
 private:
@@ -30,6 +32,7 @@ private:
 	ObjectHandler* m_objHand;
 	GLuint m_mainMenuPic;
 	int m_menuPicWidth, m_menuPicHeight;
+	bool m_reset = false;
 
 	int m_selected[4] = { 0, 0, 0, 0 };
 	int m_continue = 0;

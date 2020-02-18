@@ -515,11 +515,13 @@ void Menu::RenderMenu(bool gameOver, float timer, float maxTime, Model* model)
 			{
 				// TODO: Fixa så spelet resettas
 				m_menu = ActiveMenu::playerHud;
+				m_reset = true;
 			}
 			ImGui::SetCursorPos(ImVec2(((float)w->GetWidht() / 3) / 3 - 100, 215));
 			if (ImGui::Button("Main Menu", ImVec2(400, 75)))
 			{
 				m_menu = ActiveMenu::start;
+				m_reset = true;
 			}
 			ImGui::SetCursorPos(ImVec2(((float)w->GetWidht() / 3) / 3, 315));
 			if (ImGui::Button("Exit", ImVec2(200, 75)))
@@ -695,6 +697,28 @@ bool Menu::Pause()
 	if (m_menu != ActiveMenu::playerHud && m_menu != ActiveMenu::noMenu && m_menu != ActiveMenu::select)
 		return true;
 	return false;
+}
+
+bool Menu::Reset()
+{
+	return m_reset;
+}
+
+void Menu::ResetReset()
+{
+	m_reset = false;
+	// reseta också alla värden som måste resettas
+	for (int i = 0; i < 4; i++)
+	{
+		m_selected[i] = 0;
+	}
+	m_p3Joined = false;
+	m_p4Joined = false;
+	m_continue = 0;
+	m_p1ModelId = 0;
+	m_p2ModelId = 0;
+	m_p3ModelId = 0;
+	m_p4ModelId = 0;
 }
 
 

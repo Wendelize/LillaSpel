@@ -36,6 +36,7 @@ public:
 	~Game();
 	void Update(float dt);
 	void Render();
+	void Reset();
 	GLFWwindow* GetWindow();
 	
 };
