@@ -86,9 +86,18 @@ void Game::Update(float dt)
 			m_objectHandler->StopAllSound();
 		}
 	}
+<<<<<<< HEAD
 	if (m_maxTime - m_time <= 30.f && !m_fastMusic && m_soundEngine) {
 		m_music->setPlaybackSpeed(1.4);
 		m_fastMusic = true;
+=======
+	if (m_maxTime - m_time <= 30.f && !m_fastMusic) {
+		if (m_soundEngine)
+		{
+			m_music->setPlaybackSpeed(1.4);
+			m_fastMusic = true;
+		}
+>>>>>>> master
 	}
 	if (m_time > m_maxTime && !m_gameOver) {
 		m_gameOver = true;
