@@ -75,10 +75,14 @@ void Game::Update(float dt)
 		m_timeSinceSpawn = 0;
 	}
 
-	if(!m_gameOver)
+	if (!m_gameOver)
+	{
 		m_objectHandler->Update(dt);
+	}
+		
 	
-	if (m_objectHandler->GetNumPlayers() == 1 && !m_gameOver) {
+	if (m_objectHandler->GetNumPlayers() == 1 && !m_gameOver) 
+	{
 		m_gameOver = true;
 		if (m_soundEngine) {
 			m_soundEngine->stopAllSounds();
@@ -86,20 +90,21 @@ void Game::Update(float dt)
 			m_objectHandler->StopAllSound();
 		}
 	}
-<<<<<<< HEAD
-	if (m_maxTime - m_time <= 30.f && !m_fastMusic && m_soundEngine) {
+	if (m_maxTime - m_time <= 30.f && !m_fastMusic && m_soundEngine)
+	{
 		m_music->setPlaybackSpeed(1.4);
 		m_fastMusic = true;
-=======
-	if (m_maxTime - m_time <= 30.f && !m_fastMusic) {
+	}
+	if (m_maxTime - m_time <= 30.f && !m_fastMusic) 
+	{
 		if (m_soundEngine)
 		{
 			m_music->setPlaybackSpeed(1.4);
 			m_fastMusic = true;
 		}
->>>>>>> master
 	}
-	if (m_time > m_maxTime && !m_gameOver) {
+	if (m_time > m_maxTime && !m_gameOver) 
+	{
 		m_gameOver = true;
 		if (m_soundEngine) {
 			m_soundEngine->stopAllSounds();
@@ -124,8 +129,6 @@ void Game::Update(float dt)
 	{
 		m_toggle = false;
 	}
-
-
 }
 
 void Game::Render(float dt)
