@@ -15,6 +15,7 @@ private:
 	ISoundEngine* m_soundEngine;
 	ISound* m_music;
 	vector<ISoundSource*> m_songs;
+	MCubes* m_mCube;
 
 	//Debug variables
 	bool m_debug, m_toggle;
@@ -24,6 +25,7 @@ private:
 	float m_time;
 	float m_maxTime;
 	float m_timeSinceSpawn;
+	float m_timeSwapTrack;
 	bool m_gameOver = false;
 	bool m_fastMusic = false;
 	void Debug();

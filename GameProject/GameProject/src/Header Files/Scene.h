@@ -1,5 +1,6 @@
 #pragma once
 #include "Include.h"
+#include "MCubes.h"
 
 class Scene
 {
@@ -39,11 +40,12 @@ public:
 
 	void Init();
 	void LightToShader();
-	void Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world);
+	void Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, MCubes* cube);
 	void RenderSceneInfo(Shader * shader, vector<ObjectInfo*> objects);
 	void RenderSkybox();
 	void RenderShadows(vector<ObjectInfo*> objects);
 	void RenderImGui(btDiscreteDynamicsWorld* world);
+	void renderMCubes(MCubes* cube);
 	void SwapBuffer();
 
 

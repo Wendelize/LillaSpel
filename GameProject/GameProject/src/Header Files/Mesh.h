@@ -45,5 +45,7 @@ public:
 	void SetMaterial(Shader* shader);
 	void Draw(Shader* shader);
 
+	void UpdateMesh(vector<VertexData> vertices, vector<unsigned int> indices);
+
 
 };

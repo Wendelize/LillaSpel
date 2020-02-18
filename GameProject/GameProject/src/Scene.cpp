@@ -2,8 +2,8 @@
 
 Scene::Scene()
 {
-	m_screenWidth = 1920;
-	m_screenHeight = 1080;
+	m_screenWidth = 1280;
+	m_screenHeight = 720;
 	m_shadowMapWidth = 1500;
 	m_shadowMapHeight = 1500;
 	m_bloomTextureScale = 0.4f;
@@ -11,7 +11,7 @@ Scene::Scene()
 
 	m_window = new Window(m_screenWidth, m_screenHeight);
 
-	m_camera = new Camera({ 0, 16, 25 });
+	m_camera = new Camera({ 0, 15, 28 });
 	m_modelShader = new Shader("src/Shaders/SceneVS.glsl", "src/Shaders/SceneFS.glsl");
 	m_skyboxShader = new Shader("src/Shaders/SkyboxVS.glsl", "src/Shaders/SkyboxFS.glsl");
 	m_skybox = new Skybox();
@@ -149,7 +149,7 @@ void Scene::LightToShader()
 	}
 }
 
-void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
+void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, MCubes* cube)
 {
 	/* Render here */
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -177,6 +177,7 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
 	// Light uniforms
 	LightToShader();
 
+	renderMCubes(cube);
 	// Draw all objects
 	RenderSceneInfo(m_modelShader, objects);
 
@@ -274,6 +275,11 @@ void Scene::RenderImGui(btDiscreteDynamicsWorld* world)
 		world->debugDrawWorld();
 
 	}
+}
+
+void Scene::renderMCubes(MCubes* cube)
+{
+	cube->RenderCubes(m_modelShader);
 }
 
 void Scene::SwapBuffer()
