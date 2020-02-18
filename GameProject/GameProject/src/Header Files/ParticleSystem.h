@@ -52,8 +52,8 @@ public:
 	void GenerateParticlesForVictory(float particleAmount, vec3 emitterPos);
 	void Victory(float dt, vec3 emitterPos);
 
-	void setActive();
-	bool getActive();
+	void SetActive();
+	bool GetActive();
 
 
 };

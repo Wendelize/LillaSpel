@@ -10,8 +10,6 @@ ParticleSystem::ParticleSystem(int nrOfParticles)
 	m_active = false;
 
 	this->Init();
-
-	//GenerateParticles(float(nrOfParticles));
 }
 
 ParticleSystem::~ParticleSystem()
@@ -55,7 +53,7 @@ void ParticleSystem::Init()
 
 	glGenBuffers(1, &m_particleColorBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, m_particleColorBuffer);
-	glBufferData(GL_ARRAY_BUFFER, m_nrOfParticle * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, m_nrOfParticle * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW);
 }
 
 int ParticleSystem::FindParticle()
@@ -84,15 +82,11 @@ void ParticleSystem::SortParticles()
 
 void ParticleSystem::GenerateParticles(float dt, vec3 emitterPos, float velocity)
 {
-	/*int newparticles = (int)(dt * 10000.0);
-	if (newparticles > (int)(0.016f * 10000.0))
-		newparticles = (int)(0.016f * 10000.0);*/
-
+	//NOT IN USE ATM - "Template"
 	int newparticles = m_nrOfParticle;
 	for (int i = 0; i < newparticles; i++) 
 	{
-		//int particleIndex = FindParticle();
-		m_particles[i].life = 2.5f; // This particle will live 5 seconds.
+		m_particles[i].life = 2.5f; 
 		m_particles[i].position = emitterPos;
 
 		float spread = velocity;
@@ -110,13 +104,13 @@ void ParticleSystem::GenerateParticles(float dt, vec3 emitterPos, float velocity
 		m_particles[i].color.z = rand() % 256;
 		m_particles[i].color.w = (rand() % 256) / 3;
 
-		m_particles[i].size = 0.3;// (rand() % 1000) / 2000.0f + 0.1f;
-
+		m_particles[i].size = 0.3;
 	}
 }
 
 void ParticleSystem::SimulateParticles(float dt, vec3 emitterPos)
 {
+	//IS NOT IN USE ATM - "template"
 	m_particleCount = 0;
 	for (int i = 0; i < m_nrOfParticle; i++) {
 
@@ -145,8 +139,8 @@ void ParticleSystem::SimulateParticles(float dt, vec3 emitterPos)
 				m_particleColor[4 * m_particleCount + 2] = p.color.z;
 				m_particleColor[4 * m_particleCount + 3] = p.color.w; 
 			}
-			else {
-
+			else 
+			{
 				p.life = 2.5f; // This particle will live 5 seconds.
 				p.position = emitterPos;
 
@@ -168,7 +162,6 @@ void ParticleSystem::SimulateParticles(float dt, vec3 emitterPos)
 				p.size = 0.3;
 			}
 			m_particleCount++;
-	
 	}
 	//SortParticles();	//Beh�ver inte sortera om vi revivar partikeln s� fort vi hittar att den �r d�d.
 }
@@ -180,8 +173,8 @@ void ParticleSystem::Draw()
 	glBufferSubData(GL_ARRAY_BUFFER, 0, m_particleCount * sizeof(GLfloat) * 4, m_particlePos);
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_particleColorBuffer);
-	glBufferData(GL_ARRAY_BUFFER, m_nrOfParticle * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW); 
-	glBufferSubData(GL_ARRAY_BUFFER, 0, m_particleCount * sizeof(GLubyte) * 4, m_particleColor);
+	glBufferData(GL_ARRAY_BUFFER, m_nrOfParticle * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, m_particleCount * sizeof(GLfloat) * 4, m_particleColor);
 
 	// 1rst attribute buffer : vertices
 	glEnableVertexAttribArray(0);
@@ -229,16 +222,12 @@ void ParticleSystem::GenerateParticlesForCollision( vec3 emitterPos, float veloc
 			(rand() % 2000 - 1000.0f) / 1000.0f,
 			(rand() % 2000 - 1000.0f) / 1000.0f
 		);
-
 		m_particles[i].velocity = maindir + randomdir * spread;
 
-		vec4  v = vec4(1, 1, 1, 1);//rand() % 256 , rand() % 256 , 0.1, 1); //vec4(1, 1, 1, 1);//
-		m_particles[i].color = v;
-;		//m_particles[i].color.x = 1;
-		//m_particles[i].color.y = 0;
-		//m_particles[i].color.z = 0;
-		//m_particles[i].color.w = 0;// (rand() % 256) / 3;
-
+		float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+		vec4  rgb = vec4(1.0f, r, 0, 1.0f);
+		m_particles[i].color = rgb;
+;
 		m_particles[i].size = 0.25;
 	}
 }
@@ -247,22 +236,19 @@ void ParticleSystem::Collision(float dt)
 {
 	int nrOfDead = 0;
 	m_particleCount = 0;
-	for (int i = 0; i < m_nrOfParticle; i++) {
-
-		Particle& p = m_particles[i]; // shortcut
-
+	for (int i = 0; i < m_nrOfParticle; i++) 
+	{
+		Particle& p = m_particles[i];
 		if (p.life > 0.0f)
 		{
-			// Decrease life
 			p.life -= dt;
 
 			// Simulate simple physics : gravity only, no collisions
 			p.velocity += glm::vec3(0.0f, -70.f, 0.0f) * (float)dt * 0.5f;
 			p.position += p.velocity * (float)dt;
 			p.cameraDist = length(p.position - vec3(0, 3, 33));
-			p.size *= 0.95; //Ist�llet  f�r transparens minska storlek
+			p.size *= 0.95; //Instead of trancparancy reduce size
 			
-
 			// Fill the GPU buffer
 			m_particlePos[4 * m_particleCount + 0] = p.position.x;
 			m_particlePos[4 * m_particleCount + 1] = p.position.y;
@@ -274,14 +260,12 @@ void ParticleSystem::Collision(float dt)
 			m_particleColor[4 * m_particleCount + 1] = p.color.y;
 			m_particleColor[4 * m_particleCount + 2] = p.color.z;
 			m_particleColor[4 * m_particleCount + 3] = p.color.w;
-
-		
-			
 		}
-		else {
+		else
+		{
 			p.life = 0;
 			nrOfDead++;
-			
+
 			if (nrOfDead >= m_nrOfParticle)
 			{
 				m_active = false;
@@ -293,13 +277,10 @@ void ParticleSystem::Collision(float dt)
 
 void ParticleSystem::GenerateParticlesForVictory(float dt, vec3 emitterPos)
 {
-	int newparticles = (int)(dt * 1000.0);
-	if (newparticles > (int)(0.016f * 1000.0))
-		newparticles = (int)(0.016f * 1000.0);
-	
-	for (int i = 0; i < newparticles; i++) {
+	for (int i = 0; i < m_nrOfParticle; i++)
+	{
 		int particleIndex = FindParticle();
-		m_particles[particleIndex].life = 3.f; // This particle will live 5 seconds.
+		m_particles[particleIndex].life = 3.f;
 		m_particles[particleIndex].position = emitterPos;
 
 		float spread = 5.0f;
@@ -312,13 +293,15 @@ void ParticleSystem::GenerateParticlesForVictory(float dt, vec3 emitterPos)
 
 		m_particles[particleIndex].velocity = maindir + randomdir * spread;
 
-		m_particles[particleIndex].color.x = rand() % 256;
-		m_particles[particleIndex].color.y = rand() % 256;
-		m_particles[particleIndex].color.z = 1.f;
-		m_particles[particleIndex].color.w = (rand() % 256) / 3;
+		float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+		float g = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+		float b = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+		m_particles[particleIndex].color.x = r;
+		m_particles[particleIndex].color.y = g;
+		m_particles[particleIndex].color.z = b;
+		m_particles[particleIndex].color.w = 1;
 
-		m_particles[particleIndex].size = 0.25;// (rand() % 1000) / 2000.0f + 0.1f;
-
+		m_particles[particleIndex].size = 0.25;
 	}
 }
 
@@ -327,12 +310,9 @@ void ParticleSystem::Victory(float dt, vec3 emitterPos)
 	m_particleCount = 0;
 	for (int i = 0; i < m_nrOfParticle; i++)
 	{
-
-		Particle& p = m_particles[i]; // shortcut
-
+		Particle& p = m_particles[i]; 
 		if (p.life > 0.0f)
-		{
-			// Decrease life
+		{			
 			p.life -= dt;
 			if (p.life > 0.0f)
 			{
@@ -353,7 +333,6 @@ void ParticleSystem::Victory(float dt, vec3 emitterPos)
 				m_particleColor[4 * m_particleCount + 1] = p.color.y;
 				m_particleColor[4 * m_particleCount + 2] = p.color.z;
 				m_particleColor[4 * m_particleCount + 3] = p.color.w;
-
 			}
 			else
 			{
@@ -367,12 +346,12 @@ void ParticleSystem::Victory(float dt, vec3 emitterPos)
 	SortParticles();
 }
 
-void ParticleSystem::setActive()
+void ParticleSystem::SetActive()
 {
 	m_active = true;
 }
 
-bool ParticleSystem::getActive()
+bool ParticleSystem::GetActive()
 {
 	return m_active;
 }

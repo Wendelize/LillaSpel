@@ -375,7 +375,6 @@ void Scene::RenderParticlesCollision(float dt, btDiscreteDynamicsWorld* world)
 			ps->Collision(dt);
 			ps->Draw();
 		}
-
 	}
 }
 
@@ -388,15 +387,9 @@ void Scene::RenderParticlesVictory(ObjectInfo* object, float dt)
 	
 	for (auto ps : m_particles)
 	{
-		if (ps->getActive() == false)
-		{
-			ps->setActive();
-			ps->GenerateParticles(dt, vec3(object->modelMatrix[3][0], object->modelMatrix[3][1], object->modelMatrix[3][2]), 5.0f);
-		}
-		//ps->GenerateParticlesForVictory(dt, vec3(object->modelMatrix[3][0], object->modelMatrix[3][1], object->modelMatrix[3][2]));
+		ps->GenerateParticlesForVictory(dt, vec3(object->modelMatrix[3][0], object->modelMatrix[3][1], object->modelMatrix[3][2]));
 		ps->Victory(dt, vec3(object->modelMatrix[3][0], object->modelMatrix[3][1], object->modelMatrix[3][2]));
 		ps->Draw();
-
 	}
 }
 
