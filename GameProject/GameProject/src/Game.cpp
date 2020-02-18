@@ -99,6 +99,7 @@ void Game::Update(float dt)
 	if (m_time > m_maxTime && !m_gameOver) 
 	{
 		m_gameOver = true;
+		m_winner = m_objectHandler->GetWinnerIndex();
 		if (m_soundEngine) 
 		{
 			m_soundEngine->stopAllSounds();

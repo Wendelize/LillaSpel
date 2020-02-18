@@ -232,7 +232,7 @@ void ParticleSystem::GenerateParticlesForCollision( vec3 emitterPos, float veloc
 
 		m_particles[i].velocity = maindir + randomdir * spread;
 
-		vec4  v =  vec4(rand() % 256 , rand() % 256 , 0.1, 1); //vec4(1, 1, 1, 1);//
+		vec4  v = vec4(1, 1, 1, 1);//rand() % 256 , rand() % 256 , 0.1, 1); //vec4(1, 1, 1, 1);//
 		m_particles[i].color = v;
 ;		//m_particles[i].color.x = 1;
 		//m_particles[i].color.y = 0;
