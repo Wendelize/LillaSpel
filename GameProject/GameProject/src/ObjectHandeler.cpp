@@ -240,8 +240,8 @@ void ObjectHandler::Update(float dt)
 				}
 				if (m_players[isPlayer]->GetCurrentPos().y() < -20.f && m_players[isPlayer]->GetLives() > 0)
 				{
-					m_players[isPlayer]->SetPos(vec3(rand() % 10 - 10, 7, rand() % 10 - 10));
-					m_players[isPlayer]->ReduceLife();
+					m_players[isPlayer]->SetPos(vec3(rand() % 10 - 10, 7, rand() % 10 - 10)); 
+					m_players[isPlayer]->ReduceLife(); 
 					m_players[isPlayer]->SetNotFallen();
 					m_soundEngine->setSoundVolume(1.4f);
 					m_soundEngine->play2D("src/Audio/Powerup - Spawn.mp3", false);
@@ -280,6 +280,23 @@ void ObjectHandler::Update(float dt)
 					}
 				}
 				*/
+			}
+			else
+			{
+				if (m_players[isPlayer]->GetCurrentPos().y() < -20.f && m_players[isPlayer]->GetLives() > 0)
+				{
+					m_players[isPlayer]->SetPos(vec3(rand() % 10 - 10, 7, rand() % 10 - 10));
+					m_players[isPlayer]->ReduceLife(); 
+				}
+				else 
+				{
+					if (m_players[isPlayer]->GetLives() == 0) 
+					{
+						RemovePlayer(isPlayer);
+						isPlayer--;
+
+					}
+				}
 			}
 		}
 	}
