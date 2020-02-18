@@ -275,7 +275,7 @@ void ParticleSystem::Collision(float dt)
 	}
 }
 
-void ParticleSystem::GenerateParticlesForVictory(float dt, vec3 emitterPos)
+void ParticleSystem::GenerateParticlesForVictory(vec3 emitterPos)
 {
 	for (int i = 0; i < m_nrOfParticle; i++)
 	{
@@ -337,7 +337,7 @@ void ParticleSystem::Victory(float dt, vec3 emitterPos)
 			else
 			{
 				// Particles that just died will be put at the end of the buffer in SortParticles();
-				GenerateParticlesForVictory(dt, emitterPos);
+				GenerateParticlesForVictory(emitterPos);
 				p.cameraDist = -1.0f;
 			}
 			m_particleCount++;

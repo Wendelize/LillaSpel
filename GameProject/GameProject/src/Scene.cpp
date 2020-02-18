@@ -315,7 +315,7 @@ void Scene::RenderParticlesCollision(float dt, btDiscreteDynamicsWorld* world)
 			for (auto ps : m_particles)
 			{
 				//Car A
-				if (ps->getActive() == false && A == false)
+				if (ps->GetActive() == false && A == false)
 				{
 
 					btTransform matA = obA->getWorldTransform();
@@ -332,12 +332,12 @@ void Scene::RenderParticlesCollision(float dt, btDiscreteDynamicsWorld* world)
 					}
 
 					//Set of particlesystem for collider A
-					ps->setActive();
+					ps->SetActive();
 					ps->GenerateParticlesForCollision(particlePos, fspread);
 					A = true;	
 				}
 				//Car B
-				if (ps->getActive() == false && B == false)
+				if (ps->GetActive() == false && B == false)
 				{
 					btTransform matB = obB->getWorldTransform();
 					btVector3 vecB = matB.getOrigin();
@@ -352,7 +352,7 @@ void Scene::RenderParticlesCollision(float dt, btDiscreteDynamicsWorld* world)
 					}
 
 					//Set of particlesystem for collider B
-					ps->setActive();
+					ps->SetActive();
 					ps->GenerateParticlesForCollision(particlePos, fspread);
 					B = true;
 					//Both particlesystem are set of, no need to search futher
@@ -365,7 +365,7 @@ void Scene::RenderParticlesCollision(float dt, btDiscreteDynamicsWorld* world)
 	// Render the active particlesystems
 	for (auto ps : m_particles)
 	{
-		if (ps->getActive() == true)
+		if (ps->GetActive() == true)
 		{
 			mat4 temp = m_viewMatrix;
 			ps->GetShader()->UseShader();
@@ -387,7 +387,7 @@ void Scene::RenderParticlesVictory(ObjectInfo* object, float dt)
 	
 	for (auto ps : m_particles)
 	{
-		ps->GenerateParticlesForVictory(dt, vec3(object->modelMatrix[3][0], object->modelMatrix[3][1], object->modelMatrix[3][2]));
+		ps->GenerateParticlesForVictory(vec3(object->modelMatrix[3][0], object->modelMatrix[3][1], object->modelMatrix[3][2]));
 		ps->Victory(dt, vec3(object->modelMatrix[3][0], object->modelMatrix[3][1], object->modelMatrix[3][2]));
 		ps->Draw();
 	}
