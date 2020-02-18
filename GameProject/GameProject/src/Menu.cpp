@@ -481,6 +481,7 @@ void Menu::RenderMenu(bool gameOver, float timer, float maxTime, Model* model)
 			if (ImGui::Button("Main Menu", ImVec2(400, 75)))
 			{
 				m_menu = ActiveMenu::start;
+				m_reset = true;
 			}
 			ImGui::SetCursorPos(ImVec2(((float)w->GetWidht() / 3) / 3, 315));
 			if (ImGui::Button("Exit", ImVec2(200, 75)))
@@ -513,7 +514,6 @@ void Menu::RenderMenu(bool gameOver, float timer, float maxTime, Model* model)
 			ImGui::SetCursorPos(ImVec2(((float)w->GetWidht() / 3) / 3 - 25, 115));
 			if (ImGui::Button("Restart", ImVec2(250, 75)))
 			{
-				// TODO: Fixa så spelet resettas
 				m_menu = ActiveMenu::playerHud;
 				m_reset = true;
 			}

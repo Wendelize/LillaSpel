@@ -9,7 +9,10 @@ Game::Game()
 	m_time = 0;
 	m_maxTime = 240.f;
 	m_menu = new Menu(m_scene, m_objectHandler);
-	// noMenu, start, select, pause, stats, restart, playerHud;
+	// noMenu, start, select, pause, stats, restart, playerHud; // stats finns inte än
+	// väl playerHud om ni vill spela utan start menu
+	// välj noMenu om ni vill spela utan HUD och ingen restart, 
+	//	Pause meny bör fortfarande fungera med noMenu
 	m_menu->SetActiveMenu(Menu::ActiveMenu::start);
 	m_menu->LoadMenuPic();
 
@@ -210,6 +213,10 @@ void Game::Reset()
 		{
 			m_objectHandler->RemovePlayer(m_objectHandler->GetNumPlayers() - 1);
 
+		}
+		if (m_objectHandler->GetNumPowerUps() > 0)
+		{
+			m_objectHandler->RemovePowerUp(m_objectHandler->GetNumPowerUps() - 1);
 		}
 	}
 	srand(time(NULL));

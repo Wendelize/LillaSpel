@@ -44,6 +44,7 @@ public:
 	void RemovePlayer(int index);
 	void RemovePlatform();
 	void AddPowerUp();
+	int GetNumPowerUps();
 	void RemovePowerUp(int index);
 	int GetNumPlayers();
 	int GetPlayerLives(int index);

@@ -156,7 +156,7 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 	// TODO: hitta bätter plats för getView()
-	m_viewMatrix = m_camera->GetView();
+	//m_viewMatrix = m_camera->GetView();
 
 	// Render shadows
 	RenderShadows(objects);

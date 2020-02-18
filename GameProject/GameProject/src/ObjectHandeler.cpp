@@ -387,6 +387,11 @@ void ObjectHandler::AddPowerUp()
 	}
 }
 
+int ObjectHandler::GetNumPowerUps()
+{
+	return m_powerUps.size();
+}
+
 void ObjectHandler::RemovePowerUp(int index)
 {
 	m_dynamicsWorld->removeCollisionObject(m_powerUps.at(index)->getObject());
