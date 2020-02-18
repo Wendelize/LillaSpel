@@ -79,6 +79,9 @@
     <ClCompile Include="src\Header Files\PowerUp.cpp">
       <Filter>Src</Filter>
     </ClCompile>
+    <ClCompile Include="src\Header Files\MarchingCubes.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Header Files\Camera.h">
@@ -163,6 +166,9 @@
       <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="src\Header Files\PowerUp.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Header Files\MarchingCubes.h">
       <Filter>Header</Filter>
     </ClInclude>
   </ItemGroup>

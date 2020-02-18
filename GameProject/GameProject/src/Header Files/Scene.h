@@ -1,5 +1,6 @@
 #pragma once
 #include "Include.h"
+#include "MarchingCubes.h"
 
 class Scene
 {
@@ -12,6 +13,7 @@ private:
 	Skybox * m_skybox;
 	Bloom  * m_bloom;
 	ShadowMap* m_shadowMap;
+	MarchingCubes* m_cube;
 
 	bool m_debug = false;
 	bool m_toggle = false;

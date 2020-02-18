@@ -1,5 +1,6 @@
 ﻿#include "Header Files/Scene.h"
 
+
 Scene::Scene()
 {
 	m_window = new Window(1280, 720);
@@ -15,6 +16,7 @@ Scene::Scene()
 	m_projMatrix = mat4(1.0);
 	m_viewMatrix = mat4(1.0);
 
+	m_cube = new MarchingCubes;
 }
 
 Scene::~Scene()
@@ -49,7 +51,7 @@ Scene::~Scene()
 	delete m_skybox;
 	delete m_bloom;
 	delete m_window;
-
+	delete m_cube;
 }
 
 void Scene::Init()
@@ -153,6 +155,8 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
 	// Texture(shadowmap)
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_shadowMap->GetTexture());
+
+	m_cube->Update();
 
 	// Light uniforms
 	LightToShader();
