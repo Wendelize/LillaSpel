@@ -24,8 +24,9 @@ void Mesh::SetUpMesh()
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*)0);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*)offsetof(VertexData, normal));// BUFFER_OFFSET(sizeof(float) * 3));
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*)offsetof(VertexData, uv));// BUFFER_OFFSET(sizeof(float) * 6));
-	glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*)offsetof(VertexData, color));// BUFFER_OFFSET(sizeof(float) * 9));
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*)offsetof(VertexData, color));// BUFFER_OFFSET(sizeof(float) * 9));
+	glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*)offsetof(VertexData, uv));// BUFFER_OFFSET(sizeof(float) * 6));
+	
 
 	glBindVertexArray(0);
 }

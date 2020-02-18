@@ -7,11 +7,14 @@ private:
 
 	Window * m_window;
 	Shader * m_modelShader,
-		   * m_skyboxShader;
+		   * m_skyboxShader,
+		   * m_skyDomeShader,
+		   * m_skyPlaneShader;
 	Camera * m_camera;
 	Skybox * m_skybox;
+	Sky	   * m_sky;
 	Bloom  * m_bloom;
-	ShadowMap* m_shadowMap;
+	ShadowMap * m_shadowMap;
 
 	bool m_debug = false;
 	bool m_toggle = false;
@@ -39,9 +42,10 @@ public:
 
 	void Init();
 	void LightToShader();
-	void Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world);
+	void Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, float dt);
 	void RenderSceneInfo(Shader * shader, vector<ObjectInfo*> objects);
 	void RenderSkybox();
+	void RenderSky();
 	void RenderShadows(vector<ObjectInfo*> objects);
 	void RenderImGui(btDiscreteDynamicsWorld* world);
 	void SwapBuffer();

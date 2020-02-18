@@ -4,17 +4,20 @@ Scene::Scene()
 {
 	m_screenWidth = 1920;
 	m_screenHeight = 1080;
-	m_shadowMapWidth = 1500;
-	m_shadowMapHeight = 1500;
+	m_shadowMapWidth = 1200;
+	m_shadowMapHeight = 1200;
 	m_bloomTextureScale = 0.4f;
 	m_bloomNrOfGaussianBlur = 3;
 
 	m_window = new Window(m_screenWidth, m_screenHeight);
 
-	m_camera = new Camera({ 0, 16, 25 });
+	m_camera = new Camera({ 0, 22, 28 });
 	m_modelShader = new Shader("src/Shaders/SceneVS.glsl", "src/Shaders/SceneFS.glsl");
 	m_skyboxShader = new Shader("src/Shaders/SkyboxVS.glsl", "src/Shaders/SkyboxFS.glsl");
+	m_skyDomeShader = new Shader("src/Shaders/SkyDomeVS.glsl", "src/Shaders/SkyDomeFS.glsl");
+	m_skyPlaneShader = new Shader("src/Shaders/SkyPlaneVS.glsl", "src/Shaders/SkyPlaneFS.glsl");
 	m_skybox = new Skybox();
+	m_sky = new Sky();
 	m_shadowMap = new ShadowMap(m_shadowMapWidth, m_shadowMapHeight);
 	m_bloom = new Bloom(m_screenWidth, m_screenHeight, m_bloomTextureScale);
 
@@ -56,9 +59,12 @@ Scene::~Scene()
 
 	delete m_modelShader;
 	delete m_skyboxShader;
+	delete m_skyDomeShader;
+	delete m_skyPlaneShader;
 	delete m_camera;
 	delete m_shadowMap;
 	delete m_skybox;
+	delete m_sky;
 	delete m_bloom;
 	delete m_window;
 
@@ -91,10 +97,6 @@ void Scene::Init()
 	m_power.push_back(new Model("src/Models/PowerUp.obj"));
 	m_power.push_back(new Model("src/Models/PowerUpCar.obj"));
 	//m_power.push_back(new Model("src/Models/PowerUp.obj"));
-
-
-
-
 
 	// Lights
 	AddDirLight(vec3(-1, -1, 0), { 1,1,1 });
@@ -149,7 +151,7 @@ void Scene::LightToShader()
 	}
 }
 
-void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
+void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, float dt)
 {
 	/* Render here */
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -161,6 +163,11 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
 	glBindFramebuffer(GL_FRAMEBUFFER, m_bloom->getFBO());
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	//RENDER SKY DOME HERE
+	m_sky->Update(dt);
+	RenderSky();
+	
 
 	// Matrix uniforms
 	m_modelShader->UseShader();
@@ -184,7 +191,7 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
 	RenderImGui(world);
 
 	// Render Skybox
-	RenderSkybox();
+	//RenderSkybox();
 
 	m_bloom->PingPongRender(m_bloomNrOfGaussianBlur);
 
@@ -229,6 +236,23 @@ void Scene::RenderSkybox()
 	m_skyboxShader->SetUniform("u_View", mat4(mat3(m_camera->GetView())));
 	m_skyboxShader->SetUniform("u_Projection", m_projMatrix);
 	m_skybox->DrawSkybox(m_skyboxShader);
+}
+
+void Scene::RenderSky()
+{
+	glCullFace(GL_FRONT);
+
+	glDepthFunc(GL_LEQUAL);
+	glDepthMask(GL_FALSE);
+
+	m_sky->RenderSkyDome(m_skyDomeShader, translate(mat4(1.0f), m_camera->GetPos()), m_camera->GetView(), m_projMatrix);
+
+	glCullFace(GL_BACK);
+
+	m_sky->RenderSkyPlane(m_skyPlaneShader, translate(mat4(1.0f), m_camera->GetPos()), m_camera->GetView(), m_projMatrix);
+
+	glDepthMask(GL_TRUE);
+	glDepthFunc(GL_LESS);
 }
 
 void Scene::RenderShadows(vector<ObjectInfo*> objects)

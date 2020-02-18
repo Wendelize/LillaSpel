@@ -79,6 +79,9 @@
     <ClCompile Include="src\Header Files\PowerUp.cpp">
       <Filter>Src</Filter>
     </ClCompile>
+    <ClCompile Include="src\Sky.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Header Files\Camera.h">
@@ -165,6 +168,9 @@
     <ClInclude Include="src\Header Files\PowerUp.h">
       <Filter>Header</Filter>
     </ClInclude>
+    <ClInclude Include="src\Header Files\Sky.h">
+      <Filter>Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Shaders\ShadowFS.glsl">
@@ -195,6 +201,18 @@
       <Filter>Shader</Filter>
     </None>
     <None Include="src\Shaders\SkyboxVS.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="src\Shaders\SkyDomeFS.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="src\Shaders\SkyDomeVS.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="src\Shaders\SkyPlaneFS.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="src\Shaders\SkyPlaneVS.glsl">
       <Filter>Shader</Filter>
     </None>
   </ItemGroup>

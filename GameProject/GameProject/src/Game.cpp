@@ -7,7 +7,7 @@ Game::Game()
 	m_scene = new Scene();
 	m_scene->Init(); // H�r skapas modellerna
 	m_time = 0;
-	m_maxTime = 60.f;
+	m_maxTime = 120;
 	m_debug = false;
 	m_toggle = false;
 	m_platforms = m_scene->GetModels(0);
@@ -86,7 +86,7 @@ void Game::Update(float dt)
 			m_objectHandler->StopAllSound();
 		}
 	}
-	if (m_maxTime - m_time <= 30.f && !m_fastMusic) {
+	if (m_maxTime - m_time <= 30.f && !m_fastMusic && m_soundEngine) {
 		m_music->setPlaybackSpeed(1.4);
 		m_fastMusic = true;
 	}
@@ -119,10 +119,10 @@ void Game::Update(float dt)
 
 }
 
-void Game::Render()
+void Game::Render(float dt)
 {
 	m_objects = m_objectHandler->GetObjects();
-	m_scene->Render(m_objects, m_objectHandler->GetWorld());
+	m_scene->Render(m_objects, m_objectHandler->GetWorld(), dt);
 
 	if (m_debug)
 	{

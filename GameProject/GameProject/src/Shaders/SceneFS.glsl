@@ -114,7 +114,7 @@ vec3 CalcDirLight(Light light, vec3 p, vec3 n, vec3 eye, bool blinn, bool shadow
     }
     else if(shadow) {
         float shadow = CalcShadow(light, vi.positionLightSpace, p, n, eye);
-        return (ambient + (0.3 - shadow) * (diffuse + specular)) * light.color;
+        return (ambient + (0.5 - shadow) * (diffuse + specular)) * light.color;
     }
 }
 
