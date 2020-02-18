@@ -13,7 +13,7 @@ Game::Game()
 	// väl playerHud om ni vill spela utan start menu
 	// välj noMenu om ni vill spela utan HUD och ingen restart, 
 	//	Pause meny bör fortfarande fungera med noMenu
-	m_menu->SetActiveMenu(Menu::ActiveMenu::start);
+	m_menu->SetActiveMenu(Menu::ActiveMenu::restart);
 	m_menu->LoadMenuPic();
 
 	m_debug = false;
@@ -22,10 +22,9 @@ Game::Game()
 	m_cars = m_scene->GetModels(1);
 	m_timeSinceSpawn = 0;
 	m_objectHandler->AddPlatform(0, m_platforms[0]); // Passa modell
-	srand(time(NULL));
-	cout << rand() % 4 << endl;
-	m_objectHandler->AddPlayer(vec3(-10, 2, 3), 0, rand() % 4, vec3(0, 0, 1), m_cars[0]); // Passa modell
-	m_objectHandler->AddPlayer(vec3(10, 2, 3), 1, rand() % 4, vec3(0, 1, 0), m_cars[2]); // Passa modell
+
+	m_objectHandler->AddPlayer(vec3(-10, 2, 3), 0, 0, vec3(0, 0, 1), m_cars[0]); // Passa modell
+	m_objectHandler->AddPlayer(vec3(10, 2, 3), 1, 0, vec3(0, 1, 0), m_cars[2]); // Passa modell
 	//m_objectHandler->AddPlayer(vec3(4, 7, -4), 2, rand() % 4, vec3(1, 1, 0), m_cars[1]); // Passa modell
 	//m_objectHandler->AddPlayer(vec3(-4, 7, -4), 3, rand() % 4, vec3(1, 1, 0), m_cars[3]); // Passa modell
 	
@@ -41,7 +40,8 @@ Game::Game()
 			m_soundEngine->play2D("src/Audio/Music - Win.mp3", GL_TRUE);
 			m_soundEngine->play2D("src/Audio/Music - 16bit Sea Shanty 2.mp3", GL_TRUE);
 		*/
-		int randomNumber = 4;
+		srand(time(NULL));
+		int randomNumber = rand() % 5;
 		m_songs.push_back(m_soundEngine->addSoundSourceFromFile("src/Audio/Music - 16bit Sea Shanty 2.mp3"));
 		m_songs.push_back(m_soundEngine->addSoundSourceFromFile("src/Audio/Music - 16bit Deja Vu.mp3"));
 		m_songs.push_back(m_soundEngine->addSoundSourceFromFile("src/Audio/Music - Main Game.mp3"));
@@ -76,10 +76,12 @@ Game::~Game()
 
 void Game::Update(float dt)
 {
+	// ska banan resettas?
 	if (m_menu->Reset())
 	{
 		Reset();
 	}
+	// är select menyn aktiverad? ändra kameran till inzoomad
 	if (m_menu->selectMenuActive())
 	{
 		SelectionMenu();
@@ -90,84 +92,83 @@ void Game::Update(float dt)
 		// TODO: fixa snyggare kamera transition?
 		m_scene->SetCameraPos(vec3(0, 16, 25));
 	}
+	// är vi på en meny som ska pausa spelet? sluta då updatera deltaTime
+	if (m_menu->Pause())
+	{
+		dt = 0;
+	}
+
 	if ((!m_menu->Pause() && !m_wasSelect)) // Vet inte om det kan göras snyggare?
 	{
 		m_time += dt;
 		m_timeSinceSpawn += dt;
-		if (m_timeSinceSpawn > 5 && !m_gameOver) 
+		if (m_timeSinceSpawn > 5 && !m_gameOver)
 		{
 			m_objectHandler->AddPowerUp();
 			m_timeSinceSpawn = 0;
 		}
-		//if (!m_menu->Pause())
-		//{
+		if (!m_gameOver)
+			m_objectHandler->Update(dt);
 
-			if (!m_gameOver)
+		if (m_objectHandler->GetNumPlayers() == 1 && !m_gameOver)
+		{
+			m_gameOver = true;
+			if (m_soundEngine)
+			{
+				m_soundEngine->stopAllSounds();
+				m_soundEngine->play2D("src/Audio/Music - Win.mp3", true);
+				m_objectHandler->StopAllSound();
+			}
+		}
+		if (m_maxTime - m_time <= 30.f && !m_fastMusic)
+		{
+			if (m_soundEngine)
+			{
+				m_music->setPlaybackSpeed(1.4);
+				m_fastMusic = true;
+			}
+
+		}
+		if (m_time > m_maxTime && !m_gameOver)
+		{
+			m_gameOver = true;
+			if (m_soundEngine)
+			{
+				m_soundEngine->stopAllSounds();
+				m_soundEngine->play2D("src/Audio/Music - Win.mp3", true);
+				m_objectHandler->StopAllSound();
+			}
+		}
+		// Toggle debug window
+		SHORT keyState = GetAsyncKeyState(VK_LCONTROL);
+		if (keyState < 0)
+		{
+			if (!m_toggle)
 				m_objectHandler->Update(dt);
 
-			if (m_objectHandler->GetNumPlayers() == 1 && !m_gameOver) 
-			{
-				m_gameOver = true;
-				if (m_soundEngine) 
-				{
-					m_soundEngine->stopAllSounds();
-					m_soundEngine->play2D("src/Audio/Music - Win.mp3", true);
-					m_objectHandler->StopAllSound();
-				}
-			}
-			if (m_maxTime - m_time <= 30.f && !m_fastMusic) 
-			{
-				if (m_soundEngine) 
-				{
-					m_music->setPlaybackSpeed(1.4);
-					m_fastMusic = true;
-				}
-
-			}
-			if (m_time > m_maxTime && !m_gameOver) 
-			{
-				m_gameOver = true;
-				if (m_soundEngine) 
-				{
-					m_soundEngine->stopAllSounds();
-					m_soundEngine->play2D("src/Audio/Music - Win.mp3", true);
-					m_objectHandler->StopAllSound();
-				}
-			}
 			// Toggle debug window
 			SHORT keyState = GetAsyncKeyState(VK_LCONTROL);
 			if (keyState < 0)
 			{
 				if (!m_toggle)
-					m_objectHandler->Update(dt);
-
-				// Toggle debug window
-				SHORT keyState = GetAsyncKeyState(VK_LCONTROL);
-				if (keyState < 0)
 				{
-					if (!m_toggle)
-					{
-						if (m_debug)
-							m_debug = false;
-						else
-							m_debug = true;
-					}
-					m_toggle = true;
+					if (m_debug)
+						m_debug = false;
+					else
+						m_debug = true;
 				}
-				else
-				{
-					m_toggle = false;
-				}
+				m_toggle = true;
 			}
 			else
 			{
 				m_toggle = false;
 			}
-		//}
-		
+		}
+		else
+		{
+			m_toggle = false;
+		}
 	}
-	Render();
-
 }
 
 void Game::Render(float dt)
@@ -178,12 +179,12 @@ void Game::Render(float dt)
 	//ImGui::ShowDemoWindow();
 
 	m_menu->RenderMenu(m_gameOver, m_time, m_maxTime, m_cars[0]);
-	if(!m_menu->Pause())
-	{ 
+	//if(!m_menu->Pause())
+	//{ 
 		m_objects = m_objectHandler->GetObjects();
-		m_scene->Render(m_objects, m_objectHandler->GetWorld());
+		m_scene->Render(m_objects, m_objectHandler->GetWorld(), dt);
 
-	}
+	//}
 	
 	if (m_debug)
 	{
@@ -209,20 +210,24 @@ void Game::Reset()
 	// delete remeaning players so we can spawn them back att spawn positions
 	for (int i = 0; i < 4; i++)
 	{
-		if (m_objectHandler->GetNumPlayers() > 0)
-		{
-			m_objectHandler->RemovePlayer(m_objectHandler->GetNumPlayers() - 1);
-
-		}
+		
 		if (m_objectHandler->GetNumPowerUps() > 0)
 		{
 			m_objectHandler->RemovePowerUp(m_objectHandler->GetNumPowerUps() - 1);
 		}
 	}
-	srand(time(NULL));
-	cout << rand() % 4 << endl;
-	m_objectHandler->AddPlayer(vec3(-10, 2, 3), 0, rand() % 4, vec3(0, 0, 1), m_cars[0]); // Passa modell
-	m_objectHandler->AddPlayer(vec3(10, 2, 3), 1, rand() % 4, vec3(0, 1, 0), m_cars[2]);
+	if (m_soundEngine)
+	{
+		srand(time(NULL));
+		int randomNumber = rand() % 5;
+		m_soundEngine->stopAllSounds();
+		m_music = m_soundEngine->play2D(m_songs[randomNumber], true, true);
+		m_music->setIsPaused(false);
+	}
+	
+
+
+	
 }
 
 GLFWwindow* Game::GetWindow()

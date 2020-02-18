@@ -171,10 +171,10 @@
     <ClInclude Include="src\Header Files\PowerUp.h">
       <Filter>Header</Filter>
     </ClInclude>
-    <ClInclude Include="src\Header Files\Sky.h">
+    <ClInclude Include="src\Header Files\Menu.h">
       <Filter>Header</Filter>
     </ClInclude>
-    <ClInclude Include="src\Header Files\Menu.h">
+    <ClInclude Include="src\Header Files\Sky.h">
       <Filter>Header</Filter>
     </ClInclude>
   </ItemGroup>

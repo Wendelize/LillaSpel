@@ -45,13 +45,13 @@ private:
 	double m_p2Seconds = 1;
 	vec3 m_p2Col = vec3(0, 1, 0);
 	
-	int m_p3ModelId = 0;
+	int m_p3ModelId = -1;
 	double m_p3Seconds = 1;
 	bool m_p3Joined = false;
 	vec3 m_p3Col = vec3(1, 0, 0);
 
 
-	int m_p4ModelId = 0;
+	int m_p4ModelId = -1;
 	double m_p4Seconds = 1;
 	bool m_p4Joined = false;
 	vec3 m_p4Col = vec3(1, 1, 0);

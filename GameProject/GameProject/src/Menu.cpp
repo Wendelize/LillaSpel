@@ -36,8 +36,6 @@ void Menu::RenderMenu(bool gameOver, float timer, float maxTime, Model* model)
 	switch (m_menu)
 	{
 	case ActiveMenu::start:
-		//ImGui::Image((void*)wowTexture, ImVec2(width, height));
-		// Background pic
 		ImGui::SetNextWindowPos(ImVec2(-2, -2));
 		ImGui::SetNextWindowSize(ImVec2((float)w->GetWidht() + 4, w->GetHeight() + 4));
 		if (ImGui::Begin("##Background", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoNav))
@@ -51,16 +49,8 @@ void Menu::RenderMenu(bool gameOver, float timer, float maxTime, Model* model)
 		ImGui::SetNextWindowSize(ImVec2((float)w->GetWidht() + 4, w->GetHeight() + 4));
 		if (ImGui::Begin("##MainMenu", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_AlwaysAutoResize | ImGuiNavInput_Activate))
 		{
-			//ImGui::Image((void*)m_mainMenuPic, ImVec2(300, 200), ImVec2(0, 0), ImVec2(1, 1));
 			float middle = (float)w->GetWidht() * 0.5f;
-			//ImGui::SetWindowPos(ImVec2(placement, 50));
-			//ImGui::Spacing();
-			//ImGui::NextColumn();
-			//	ImGui::SetCursorPos(ImVec2(middle - 100, 15));
-			//ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(placement, 0));
 			ImGui::PushFont(m_scene->GetOurWindow()->m_fonts[1]);
-			//ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0.6, 0.8, 1));
-			//ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 1.0);
 
 			//	NavHighlight is the border around the button
 			ImGui::PushStyleColor(ImGuiCol_NavHighlight, ImVec4(0, 0, 0, 0));
@@ -262,6 +252,7 @@ void Menu::RenderMenu(bool gameOver, float timer, float maxTime, Model* model)
 							m_p3Joined = true;
 							m_objHand->AddPlayer(vec3(-7, 2, 15), 2, 0, vec3(1, 0, 0), model);
 							m_p3Seconds = time;
+							m_p3ModelId = 0;
 						}
 
 					}
@@ -361,6 +352,7 @@ void Menu::RenderMenu(bool gameOver, float timer, float maxTime, Model* model)
 							m_p4Joined = true;
 							m_objHand->AddPlayer(vec3(7, 2, 15), 3, 0, vec3(1, 1, 0), model);
 							m_p4Seconds = time;
+							m_p4ModelId = 0;
 						}
 
 					}
@@ -464,14 +456,8 @@ void Menu::RenderMenu(bool gameOver, float timer, float maxTime, Model* model)
 		{
 
 			float middle = (float)w->GetWidht() * 0.5f;
-			//ImGui::SetWindowPos(ImVec2(placement, 50));
-			//ImGui::Spacing();
-			//ImGui::NextColumn();
 			ImGui::SetCursorPos(ImVec2(((float)w->GetWidht() / 3)/3 - 25, 15));
-			//ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(placement, 0));
 			ImGui::PushFont(m_scene->GetOurWindow()->m_fonts[1]);
-			//ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0.6, 0.8, 1));
-			//ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.5);
 			ImGui::Text("Pause Menu");
 			ImGui::SetCursorPos(ImVec2(((float)w->GetWidht() / 3) /3, 115));
 			if (ImGui::Button("Start", ImVec2(200, 75)))
@@ -481,8 +467,25 @@ void Menu::RenderMenu(bool gameOver, float timer, float maxTime, Model* model)
 			ImGui::SetCursorPos(ImVec2(((float)w->GetWidht() / 3)/3-100, 215));
 			if (ImGui::Button("Main Menu", ImVec2(400, 75)))
 			{
+				// resettar banan m.m. och laddar start menyn
 				m_menu = ActiveMenu::start;
 				m_reset = true;
+				m_p1ModelId = 0;
+				m_p2ModelId = 0;
+				m_p3ModelId = 0;
+				m_p4ModelId = 0;
+				for (int i = 0; i < 4; i++)
+				{
+					if (m_objHand->GetNumPlayers() > 0)
+					{
+						m_objHand->RemovePlayer(m_objHand->GetNumPlayers() - 1);
+					}									
+				}
+				if (m_objHand->GetNumPlayers() == 0)
+				{
+					m_objHand->AddPlayer(vec3(-10, 2, 3), 0, m_p1ModelId, m_p1Col, model);
+					m_objHand->AddPlayer(vec3(10, 2, 3), 1, m_p2ModelId, m_p2Col, model);
+				}
 			}
 			ImGui::SetCursorPos(ImVec2(((float)w->GetWidht() / 3) / 3, 315));
 			if (ImGui::Button("Exit", ImVec2(200, 75)))
@@ -503,26 +506,61 @@ void Menu::RenderMenu(bool gameOver, float timer, float maxTime, Model* model)
 		{
 
 			float middle = (float)w->GetWidht() * 0.5f;
-			//ImGui::SetWindowPos(ImVec2(placement, 50));
-			//ImGui::Spacing();
-			//ImGui::NextColumn();
 			ImGui::SetCursorPos(ImVec2(((float)w->GetWidht() / 3) / 3 - 10, 15));
-			//ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(placement, 0));
 			ImGui::PushFont(m_scene->GetOurWindow()->m_fonts[1]);
-			//ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0.6, 0.8, 1));
-			//ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.5);
 			ImGui::Text("Start Menu");
 			ImGui::SetCursorPos(ImVec2(((float)w->GetWidht() / 3) / 3 - 25, 115));
 			if (ImGui::Button("Restart", ImVec2(250, 75)))
 			{
 				m_menu = ActiveMenu::playerHud;
 				m_reset = true;
+				// addar tillbaka spelarna här i Menu.cpp för att bevara deras modeller om man 
+				//	bara vill resetta med samma inställnignar
+				for (int i = 0; i < 4; i++)
+				{
+					if (m_objHand->GetNumPlayers() > 0)
+					{
+						m_objHand->RemovePlayer(m_objHand->GetNumPlayers() - 1);
+					}
+				}
+				if (m_objHand->GetNumPlayers() == 0)
+				{
+					m_objHand->AddPlayer(vec3(-10, 2, 3), 0, m_p1ModelId, m_p1Col, model);
+					m_objHand->AddPlayer(vec3(10, 2, 3), 1, m_p2ModelId, m_p2Col, model);
+				}
+				if (m_p3Joined && m_objHand->GetNumPlayers() == 2)
+				{
+					m_objHand->AddPlayer(vec3(-7, 2, 15), 2, m_p3ModelId, m_p3Col, model);
+					if (m_p3Joined)
+					{
+						m_objHand->AddPlayer(vec3(7, 2, 15), 3, m_p4ModelId, m_p4Col, model);
+					}
+				}
+
+
 			}
 			ImGui::SetCursorPos(ImVec2(((float)w->GetWidht() / 3) / 3 - 100, 215));
 			if (ImGui::Button("Main Menu", ImVec2(400, 75)))
 			{
+				// resettar banan m.m. och laddar start menyn
 				m_menu = ActiveMenu::start;
 				m_reset = true;
+				m_p1ModelId = 0;
+				m_p2ModelId = 0;
+				m_p3ModelId = 0;
+				m_p4ModelId = 0;
+				for (int i = 0; i < 4; i++)
+				{
+					if (m_objHand->GetNumPlayers() > 0)
+					{
+						m_objHand->RemovePlayer(m_objHand->GetNumPlayers() - 1);
+					}
+				}
+				if (m_objHand->GetNumPlayers() == 0)
+				{
+					m_objHand->AddPlayer(vec3(-10, 2, 3), 0, m_p1ModelId, m_p1Col, model);
+					m_objHand->AddPlayer(vec3(10, 2, 3), 1, m_p2ModelId, m_p2Col, model);
+				}
 			}
 			ImGui::SetCursorPos(ImVec2(((float)w->GetWidht() / 3) / 3, 315));
 			if (ImGui::Button("Exit", ImVec2(200, 75)))
@@ -716,10 +754,6 @@ void Menu::ResetReset()
 	m_p3Joined = false;
 	m_p4Joined = false;
 	m_continue = 0;
-	m_p1ModelId = 0;
-	m_p2ModelId = 0;
-	m_p3ModelId = 0;
-	m_p4ModelId = 0;
 }
 
 
