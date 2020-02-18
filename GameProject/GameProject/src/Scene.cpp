@@ -1,5 +1,4 @@
 ﻿#include "Header Files/Scene.h"
-
 Scene::Scene()
 {
 	m_screenWidth = 1920;
@@ -153,6 +152,7 @@ void Scene::LightToShader()
 
 void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, float dt)
 {
+
 	/* Render here */
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -305,6 +305,12 @@ void Scene::SwapBuffer()
 	glfwSwapBuffers(m_window->m_window);
 }
 
+void Scene::SetCameraPos(vec3 pos)
+{
+	m_camera->ChangePos(pos);
+}
+
+
 void Scene::SetWindowSize(int width, int height)
 {
 	m_window->SetWidht(width);
@@ -314,6 +320,11 @@ void Scene::SetWindowSize(int width, int height)
 GLFWwindow* Scene::GetWindow()
 {
 	return m_window->m_window;
+}
+
+Window* Scene::GetOurWindow()
+{
+	return m_window;
 }
 
 int Scene::GetNumPlayerModels()

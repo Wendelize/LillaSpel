@@ -79,6 +79,9 @@
     <ClCompile Include="src\Header Files\PowerUp.cpp">
       <Filter>Src</Filter>
     </ClCompile>
+    <ClCompile Include="src\Menu.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
     <ClCompile Include="src\Sky.cpp">
       <Filter>Src</Filter>
     </ClCompile>
@@ -166,6 +169,9 @@
       <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="src\Header Files\PowerUp.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Header Files\Menu.h">
       <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="src\Header Files\Sky.h">

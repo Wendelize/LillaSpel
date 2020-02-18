@@ -81,9 +81,24 @@ Window::Window(int width, int height)
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	m_fonts.push_back(io.Fonts->AddFontFromFileTTF("src/IMGUI/Fonts/outrun_future/outrun-future-Bold.ttf", 40.0f));
+	m_fonts.push_back(io.Fonts->AddFontFromFileTTF("src/IMGUI/Fonts/outrun_future/outrun-future-Bold.ttf", 80.0f));
+	m_fonts.push_back(io.Fonts->AddFontFromFileTTF("src/IMGUI/Fonts/CFLegendsoftheFall-Regular.ttf", 20.0f));
+	m_fonts.push_back(io.Fonts->AddFontFromFileTTF("src/IMGUI/Fonts/CFLegendsoftheFall-Regular.ttf", 60.0f));
+	m_fonts.push_back(io.Fonts->AddFontFromFileTTF("src/IMGUI/Fonts/spongeboy_me_bob/Spongeboy Me Bob.ttf", 20.0f));
+	m_fonts.push_back(io.Fonts->AddFontFromFileTTF("src/IMGUI/Fonts/spongeboy_me_bob/Spongeboy Me Bob.ttf", 60.0f));
+	m_fonts.push_back(io.Fonts->AddFontFromFileTTF("src/IMGUI/Fonts/djb_crazy_goofy_cool/DJB Crazy Goofy Cool.ttf", 20));
 	ImGui::StyleColorsDark();
+	
+	// Application init
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+
+
 	ImGui_ImplGlfw_InitForOpenGL(m_window, true);
+
 	ImGui_ImplOpenGL3_Init("#version 130");
+	
+	
 }
 
 Window::~Window()

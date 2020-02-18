@@ -22,7 +22,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{CBB4875B-4B1B-448F-BAF1-1AFC9032BA7A}</ProjectGuid>
     <RootNamespace>GameProject</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -156,6 +156,7 @@
     <ClCompile Include="src\IMGUI\imgui_widgets.cpp" />
     <ClCompile Include="src\Light.cpp" />
     <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\Menu.cpp" />
     <ClCompile Include="src\Mesh.cpp" />
     <ClCompile Include="src\Model.cpp" />
     <ClCompile Include="src\ObjectHandeler.cpp" />
@@ -177,6 +178,7 @@
     <ClInclude Include="src\Header Files\Game.h" />
     <ClInclude Include="src\Header Files\Include.h" />
     <ClInclude Include="src\Header Files\Light.h" />
+    <ClInclude Include="src\Header Files\Menu.h" />
     <ClInclude Include="src\Header Files\Mesh.h" />
     <ClInclude Include="src\Header Files\Model.h" />
     <ClInclude Include="src\Header Files\ObjectHandler.h" />

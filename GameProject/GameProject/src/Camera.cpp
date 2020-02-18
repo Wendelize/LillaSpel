@@ -36,6 +36,7 @@ mat4 Camera::GetView()
 void Camera::ChangePos(vec3 pos)
 {
 	m_position = pos;
+	m_viewMatrix = lookAt(m_position, vec3(0, -6, 3), m_up);
 }
 
 void Camera::ChangeDir(vec3 dir)

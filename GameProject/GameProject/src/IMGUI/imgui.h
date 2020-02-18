@@ -1341,6 +1341,8 @@ struct ImGuiStyle
     IMGUI_API void ScaleAllSizes(float scale_factor);
 };
 
+//void SetupImGuiStyle(bool bStyleDark_, float alpha_);
+
 //-----------------------------------------------------------------------------
 // ImGuiIO
 // Communicate most settings and inputs/outputs to Dear ImGui using this structure.
