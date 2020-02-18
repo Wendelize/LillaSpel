@@ -170,7 +170,7 @@ void Game::Update(float dt)
 
 }
 
-void Game::Render()
+void Game::Render(float dt)
 {
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();

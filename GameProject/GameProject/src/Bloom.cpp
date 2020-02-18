@@ -110,10 +110,12 @@ void Bloom::RenderBloom(GLFWwindow* w)
 	glViewport(0, 0, width, height);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	m_bloom->UseShader();
+
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_colorBuffers[0]);
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, m_pingPongColorBuffer[!m_horizontal]);
+
 	m_bloom->Uniform("u_Bloom", m_bool);
 	m_bloom->Uniform("u_Exposure", m_exposure);
 	RenderQuad();

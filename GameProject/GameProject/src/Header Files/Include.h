@@ -53,6 +53,7 @@
 #include "Controller.h"
 #include "Light.h"
 #include "Skybox.h"
+#include "Sky.h"
 #include "DebugDrawer.h"
 #include "ShadowMap.h"
 #include "Bloom.h"
