@@ -457,6 +457,7 @@ void Menu::RenderMenu(bool gameOver, float timer, float maxTime, Model* model)
 		m_continue = 0;
 		break;
 	case ActiveMenu::pause:
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 15);
 		ImGui::SetNextWindowPos(ImVec2((float)w->GetWidht() / 3, w->GetHeight() / 4 ));
 		ImGui::SetNextWindowSize(ImVec2((float)w->GetWidht()/3 /*- 150*/, w->GetHeight()/4 + 150));
 		if (ImGui::Begin("##PauseMenu", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiNavInput_Activate))
@@ -488,7 +489,7 @@ void Menu::RenderMenu(bool gameOver, float timer, float maxTime, Model* model)
 			{
 				glfwSetWindowShouldClose(m_scene->GetWindow(), 1);
 			}
-			//ImGui::PopStyleVar(1); // pop all the styles
+			ImGui::PopStyleVar(1); // pop all the styles
 			ImGui::PopFont();
 			//ImGui::PopStyleColor();
 
