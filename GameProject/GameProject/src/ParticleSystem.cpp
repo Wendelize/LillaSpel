@@ -89,7 +89,6 @@ void ParticleSystem::GenerateParticles(float dt, vec3 emitterPos, float velocity
 		newparticles = (int)(0.016f * 10000.0);*/
 
 	int newparticles = m_nrOfParticle;
-	cout << "Generate particles: " << m_nrOfParticle << endl;
 	for (int i = 0; i < newparticles; i++) 
 	{
 		//int particleIndex = FindParticle();
@@ -197,7 +196,7 @@ void ParticleSystem::Draw()
 	// 3rd attribute buffer : particles' colors
 	glEnableVertexAttribArray(2);
 	glBindBuffer(GL_ARRAY_BUFFER, m_particleColorBuffer);
-	glVertexAttribPointer(2, 4, GL_UNSIGNED_BYTE, GL_TRUE, 0, (void*)0);
+	glVertexAttribPointer(2, 4, GL_FLOAT, GL_TRUE, 0, (void*)0);
 
 	glVertexAttribDivisor(0, 0); // particles vertices : always reuse the same 4 vertices -> 0
 	glVertexAttribDivisor(1, 1); // positions : one per quad (its center)                 -> 1
@@ -233,10 +232,12 @@ void ParticleSystem::GenerateParticlesForCollision( vec3 emitterPos, float veloc
 
 		m_particles[i].velocity = maindir + randomdir * spread;
 
-		m_particles[i].color.x = rand() % 256;
-		m_particles[i].color.y = rand() % 256;
-		m_particles[i].color.z = rand() % 256;
-		m_particles[i].color.w = (rand() % 256) / 3;
+		vec4  v =  vec4(rand() % 256 , rand() % 256 , 0.1, 1); //vec4(1, 1, 1, 1);//
+		m_particles[i].color = v;
+;		//m_particles[i].color.x = 1;
+		//m_particles[i].color.y = 0;
+		//m_particles[i].color.z = 0;
+		//m_particles[i].color.w = 0;// (rand() % 256) / 3;
 
 		m_particles[i].size = 0.25;
 	}
@@ -274,7 +275,7 @@ void ParticleSystem::Collision(float dt)
 			m_particleColor[4 * m_particleCount + 2] = p.color.z;
 			m_particleColor[4 * m_particleCount + 3] = p.color.w;
 
-			m_particleCount++;
+		
 			
 		}
 		else {
@@ -286,7 +287,84 @@ void ParticleSystem::Collision(float dt)
 				m_active = false;
 			}
 		}
+		m_particleCount++;
 	}
+}
+
+void ParticleSystem::GenerateParticlesForVictory(float dt, vec3 emitterPos)
+{
+	int newparticles = (int)(dt * 1000.0);
+	if (newparticles > (int)(0.016f * 1000.0))
+		newparticles = (int)(0.016f * 1000.0);
+	
+	for (int i = 0; i < newparticles; i++) {
+		int particleIndex = FindParticle();
+		m_particles[particleIndex].life = 3.f; // This particle will live 5 seconds.
+		m_particles[particleIndex].position = emitterPos;
+
+		float spread = 5.0f;
+		glm::vec3 maindir = glm::vec3(0.0f, 5.0f, 0.0f);
+		glm::vec3 randomdir = glm::vec3(
+			(rand() % 2000 - 1000.0f) / 1000.0f,
+			(rand() % 2000 - 1000.0f) / 1000.0f,
+			(rand() % 2000 - 1000.0f) / 1000.0f
+		);
+
+		m_particles[particleIndex].velocity = maindir + randomdir * spread;
+
+		m_particles[particleIndex].color.x = rand() % 256;
+		m_particles[particleIndex].color.y = rand() % 256;
+		m_particles[particleIndex].color.z = 1.f;
+		m_particles[particleIndex].color.w = (rand() % 256) / 3;
+
+		m_particles[particleIndex].size = 0.25;// (rand() % 1000) / 2000.0f + 0.1f;
+
+	}
+}
+
+void ParticleSystem::Victory(float dt, vec3 emitterPos)
+{
+	m_particleCount = 0;
+	for (int i = 0; i < m_nrOfParticle; i++)
+	{
+
+		Particle& p = m_particles[i]; // shortcut
+
+		if (p.life > 0.0f)
+		{
+			// Decrease life
+			p.life -= dt;
+			if (p.life > 0.0f)
+			{
+				// Simulate simple physics : gravity only, no collisions
+				p.velocity += glm::vec3(0.0f, -1.f, 0.0f) * (float)dt * 0.5f;
+				p.position += p.velocity * (float)dt;
+				p.cameraDist = length(p.position - vec3(0, 3, 33));
+				p.size *= 0.98;
+		
+				// Fill the GPU buffer
+				m_particlePos[4 * m_particleCount + 0] = p.position.x;
+				m_particlePos[4 * m_particleCount + 1] = p.position.y;
+				m_particlePos[4 * m_particleCount + 2] = p.position.z ;
+
+				m_particlePos[4 * m_particleCount + 3] = p.size;
+
+				m_particleColor[4 * m_particleCount + 0] = p.color.x;
+				m_particleColor[4 * m_particleCount + 1] = p.color.y;
+				m_particleColor[4 * m_particleCount + 2] = p.color.z;
+				m_particleColor[4 * m_particleCount + 3] = p.color.w;
+
+			}
+			else
+			{
+				// Particles that just died will be put at the end of the buffer in SortParticles();
+				GenerateParticlesForVictory(dt, emitterPos);
+				p.cameraDist = -1.0f;
+			}
+			m_particleCount++;
+		}
+	}
+	SortParticles();
 }
 
 void ParticleSystem::setActive()

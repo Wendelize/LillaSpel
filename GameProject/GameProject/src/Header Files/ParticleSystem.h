@@ -48,7 +48,9 @@ public:
 	void DriftParticles();
 	void GenerateParticlesForCollision( vec3 emitterPos, float velocity);
 	void Collision(float dt);
-	void Victory();
+
+	void GenerateParticlesForVictory(float particleAmount, vec3 emitterPos);
+	void Victory(float dt, vec3 emitterPos);
 
 	void setActive();
 	bool getActive();

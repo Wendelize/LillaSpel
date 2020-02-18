@@ -104,10 +104,6 @@ void Scene::Init()
 	m_power.push_back(new Model("src/Models/PowerUpCar.obj"));
 	//m_power.push_back(new Model("src/Models/PowerUp.obj"));
 
-
-
-
-
 	// Lights
 	AddDirLight(vec3(-1, -1, 0), { 1,1,1 });
 	AddPointLight({ 0,2,10 }, { 1, 0, 0 });
@@ -160,7 +156,7 @@ void Scene::LightToShader()
 	}
 }
 
-void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
+void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, bool gameOver, int winner, float dt)
 {
 	/* Render here */
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -196,17 +192,18 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
 	RenderImGui(world);
 
 	//// Render Particles
-	RenderParticles(0.03, world);
-
+	RenderParticlesCollision(0.03, world);
+	if (gameOver == true)
+	{
+		RenderParticlesVictory(objects[winner], dt);
+	}
 	// Render Skybox
 	RenderSkybox();
 
 	// Add glow
-	m_bloom->PingPongRender();
+	m_bloom->PingPongRender(3);
 
 	m_bloom->RenderBloom(m_window->m_window);
-
-
 
 	/* Poll for and process events */
 	//glfwPollEvents();
@@ -294,7 +291,7 @@ void Scene::RenderImGui(btDiscreteDynamicsWorld* world)
 	}
 }
 
-void Scene::RenderParticles(float dt, btDiscreteDynamicsWorld* world)
+void Scene::RenderParticlesCollision(float dt, btDiscreteDynamicsWorld* world)
 {
 	// Browse all collision pairs 
 	int numManifolds = world->getDispatcher()->getNumManifolds();
@@ -378,6 +375,28 @@ void Scene::RenderParticles(float dt, btDiscreteDynamicsWorld* world)
 			ps->Collision(dt);
 			ps->Draw();
 		}
+
+	}
+}
+
+void Scene::RenderParticlesVictory(ObjectInfo* object, float dt)
+{
+	mat4 temp = m_viewMatrix;
+	m_particles.back()->GetShader()->UseShader();
+	m_particles.back()->GetShader()->SetUniform("u_View", temp);
+	m_particles.back()->GetShader()->SetUniform("u_Proj", m_projMatrix);
+	
+	for (auto ps : m_particles)
+	{
+		if (ps->getActive() == false)
+		{
+			ps->setActive();
+			ps->GenerateParticles(dt, vec3(object->modelMatrix[3][0], object->modelMatrix[3][1], object->modelMatrix[3][2]), 5.0f);
+		}
+		//ps->GenerateParticlesForVictory(dt, vec3(object->modelMatrix[3][0], object->modelMatrix[3][1], object->modelMatrix[3][2]));
+		ps->Victory(dt, vec3(object->modelMatrix[3][0], object->modelMatrix[3][1], object->modelMatrix[3][2]));
+		ps->Draw();
+
 	}
 }
 

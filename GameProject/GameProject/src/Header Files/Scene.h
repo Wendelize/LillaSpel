@@ -40,12 +40,13 @@ public:
 
 	void Init();
 	void LightToShader();
-	void Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world);
+	void Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, bool gameOver, int winner, float dt);
 	void RenderSceneInfo(Shader * shader, vector<ObjectInfo*> objects);
 	void RenderSkybox();
 	void RenderShadows(vector<ObjectInfo*> objects);
 	void RenderImGui(btDiscreteDynamicsWorld* world);
-	void RenderParticles(float dt, btDiscreteDynamicsWorld* world);
+	void RenderParticlesCollision(float dt, btDiscreteDynamicsWorld* world);
+	void RenderParticlesVictory(ObjectInfo* object, float dt);
 	void SwapBuffer();
 
 	void SetWindowSize(int width, int height);
@@ -59,5 +60,5 @@ public:
 	void AddPointLight(vec3 pos = { 2,2,2 }, vec3 color = { 1,0,0 });
 	void AddDirLight(vec3 dir = { 0,-1,0 }, vec3 color = { 0,1,0 });
 	void AddSpotLight(vec3 pos = { 0,10,0 }, vec3 dir = { 0,-1,0 }, vec3 color = {0,0,1}, float cutOff = 12.0);
-	void CameraFollowCar(ObjectInfo* objects);
+	//void CameraFollowCar(ObjectInfo* objects);
 };

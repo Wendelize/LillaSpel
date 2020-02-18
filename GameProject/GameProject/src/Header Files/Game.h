@@ -26,6 +26,7 @@ private:
 	float m_timeSinceSpawn;
 	bool m_gameOver = false;
 	bool m_fastMusic = false;
+	int m_winner = 0;
 	void Debug();
 public:
 	Game();

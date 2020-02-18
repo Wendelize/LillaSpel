@@ -59,4 +59,5 @@ public:
 	vector<ObjectInfo*> GetObjects();
 	btDiscreteDynamicsWorld* GetWorld();
 	DebugDrawer* GetDebugDrawer();
+	int GetWinnerIndex();
 };

@@ -482,3 +482,21 @@ DebugDrawer* ObjectHandler::GetDebugDrawer()
 {
 	return m_debugDrawer;
 }
+
+int ObjectHandler::GetWinnerIndex()
+{
+	int winnerIndex = 0;
+	int winnerHealth = 0;
+	for (auto w : m_players)
+	{
+		
+		if (w->GetHealth() > winnerHealth)
+		{
+			winnerHealth = w->GetHealth();
+			winnerIndex = w->GetControllerID();
+		}
+	}
+	
+	return winnerIndex;
+	
+}
