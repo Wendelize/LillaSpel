@@ -183,7 +183,7 @@ void Game::Render(float dt)
 	m_menu->RenderMenu(m_gameOver, m_time, m_maxTime, m_cars[0]);
 
 	m_objects = m_objectHandler->GetObjects();
-	m_scene->Render(m_objects, m_objectHandler->GetWorld(), dt);
+	m_scene->Render(m_objects, m_objectHandler->GetWorld(), m_gameOver, m_winner, dt);
 
 	
 	if (m_debug)
