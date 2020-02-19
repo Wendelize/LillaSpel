@@ -212,7 +212,7 @@ void ParticleSystem::GenerateParticlesForCollision( vec3 emitterPos, float veloc
 {
 	for (int i = 0; i < m_nrOfParticle; i++)
 	{
-		m_particles[i].life = 1.f; 
+		m_particles[i].life = .5f; 
 		m_particles[i].position = emitterPos;
 
 		float spread = velocity;
