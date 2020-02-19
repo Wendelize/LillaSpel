@@ -228,6 +228,11 @@ int Player::GetLives()
 	return m_lives;
 }
 
+void Player::SetLives(int num)
+{
+	m_lives = num;
+}
+
 void Player::ReduceLife()
 {
 	m_lives--;

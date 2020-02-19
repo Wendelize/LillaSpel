@@ -12,15 +12,17 @@ public:
 		noMenu = 0,
 		start = 1,
 		select = 2,
-		pause = 3,
-		stats = 4,
-		restart = 5,
-		playerHud = 6
+		selectLives = 3,
+		pause = 4,
+		stats = 5,
+		restart = 6,
+		playerHud = 7
 	};
 
-	void RenderMenu(bool gameOver, float time, float maxTime, Model* model);
+	void RenderMenu(bool gameOver, float time, Model* model);
 	void SetActiveMenu(ActiveMenu activeMenu);
-	bool selectMenuActive();
+	bool SelectMenuActive();
+	int GetMaxTime();
 	void LoadMenuPic();
 	bool Pause();
 	bool Reset();
@@ -33,6 +35,8 @@ private:
 	GLuint m_mainMenuPic;
 	int m_menuPicWidth, m_menuPicHeight;
 	bool m_reset = false;
+	int m_maxLives = 3;
+	int m_maxTime = 15.0f;
 
 	int m_selected[4] = { 0, 0, 0, 0 };
 	int m_continue = 0;

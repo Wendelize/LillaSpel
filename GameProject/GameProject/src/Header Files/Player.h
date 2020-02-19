@@ -41,6 +41,7 @@ public:
 	void Update(float dt);
 
 	int GetLives();
+	void SetLives(int num);
 	void ReduceLife();
 	string GetName();
 	void SetName(string name);

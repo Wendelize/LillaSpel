@@ -7,13 +7,13 @@ Game::Game()
 	m_scene = new Scene();
 	m_scene->Init(); // H�r skapas modellerna
 	m_time = 0;
-	m_maxTime = 240.f;
+	m_maxTime = 15.0f;
 	m_menu = new Menu(m_scene, m_objectHandler);
 	// noMenu, start, select, pause, stats, restart, playerHud; // stats finns inte än
 	// väl playerHud om ni vill spela utan start menu
 	// välj noMenu om ni vill spela utan HUD och ingen restart, 
 	//	Pause meny bör fortfarande fungera med noMenu
-	m_menu->SetActiveMenu(Menu::ActiveMenu::restart);
+	m_menu->SetActiveMenu(Menu::ActiveMenu::start);
 	m_menu->LoadMenuPic();
 
 	m_debug = false;
@@ -82,11 +82,13 @@ void Game::Update(float dt)
 		Reset();
 	}
 	// är select menyn aktiverad? ändra kameran till inzoomad
-	if (m_menu->selectMenuActive())
+	if (m_menu->SelectMenuActive())
 	{
 		SelectionMenu();
+		m_maxTime = m_menu->GetMaxTime();
+		cout << m_maxTime << endl;
 	}
-	else if (m_menu->selectMenuActive() == false && m_wasSelect == true)
+	else if (m_menu->SelectMenuActive() == false && m_wasSelect == true)
 	{
 		m_wasSelect = false;
 		// TODO: fixa snyggare kamera transition?
@@ -180,7 +182,7 @@ void Game::Render(float dt)
 	ImGui::NewFrame();
 	//ImGui::ShowDemoWindow();
 
-	m_menu->RenderMenu(m_gameOver, m_time, m_maxTime, m_cars[0]);
+	m_menu->RenderMenu(m_gameOver, m_time, m_cars[0]);
 
 	m_objects = m_objectHandler->GetObjects();
 	m_scene->Render(m_objects, m_objectHandler->GetWorld(), m_gameOver, m_winner, dt);
@@ -206,7 +208,7 @@ void Game::Reset()
 	m_menu->ResetReset();
 	m_gameOver = false;
 	m_time = 0;
-	m_maxTime = 240.f;
+	//m_maxTime = 240.f;
 	m_timeSinceSpawn = 0;
 	// delete remeaning players so we can spawn them back att spawn positions
 	for (int i = 0; i < 4; i++)
@@ -225,9 +227,6 @@ void Game::Reset()
 		m_music = m_soundEngine->play2D(m_songs[randomNumber], true, true);
 		m_music->setIsPaused(false);
 	}
-	
-
-
 	
 }
 

@@ -423,6 +423,15 @@ int ObjectHandler::GetPlayerLives(int index)
 	return m_players[index]->GetLives();
 }
 
+void ObjectHandler::SetNumberOfLives(int num)
+{
+	for (int i = 0; i < m_players.size(); i++)
+	{
+		m_players[i]->SetLives(num);
+	}
+	
+}
+
 vec3 ObjectHandler::GetPlayerDirection(int index)
 {
 	return m_players[index]->GetDirection();

@@ -16,7 +16,7 @@ Menu::~Menu()
 }
 
 
-void Menu::RenderMenu(bool gameOver, float timer, float maxTime, Model* model)
+void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 {
 	GLFWgamepadstate state;
 	Window* w = m_scene->GetOurWindow();
@@ -24,7 +24,7 @@ void Menu::RenderMenu(bool gameOver, float timer, float maxTime, Model* model)
 	{
 		m_menu = ActiveMenu::restart;
 	}
-	else if ((m_menu == ActiveMenu::playerHud || m_menu == ActiveMenu::select)  && glfwGetGamepadState(0, &state))
+	else if ((m_menu == ActiveMenu::playerHud || m_menu == ActiveMenu::select) && glfwGetGamepadState(0, &state))
 	{
 		// TODO: maybe one should be able to access the pause menu from more places?
 		if (state.buttons[GLFW_GAMEPAD_BUTTON_START])
@@ -44,7 +44,7 @@ void Menu::RenderMenu(bool gameOver, float timer, float maxTime, Model* model)
 			ImGui::Image((void*)m_mainMenuPic, ImVec2(1920, 1070), ImVec2(0, 0), ImVec2(1, 1));
 		}
 		ImGui::End();
-		
+
 		ImGui::SetNextWindowPos(ImVec2(-2, -2));
 		ImGui::SetNextWindowSize(ImVec2((float)w->GetWidht() + 4, w->GetHeight() + 4));
 		if (ImGui::Begin("##MainMenu", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_AlwaysAutoResize | ImGuiNavInput_Activate))
@@ -58,7 +58,7 @@ void Menu::RenderMenu(bool gameOver, float timer, float maxTime, Model* model)
 			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.2, 0.2, 0.2, 1));
 			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.7, 0.1, 0, 0.3));
 			ImGui::SetCursorPos(ImVec2(middle - 75, 500));
-			if (ImGui::Button("Start", ImVec2(200, 75 )))
+			if (ImGui::Button("Start", ImVec2(200, 75)))
 			{
 				m_menu = ActiveMenu::select;
 				m_p1Seconds = time;
@@ -105,8 +105,8 @@ void Menu::RenderMenu(bool gameOver, float timer, float maxTime, Model* model)
 			{
 				ImGui::Text("\tVehicle Selected! Press \"B\" to Unselect!");
 			}
-			
-			if ( time - m_p1Seconds >= 0.5 && (glfwGetGamepadState(0, &state)))
+
+			if (time - m_p1Seconds >= 0.5 && (glfwGetGamepadState(0, &state)))
 			{
 				if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_RIGHT] && m_selected[0] == 0)
 				{
@@ -135,7 +135,7 @@ void Menu::RenderMenu(bool gameOver, float timer, float maxTime, Model* model)
 					{
 						m_p1ModelId = m_scene->GetNumPlayerModels() - 1;
 					}
-					
+
 					m_objHand->RemovePlayer(index);
 					m_objHand->AddPlayer(vec3(-10, 2, 3), 0, m_p1ModelId, m_p1Col, model);
 
@@ -144,12 +144,13 @@ void Menu::RenderMenu(bool gameOver, float timer, float maxTime, Model* model)
 				else if (state.buttons[GLFW_GAMEPAD_BUTTON_A])
 				{
 					m_selected[0] = 1;
+					m_p1Seconds = time;
 				}
 				else if (m_selected[0] == 1 && state.buttons[GLFW_GAMEPAD_BUTTON_B])
 				{
 					m_selected[0] = 0;
 				}
-				
+
 			}
 			ImGui::PopStyleColor();
 		}
@@ -181,7 +182,7 @@ void Menu::RenderMenu(bool gameOver, float timer, float maxTime, Model* model)
 				{
 					ImGui::Text("\t<  Vehicle Model : %d  > ", m_p2ModelId);
 				}
-				else 
+				else
 				{
 					ImGui::Text("\tVehicle Selected! Press \"B\" to Unselect!");
 
@@ -257,7 +258,7 @@ void Menu::RenderMenu(bool gameOver, float timer, float maxTime, Model* model)
 
 					}
 				}
-				else 
+				else
 				{
 					int index = 2;
 					for (int i = 0; i < m_objHand->GetNumPlayers(); i++)
@@ -322,7 +323,7 @@ void Menu::RenderMenu(bool gameOver, float timer, float maxTime, Model* model)
 
 					}
 				}
-				
+
 				ImGui::PopStyleColor();
 			}
 			ImGui::End();
@@ -331,11 +332,11 @@ void Menu::RenderMenu(bool gameOver, float timer, float maxTime, Model* model)
 		if (m_p3Joined)//m_objHand->GetNumPlayers() >= 4)
 		{
 			int filler = 0;
-			if(m_selected[3] == 1)
+			if (m_selected[3] == 1)
 			{
 				filler = 250;
 			}
-			
+
 			ImGui::SetNextWindowPos(ImVec2(w->GetWidht() - 320 - filler, w->GetHeight() - 155));
 			ImGui::SetNextWindowSize(ImVec2(800, 100));
 			if (ImGui::Begin("##player4Select", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoNavInputs))
@@ -423,7 +424,7 @@ void Menu::RenderMenu(bool gameOver, float timer, float maxTime, Model* model)
 
 					}
 				}
-				
+
 				ImGui::PopStyleColor();
 			}
 			ImGui::End();
@@ -436,10 +437,10 @@ void Menu::RenderMenu(bool gameOver, float timer, float maxTime, Model* model)
 				m_continue += 1;
 			}
 		}
-			
+
 		if (m_continue == m_objHand->GetNumPlayers())
 		{
-			m_menu = ActiveMenu::playerHud;
+			m_menu = ActiveMenu::selectLives;
 
 			for (int i = 0; i < m_objHand->GetNumPlayers(); i++)
 			{
@@ -448,23 +449,137 @@ void Menu::RenderMenu(bool gameOver, float timer, float maxTime, Model* model)
 		}
 		m_continue = 0;
 		break;
+	case ActiveMenu::selectLives:
+		GLFWgamepadstate state;
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 15);
+		ImGui::SetNextWindowPos(ImVec2((float)w->GetWidht() / 3, w->GetHeight() / 4));
+		ImGui::SetNextWindowSize(ImVec2((float)w->GetWidht() / 3 /*- 150*/, w->GetHeight() / 4 - 300));
+		if (ImGui::Begin("##selectLives", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiNavInput_Activate))
+		{
+			if (m_selected[0] == 0)
+			{
+				ImGui::Text("\t <  How Many Lives Should Players Have? : %d  > ", m_maxLives);
+				ImGui::Text("\t Press \"B\" to Select Vehicles Again.. ");
+			}
+			else if (m_selected[0] == 1)
+			{
+				int minutes = m_maxTime / 60;
+				int seconds = m_maxTime % 60;
+				ImGui::Text("\t <  How Long should the Match be? : %dm : %ds > ", minutes, seconds);
+				ImGui::Text("\t Press \"B\" to Select Lives Again.. ");
+			}
+			else if (m_selected[0] == 2)
+			{
+				m_menu = ActiveMenu::playerHud;
+				m_selected[0] = 0;
+				m_objHand->SetNumberOfLives(m_maxLives);
+			}
+			else // bör bara kunna vara -1
+			{
+				m_menu = ActiveMenu::select;
+				m_selected[0] = 0;
+			}
+
+			if (time - m_p1Seconds >= 0.5 && (glfwGetGamepadState(0, &state)))
+			{
+				if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_RIGHT])
+				{
+					if (m_selected[0] == 0)
+					{
+						if (m_maxLives < 10)
+						{
+							m_maxLives += 1;
+						}
+						else
+						{
+							m_maxLives = 0;
+						}
+
+					}
+					else if (m_selected[0] == 1)
+					{
+						if (m_maxTime < 60)
+						{
+							m_maxTime += 15;
+						}
+						else if (m_maxTime < 600)
+						{
+							m_maxTime += 30;
+						}
+						else
+						{
+							m_maxTime = 15;
+						}
+					}
+					
+					m_p1Seconds = time;
+				}
+				else if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_LEFT])
+				{
+
+					if (m_selected[0] == 0)
+					{
+						if (m_maxLives <= 10 && m_maxLives > 0)
+						{
+							m_maxLives -= 1;
+						}
+						else
+						{
+							m_maxLives = 0;
+						}
+
+					}
+					else if (m_selected[0] == 1)
+					{
+						if (m_maxTime <= 60 && m_maxTime >= 30)
+						{
+							m_maxTime -= 15;
+						}
+						else if (m_maxTime <= 600 && m_maxTime >= 60)
+						{
+							m_maxTime -= 30;
+						}
+						else
+						{
+							m_maxTime = 15;
+						}
+					}
+					m_p1Seconds = time;
+				}
+				else if (state.buttons[GLFW_GAMEPAD_BUTTON_A] && m_selected[0] <=2)
+				{
+					m_selected[0] += 1;
+					m_p1Seconds = time;
+				}
+				else if (state.buttons[GLFW_GAMEPAD_BUTTON_B] && m_selected[0] > -1)
+				{
+					m_selected[0] -= 1;
+					m_p1Seconds = time;
+				}
+
+			}
+			//ImGui::PopStyleColor();
+			ImGui::PopStyleVar();
+		}
+		ImGui::End();
+		break;
 	case ActiveMenu::pause:
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 15);
-		ImGui::SetNextWindowPos(ImVec2((float)w->GetWidht() / 3, w->GetHeight() / 4 ));
-		ImGui::SetNextWindowSize(ImVec2((float)w->GetWidht()/3 /*- 150*/, w->GetHeight()/4 + 150));
+		ImGui::SetNextWindowPos(ImVec2((float)w->GetWidht() / 3, w->GetHeight() / 4));
+		ImGui::SetNextWindowSize(ImVec2((float)w->GetWidht() / 3 /*- 150*/, w->GetHeight() / 4 + 150));
 		if (ImGui::Begin("##PauseMenu", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiNavInput_Activate))
 		{
 
 			float middle = (float)w->GetWidht() * 0.5f;
-			ImGui::SetCursorPos(ImVec2(((float)w->GetWidht() / 3)/3 - 25, 15));
+			ImGui::SetCursorPos(ImVec2(((float)w->GetWidht() / 3) / 3 - 25, 15));
 			ImGui::PushFont(m_scene->GetOurWindow()->m_fonts[1]);
 			ImGui::Text("Pause Menu");
-			ImGui::SetCursorPos(ImVec2(((float)w->GetWidht() / 3) /3, 115));
+			ImGui::SetCursorPos(ImVec2(((float)w->GetWidht() / 3) / 3, 115));
 			if (ImGui::Button("Resume", ImVec2(200, 75)))
 			{
 				m_menu = ActiveMenu::playerHud;
 			}
-			ImGui::SetCursorPos(ImVec2(((float)w->GetWidht() / 3)/3-100, 215));
+			ImGui::SetCursorPos(ImVec2(((float)w->GetWidht() / 3) / 3 - 100, 215));
 			if (ImGui::Button("Main Menu", ImVec2(400, 75)))
 			{
 				// resettar banan m.m. och laddar start menyn
@@ -481,7 +596,7 @@ void Menu::RenderMenu(bool gameOver, float timer, float maxTime, Model* model)
 					if (m_objHand->GetNumPlayers() > 0)
 					{
 						m_objHand->RemovePlayer(m_objHand->GetNumPlayers() - 1);
-					}									
+					}
 				}
 				if (m_objHand->GetNumPlayers() == 0)
 				{
@@ -581,11 +696,11 @@ void Menu::RenderMenu(bool gameOver, float timer, float maxTime, Model* model)
 		ImGui::End();
 		break;
 	case ActiveMenu::playerHud:
-		ImGui::SetNextWindowPos(ImVec2(w->GetWidht()/2-125, 0));
+		ImGui::SetNextWindowPos(ImVec2(w->GetWidht() / 2 - 125, 0));
 		ImGui::SetNextWindowSize(ImVec2(250, 100));
 		if (ImGui::Begin("##timer", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_AlwaysAutoResize))
 		{
-			int timeLeft = (int)(maxTime - timer);
+			int timeLeft = (int)(m_maxTime - timer);
 			int minutes = timeLeft / 60;
 			int seconds = timeLeft % 60;
 			ImGui::Text("Time Left : %dm : %ds", minutes, seconds);
@@ -663,7 +778,7 @@ void Menu::RenderMenu(bool gameOver, float timer, float maxTime, Model* model)
 			}
 			ImGui::End();
 		}
-		
+
 		if (m_p4Joined)//m_objHand->GetNumPlayers() >= 4)
 		{
 			ImGui::SetNextWindowPos(ImVec2(w->GetWidht() - 258, w->GetHeight() - 155));
@@ -700,12 +815,17 @@ void Menu::SetActiveMenu(ActiveMenu activeMenu)
 	m_menu = activeMenu;
 }
 
-bool Menu::selectMenuActive()
+bool Menu::SelectMenuActive()
 {
-	if (m_menu == ActiveMenu::select)
+	if (m_menu == ActiveMenu::select || m_menu == ActiveMenu::selectLives)
 		return true;
 	else
 		return false;
+}
+
+int Menu::GetMaxTime()
+{
+	return m_maxTime;
 }
 
 void Menu::LoadMenuPic()
@@ -757,7 +877,7 @@ void Menu::ResetReset()
 	{
 		m_selected[i] = 0;
 	}
-
+	m_objHand->SetNumberOfLives(m_maxLives);
 	m_continue = 0;
 }
 
