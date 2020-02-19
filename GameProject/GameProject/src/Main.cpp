@@ -14,7 +14,7 @@ int main(void)
 
 	float _deltaTime = 0.0, _curTime = 0.0, _lastTime = 0.0;
 	GLFWwindow* _window = GAME->GetWindow();
-	std::atomic<unsigned long long> sum(0);
+	// std::atomic<unsigned long long> sum(0);
 
 	while (!glfwWindowShouldClose(_window))
 	{	
@@ -23,7 +23,7 @@ int main(void)
 		_deltaTime = _curTime - _lastTime;
 		_lastTime = _curTime;
 		GAME->Update(_deltaTime);
-		GAME->PlayWithLights(_curTime);
+		// GAME->PlayWithLights(_curTime);
 		GAME->Render(); 
 	}
 	

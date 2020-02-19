@@ -153,7 +153,7 @@ void Scene::LightToShader()
 	}
 }
 
-void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, MCubes* cube)
+void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
 {
 	/* Render here */
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -184,7 +184,6 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, 
 	// Light uniforms
 	LightToShader();
 
-	renderMCubes(cube);
 	// Draw all objects
 	RenderSceneInfo(m_modelShader, objects);
 
@@ -282,11 +281,6 @@ void Scene::RenderImGui(btDiscreteDynamicsWorld* world)
 		world->debugDrawWorld();
 
 	}
-}
-
-void Scene::renderMCubes(MCubes* cube)
-{
-	cube->RenderCubes(m_modelShader);
 }
 
 void Scene::SwapBuffer()

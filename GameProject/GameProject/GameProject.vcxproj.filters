@@ -168,6 +168,7 @@
     <ClInclude Include="src\Header Files\PowerUp.h">
       <Filter>Header</Filter>
     </ClInclude>
+    <ClInclude Include="src\Header Files\MarchingCubes.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Shaders\ShadowFS.glsl">
