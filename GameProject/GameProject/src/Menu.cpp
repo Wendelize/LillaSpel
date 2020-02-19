@@ -24,7 +24,7 @@ void Menu::RenderMenu(bool gameOver, float timer, float maxTime, Model* model)
 	{
 		m_menu = ActiveMenu::restart;
 	}
-	else if (m_menu == ActiveMenu::playerHud && glfwGetGamepadState(0, &state))
+	else if ((m_menu == ActiveMenu::playerHud || m_menu == ActiveMenu::select)  && glfwGetGamepadState(0, &state))
 	{
 		// TODO: maybe one should be able to access the pause menu from more places?
 		if (state.buttons[GLFW_GAMEPAD_BUTTON_START])
@@ -460,7 +460,7 @@ void Menu::RenderMenu(bool gameOver, float timer, float maxTime, Model* model)
 			ImGui::PushFont(m_scene->GetOurWindow()->m_fonts[1]);
 			ImGui::Text("Pause Menu");
 			ImGui::SetCursorPos(ImVec2(((float)w->GetWidht() / 3) /3, 115));
-			if (ImGui::Button("Start", ImVec2(200, 75)))
+			if (ImGui::Button("Resume", ImVec2(200, 75)))
 			{
 				m_menu = ActiveMenu::playerHud;
 			}
@@ -470,6 +470,8 @@ void Menu::RenderMenu(bool gameOver, float timer, float maxTime, Model* model)
 				// resettar banan m.m. och laddar start menyn
 				m_menu = ActiveMenu::start;
 				m_reset = true;
+				m_p3Joined = false;
+				m_p4Joined = false;
 				m_p1ModelId = 0;
 				m_p2ModelId = 0;
 				m_p3ModelId = 0;
@@ -500,6 +502,7 @@ void Menu::RenderMenu(bool gameOver, float timer, float maxTime, Model* model)
 		ImGui::End();
 		break;
 	case ActiveMenu::restart:
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 15);
 		ImGui::SetNextWindowPos(ImVec2((float)w->GetWidht() / 3, w->GetHeight() / 4));
 		ImGui::SetNextWindowSize(ImVec2((float)w->GetWidht() / 3 /*- 150*/, w->GetHeight() / 4 + 150));
 		if (ImGui::Begin("##RestartMenu", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiNavInput_Activate))
@@ -513,6 +516,7 @@ void Menu::RenderMenu(bool gameOver, float timer, float maxTime, Model* model)
 			if (ImGui::Button("Restart", ImVec2(250, 75)))
 			{
 				m_menu = ActiveMenu::playerHud;
+
 				m_reset = true;
 				// addar tillbaka spelarna här i Menu.cpp för att bevara deras modeller om man 
 				//	bara vill resetta med samma inställnignar
@@ -531,7 +535,7 @@ void Menu::RenderMenu(bool gameOver, float timer, float maxTime, Model* model)
 				if (m_p3Joined && m_objHand->GetNumPlayers() == 2)
 				{
 					m_objHand->AddPlayer(vec3(-7, 2, 15), 2, m_p3ModelId, m_p3Col, model);
-					if (m_p3Joined)
+					if (m_p4Joined)
 					{
 						m_objHand->AddPlayer(vec3(7, 2, 15), 3, m_p4ModelId, m_p4Col, model);
 					}
@@ -545,6 +549,8 @@ void Menu::RenderMenu(bool gameOver, float timer, float maxTime, Model* model)
 				// resettar banan m.m. och laddar start menyn
 				m_menu = ActiveMenu::start;
 				m_reset = true;
+				m_p3Joined = false;
+				m_p4Joined = false;
 				m_p1ModelId = 0;
 				m_p2ModelId = 0;
 				m_p3ModelId = 0;
@@ -567,7 +573,7 @@ void Menu::RenderMenu(bool gameOver, float timer, float maxTime, Model* model)
 			{
 				glfwSetWindowShouldClose(m_scene->GetWindow(), 1);
 			}
-			//ImGui::PopStyleVar(1); // pop all the styles
+			ImGui::PopStyleVar(1); // pop all the styles
 			ImGui::PopFont();
 			//ImGui::PopStyleColor();
 
@@ -751,8 +757,7 @@ void Menu::ResetReset()
 	{
 		m_selected[i] = 0;
 	}
-	m_p3Joined = false;
-	m_p4Joined = false;
+
 	m_continue = 0;
 }
 

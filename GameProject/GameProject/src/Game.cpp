@@ -13,7 +13,7 @@ Game::Game()
 	// väl playerHud om ni vill spela utan start menu
 	// välj noMenu om ni vill spela utan HUD och ingen restart, 
 	//	Pause meny bör fortfarande fungera med noMenu
-	m_menu->SetActiveMenu(Menu::ActiveMenu::start);
+	m_menu->SetActiveMenu(Menu::ActiveMenu::restart);
 	m_menu->LoadMenuPic();
 
 	m_debug = false;
@@ -179,12 +179,10 @@ void Game::Render(float dt)
 	//ImGui::ShowDemoWindow();
 
 	m_menu->RenderMenu(m_gameOver, m_time, m_maxTime, m_cars[0]);
-	//if(!m_menu->Pause())
-	//{ 
-		m_objects = m_objectHandler->GetObjects();
-		m_scene->Render(m_objects, m_objectHandler->GetWorld(), dt);
 
-	//}
+	m_objects = m_objectHandler->GetObjects();
+	m_scene->Render(m_objects, m_objectHandler->GetWorld(), dt);
+
 	
 	if (m_debug)
 	{
