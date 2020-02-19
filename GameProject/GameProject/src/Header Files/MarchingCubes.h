@@ -22,6 +22,8 @@ private:
     float m_middle = 16;
     int m_shrink = 0;
     float m_time = 0.0f;
+    int m_currentLvl = 4;
+    int m_holeSize = 8;
     bool m_smoothTerrain = true;
     bool m_way = true;
 
@@ -35,10 +37,14 @@ public:
     void ClearMeshData();
     void BuildMesh();
     void Draw(Shader* shader);
-    void PopulateTerrainMap();
+    void PopulateTerrainMap(int level);
     int GetLookupIndex(float *cube);
     void CreateMeshData();
     float SampleTerrain(vec3 point);
     void DrawWarning(int x, int y, int z);
+    void SetCurrentLevel(int level);
+    int GetCurrentLevel();
+    void SetHoleSize(int holeSize);
+    int GetHoleSize();
 };
 

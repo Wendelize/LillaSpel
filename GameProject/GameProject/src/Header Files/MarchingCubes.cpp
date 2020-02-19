@@ -332,7 +332,7 @@ MarchingCubes::MarchingCubes()
 	m_mesh = new Mesh(m_vertices, m_indices, m_textures, m_materials);
 	m_transform = new Transform;
 	m_transform->Translate(vec3(-16, 0, -16));
-	PopulateTerrainMap();
+	PopulateTerrainMap(m_currentLvl);
 }
 
 MarchingCubes::~MarchingCubes()
@@ -365,7 +365,7 @@ void MarchingCubes::Update()
 				m_way = true;
 		}
 		m_time = 0;
-		PopulateTerrainMap();
+		PopulateTerrainMap(m_currentLvl);
 	}
 
 	CreateMeshData();
@@ -462,7 +462,7 @@ void MarchingCubes::Draw(Shader* shader)
 	m_mesh->Draw(shader);
 }
 
-void MarchingCubes::PopulateTerrainMap()
+void MarchingCubes::PopulateTerrainMap(int level)
 {
 	for (int x = 0; x < m_width + 1; x++)
 	{
@@ -470,34 +470,140 @@ void MarchingCubes::PopulateTerrainMap()
 		{
 			for (int z = 0; z < m_width + 1; z++)
 			{
-				if ((x < m_middle - 4 && z < m_middle - 4) || (x > m_middle + 4 && z < m_middle - 4) || (x > m_middle + 4 && z > m_middle + 4) || (x < m_middle - 4 && z > m_middle + 4)) // MAKE A MIDDLE VARIABLE
+				switch (level)
 				{
-					vec2 distVec = (vec2(x, z) - vec2(m_middle, m_middle));
-					float dist = sqrt(pow(distVec.x, 2) + pow(distVec.y, 2));
-					if (dist > 17)
+				case 0 :
+					if ((x < m_middle - 4 && z < m_middle - 4) || (x > m_middle + 4 && z < m_middle - 4) || (x > m_middle + 4 && z > m_middle + 4) || (x < m_middle - 4 && z > m_middle + 4)) // MAKE A MIDDLE VARIABLE
 					{
-						m_terrainMap[x][y][z] = 1;
+						vec2 distVec = (vec2(x, z) - vec2(m_middle, m_middle));
+						float dist = sqrt(pow(distVec.x, 2) + pow(distVec.y, 2));
+						if (dist > 17)
+						{
+							m_terrainMap[x][y][z] = 1;
+						}
+						else
+						{
+							float thisHeight = (float)m_height * ((float)rand() / (RAND_MAX)) / 16.0f * 1.5f + 0.001f;
+							m_terrainMap[x][y][z] = (float)y - thisHeight;
+						}
 					}
-					else 
+					else
 					{
 						float thisHeight = (float)m_height * ((float)rand() / (RAND_MAX)) / 16.0f * 1.5f + 0.001f;
 						m_terrainMap[x][y][z] = (float)y - thisHeight;
 					}
-				}
-				else if (x > m_middle - 4 && x < m_middle + 4 && z > m_middle - 4 && z < m_middle + 4)
-				{
-					m_terrainMap[x][y][z] = 1;
-				}
-				else
-				{	
-					float thisHeight = (float)m_height * ((float)rand() / (RAND_MAX)) / 16.0f * 1.5f + 0.001f;
-					m_terrainMap[x][y][z] = (float)y - thisHeight;
-				}
 
-				if (x >= m_width - m_shrink || z >= m_width - m_shrink || x <= m_shrink || z <= m_shrink)
-				{
-					// DrawWarning(x, y, z);
-					m_terrainMap[x][y][z] = 1;
+					if (x >= m_width - m_shrink || z >= m_width - m_shrink || x <= m_shrink || z <= m_shrink)
+					{
+						// DrawWarning(x, y, z); // Warning before shrinking level
+						m_terrainMap[x][y][z] = 1;
+					}
+					break;
+
+				case 1 :
+					if (x > m_middle - 5 && x < m_middle + 5 && z > m_middle - 5 && z < m_middle + 5)
+					{
+						m_terrainMap[x][y][z] = 1;
+					}
+					else
+					{
+						float thisHeight = (float)m_height * ((float)rand() / (RAND_MAX)) / 16.0f * 1.5f + 0.001f;
+						m_terrainMap[x][y][z] = (float)y - thisHeight;
+					}
+
+					if (x >= m_width || z >= m_width || x <= 0 || z <= 0)
+					{
+						m_terrainMap[x][y][z] = 1;
+					}
+					break;
+
+				case 2:
+					if (x <= m_middle && z <= m_middle)
+					{
+						m_terrainMap[x][y][z] = 1;
+					}
+					else
+					{
+						float thisHeight = (float)m_height * ((float)rand() / (RAND_MAX)) / 16.0f * 1.5f + 0.001f;
+						m_terrainMap[x][y][z] = (float)y - thisHeight;
+					}
+
+					if (x >= m_width || z >= m_width || x <= 0 || z <= 0)
+					{
+						m_terrainMap[x][y][z] = 1;
+					}
+					break;
+
+				case 3:
+					if (x <= m_middle + 5 && x >= m_middle - 5 && z <= m_middle + 5 && z >= m_middle - 5)
+					{
+						float thisHeight = (float)m_height * ((float)rand() / (RAND_MAX)) / 16.0f * 1.5f + 3.0f;
+						m_terrainMap[x][y][z] = (float)y - thisHeight;
+						if (x <= m_middle + 3 && x >= m_middle - 3 && z <= m_middle + 3 && z >= m_middle - 3)
+						{
+							m_terrainMap[x][y][z] = 1;
+						}
+					}
+					else
+					{
+						float thisHeight = (float)m_height * ((float)rand() / (RAND_MAX)) / 16.0f * 1.5f + 0.001f;
+						m_terrainMap[x][y][z] = (float)y - thisHeight;
+					}
+
+					if (x >= m_width || z >= m_width || x <= 0 || z <= 0)
+					{
+						m_terrainMap[x][y][z] = 1;
+					}
+					break;
+					
+				case 4:
+					if (x > m_middle - 11 && x < m_middle + 11 && z > m_middle - 11 && z < m_middle + 11)
+					{
+						if (x > m_middle - 6 && x < m_middle + 6 && z > m_middle - 6 && z < m_middle + 6)
+						{
+							float thisHeight = (float)m_height * ((float)rand() / (RAND_MAX)) / 16.0f * 1.5f + 2.0f;
+							m_terrainMap[x][y][z] = (float)y - thisHeight;
+						}
+						else
+						{
+							float thisHeight = (float)m_height * ((float)rand() / (RAND_MAX)) / 16.0f * 1.5f + 1.0f;
+							m_terrainMap[x][y][z] = (float)y - thisHeight;
+						}
+					}
+					else
+					{
+						float thisHeight = (float)m_height * ((float)rand() / (RAND_MAX)) / 16.0f * 1.5f + 0.001f;
+						m_terrainMap[x][y][z] = (float)y - thisHeight;
+					}
+
+
+					if (x >= m_width - m_shrink || z >= m_width - m_shrink || x <= m_shrink || z <= m_shrink)
+					{
+						m_terrainMap[x][y][z] = 1;
+					}
+					break;
+
+				default:
+					if (x <= m_holeSize && z <= 2 || x >= m_width - m_holeSize && z <= 2 || 
+						x <= 2 && z <= m_holeSize || z >= m_width - m_holeSize && x <= 2 ||
+						z >= m_width - 2 && x <= m_holeSize || z >= m_width - 2 && x >= m_width - m_holeSize || 
+						x >= m_width - 2 && z <= m_holeSize || z >= m_width - m_holeSize && x >= m_width - 2)
+					{
+						float thisHeight = (float)m_height * ((float)rand() / (RAND_MAX)) / 16.0f * 1.5f + 3.0f;
+						m_terrainMap[x][y][z] = (float)y - thisHeight;
+					}
+					else
+					{
+						float thisHeight = (float)m_height * ((float)rand() / (RAND_MAX)) / 16.0f * 1.5f + 0.001f;
+						m_terrainMap[x][y][z] = (float)y - thisHeight;
+					}
+
+					if (x >= m_width || z >= m_width || x <= 0 || z <= 0)
+					{
+						m_terrainMap[x][y][z] = 1;
+					}
+					break;
+					
 				}
 			}
 		}
@@ -550,4 +656,24 @@ void MarchingCubes::DrawWarning(int x, int y, int z)
 			);
 	}
 	glEnd();
+}
+
+void MarchingCubes::SetCurrentLevel(int level)
+{
+	m_currentLvl = level;
+}
+
+int MarchingCubes::GetCurrentLevel()
+{
+	return m_currentLvl;
+}
+
+void MarchingCubes::SetHoleSize(int holeSize)
+{
+	m_holeSize = holeSize;
+}
+
+int MarchingCubes::GetHoleSize()
+{
+	return m_holeSize;
 }
