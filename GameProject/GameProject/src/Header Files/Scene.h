@@ -15,6 +15,7 @@ private:
 	Skybox * m_skybox;
 	Sky	   * m_sky;
 	Bloom  * m_bloom;
+	vector<ParticleSystem*> m_particles;
 	ShadowMap * m_shadowMap;
 
 	bool m_debug = false;
@@ -43,12 +44,15 @@ public:
 
 	void Init();
 	void LightToShader();
-	void Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, float dt);
+	void Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, bool gameOver, int winner, float dt);
 	void RenderSceneInfo(Shader * shader, vector<ObjectInfo*> objects);
 	void RenderSkybox();
 	void RenderSky();
 	void RenderShadows(vector<ObjectInfo*> objects);
 	void RenderImGui(btDiscreteDynamicsWorld* world);
+	void RenderParticlesCollision(float dt, btDiscreteDynamicsWorld* world);
+	void RenderParticlesVictory(ObjectInfo* object, float dt);
+	void RenderExhaust(vector<ObjectInfo*> objects);
 	void SwapBuffer();
 
 	void SetCameraPos(vec3 pos);
@@ -65,4 +69,5 @@ public:
 	void AddPointLight(vec3 pos = { 2,2,2 }, vec3 color = { 1,0,0 });
 	void AddDirLight(vec3 dir = { 0,-1,0 }, vec3 color = { 0,1,0 });
 	void AddSpotLight(vec3 pos = { 0,10,0 }, vec3 dir = { 0,-1,0 }, vec3 color = {0,0,1}, float cutOff = 12.0);
+	//void CameraFollowCar(ObjectInfo* objects);
 };

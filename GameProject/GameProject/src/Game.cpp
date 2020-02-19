@@ -198,6 +198,7 @@ void Game::Render(float dt)
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 	m_scene->SwapBuffer();
+	glfwPollEvents();
 }
 
 void Game::Reset()

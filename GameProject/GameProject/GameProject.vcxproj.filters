@@ -79,6 +79,9 @@
     <ClCompile Include="src\Header Files\PowerUp.cpp">
       <Filter>Src</Filter>
     </ClCompile>
+    <ClCompile Include="src\ParticleSystem.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
     <ClCompile Include="src\Menu.cpp">
       <Filter>Src</Filter>
     </ClCompile>
@@ -171,6 +174,9 @@
     <ClInclude Include="src\Header Files\PowerUp.h">
       <Filter>Header</Filter>
     </ClInclude>
+    <ClInclude Include="src\Header Files\ParticleSystem.h">
+      <Filter>Header</Filter>
+    </ClInclude>
     <ClInclude Include="src\Header Files\Menu.h">
       <Filter>Header</Filter>
     </ClInclude>
@@ -207,6 +213,12 @@
       <Filter>Shader</Filter>
     </None>
     <None Include="src\Shaders\SkyboxVS.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="src\Shaders\ParticleFS.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="src\Shaders\ParticleVS.glsl">
       <Filter>Shader</Filter>
     </None>
     <None Include="src\Shaders\SkyDomeFS.glsl">

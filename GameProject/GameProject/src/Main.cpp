@@ -21,7 +21,7 @@ int main(void)
 
 	float _deltaTime = 0.0, _curTime = 0.0, _lastTime = 0.0;
 	GLFWwindow* _window = GAME->GetWindow();
-
+	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	while (!glfwWindowShouldClose(_window))
 	{	
 		_curTime = (float)glfwGetTime();
