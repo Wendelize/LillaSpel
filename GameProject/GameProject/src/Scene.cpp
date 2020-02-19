@@ -193,10 +193,12 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, 
 
 	//// Render Particles
 	RenderParticlesCollision(0.03, world);
+	//RenderExhaust(objects);
 	if (gameOver == true)
 	{
 		RenderParticlesVictory(objects[winner], dt);
 	}
+
 	// Render Skybox
 	RenderSkybox();
 
@@ -204,9 +206,6 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, 
 	m_bloom->PingPongRender(3);
 
 	m_bloom->RenderBloom(m_window->m_window);
-
-	/* Poll for and process events */
-	//glfwPollEvents();
 }
 
 void Scene::RenderSceneInfo(Shader* shader, vector<ObjectInfo*> objects)
@@ -387,10 +386,20 @@ void Scene::RenderParticlesVictory(ObjectInfo* object, float dt)
 	
 	for (auto ps : m_particles)
 	{
-		ps->GenerateParticlesForVictory(vec3(object->modelMatrix[3][0], object->modelMatrix[3][1], object->modelMatrix[3][2]));
 		ps->Victory(dt, vec3(object->modelMatrix[3][0], object->modelMatrix[3][1], object->modelMatrix[3][2]));
 		ps->Draw();
 	}
+}
+
+void Scene::RenderExhaust(vector<ObjectInfo*> objects)
+{
+	mat4 temp = m_viewMatrix;
+	m_particles.back()->GetShader()->UseShader();
+	m_particles.back()->GetShader()->SetUniform("u_View", temp);
+	m_particles.back()->GetShader()->SetUniform("u_Proj", m_projMatrix);
+	
+	m_particles.back()->Exhaust(0.03, vec3(objects[0]->modelMatrix[3][0], objects[0]->modelMatrix[3][1], objects[0]->modelMatrix[3][2]) );
+	m_particles.back()->Draw();
 }
 
 void Scene::SwapBuffer()

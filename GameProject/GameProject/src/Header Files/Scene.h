@@ -47,7 +47,7 @@ public:
 	void RenderImGui(btDiscreteDynamicsWorld* world);
 	void RenderParticlesCollision(float dt, btDiscreteDynamicsWorld* world);
 	void RenderParticlesVictory(ObjectInfo* object, float dt);
-	void RenderExhaust();
+	void RenderExhaust(vector<ObjectInfo*> objects);
 	void SwapBuffer();
 
 	void SetWindowSize(int width, int height);

@@ -46,11 +46,14 @@ public:
 	Shader* GetShader();
 
 	void DriftParticles();
+
 	void GenerateParticlesForCollision( vec3 emitterPos, float velocity);
 	void Collision(float dt);
 
 	void GenerateParticlesForVictory(vec3 emitterPos);
 	void Victory(float dt, vec3 emitterPos);
+
+	void Exhaust(float dt, vec3 emitterPos);
 
 	void SetActive();
 	bool GetActive();

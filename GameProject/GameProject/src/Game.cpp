@@ -80,7 +80,7 @@ void Game::Update(float dt)
 	
 	if (m_objectHandler->GetNumPlayers() == 1 && !m_gameOver)
 	{
-		m_winner = m_objectHandler->GetWinnerIndex();
+		m_winner = 0;
 		m_gameOver = true;
 		if (m_soundEngine) {
 			m_soundEngine->stopAllSounds();
@@ -125,7 +125,7 @@ void Game::Update(float dt)
 		m_toggle = false;
 	}
 
-	Render(dt);
+	//Render(dt);
 }
 
 void Game::Render(float dt)

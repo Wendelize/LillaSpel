@@ -497,3 +497,4 @@ int ObjectHandler::GetWinnerIndex()
 	}
 	return winnerIndex;
 }
+

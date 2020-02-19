@@ -60,4 +60,5 @@ public:
 	btDiscreteDynamicsWorld* GetWorld();
 	DebugDrawer* GetDebugDrawer();
 	int GetWinnerIndex();
+
 };
