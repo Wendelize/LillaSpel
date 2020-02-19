@@ -112,10 +112,8 @@ void Mesh::UpdateMesh(vector<VertexData> vertices, vector<unsigned int> indices)
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
 	glBufferData(GL_ARRAY_BUFFER, VertexBufferSize(), &m_vertices[0], GL_STATIC_DRAW);
 
-
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indicesBuffer);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, IndicesBufferSize(), &m_indices[0], GL_STATIC_DRAW);
 
 	glBindVertexArray(0);
-
 }

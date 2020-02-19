@@ -79,10 +79,7 @@
     <ClCompile Include="src\Header Files\PowerUp.cpp">
       <Filter>Src</Filter>
     </ClCompile>
-    <ClCompile Include="src\MCubes.cpp">
-      <Filter>Src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Header Files\Cubes.cpp">
+    <ClCompile Include="src\Header Files\MarchingCubes.cpp">
       <Filter>Src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -169,12 +166,6 @@
       <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="src\Header Files\PowerUp.h">
-      <Filter>Header</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Header Files\MCubes.h">
-      <Filter>Header</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Header Files\Cubes.h">
       <Filter>Header</Filter>
     </ClInclude>
   </ItemGroup>

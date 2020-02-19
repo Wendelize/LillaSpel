@@ -1,5 +1,6 @@
 ﻿#include "Header Files/Scene.h"
 
+
 Scene::Scene()
 {
 	m_screenWidth = 1280;
@@ -14,6 +15,8 @@ Scene::Scene()
 	m_camera = new Camera({ 0, 15, 28 });
 	m_modelShader = new Shader("src/Shaders/SceneVS.glsl", "src/Shaders/SceneFS.glsl");
 	m_skyboxShader = new Shader("src/Shaders/SkyboxVS.glsl", "src/Shaders/SkyboxFS.glsl");
+	
+	m_camera = new Camera({0, 30, 30});
 	m_skybox = new Skybox();
 	m_shadowMap = new ShadowMap(m_shadowMapWidth, m_shadowMapHeight);
 	m_bloom = new Bloom(m_screenWidth, m_screenHeight, m_bloomTextureScale);
@@ -22,6 +25,7 @@ Scene::Scene()
 	m_projMatrix = mat4(1.0);
 	m_viewMatrix = mat4(1.0);
 
+	m_cube = new MarchingCubes;
 }
 
 Scene::~Scene()
@@ -61,7 +65,7 @@ Scene::~Scene()
 	delete m_skybox;
 	delete m_bloom;
 	delete m_window;
-
+	delete m_cube;
 }
 
 void Scene::Init()
@@ -173,6 +177,9 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, 
 	// Texture(shadowmap)
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_shadowMap->GetTexture());
+
+	m_cube->Update();
+	m_cube->Draw(m_modelShader);
 
 	// Light uniforms
 	LightToShader();
@@ -342,6 +349,3 @@ void Scene::AddSpotLight(vec3 pos, vec3 dir, vec3 color, float cutOff)
 {
 	m_lights.push_back(new Light(2, dir, pos, color, cutOff));
 }
-
-
-

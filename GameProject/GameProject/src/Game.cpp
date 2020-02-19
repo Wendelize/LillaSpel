@@ -13,7 +13,6 @@ Game::Game()
 	m_platforms = m_scene->GetModels(0);
 	m_cars = m_scene->GetModels(1);
 	m_timeSinceSpawn = 0;
-	m_timeSwapTrack = 0;
 	//m_objectHandler->AddPlatform(0, m_platforms[0]); // Passa modell
 	srand(time(NULL));
 	cout << rand() % 4 << endl;
