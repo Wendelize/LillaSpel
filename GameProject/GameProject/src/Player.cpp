@@ -321,7 +321,7 @@ vec3 Player::GetDirection()
 
 ObjectInfo* Player::GetObjectInfo()
 {
-	m_info = new ObjectInfo(m_transform->GetMatrix(), m_modelId, 0, m_color, true);
+	m_info = new ObjectInfo(m_transform->GetMatrix(), m_modelId, 0, m_color, false);
 	return m_info;
 }
 

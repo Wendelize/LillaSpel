@@ -112,6 +112,7 @@ void Game::Update(float dt)
 
 		if (m_objectHandler->GetNumPlayers() == 1 && !m_gameOver)
 		{
+			m_winner = 0;
 			m_gameOver = true;
 			if (m_soundEngine)
 			{
@@ -131,6 +132,7 @@ void Game::Update(float dt)
 		}
 		if (m_time > m_maxTime && !m_gameOver)
 		{
+			m_winner = m_objectHandler->GetWinnerIndex();
 			m_gameOver = true;
 			if (m_soundEngine)
 			{
@@ -196,6 +198,7 @@ void Game::Render(float dt)
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 	m_scene->SwapBuffer();
+	glfwPollEvents();
 }
 
 void Game::Reset()

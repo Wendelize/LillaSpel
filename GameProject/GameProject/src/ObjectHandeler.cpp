@@ -509,3 +509,19 @@ DebugDrawer* ObjectHandler::GetDebugDrawer()
 {
 	return m_debugDrawer;
 }
+
+int ObjectHandler::GetWinnerIndex()
+{
+	int winnerIndex = 0;
+	int winnerLife = 0;
+	for (auto w : m_players)
+	{
+		if (w->GetLives() > winnerLife)
+		{
+			winnerLife = w->GetLives();
+			winnerIndex = w->GetControllerID();
+		}
+	}
+	return winnerIndex;
+}
+

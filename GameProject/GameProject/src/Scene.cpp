@@ -19,6 +19,8 @@ Scene::Scene()
 	m_sky = new Sky();
 	m_shadowMap = new ShadowMap(m_shadowMapWidth, m_shadowMapHeight);
 	m_bloom = new Bloom(m_screenWidth, m_screenHeight, m_bloomTextureScale);
+	for(int i =0; i< 4 ; i++)
+	m_particles.push_back(new ParticleSystem(50));
 
 	m_modelMatrix = mat4(1.0);
 	m_projMatrix = mat4(1.0);
@@ -52,6 +54,13 @@ Scene::~Scene()
 	}
 	m_lights.clear();
 
+	for (uint i = 0; i < m_particles.size(); i++)
+	{
+		delete m_particles.at(i);
+	}
+	m_particles.clear();
+
+
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
 	//ImGui::DestroyContext(); Causing breakpoint -> Might cause memory leaks if this one is removed. -> doesn't look like it :D
@@ -65,6 +74,8 @@ Scene::~Scene()
 	delete m_skybox;
 	delete m_sky;
 	delete m_bloom;
+
+	
 	delete m_window;
 
 }
@@ -78,6 +89,7 @@ void Scene::Init()
 
 	m_platform.push_back(new Model("src/Models/platform2.obj"));
 	// Veichles
+
 	// racingcar scale 0.5 
 	m_vehicles.push_back(new Model("src/Models/Low-Poly-Racing-Car-Grey.obj"));
 	// snowcat scale 0.08 
@@ -111,7 +123,6 @@ void Scene::Init()
 	//AddSpotLight({ 0, 2, 0 }, vec3(vec3(0) - vec3(0, 2, 0)), {1, 1, 1}, 12.5);
 
 }
-
 
 void Scene::LightToShader()
 {
@@ -150,12 +161,13 @@ void Scene::LightToShader()
 	}
 }
 
-void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, float dt)
+void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, bool gameOver, int winner, float dt)
 {
 
 	/* Render here */
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glViewport(0, 0, m_window->GetWidht(), m_window->GetHeight());
 
 	// Render shadows
 	RenderShadows(objects);
@@ -172,7 +184,7 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, 
 	// Matrix uniforms
 	m_modelShader->UseShader();
 	m_modelShader->SetUniform("u_ViewPos", m_camera->GetPos());
-	m_modelShader->SetUniform("u_View", m_camera->GetView());
+	m_modelShader->SetUniform("u_View", m_viewMatrix);
 	m_modelShader->SetUniform("u_Projection", m_projMatrix);
 	m_modelShader->SetUniform("u_LSP", m_shadowMap->GetLSP());
 	m_modelShader->SetTexture2D(0, "u_ShadowMap", m_shadowMap->GetTexture());
@@ -190,15 +202,21 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, 
 	// Render Imgui
 	RenderImGui(world);
 
+	//// Render Particles
+	RenderParticlesCollision(0.03, world);
+	//RenderExhaust(objects);
+	if (gameOver == true)
+	{
+		RenderParticlesVictory(objects[winner], dt);
+	}
+
 	// Render Skybox
 	//RenderSkybox();
 
-	m_bloom->PingPongRender(m_bloomNrOfGaussianBlur);
+	// Add glow
+	m_bloom->PingPongRender(3);
 
 	m_bloom->RenderBloom(m_window->m_window);
-
-	/* Poll for and process events */
-	glfwPollEvents();
 }
 
 void Scene::RenderSceneInfo(Shader* shader, vector<ObjectInfo*> objects)
@@ -269,7 +287,7 @@ void Scene::RenderShadows(vector<ObjectInfo*> objects)
 	RenderSceneInfo(m_shadowMap->GetShader(), objects);
 	glCullFace(GL_BACK);
 
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	glViewport(0, 0, m_screenWidth, m_screenHeight);
 }
@@ -298,6 +316,118 @@ void Scene::RenderImGui(btDiscreteDynamicsWorld* world)
 		world->debugDrawWorld();
 
 	}
+}
+
+void Scene::RenderParticlesCollision(float dt, btDiscreteDynamicsWorld* world)
+{
+	// Browse all collision pairs 
+	int numManifolds = world->getDispatcher()->getNumManifolds();
+	for (int i = 0; i < numManifolds; ++i)
+	{
+		btPersistentManifold* contactManifold = world->getDispatcher()->getManifoldByIndexInternal(i);
+		btCollisionObject* obA = const_cast<btCollisionObject*>(contactManifold->getBody0());
+		btCollisionObject* obB = const_cast<btCollisionObject*>(contactManifold->getBody1());
+
+		btCollisionShape* shapeA = obA->getCollisionShape();
+		btCollisionShape* shapeB = obB->getCollisionShape();
+
+		//Collision between spheres(cars)
+		if (shapeA->getShapeType() == 8 && shapeB->getShapeType() == 8)
+		{
+			bool A = false;
+			bool B = false;
+			vec3 particlePos;
+
+			//Check for available particlesystem
+			for (auto ps : m_particles)
+			{
+				//Car A
+				if (ps->GetActive() == false && A == false)
+				{
+
+					btTransform matA = obA->getWorldTransform();
+					btVector3 vecA = matA.getOrigin();
+
+					particlePos = vec3(vecA.x(), vecA.y(), vecA.z());
+
+					btVector3 spread = obA->getInterpolationLinearVelocity();
+
+					float fspread = (spread.x() + spread.y() + spread.z()) / 3.f;
+					if (fspread < 1.f)
+					{
+						fspread = 6.f;
+					}
+
+					//Set of particlesystem for collider A
+					ps->SetActive();
+					ps->GenerateParticlesForCollision(particlePos, fspread);
+					A = true;	
+				}
+				//Car B
+				if (ps->GetActive() == false && B == false)
+				{
+					btTransform matB = obB->getWorldTransform();
+					btVector3 vecB = matB.getOrigin();
+					particlePos = vec3(vecB.x(), vecB.y(), vecB.z());
+
+					btVector3 spread = obB->getInterpolationLinearVelocity();
+
+					float fspread = (spread.x() + spread.y() + spread.z()) / 3.f;
+					if (fspread < 1.f)
+					{
+						fspread = 6.f;
+					}
+
+					//Set of particlesystem for collider B
+					ps->SetActive();
+					ps->GenerateParticlesForCollision(particlePos, fspread);
+					B = true;
+					//Both particlesystem are set of, no need to search futher
+					break;
+				}
+			}
+		}
+	}
+		
+	// Render the active particlesystems
+	for (auto ps : m_particles)
+	{
+		if (ps->GetActive() == true)
+		{
+			mat4 temp = m_viewMatrix;
+			ps->GetShader()->UseShader();
+			ps->GetShader()->SetUniform("u_View", temp);
+			ps->GetShader()->SetUniform("u_Proj", m_projMatrix);
+
+			ps->Collision(dt);
+			ps->Draw();
+		}
+	}
+}
+
+void Scene::RenderParticlesVictory(ObjectInfo* object, float dt)
+{
+	mat4 temp = m_viewMatrix;
+	m_particles.back()->GetShader()->UseShader();
+	m_particles.back()->GetShader()->SetUniform("u_View", temp);
+	m_particles.back()->GetShader()->SetUniform("u_Proj", m_projMatrix);
+	
+	for (auto ps : m_particles)
+	{
+		ps->Victory(dt, vec3(object->modelMatrix[3][0], object->modelMatrix[3][1], object->modelMatrix[3][2]));
+		ps->Draw();
+	}
+}
+
+void Scene::RenderExhaust(vector<ObjectInfo*> objects)
+{
+	mat4 temp = m_viewMatrix;
+	m_particles.back()->GetShader()->UseShader();
+	m_particles.back()->GetShader()->SetUniform("u_View", temp);
+	m_particles.back()->GetShader()->SetUniform("u_Proj", m_projMatrix);
+	
+	m_particles.back()->Exhaust(0.03, vec3(objects[0]->modelMatrix[3][0], objects[0]->modelMatrix[3][1], objects[0]->modelMatrix[3][2]) );
+	m_particles.back()->Draw();
 }
 
 void Scene::SwapBuffer()
@@ -371,6 +501,3 @@ void Scene::AddSpotLight(vec3 pos, vec3 dir, vec3 color, float cutOff)
 {
 	m_lights.push_back(new Light(2, dir, pos, color, cutOff));
 }
-
-
-

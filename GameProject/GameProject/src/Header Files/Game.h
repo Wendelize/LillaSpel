@@ -28,6 +28,7 @@ private:
 	float m_timeSinceSpawn;
 	bool m_gameOver = false;
 	bool m_fastMusic = false;
+	int m_winner = 0;
 	bool m_wasSelect = false; // used to see if we were in select-menu last time or not
 	void Debug();
 	void SelectionMenu();	// settup for select-menu
@@ -35,6 +36,7 @@ public:
 	Game();
 	~Game();
 	void Update(float dt);
+	void PlayWithLights(float dt);
 	void Render(float dt);
 	void Reset();
 	GLFWwindow* GetWindow();

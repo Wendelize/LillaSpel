@@ -57,6 +57,7 @@
 #include "DebugDrawer.h"
 #include "ShadowMap.h"
 #include "Bloom.h"
+#include "ParticleSystem.h"
 
 //DEFINES 
 #define NRDEATHSOUNDS 30

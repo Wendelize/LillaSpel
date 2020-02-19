@@ -160,6 +160,7 @@
     <ClCompile Include="src\Mesh.cpp" />
     <ClCompile Include="src\Model.cpp" />
     <ClCompile Include="src\ObjectHandeler.cpp" />
+    <ClCompile Include="src\ParticleSystem.cpp" />
     <ClCompile Include="src\Platform.cpp" />
     <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\Scene.cpp" />
@@ -182,6 +183,7 @@
     <ClInclude Include="src\Header Files\Mesh.h" />
     <ClInclude Include="src\Header Files\Model.h" />
     <ClInclude Include="src\Header Files\ObjectHandler.h" />
+    <ClInclude Include="src\Header Files\ParticleSystem.h" />
     <ClInclude Include="src\Header Files\Platform.h" />
     <ClInclude Include="src\Header Files\Player.h" />
     <ClInclude Include="src\Header Files\PowerUp.h" />
@@ -207,6 +209,8 @@
     <None Include="src\Shaders\BloomVS.glsl" />
     <None Include="src\Shaders\GaussianBlurFS.glsl" />
     <None Include="src\Shaders\GaussianBlurVS.glsl" />
+    <None Include="src\Shaders\ParticleFS.glsl" />
+    <None Include="src\Shaders\ParticleVS.glsl" />
     <None Include="src\Shaders\SceneFS.glsl" />
     <None Include="src\Shaders\SceneVS.glsl" />
     <None Include="src\Shaders\ShadowFS.glsl" />
