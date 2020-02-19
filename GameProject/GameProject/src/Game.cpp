@@ -112,6 +112,7 @@ void Game::Update(float dt)
 
 		if (m_objectHandler->GetNumPlayers() == 1 && !m_gameOver)
 		{
+			m_winner = 0;
 			m_gameOver = true;
 			if (m_soundEngine)
 			{
@@ -131,6 +132,7 @@ void Game::Update(float dt)
 		}
 		if (m_time > m_maxTime && !m_gameOver)
 		{
+			m_winner = m_objectHandler->GetWinnerIndex();
 			m_gameOver = true;
 			if (m_soundEngine)
 			{
@@ -182,7 +184,7 @@ void Game::Render(float dt)
 	//if(!m_menu->Pause())
 	//{ 
 		m_objects = m_objectHandler->GetObjects();
-		m_scene->Render(m_objects, m_objectHandler->GetWorld(), dt);
+		m_scene->Render(m_objects, m_objectHandler->GetWorld(), m_gameOver, m_winner, dt);
 
 	//}
 	
