@@ -1,5 +1,6 @@
 #pragma once 
 #include "Include.h" 
+#include "Transform.h"
 
 class MarchingCubes 
 { 
@@ -10,16 +11,19 @@ private:
     vector<TextureData> m_textures;
     vector<Material> m_materials;
     Mesh* m_mesh;
+    Transform* m_transform;
+    
+    // ADD PHYSICS! 
 
-    // From tutorial
-    vector<vec3> m_tutVerts;
-    vector<int> m_triangles; // Technically indices
-    int m_lookupIndex = -1;
-
-    float terrainSurface = 0.5f;
-    int width = 32;
-    int height = 30;
-    float terrainMap[32 + 1][32 + 1][32 + 1]; // width height width
+    float m_terrainSurface = 0.5f;
+    int m_width = 32;
+    int m_height = 8;
+    float m_terrainMap[32 + 1][8 + 1][32 + 1]; // width height width
+    float m_middle = 16;
+    int m_shrink = 0;
+    float m_time = 0.0f;
+    bool m_smoothTerrain = true;
+    bool m_way = true;
 
 public:  
     MarchingCubes();
@@ -27,22 +31,14 @@ public:
 
     void Init();
     void Update();
-    void MarchCube(vec3 position, float *cube);
+    void MarchCube(vec3 position);
     void ClearMeshData();
     void BuildMesh();
-    void Draw();
+    void Draw(Shader* shader);
     void PopulateTerrainMap();
     int GetLookupIndex(float *cube);
     void CreateMeshData();
-
-    /* 
-    int Polyganise(GridCell grid, double isolevel, Triangle* triangles);
-    vec3 VertexInterpolation(double isolevel, vec3 p1, vec3 p2, double valueP1, double valueP2);
-    void March(GridCell* grids);
-    void Init();
-    void Update();
-    void Draw(int lookup);
-    GridCell* GetGrid();
-    */
+    float SampleTerrain(vec3 point);
+    void DrawWarning(int x, int y, int z);
 };
 

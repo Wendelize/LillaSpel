@@ -13,6 +13,22 @@ vec3 cornerTable[8] =
 	vec3(0, 1, 1)
 };
 
+int edgeIndices[12][2] =
+{
+	{0, 1}, 
+	{1, 2},
+	{3, 2},
+	{0, 3},
+	{4, 5},
+	{5, 6},
+	{7, 6},
+	{4, 7},
+	{0, 4},
+	{1, 5},
+	{2, 6},
+	{3, 7}
+};
+
 vec3 edgeTable[12][2] = 
 {
 	{ vec3(0, 0, 0), vec3(1, 0, 0) },
@@ -291,13 +307,39 @@ int triTable[256][16] =
 
 MarchingCubes::MarchingCubes()
 {
+	VertexData tempVertex;
+	tempVertex.pos = vec3(0, 0, 0);
+	tempVertex.color = vec3(0, 0, 0);
+	tempVertex.normal = vec3(0, 0, 0);
+	tempVertex.uv = vec2(0, 0);
+	m_vertices.push_back(tempVertex);
 
+	unsigned int tempIndex = 0;
+	m_indices.push_back(tempIndex);
+
+	Material tempMaterial;
+	tempMaterial.Diffuse = vec3(0.8);
+	tempMaterial.Specular = vec3(1);
+	tempMaterial.Ambient = vec3(1);
+	tempMaterial.Shininess = 625;
+	m_materials.push_back(tempMaterial);
+
+	TextureData tempTexture;
+	tempTexture.id = 0;
+	tempTexture.type = " ";
+	m_textures.push_back(tempTexture);
+
+	m_mesh = new Mesh(m_vertices, m_indices, m_textures, m_materials);
+	m_transform = new Transform;
+	m_transform->Translate(vec3(-16, 0, -16));
+	PopulateTerrainMap();
 }
 
 MarchingCubes::~MarchingCubes()
 {
-	if (m_mesh)
-		delete m_mesh;
+	delete m_mesh;
+
+	delete m_transform;
 }
 
 void MarchingCubes::Init()
@@ -306,23 +348,53 @@ void MarchingCubes::Init()
 
 void MarchingCubes::Update()
 {
-	m_lookupIndex++;
 	ClearMeshData();
-	PopulateTerrainMap();
+
+	m_time += 0.1;
+	if (m_time > 8.0f)
+	{
+		if (m_way == true)
+		{
+			m_shrink++;
+			if(m_shrink > 9)
+				m_way = false;
+		}
+		else if (m_way ==  false) {
+			m_shrink--;
+			if(m_shrink == 0)
+				m_way = true;
+		}
+		m_time = 0;
+		PopulateTerrainMap();
+	}
+
 	CreateMeshData();
 	BuildMesh();
-	Draw();
-	if (m_lookupIndex == 255)
-		m_lookupIndex = 0;
+	// Draw();
 }
 
-void MarchingCubes::MarchCube(vec3 position, float *cube)
+void MarchingCubes::MarchCube(vec3 position)
 {
+	float cube[8];
+	vec3 currentTriangle[3];
+
+	for (int i = 0; i < 8; i++)
+	{
+		cube[i] = SampleTerrain(position + cornerTable[i]);
+	}
+
 	int lookupIndex = GetLookupIndex(cube);
 
 	if (lookupIndex == 0 || lookupIndex == 255)
 		return;
 
+	VertexData temp;
+	vec3 tempNormal0, tempNormal1, tempNormal2;
+
+	temp.normal = vec3(0, 1, 0); // Calculate per vertex for better result
+	temp.color = vec3(1, 0, 0);
+	temp.uv = vec2(1);
+	
 	int edgeIndex = 0;
 	for (int i = 0; i < 5; i++) // Maximum 5 triangles per cell
 	{
@@ -335,69 +407,98 @@ void MarchingCubes::MarchCube(vec3 position, float *cube)
 
 			vec3 v1 = position + edgeTable[indice][0]; // Start 
 			vec3 v2 = position + edgeTable[indice][1]; // and end of a cube-edge. 
-			vec3 vPos = (v1 + v2) * 0.5f; // Middle point of edge
+			vec3 vPos;
 
-			m_tutVerts.push_back(vPos);
-			m_triangles.push_back(m_tutVerts.size() - 1); // Adds the current number of vertices as an index
+			if (m_smoothTerrain)
+			{
+				float vert1Sample = cube[edgeIndices[indice][0]];
+				float vert2Sample = cube[edgeIndices[indice][1]];
+
+				float difference = vert2Sample - vert1Sample;
+
+				if (difference == 0)
+					difference = m_terrainSurface;
+				else
+					difference = (m_terrainSurface - vert1Sample) / difference;
+
+				vPos = v1 + ((v2 - v1) * difference);
+			}
+			else
+			{
+				vPos = (v1 + v2) * 0.5f; // Middle point of edge
+			}
+
+			temp.pos = vPos;
+			m_vertices.push_back(temp);
+			m_indices.push_back(m_vertices.size() - 1);
+
 			edgeIndex++;
 		}
+
+		int currentVert = m_vertices.size() - 1;
+		m_vertices[currentVert].normal = normalize(cross(m_vertices[currentVert - 2].pos - m_vertices[currentVert - 1].pos, m_vertices[currentVert - 1].pos - m_vertices[currentVert].pos));
+		m_vertices[currentVert - 1].normal = normalize(cross(m_vertices[currentVert - 2].pos - m_vertices[currentVert - 1].pos, m_vertices[currentVert - 1].pos - m_vertices[currentVert].pos));
+		m_vertices[currentVert - 2].normal = normalize(cross(m_vertices[currentVert - 2].pos - m_vertices[currentVert - 1].pos, m_vertices[currentVert - 1].pos - m_vertices[currentVert].pos));
 	}
 }
 
 void MarchingCubes::ClearMeshData()
 {
-	m_tutVerts.clear();
-	m_triangles.clear();
+	m_vertices.clear();
+	m_indices.clear();
 }
 
 void MarchingCubes::BuildMesh()
 {
-	// m_mesh = new Mesh(m_vertices, m_indices, m_textures, m_materials);
+	m_mesh->UpdateMesh(m_vertices, m_indices); 
 }
 
-void MarchingCubes::Draw()
+void MarchingCubes::Draw(Shader* shader)
 {
-
-	glColor3f(1.0, 0.0, 0.0);
-	glClear(GL_COLOR_BUFFER_BIT);
-
-	glBegin(GL_LINE_LOOP);
-	{
-		for (int i = 0; i < m_tutVerts.size(); i++)
-		{
-			glVertex3f(
-				m_tutVerts[i].x,
-				m_tutVerts[i].y,
-				m_tutVerts[i].z
-			);
-
-		}
-	}
-	glEnd();
+	shader->UseShader();
+	shader->SetUniform("u_Model", m_transform->GetMatrix());
+	shader->SetUniform("u_PlayerColor", vec3(1));
+	shader->SetUniform("u_Glow", false);
+	m_mesh->Draw(shader);
 }
 
 void MarchingCubes::PopulateTerrainMap()
 {
-	for (int x = 0; x < width + 1; x++)
+	for (int x = 0; x < m_width + 1; x++)
 	{
-		for (int y = 0; y < height + 1; y++)
+		for (int y = 0; y < m_height + 1; y++)
 		{
-			for (int z = 0; z < width + 1; z++)
+			for (int z = 0; z < m_width + 1; z++)
 			{
-				float thisHeight = (float)height * ((float)rand() / (RAND_MAX)) / 16.0f * 1.5f + 0.001f; // Perlin noise doe? In both x and z?
-
-				float point = 0;
-
-				if (y <= thisHeight - 0.5f)
-					point = 0.0f;
-				else if (y > thisHeight + 0.5f)
-					point = 1.0f;
-				else if (y > thisHeight)
-					point = (float)y - thisHeight;
+				if ((x < m_middle - 4 && z < m_middle - 4) || (x > m_middle + 4 && z < m_middle - 4) || (x > m_middle + 4 && z > m_middle + 4) || (x < m_middle - 4 && z > m_middle + 4)) // MAKE A MIDDLE VARIABLE
+				{
+					vec2 distVec = (vec2(x, z) - vec2(m_middle, m_middle));
+					float dist = sqrt(pow(distVec.x, 2) + pow(distVec.y, 2));
+					if (dist > 17)
+					{
+						m_terrainMap[x][y][z] = 1;
+					}
+					else 
+					{
+						float thisHeight = (float)m_height * ((float)rand() / (RAND_MAX)) / 16.0f * 1.5f + 0.001f;
+						m_terrainMap[x][y][z] = (float)y - thisHeight;
+					}
+				}
+				else if (x > m_middle - 4 && x < m_middle + 4 && z > m_middle - 4 && z < m_middle + 4)
+				{
+					m_terrainMap[x][y][z] = 1;
+				}
 				else
-					point = thisHeight - (float)y;
+				{	
+					float thisHeight = (float)m_height * ((float)rand() / (RAND_MAX)) / 16.0f * 1.5f + 0.001f;
+					m_terrainMap[x][y][z] = (float)y - thisHeight;
+				}
 
-				terrainMap[x][y][z] = point;
+				if (x >= m_width - m_shrink || z >= m_width - m_shrink || x <= m_shrink || z <= m_shrink)
+				{
+					// DrawWarning(x, y, z);
+					m_terrainMap[x][y][z] = 1;
+				}
 			}
 		}
 	}
@@ -409,7 +510,7 @@ int MarchingCubes::GetLookupIndex(float* cube)
 
 	for (int i = 0; i < 8; i++)
 	{
-		if (cube[i] > terrainSurface)
+		if (cube[i] > m_terrainSurface)
 		{
 			lookupIndex |= 1 << i;
 		}
@@ -420,22 +521,33 @@ int MarchingCubes::GetLookupIndex(float* cube)
 
 void MarchingCubes::CreateMeshData()
 {
-	for (int x = 0; x < width; x++)
+	for (int x = 0; x < m_width; x++)
 	{
-		for (int y = 0; y < height; y++)
+		for (int y = 0; y < m_height; y++)
 		{
-			for (int z = 0; z < width; z++)
+			for (int z = 0; z < m_width; z++)
 			{
-				float cube[8];
-
-				for (int i = 0; i < 8; i++)
-				{
-					vec3 corner = vec3(x, y, z) + cornerTable[i];
-					cube[i] = (float)terrainMap[(int)corner.x][(int)corner.y][(int)corner.z];
-				}
-
-				MarchCube(vec3(x, y, z), cube);
+				MarchCube(vec3(x, y, z));
 			}
 		}
 	}
+}
+
+float MarchingCubes::SampleTerrain(vec3 point)
+{
+	return m_terrainMap[(int)point.x][(int)point.y][(int)point.z];
+}
+
+void MarchingCubes::DrawWarning(int x, int y, int z)
+{
+	glPointSize(2.0f);
+	glBegin(GL_POINTS);
+	{
+			glVertex3f(
+				(float)x,
+				(float)y,
+				(float)z
+			);
+	}
+	glEnd();
 }

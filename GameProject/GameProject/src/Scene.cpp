@@ -7,7 +7,7 @@ Scene::Scene()
 	m_modelShader = new Shader("src/Shaders/SceneVS.glsl", "src/Shaders/SceneFS.glsl");
 	m_skyboxShader = new Shader("src/Shaders/SkyboxVS.glsl", "src/Shaders/SkyboxFS.glsl");
 	
-	m_camera = new Camera({0, 18, 33});
+	m_camera = new Camera({0, 30, 30});
 	m_skybox = new Skybox();
 	m_shadowMap = new ShadowMap();
 	m_bloom = new Bloom();
@@ -127,8 +127,6 @@ void Scene::LightToShader()
 		m_modelShader->Uniform("u_Lights[" + _nr + "].specular", m_lights.at(i).GetSpecular());
 		m_nrOfLights += 1;
 	}
-
-
 }
 
 void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
@@ -157,6 +155,7 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
 	glBindTexture(GL_TEXTURE_2D, m_shadowMap->GetTexture());
 
 	m_cube->Update();
+	m_cube->Draw(m_modelShader);
 
 	// Light uniforms
 	LightToShader();
@@ -323,6 +322,3 @@ void Scene::AddSpotLight(vec3 pos, vec3 dir, vec3 color, float cutOff)
 	Light _temp = Light(2, dir, pos, color, cutOff);
 	m_lights.push_back(_temp);
 }
-
-
-
