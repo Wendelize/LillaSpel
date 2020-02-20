@@ -95,3 +95,15 @@ bool Controller::ButtonOptionsIsPressed(int ID)
 	}
 	return false;
 }
+
+bool Controller::ButtonRightJoystickIsPressed(int ID)
+{
+	if (glfwGetGamepadState(ID, &state))
+	{
+		if (state.buttons[GLFW_GAMEPAD_BUTTON_RIGHT_THUMB])
+		{
+			return true;
+		}
+	}
+	return false;
+}
