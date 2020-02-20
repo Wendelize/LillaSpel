@@ -5,8 +5,8 @@ Scene::Scene()
 	m_screenHeight = 1080;
 	m_shadowMapWidth = 1200;
 	m_shadowMapHeight = 1200;
-	m_bloomTextureScale = 0.4f;
-	m_bloomNrOfGaussianBlur = 3;
+	m_bloomTextureScale = 0.2f;
+	m_bloomNrOfGaussianBlur = 6;
 
 	m_window = new Window(m_screenWidth, m_screenHeight);
 

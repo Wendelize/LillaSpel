@@ -23,8 +23,8 @@ Game::Game()
 	m_timeSinceSpawn = 0;
 	m_objectHandler->AddPlatform(0, m_platforms[0]); // Passa modell
 
-	m_objectHandler->AddPlayer(vec3(-10, 2, 3), 0, 0, vec3(0, 0, 1), m_cars[0]); // Passa modell
-	m_objectHandler->AddPlayer(vec3(10, 2, 3), 1, 0, vec3(0, 1, 0), m_cars[2]); // Passa modell
+	m_objectHandler->AddPlayer(vec3(-10, 2, 3), 0, 0, vec3(0.5, 1, 9), m_cars[0]); // Passa modell
+	m_objectHandler->AddPlayer(vec3(10, 2, 3), 1, 0, vec3(0, 2, 0), m_cars[2]); // Passa modell
 	//m_objectHandler->AddPlayer(vec3(4, 7, -4), 2, rand() % 4, vec3(1, 1, 0), m_cars[1]); // Passa modell
 	//m_objectHandler->AddPlayer(vec3(-4, 7, -4), 3, rand() % 4, vec3(1, 1, 0), m_cars[3]); // Passa modell
 	
@@ -244,6 +244,7 @@ void Game::Debug()
 	ImGui::NewFrame();
 	ImGui::ShowDemoWindow();*/
 	bool temp = false;
+	ImGui::PushFont(m_scene->GetOurWindow()->m_fonts[2]);
 	ImGui::Begin("Stats", &temp, ImGuiWindowFlags_AlwaysAutoResize);
 
 	ImGui::Text("Display Size: W:%.0f, H:%.0f", ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y);
@@ -252,9 +253,11 @@ void Game::Debug()
 	ImGui::Text("PlayerModels: %i", m_scene->GetNumPlayerModels());
 	ImGui::Text("PlatformModels: %i", m_scene->GetNumPlatformModels());
 	ImGui::Text("PowerUpModels: %i", m_scene->GetNumPowerUpModels());
+	ImGui::PopFont();
 
 	ImGui::End();
 
+	ImGui::PushFont(m_scene->GetOurWindow()->m_fonts[2]);
 	ImGui::Begin("Settings", &temp, ImGuiWindowFlags_AlwaysAutoResize);
 
 	ImGui::BeginChild(1, ImVec2(205, 35), true);
@@ -302,7 +305,9 @@ void Game::Debug()
 	}
 	else
 	{
+		ImGui::PopFont();
 		ImGui::End();
+		ImGui::PushFont(m_scene->GetOurWindow()->m_fonts[2]);
 		ImGui::Begin("Player List", &temp, ImGuiWindowFlags_AlwaysAutoResize);
 		for (int i = 0; i < m_objects.size(); i++)
 		{
@@ -355,6 +360,8 @@ void Game::Debug()
 			}
 		}
 	}
+	ImGui::PopFont();
+
 	ImGui::End();
 
 	//vec3 col = vec3((cos(m_time) + 1)/2, (cos(m_time * 0.7f) + 1)/2, (cos(m_time * 0.4f) + 1)/2);
