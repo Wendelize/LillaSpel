@@ -15,7 +15,6 @@ Game::Game()
 	m_timeSinceSpawn = 0;
 	//m_objectHandler->AddPlatform(0, m_platforms[0]); // Passa modell
 	srand(time(NULL));
-	cout << rand() % 4 << endl;
 	//m_objectHandler->AddPlayer(vec3(4, 7, 4), 0, rand() % 4, vec3(0, 0, 1), m_cars[0]); // Passa modell
 	//m_objectHandler->AddPlayer(vec3(-4, 7, -4), 1, rand() % 4, vec3(0, 1, 0), m_cars[2]); // Passa modell
 	//m_objectHandler->AddPlayer(vec3(4, 7, -4), 2, rand() % 4, vec3(1, 1, 0), m_cars[1]); // Passa modell
@@ -32,7 +31,7 @@ Game::Game()
 			m_soundEngine->play2D("src/Audio/Music - Win.mp3", GL_TRUE);
 			m_soundEngine->play2D("src/Audio/Music - 16bit Sea Shanty 2.mp3", GL_TRUE);
 		*/
-		int randomNumber = 4;
+		int randomNumber = rand () % 5;
 		m_songs.push_back(m_soundEngine->addSoundSourceFromFile("src/Audio/Music - 16bit Sea Shanty 2.mp3"));
 		m_songs.push_back(m_soundEngine->addSoundSourceFromFile("src/Audio/Music - 16bit Deja Vu.mp3"));
 		m_songs.push_back(m_soundEngine->addSoundSourceFromFile("src/Audio/Music - Main Game.mp3"));
@@ -87,7 +86,7 @@ void Game::Update(float dt)
 	}
 	if (m_maxTime - m_time <= 30.f && !m_fastMusic) {
 		if (m_soundEngine) {
-			m_music->setPlaybackSpeed(1.4);
+			m_music->setPlaybackSpeed(1.1);
 		}
 		m_fastMusic = true;
 	}

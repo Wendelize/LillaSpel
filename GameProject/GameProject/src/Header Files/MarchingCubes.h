@@ -22,7 +22,7 @@ private:
     float m_middle = 16;
     int m_shrink = 0;
     float m_time = 0.0f;
-    int m_currentLvl = 4;
+    int m_currentLvl = 5;
     int m_holeSize = 8;
     bool m_smoothTerrain = true;
     bool m_way = true;

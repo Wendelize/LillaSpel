@@ -150,6 +150,13 @@ void Player::Update(float dt)
 
 	if (glfwJoystickPresent(m_controllerID) == 1 && m_body->getWorldTransform().getOrigin().y() < 4.0f && m_body->getWorldTransform().getOrigin().y() > -1.0f)
 	{
+		if (m_soundEngine && m_controller->ButtonRightJoystickIsPressed(m_controllerID))
+		{
+			m_soundEngine->setSoundVolume(1.0f);
+			m_soundEngine->play2D("src/Audio/Player - Honk.mp3", false);
+			m_soundEngine->setSoundVolume(m_body->getLinearVelocity().length() / 40 + 0.3f);
+		}
+
 		if (m_controller->ButtonOptionsIsPressed(m_controllerID))
 		{
 			//Temporary
