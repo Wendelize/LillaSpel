@@ -64,7 +64,7 @@ Game::~Game()
 {
 	delete m_objectHandler;
 	delete m_scene;
-
+	delete m_menu;
 	if (m_soundEngine)
 	{
 		if (m_music)
