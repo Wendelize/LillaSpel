@@ -12,13 +12,15 @@ private:
     vector<Material> m_materials;
     Mesh* m_mesh;
     Transform* m_transform;
-    
+    btBvhTriangleMeshShape* m_physicsMesh;
+    btTriangleMesh m_tetraMesh;
+
     // ADD PHYSICS! 
 
     float m_terrainSurface = 0.5f;
     int m_width = 32;
-    int m_height = 8;
-    float m_terrainMap[32 + 1][8 + 1][32 + 1]; // width height width
+    int m_height = 1;
+    float m_terrainMap[32 + 1][32 + 1][32 + 1]; // width height width
     float m_middle = 16;
     int m_shrink = 0;
     float m_time = 0.0f;
@@ -26,7 +28,10 @@ private:
     int m_holeSize = 8;
     bool m_smoothTerrain = true;
     bool m_way = true;
-
+    btRigidBody* m_body;
+    btCollisionShape* m_platformShape;
+    btTransform* m_btTransform;
+    btDefaultMotionState* m_motionState;
 public:  
     MarchingCubes();
     ~MarchingCubes();
@@ -42,6 +47,11 @@ public:
     void CreateMeshData();
     float SampleTerrain(vec3 point);
     void DrawWarning(int x, int y, int z);
+    btRigidBody* GetBody();
+    void CreatePhysics();
+    void UpdatePhysics();
+
+    vector<VertexData> GetVertices();
     void SetCurrentLevel(int level);
     int GetCurrentLevel();
     void SetHoleSize(int holeSize);

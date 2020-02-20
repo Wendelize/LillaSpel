@@ -15,6 +15,7 @@ private:
 	ISoundEngine* m_soundEngine;
 	ISound* m_music;
 	vector<ISoundSource*> m_songs;
+	MarchingCubes* m_cube;
 
 	//Debug variables
 	bool m_debug, m_toggle;

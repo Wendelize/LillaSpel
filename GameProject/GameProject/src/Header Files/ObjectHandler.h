@@ -3,6 +3,7 @@
 #include "Platform.h"
 #include "Player.h"
 #include "PowerUp.h"
+#include "MarchingCubes.h"
 
 class ObjectHandler
 {
@@ -59,4 +60,6 @@ public:
 	vector<ObjectInfo*> GetObjects();
 	btDiscreteDynamicsWorld* GetWorld();
 	DebugDrawer* GetDebugDrawer();
+	void AddDynamicPlatformMesh(MarchingCubes* cube);
+	void RemoveDynamicPlatformMesh(MarchingCubes* cube);
 };

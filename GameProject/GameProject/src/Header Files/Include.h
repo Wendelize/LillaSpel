@@ -10,7 +10,7 @@
 #include "btBulletDynamicsCommon.h"
 #include "BulletCollision\CollisionDispatch\btCollisionWorld.h"
 #include "BulletCollision/CollisionDispatch/btGhostObject.h"
-
+#include "BulletCollision/CollisionShapes/btTriangleMeshShape.h"
 //IMGUI
 #include "../IMGUI/imgui.h"
 #include "../IMGUI/imgui_impl_opengl3.h"

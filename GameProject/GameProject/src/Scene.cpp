@@ -25,7 +25,6 @@ Scene::Scene()
 	m_projMatrix = mat4(1.0);
 	m_viewMatrix = mat4(1.0);
 
-	m_cube = new MarchingCubes;
 }
 
 Scene::~Scene()
@@ -65,7 +64,6 @@ Scene::~Scene()
 	delete m_skybox;
 	delete m_bloom;
 	delete m_window;
-	delete m_cube;
 }
 
 void Scene::Init()
@@ -153,7 +151,7 @@ void Scene::LightToShader()
 	}
 }
 
-void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
+void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, MarchingCubes* cube)
 {
 	/* Render here */
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -178,8 +176,7 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world)
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_shadowMap->GetTexture());
 
-	m_cube->Update();
-	m_cube->Draw(m_modelShader);
+	cube->Draw(m_modelShader);
 
 	// Light uniforms
 	LightToShader();

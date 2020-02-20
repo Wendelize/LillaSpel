@@ -13,7 +13,6 @@ private:
 	Skybox * m_skybox;
 	Bloom  * m_bloom;
 	ShadowMap* m_shadowMap;
-	MarchingCubes* m_cube;
 
 	bool m_debug = false;
 	bool m_toggle = false;
@@ -41,7 +40,7 @@ public:
 
 	void Init();
 	void LightToShader();
-	void Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world);
+	void Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, MarchingCubes* cube);
 	void RenderSceneInfo(Shader * shader, vector<ObjectInfo*> objects);
 	void RenderSkybox();
 	void RenderShadows(vector<ObjectInfo*> objects);

@@ -332,6 +332,11 @@ MarchingCubes::MarchingCubes()
 	m_mesh = new Mesh(m_vertices, m_indices, m_textures, m_materials);
 	m_transform = new Transform;
 	m_transform->Translate(vec3(-16, 0, -16));
+	ClearMeshData();
+	CreateMeshData();
+	BuildMesh();
+
+	CreatePhysics();
 	PopulateTerrainMap(m_currentLvl);
 }
 
@@ -350,8 +355,7 @@ void MarchingCubes::Update()
 {
 	ClearMeshData();
 
-	m_time += 0.1;
-	if (m_time > 8.0f)
+	if (m_way == true)
 	{
 		if (m_way == true)
 		{
@@ -367,10 +371,17 @@ void MarchingCubes::Update()
 		m_time = 0;
 		PopulateTerrainMap(m_currentLvl);
 	}
+	else if (m_way ==  false) {
+		m_shrink--;
+		if(m_shrink == 0)
+			m_way = true;
+	}
+	PopulateTerrainMap();
+
 
 	CreateMeshData();
 	BuildMesh();
-	// Draw();
+	UpdatePhysics();
 }
 
 void MarchingCubes::MarchCube(vec3 position)
@@ -656,6 +667,85 @@ void MarchingCubes::DrawWarning(int x, int y, int z)
 			);
 	}
 	glEnd();
+}
+
+btRigidBody* MarchingCubes::GetBody()
+{
+	return m_body;
+}
+
+void MarchingCubes::CreatePhysics()
+{
+	vector<btVector3> points;
+
+	for (int j = 0; j < m_mesh->m_vertices.size(); j++)
+	{
+
+		points.push_back(btVector3(m_mesh->m_vertices[j].pos.x, m_mesh->m_vertices[j].pos.y, m_mesh->m_vertices[j].pos.z));
+	}
+	if (points.size() > 3) {
+		for (int j = 0; j < points.size() - 3; j = j+3)
+		{
+			m_tetraMesh.addTriangle(points[j], points[j+1], points[j+2], false);
+			m_tetraMesh.addTriangleIndices(m_mesh->m_indices[j], m_mesh->m_indices[j+1], m_mesh->m_indices[j+2]);
+		}
+	}
+	//m_physicsMesh = new btTriangleIndexVertexArray(mesh->indices.size() / 3, indices, sizeof(s32) * 3, mesh->vertices.size(), vertices, sizeof(btScalar) * 3);
+	/*m_physicsMesh = new btTriangleIndexVertexArray();
+
+	indexedMesh.m_numTriangles = m_mesh->m_indices.size() / 3;
+	indexedMesh.m_triangleIndexBase = (unsigned char*)&m_mesh->m_indices[0];
+	indexedMesh.m_triangleIndexStride = 3 * sizeof(m_mesh->m_indices[0]);
+	indexedMesh.m_numVertices = m_mesh->m_vertices.size();
+	indexedMesh.m_vertexBase = (unsigned char*)&points[0];
+	indexedMesh.m_vertexStride = sizeof(points[0]);
+
+	m_physicsMesh->addIndexedMesh(indexedMesh, PHY_SHORT);
+	*/
+	m_platformShape = new btBvhTriangleMeshShape(&m_tetraMesh, true, true);
+
+	/*
+
+
+
+	 BulletTriangleMeshShape
+		p0 = Point3(-10, -10, 0)
+		p1 = Point3(-10, 10, 0)
+		p2 = Point3(10, -10, 0)
+		p3 = Point3(10, 10, 0)
+		mesh = BulletTriangleMesh()
+		mesh.addTriangle(p0, p1, p2)
+		mesh.addTriangle(p1, p2, p3)
+		shape = BulletTriangleMeshShape(mesh, dynamic = False)
+*/
+/*	vector<btVector3> points;
+
+	for (int j = 0; j < m_mesh->m_vertices.size(); j++)
+	{
+		points.push_back(btVector3(m_mesh->m_vertices[j].pos.x, m_mesh->m_vertices[j].pos.y, m_mesh->m_vertices[j].pos.z));
+	}
+	m_platformShape = new btConvexHullShape(&points[0].getX(), points.size(), sizeof(btVector3)); // vertexdata, numberofvertices, stride
+*/	m_btTransform = new btTransform;
+	m_btTransform->setIdentity();
+	m_btTransform->setOrigin(btVector3(-16.f, -0.f, -16.f));
+	btScalar mass(0.);
+	btVector3 localInertia(0, 0, 0);
+	m_motionState = new btDefaultMotionState(*m_btTransform);
+	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, m_motionState, m_platformShape, localInertia);
+	m_body = new btRigidBody(rbInfo);
+
+	m_body->setFriction(3);
+
+}
+
+void MarchingCubes::UpdatePhysics()
+{
+	CreatePhysics();
+}
+
+vector<VertexData> MarchingCubes::GetVertices()
+{
+	return m_vertices;
 }
 
 void MarchingCubes::SetCurrentLevel(int level)

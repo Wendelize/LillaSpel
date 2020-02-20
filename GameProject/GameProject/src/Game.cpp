@@ -12,11 +12,15 @@ Game::Game()
 	m_toggle = false;
 	m_platforms = m_scene->GetModels(0);
 	m_cars = m_scene->GetModels(1);
+	m_cube = new MarchingCubes;
+	m_objectHandler->AddDynamicPlatformMesh(m_cube);
+
 	m_timeSinceSpawn = 0;
 	//m_objectHandler->AddPlatform(0, m_platforms[0]); // Passa modell
 	srand(time(NULL));
-	//m_objectHandler->AddPlayer(vec3(4, 7, 4), 0, rand() % 4, vec3(0, 0, 1), m_cars[0]); // Passa modell
-	//m_objectHandler->AddPlayer(vec3(-4, 7, -4), 1, rand() % 4, vec3(0, 1, 0), m_cars[2]); // Passa modell
+	cout << rand() % 4 << endl;
+	m_objectHandler->AddPlayer(vec3(4, 7, 4), 0, rand() % 4, vec3(0, 0, 1), m_cars[0]); // Passa modell
+	m_objectHandler->AddPlayer(vec3(-4, 7, -4), 1, rand() % 4, vec3(0, 1, 0), m_cars[2]); // Passa modell
 	//m_objectHandler->AddPlayer(vec3(4, 7, -4), 2, rand() % 4, vec3(1, 1, 0), m_cars[1]); // Passa modell
 	//m_objectHandler->AddPlayer(vec3(-4, 7, -4), 3, rand() % 4, vec3(1, 1, 0), m_cars[3]); // Passa modell
 	m_soundEngine = createIrrKlangDevice();
@@ -54,6 +58,7 @@ Game::~Game()
 {
 	delete m_objectHandler;
 	delete m_scene;
+	delete m_cube;
 
 	if (m_soundEngine)
 	{
@@ -69,6 +74,14 @@ void Game::Update(float dt)
 	m_time += dt;
 	m_timeSinceSpawn += dt;
 	m_timeSwapTrack += dt;
+
+	if (m_timeSwapTrack > 2.f) {
+		m_objectHandler->RemoveDynamicPlatformMesh(m_cube);
+	//	m_cube->Update();
+		m_objectHandler->AddDynamicPlatformMesh(m_cube);
+		m_timeSwapTrack = 0.f;
+	}
+
 	if (m_timeSinceSpawn > 5 && !m_gameOver) {
 		m_objectHandler->AddPowerUp();
 		m_timeSinceSpawn = 0;
@@ -123,7 +136,7 @@ void Game::Render()
 {
 	m_objects = m_objectHandler->GetObjects();
 
-	m_scene->Render(m_objects, m_objectHandler->GetWorld());
+	m_scene->Render(m_objects, m_objectHandler->GetWorld(), m_cube);
 
 	if (m_debug)
 	{
