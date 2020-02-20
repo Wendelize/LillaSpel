@@ -23,7 +23,7 @@ Game::Game()
 	m_timeSinceSpawn = 0;
 	m_objectHandler->AddPlatform(0, m_platforms[0]); // Passa modell
 
-	m_objectHandler->AddPlayer(vec3(-10, 2, 3), 0, 0, vec3(0, 0, 1), m_cars[0]); // Passa modell
+	m_objectHandler->AddPlayer(vec3(-10, 2, 3), 0, 0, vec3(0, 0.5, 1), m_cars[0]); // Passa modell
 	m_objectHandler->AddPlayer(vec3(10, 2, 3), 1, 0, vec3(0, 1, 0), m_cars[2]); // Passa modell
 	//m_objectHandler->AddPlayer(vec3(4, 7, -4), 2, rand() % 4, vec3(1, 1, 0), m_cars[1]); // Passa modell
 	//m_objectHandler->AddPlayer(vec3(-4, 7, -4), 3, rand() % 4, vec3(1, 1, 0), m_cars[3]); // Passa modell
@@ -64,7 +64,7 @@ Game::~Game()
 {
 	delete m_objectHandler;
 	delete m_scene;
-
+	delete m_menu;
 	if (m_soundEngine)
 	{
 		if (m_music)
