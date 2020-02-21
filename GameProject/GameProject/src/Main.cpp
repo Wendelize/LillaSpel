@@ -5,6 +5,14 @@
 #define STB_IMAGE_IMPLEMENTATION
 
 Game* GAME;
+void sumUp(std::atomic<unsigned long long>& sum, GLFWwindow* window) {
+
+	while (window) {
+		sum.fetch_add(1);
+	}
+
+}
+
 
 int main(void)
 {
@@ -14,8 +22,8 @@ int main(void)
 
 	float _deltaTime = 0.0, _curTime = 0.0, _lastTime = 0.0;
 	GLFWwindow* _window = GAME->GetWindow();
-	// std::atomic<unsigned long long> sum(0);
-
+	std::atomic<unsigned long long> sum(0);
+	std::thread t1(sumUp, std::ref(sum), _window);
 	while (!glfwWindowShouldClose(_window))
 	{	
 
@@ -25,6 +33,7 @@ int main(void)
 		GAME->Update(_deltaTime);
 		// GAME->PlayWithLights(_curTime);
 		GAME->Render(); 
+		cout << sum << endl;
 	}
 	
 	//t1.join();

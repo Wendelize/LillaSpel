@@ -1,8 +1,10 @@
 #pragma once 
 #include "Include.h" 
 #include "Transform.h"
+#include <atomic>
+#include <thread>
 
-class MarchingCubes 
+class MarchingCubes
 { 
 private: 
     // For mesh
@@ -19,19 +21,20 @@ private:
 
     float m_terrainSurface = 0.5f;
     int m_width = 32;
-    int m_height = 1;
+    int m_height = 3;
     float m_terrainMap[32 + 1][32 + 1][32 + 1]; // width height width
     float m_middle = 16;
     int m_shrink = 0;
     float m_time = 0.0f;
-    int m_currentLvl = 5;
+    int m_currentLvl = 4;
     int m_holeSize = 8;
-    bool m_smoothTerrain = true;
+    bool m_smoothTerrain = false;
     bool m_way = true;
     btRigidBody* m_body;
     btCollisionShape* m_platformShape;
     btTransform* m_btTransform;
     btDefaultMotionState* m_motionState;
+
 public:  
     MarchingCubes();
     ~MarchingCubes();
@@ -56,5 +59,6 @@ public:
     int GetCurrentLevel();
     void SetHoleSize(int holeSize);
     int GetHoleSize();
+
 };
 
