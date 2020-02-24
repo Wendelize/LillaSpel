@@ -181,15 +181,15 @@ void Player::Update(float dt)
 		if (m_controller->GetRightTrigger(m_controllerID) != -1)
 		{
 			//Left trigger pressed
-			//Power-Up
+			//Speed-Up
 			m_speed = 1100000.f * m_powerMultiplier / (dt * 60);
 			pressed = true;
 
 		}
-		if (m_controller->GetLefTrigger(m_controllerID) != -1)
+		if (m_controller->GetLeftTrigger(m_controllerID) != -1)
 		{
 			//Left trigger pressed
-			//Power-Up
+			//Speed-Up
 			m_speed = -900000.f * m_powerMultiplier / (dt * 60);
 			pressed = true;
 
@@ -482,6 +482,11 @@ bool Player::updatePower(float dt)
 int Player::GetActivePower()
 {
 	return m_powerType;
+}
+
+Controller* Player::GetController()
+{
+	return m_controller;
 }
 
 void Player::SetFallen()
