@@ -7,7 +7,7 @@ Menu::Menu(Scene* scene, ObjectHandler* objHand)
 	m_scene = scene;
 	m_objHand = objHand;
 
-
+	
 	
 }
 
@@ -33,23 +33,49 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		}
 	}
 	double time = glfwGetTime();
+
+	GLFWwindow* wW = m_scene->GetWindow();
+
+	int width = 0;
+	int height = 0;
+	int slWidth = 0;
+	int mainMenuButonHeight = 0;
+	int pauseMenuWidth = 0;
+	int pauseMenuHeight = 0;
+
+	glfwGetWindowSize(wW, &width, &height);
+
+	// resize menyerna om 720p
+	if (height <= 720)
+	{
+		slWidth = 200;
+		pauseMenuWidth = 75;
+		pauseMenuHeight = 100;
+		mainMenuButonHeight = 200;
+
+	}
+
 	switch (m_menu)
 	{
 	case ActiveMenu::start:
-		ImGui::SetNextWindowPos(ImVec2(-2, -2));
-		ImGui::SetNextWindowSize(ImVec2((float)w->GetWidht() + 4, w->GetHeight() + 4));
-		if (ImGui::Begin("##Background", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoNav))
+		ImGui::SetNextWindowPos(ImVec2(-4, -2));
+		
+
+		//float wi = *width;
+		//float hi = *height;
+		ImGui::SetNextWindowSize(ImVec2((float)width+8, (float)height+2));//(float)w->GetWidht() + 4, w->GetHeight() + 4));
+		if (ImGui::Begin("##Background", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoNav))
 		{
 			ImGui::SetCursorPos(ImVec2(0, 0));
-			ImGui::Image((void*)m_mainMenuPic, ImVec2(w->GetWidht(), w->GetHeight()-1), ImVec2(0, 0), ImVec2(1, 1));
+			ImGui::Image((void*)m_mainMenuPic, ImVec2(width+8, height+2), ImVec2(0, 0), ImVec2(1, 1));
 		}
 		ImGui::End();
 
 		ImGui::SetNextWindowPos(ImVec2(-2, -2));
-		ImGui::SetNextWindowSize(ImVec2((float)w->GetWidht() + 4, w->GetHeight() + 4));
+		ImGui::SetNextWindowSize(ImVec2((float)width + 4, height + 4));
 		if (ImGui::Begin("##MainMenu", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_AlwaysAutoResize | ImGuiNavInput_Activate))
 		{
-			float middle = (float)w->GetWidht() * 0.5f;
+			float middle = (float)width * 0.5f;
 			ImGui::PushFont(m_scene->GetOurWindow()->m_fonts[1]);
 
 			//	NavHighlight is the border around the button
@@ -57,7 +83,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
 			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.2, 0.2, 0.2, 1));
 			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.7, 0.1, 0, 0.3));
-			ImGui::SetCursorPos(ImVec2(middle - 75, 500));
+			ImGui::SetCursorPos(ImVec2(middle - 75, 500 - mainMenuButonHeight));
 			if (ImGui::Button("Start", ImVec2(200, 75)))
 			{
 				m_menu = ActiveMenu::select;
@@ -66,7 +92,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				m_p3Seconds = time;
 				m_p4Seconds = time;
 			}
-			ImGui::SetCursorPos(ImVec2(middle - 75, 600));
+			ImGui::SetCursorPos(ImVec2(middle - 75, 600 - mainMenuButonHeight));
 			if (ImGui::Button("Exit", ImVec2(200, 75)))
 			{
 				glfwSetWindowShouldClose(m_scene->GetWindow(), 1);
@@ -84,7 +110,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_p1Col.x, m_p1Col.y, m_p1Col.z, 1));
 		if (ImGui::Begin("##player1Select", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoNavInputs))
 		{
-			GLFWgamepadstate state;
+			//GLFWgamepadstate state;
 			// letar upp rätt index för modellen för de deletas och addas om och om ien så de behåller ej standard
 			// just nu sätts färgera en gång och ändras aldrig men man kanske vill ändra dem senare
 			// så därför finns detta (for-loopen som letar upp rätt index) inbyggt
@@ -100,11 +126,11 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0, 0, 1));
 			if (m_selected[0] == 0)
 			{
-				ImGui::Text("\t<  Vehicle Model : %d  > ", m_p1ModelId);
+				ImGui::Text("\t\t\t<  Vehicle Model : %d  > ", m_p1ModelId);
 			}
 			else
 			{
-				ImGui::Text("\tVehicle Selected! Press \"B\" to Unselect!");
+				ImGui::Text("\t\t\tVehicle Selected! \n\t\tPress \"B\" to Unselect!");
 			}
 
 			if (time - m_p1Seconds >= 0.5 && (glfwGetGamepadState(0, &state)))
@@ -159,17 +185,12 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 
 		if (m_objHand->GetNumPlayers() >= 2)
 		{
-			int filler = 0;
-			if (m_selected[1] == 1)
-			{
-				filler = 250;
-			}
-			ImGui::SetNextWindowPos(ImVec2(w->GetWidht() - 300 - filler, 25));
+			ImGui::SetNextWindowPos(ImVec2(width - 400, 25));
 			ImGui::SetNextWindowSize(ImVec2(350, 100));
 			ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_p2Col.x, m_p2Col.y, m_p2Col.z, 1));
 			if (ImGui::Begin("##player2Select", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoNavInputs))
 			{
-				GLFWgamepadstate state;
+				//GLFWgamepadstate state;
 				int index = 1;
 				for (int i = 0; i < m_objHand->GetNumPlayers(); i++)
 				{
@@ -182,11 +203,11 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0, 0, 1));
 				if (m_selected[1] == 0)
 				{
-					ImGui::Text("\t<  Vehicle Model : %d  > ", m_p2ModelId);
+					ImGui::Text("\t\t\t<  Vehicle Model : %d  > ", m_p2ModelId);
 				}
 				else
 				{
-					ImGui::Text("\tVehicle Selected! Press \"B\" to Unselect!");
+					ImGui::Text("\t\t\tVehicle Selected! \n\t\tPress \"B\" to Unselect!");
 
 				}
 
@@ -237,14 +258,14 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 			ImGui::End();
 		}
 		// TODO: Kanske Fixa så det följer kontrollerId eller nått
-		if (true)//m_objHand->GetNumPlayers() >= 3)
+		if(true)//glfwGetGamepadState(2, &state))//m_objHand->GetNumPlayers() >= 3)
 		{
-			ImGui::SetNextWindowPos(ImVec2(50, w->GetHeight() - 155));
+			ImGui::SetNextWindowPos(ImVec2(50, height - 200));
 			ImGui::SetNextWindowSize(ImVec2(350, 100));
 			ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_p3Col.x, m_p3Col.y, m_p3Col.z, 1));
 			if (ImGui::Begin("##player3Select", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoNavInputs))
 			{
-				GLFWgamepadstate state;
+				//GLFWgamepadstate state;
 				if (m_p3Joined == false)
 				{
 					ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0, 0, 1));
@@ -275,11 +296,11 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 					ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0, 0, 1));
 					if (m_selected[2] == 0)
 					{
-						ImGui::Text("\t\t<  Vehicle Model : %d  > ", m_p3ModelId);
+						ImGui::Text("\t\t\t<  Vehicle Model : %d  > ", m_p3ModelId);
 					}
 					else
 					{
-						ImGui::Text("\t\t\tPress \"B\" to Unselect!");
+						ImGui::Text("\t\t\tVehicle Selected! \n\t\tPress \"B\" to Unselect!");
 					}
 
 					if (time - m_p3Seconds >= 0.5 && (glfwGetGamepadState(2, &state)))
@@ -332,20 +353,14 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 			ImGui::End();
 		}
 
-		if (m_p3Joined)//m_objHand->GetNumPlayers() >= 4)
+		if (m_p3Joined && glfwGetGamepadState(3, &state))//m_objHand->GetNumPlayers() >= 4)
 		{
-			int filler = 0;
-			if (m_selected[3] == 1)
-			{
-				filler = 250;
-			}
-
-			ImGui::SetNextWindowPos(ImVec2(w->GetWidht() - 330 - filler, w->GetHeight() - 155));
+			ImGui::SetNextWindowPos(ImVec2(width - 400, height - 200));
 			ImGui::SetNextWindowSize(ImVec2(350, 100));
 			ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_p4Col.x, m_p4Col.y, m_p4Col.z, 1));
 			if (ImGui::Begin("##player4Select", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoNavInputs))
 			{
-				GLFWgamepadstate state;
+				
 				if (m_p4Joined == false)
 				{
 					ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0, 0, 1));
@@ -377,11 +392,11 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 					ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0, 0, 1));
 					if (m_selected[3] == 0)
 					{
-						ImGui::Text("\t<  Vehicle Model : %d  > ", m_p4ModelId);
+						ImGui::Text("\t\t\t<  Vehicle Model : %d  > ", m_p3ModelId);
 					}
 					else
 					{
-						ImGui::Text("\tVehicle Selected! Press \"B\" to Unselect!");
+						ImGui::Text("\t\t\tVehicle Selected! \n\t\tPress \"B\" to Unselect!");
 					}
 
 					if (time - m_p4Seconds >= 0.5 && (glfwGetGamepadState(3, &state)))
@@ -454,10 +469,15 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		m_continue = 0;
 		break;
 	case ActiveMenu::selectLives:
-		GLFWgamepadstate state;
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 15);
-		ImGui::SetNextWindowPos(ImVec2((float)w->GetWidht() / 3, w->GetHeight() / 4));
-		ImGui::SetNextWindowSize(ImVec2((float)w->GetWidht() / 3 /*- 150*/, w->GetHeight() / 4 - 300));
+		//GLFWgamepadstate state;
+	////	int fillerSize = 300;
+	//	if (height <= 720)
+	//	{
+	//		fillerSize = 200;
+	//	}
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 10);
+		ImGui::SetNextWindowPos(ImVec2((float)width / 3 - (slWidth / 2), height / 4));
+		ImGui::SetNextWindowSize(ImVec2((float)width / 3 + slWidth, height / 4 - 300));
 		if (ImGui::Begin("##selectLives", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiNavInput_Activate))
 		{
 			if (m_selected[0] == 0)
@@ -569,21 +589,21 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		break;
 	case ActiveMenu::pause:
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 15);
-		ImGui::SetNextWindowPos(ImVec2((float)w->GetWidht() / 3, w->GetHeight() / 4));
-		ImGui::SetNextWindowSize(ImVec2((float)w->GetWidht() / 3 /*- 150*/, w->GetHeight() / 4 + 150));
+		ImGui::SetNextWindowPos(ImVec2((float)width / 3 - (pauseMenuWidth / 2), height / 4 - (pauseMenuHeight / 2)));
+		ImGui::SetNextWindowSize(ImVec2((float)width / 3 + pauseMenuWidth, height / 4 + 150 + pauseMenuHeight));
 		if (ImGui::Begin("##PauseMenu", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiNavInput_Activate))
 		{
 
-			float middle = (float)w->GetWidht() * 0.5f;
-			ImGui::SetCursorPos(ImVec2(((float)w->GetWidht() / 3) / 3 - 25, 15));
+			float middle = (float)width * 0.5f;
+			ImGui::SetCursorPos(ImVec2(((float)width / 3) / 3 - 25, 15));
 			ImGui::PushFont(m_scene->GetOurWindow()->m_fonts[1]);
 			ImGui::Text("Pause Menu");
-			ImGui::SetCursorPos(ImVec2(((float)w->GetWidht() / 3) / 3, 115));
+			ImGui::SetCursorPos(ImVec2(((float)width / 3) / 3, 115));
 			if (ImGui::Button("Resume", ImVec2(200, 75)))
 			{
 				m_menu = ActiveMenu::playerHud;
 			}
-			ImGui::SetCursorPos(ImVec2(((float)w->GetWidht() / 3) / 3 - 100, 215));
+			ImGui::SetCursorPos(ImVec2(((float)width / 3) / 3 - 100, 215));
 			if (ImGui::Button("Main Menu", ImVec2(400, 75)))
 			{
 				// resettar banan m.m. och laddar start menyn
@@ -608,7 +628,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 					m_objHand->AddPlayer(vec3(10, 2, 3), 1, m_p2ModelId, m_p2Col, model);
 				}
 			}
-			ImGui::SetCursorPos(ImVec2(((float)w->GetWidht() / 3) / 3, 315));
+			ImGui::SetCursorPos(ImVec2(((float)width / 3) / 3, 315));
 			if (ImGui::Button("Exit", ImVec2(200, 75)))
 			{
 				glfwSetWindowShouldClose(m_scene->GetWindow(), 1);
@@ -622,16 +642,16 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		break;
 	case ActiveMenu::restart:
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 15);
-		ImGui::SetNextWindowPos(ImVec2((float)w->GetWidht() / 3, w->GetHeight() / 4));
-		ImGui::SetNextWindowSize(ImVec2((float)w->GetWidht() / 3 /*- 150*/, w->GetHeight() / 4 + 150));
+		ImGui::SetNextWindowPos(ImVec2((float)width / 3 - (pauseMenuWidth / 2), height / 4 - (pauseMenuHeight / 2)));
+		ImGui::SetNextWindowSize(ImVec2((float)width / 3 + pauseMenuWidth, height / 4 + 150 + pauseMenuHeight));
 		if (ImGui::Begin("##RestartMenu", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiNavInput_Activate))
 		{
 
-			float middle = (float)w->GetWidht() * 0.5f;
-			ImGui::SetCursorPos(ImVec2(((float)w->GetWidht() / 3) / 3 - 10, 15));
+			float middle = (float)width * 0.5f;
+			ImGui::SetCursorPos(ImVec2(((float)width / 3) / 3 - 10, 15));
 			ImGui::PushFont(m_scene->GetOurWindow()->m_fonts[1]);
 			ImGui::Text("Start Menu");
-			ImGui::SetCursorPos(ImVec2(((float)w->GetWidht() / 3) / 3 - 25, 115));
+			ImGui::SetCursorPos(ImVec2(((float)width / 3) / 3 - 25, 115));
 			if (ImGui::Button("Restart", ImVec2(250, 75)))
 			{
 				m_menu = ActiveMenu::playerHud;
@@ -662,7 +682,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 
 
 			}
-			ImGui::SetCursorPos(ImVec2(((float)w->GetWidht() / 3) / 3 - 100, 215));
+			ImGui::SetCursorPos(ImVec2(((float)width / 3) / 3 - 100, 215));
 			if (ImGui::Button("Main Menu", ImVec2(400, 75)))
 			{
 				// resettar banan m.m. och laddar start menyn
@@ -687,7 +707,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 					m_objHand->AddPlayer(vec3(10, 2, 3), 1, m_p2ModelId, m_p2Col, model);
 				}
 			}
-			ImGui::SetCursorPos(ImVec2(((float)w->GetWidht() / 3) / 3, 315));
+			ImGui::SetCursorPos(ImVec2(((float)width / 3) / 3, 315));
 			if (ImGui::Button("Exit", ImVec2(200, 75)))
 			{
 				glfwSetWindowShouldClose(m_scene->GetWindow(), 1);
@@ -700,7 +720,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		ImGui::End();
 		break;
 	case ActiveMenu::playerHud:
-		ImGui::SetNextWindowPos(ImVec2(w->GetWidht() / 2 - 125, 0));
+		ImGui::SetNextWindowPos(ImVec2(width / 2 - 125, 0));
 		ImGui::SetNextWindowSize(ImVec2(250, 60));
 		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0, 0, 0, 0.5));
 
@@ -740,7 +760,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		}
 		ImGui::End();
 
-		ImGui::SetNextWindowPos(ImVec2(w->GetWidht() - 258, 0));
+		ImGui::SetNextWindowPos(ImVec2(width - 258, 0));
 		ImGui::SetNextWindowSize(ImVec2(250, 65));
 		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_p2Col.x, m_p2Col.y, m_p2Col.z, 1));
 		if (ImGui::Begin("##player2Hud", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize))
@@ -766,7 +786,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		// TODO: Kanske Fixa så det följer kontrollerId eller nått
 		if (m_p3Joined)//m_objHand->GetNumPlayers() >= 3) 
 		{
-			ImGui::SetNextWindowPos(ImVec2(0, w->GetHeight() - 155));
+			ImGui::SetNextWindowPos(ImVec2(0, height - 155));
 			ImGui::SetNextWindowSize(ImVec2(265, 65));
 			ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_p3Col.x, m_p3Col.y, m_p3Col.z, 1));
 			if (ImGui::Begin("##player3Hud", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize))
@@ -793,7 +813,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 
 		if (m_p4Joined)//m_objHand->GetNumPlayers() >= 4)
 		{
-			ImGui::SetNextWindowPos(ImVec2(w->GetWidht() - 258, w->GetHeight() - 155));
+			ImGui::SetNextWindowPos(ImVec2(width - 258, height - 155));
 			ImGui::SetNextWindowSize(ImVec2(265, 65));
 			ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_p4Col.x, m_p4Col.y, m_p4Col.z, 1));
 			if (ImGui::Begin("##player4Hud", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize))
@@ -926,7 +946,7 @@ void Scene::renderMenu()
 		//ImGui::Image((void*)wowTexture, ImVec2(width, height));
 
 		ImGui::SetNextWindowPos(ImVec2(-2, -2));
-		ImGui::SetNextWindowSize(ImVec2(m_window->GetWidht() + 4, m_window->GetHeight() + 4));
+		ImGui::SetNextWindowSize(ImVec2(m_window->GetWidht() + 4, m_windoheight + 4));
 		if (ImGui::Begin("##MainMenu", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiNavInput_Activate))
 		{
 
