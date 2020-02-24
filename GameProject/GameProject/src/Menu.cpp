@@ -85,9 +85,9 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		if (ImGui::Begin("##player1Select", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoNavInputs))
 		{
 			GLFWgamepadstate state;
-			// letar upp rätt index för modellen för de deletas och addas om och om ien så de behåller ej standard
-			// just nu sätts färgera en gång och ändras aldrig men man kanske vill ändra dem senare
-			// så därför finns detta (for-loopen som letar upp rätt index) inbyggt
+			// letar upp rï¿½tt index fï¿½r modellen fï¿½r de deletas och addas om och om ien sï¿½ de behï¿½ller ej standard
+			// just nu sï¿½tts fï¿½rgera en gï¿½ng och ï¿½ndras aldrig men man kanske vill ï¿½ndra dem senare
+			// sï¿½ dï¿½rfï¿½r finns detta (for-loopen som letar upp rï¿½tt index) inbyggt
 			int index = 0;
 			for (int i = 0; i < m_objHand->GetNumPlayers(); i++)
 			{
@@ -236,7 +236,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 			}
 			ImGui::End();
 		}
-		// TODO: Kanske Fixa så det följer kontrollerId eller nått
+		// TODO: Kanske Fixa sï¿½ det fï¿½ljer kontrollerId eller nï¿½tt
 		if (true)//m_objHand->GetNumPlayers() >= 3)
 		{
 			ImGui::SetNextWindowPos(ImVec2(50, w->GetHeight() - 155));
@@ -478,7 +478,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				m_selected[0] = 0;
 				m_objHand->SetNumberOfLives(m_maxLives);
 			}
-			else // bör bara kunna vara -1
+			else // bï¿½r bara kunna vara -1
 			{
 				m_menu = ActiveMenu::select;
 				m_selected[0] = 0;
@@ -637,8 +637,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				m_menu = ActiveMenu::playerHud;
 
 				m_reset = true;
-				// addar tillbaka spelarna här i Menu.cpp för att bevara deras modeller om man 
-				//	bara vill resetta med samma inställnignar
+				// addar tillbaka spelarna hï¿½r i Menu.cpp fï¿½r att bevara deras modeller om man 
+				//	bara vill resetta med samma instï¿½llnignar
 				for (int i = 0; i < 4; i++)
 				{
 					if (m_objHand->GetNumPlayers() > 0)
@@ -763,7 +763,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 			ImGui::PopStyleColor(2);
 		}
 		ImGui::End();
-		// TODO: Kanske Fixa så det följer kontrollerId eller nått
+		// TODO: Kanske Fixa sï¿½ det fï¿½ljer kontrollerId eller nï¿½tt
 		if (m_p3Joined)//m_objHand->GetNumPlayers() >= 3) 
 		{
 			ImGui::SetNextWindowPos(ImVec2(0, w->GetHeight() - 155));
@@ -885,7 +885,7 @@ bool Menu::Reset()
 void Menu::ResetReset()
 {
 	m_reset = false;
-	// reseta också alla värden som måste resettas
+	// reseta ocksï¿½ alla vï¿½rden som mï¿½ste resettas
 	for (int i = 0; i < 4; i++)
 	{
 		m_selected[i] = 0;
@@ -909,8 +909,8 @@ void Menu::ResetReset()
 /*
 void Scene::renderMenu()
 {
-	// ## osynligtr id så fönster utan titel
-	// id 'r vad imgui referera till så håll koll på dem
+	// ## osynligtr id sï¿½ fï¿½nster utan titel
+	// id 'r vad imgui referera till sï¿½ hï¿½ll koll pï¿½ dem
 	//int width, height, nrChannels;
 	//unsigned char* data = stbi_load("src/Textures/wow.png", &width, &height, &nrChannels, 0);
 	//unsigned int wowTexture;
