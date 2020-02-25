@@ -3,6 +3,10 @@
 #include "Transform.h"
 #include <atomic>
 #include <thread>
+#include "PerlinNoise.h"
+
+#define WIDTH 50 
+#define HEIGHT 12 
 
 class MarchingCubes
 { 
@@ -17,19 +21,23 @@ private:
     btBvhTriangleMeshShape* m_physicsMesh;
     btTriangleMesh m_tetraMesh;
 
-    // ADD PHYSICS! 
+    PerlinNoise* m_noise;
 
     float m_terrainSurface = 0.5f;
-    int m_width = 32;
-    int m_height = 3;
-    float m_terrainMap[32 + 1][32 + 1][32 + 1]; // width height width
-    float m_middle = 16;
+    int m_width = WIDTH;
+    int m_height = HEIGHT;
+    float m_terrainMap[WIDTH + 1][HEIGHT + 1][WIDTH + 1]; // width height width 
+    float m_middle = WIDTH / 2;
     int m_shrink = 0;
     float m_time = 0.0f;
-    int m_currentLvl = 4;
+    int m_currentLvl = 6;
     int m_holeSize = 8;
-    bool m_smoothTerrain = false;
+    bool m_smoothTerrain = true;
     bool m_way = true;
+    int m_lvlChanger = 0;
+    int m_terraceHeight = 2;
+    bool m_flatShaded = true;
+
     btRigidBody* m_body;
     btCollisionShape* m_platformShape;
     btTransform* m_btTransform;
@@ -65,6 +73,8 @@ public:
     int GetCurrentLevel();
     void SetHoleSize(int holeSize);
     int GetHoleSize();
-
+    int VertForIndice(vec3 vertex);
+    void CalculateNormals();
+    void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods, vec3 position);
 };
 

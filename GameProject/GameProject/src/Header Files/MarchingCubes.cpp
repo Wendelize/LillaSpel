@@ -309,8 +309,6 @@ int triTable[256][16] =
 MarchingCubes::MarchingCubes()
 {
 	//MultiThreading
-
-
 	VertexData tempVertex;
 	tempVertex.pos = vec3(0, 0, 0);
 	tempVertex.color = vec3(0, 0, 0);
@@ -335,7 +333,7 @@ MarchingCubes::MarchingCubes()
 
 	m_mesh = new Mesh(m_vertices, m_indices, m_textures, m_materials);
 	m_transform = new Transform;
-	m_transform->Translate(vec3(-16, 0, -16));
+	m_transform->Translate(vec3(-m_middle, 0, -m_middle));
 	ClearMeshData();
 	PopulateTerrainMap(m_currentLvl);
 
@@ -343,7 +341,6 @@ MarchingCubes::MarchingCubes()
 	BuildMesh();
 
 	CreatePhysics();
-//	MapUpdate();
 }
 
 MarchingCubes::~MarchingCubes()
@@ -353,7 +350,6 @@ MarchingCubes::~MarchingCubes()
 	delete m_transform;
 	delete m_platformShape;
 	delete m_btTransform;
-	//delete m_body;
 }
 
 void MarchingCubes::Init()
@@ -431,7 +427,8 @@ void MarchingCubes::MarchCube(vec3 position)
 				else
 					difference = (m_terrainSurface - vert1Sample) / difference;
 
-				vPos = v1 + ((v2 - v1) * difference);
+				// vPos = v1 + ((v2 - v1) * difference);
+				vPos = v1 * (1 - difference) + v2 * difference;
 			}
 			else
 			{
@@ -441,6 +438,13 @@ void MarchingCubes::MarchCube(vec3 position)
 			temp.pos = vPos;
 			m_vertices.push_back(temp);
 			m_indices.push_back(m_vertices.size() - 1);
+
+			// make it not flat shaded... :O 
+			if (!m_flatShaded)
+			{
+				VertForIndice(vPos);
+				CalculateNormals();
+			}
 
 			edgeIndex++;
 		}
@@ -505,7 +509,6 @@ void MarchingCubes::PopulateTerrainMap(int level)
 
 					if (x >= m_width - m_shrink || z >= m_width - m_shrink || x <= m_shrink || z <= m_shrink)
 					{
-						// DrawWarning(x, y, z); // Warning before shrinking level
 						m_terrainMap[x][y][z] = 1;
 					}
 					break;
@@ -593,7 +596,7 @@ void MarchingCubes::PopulateTerrainMap(int level)
 					}
 					break;
 
-				default:
+				case 5:
 					if (x <= m_holeSize && z <= 2 || x >= m_width - m_holeSize && z <= 2 || 
 						x <= 2 && z <= m_holeSize || z >= m_width - m_holeSize && x <= 2 ||
 						z >= m_width - 2 && x <= m_holeSize || z >= m_width - 2 && x >= m_width - m_holeSize || 
@@ -614,6 +617,17 @@ void MarchingCubes::PopulateTerrainMap(int level)
 					}
 					break;
 					
+				default:
+					float thisHeight = (float)m_height * m_noise->CreatePerlinNoise((float)x, (float)z); // ((float)rand() / (RAND_MAX)) / 16.0f * 1.5f + 0.001f; 
+					m_terrainMap[x][y][z] = (float)y - thisHeight;
+
+					if (thisHeight < 0.0f)
+						m_terrainMap[x][y][z] = (float)y;
+
+					if (distance(vec2(m_middle, m_middle), vec2((float)x, (float)z)) >= 24.0 - m_shrink) 
+						m_terrainMap[x][y][z] = 1.0f; 
+
+					break;
 				}
 			}
 		}
@@ -694,7 +708,7 @@ void MarchingCubes::CreatePhysics()
 
 	m_newBtTransform = new btTransform;
 	m_newBtTransform->setIdentity();
-	m_newBtTransform->setOrigin(btVector3(-16.f, -0.f, -16.f));
+	m_newBtTransform->setOrigin(btVector3(-m_middle, -0.f, -m_middle));
 	btScalar mass(0.);
 	btVector3 localInertia(0, 0, 0);
 	m_newMotionState = new btDefaultMotionState(*m_newBtTransform);
@@ -764,4 +778,50 @@ int MarchingCubes::GetHoleSize()
 	return m_holeSize;
 }
 
+int MarchingCubes::VertForIndice(vec3 vertex)
+{
+	VertexData temp;
+	temp.normal = vec3(0, 1, 0); // Calculate per vertex for better result 
+	temp.color = vec3(1, 0, 0);
+	temp.uv = vec2(1);
 
+	for (int i = 0; i < m_vertices.size(); i++)
+	{
+		if (m_vertices[i].pos == vertex)
+			return -1;
+	}
+
+	temp.pos = vertex;
+	m_vertices.push_back(temp);
+
+	int currentVert = m_vertices.size() - 1;
+	m_indices.push_back(currentVert);
+
+	return currentVert;
+}
+
+void MarchingCubes::CalculateNormals()
+{
+	if (m_vertices.size() > 3)
+	{
+		int currentVert = m_vertices.size() - 1;
+		m_vertices[currentVert].normal = normalize(cross(m_vertices[currentVert - 2].pos - m_vertices[currentVert - 1].pos, m_vertices[currentVert - 1].pos - m_vertices[currentVert].pos));
+		m_vertices[currentVert - 1].normal = normalize(cross(m_vertices[currentVert - 2].pos - m_vertices[currentVert - 1].pos, m_vertices[currentVert - 1].pos - m_vertices[currentVert].pos));
+		m_vertices[currentVert - 2].normal = normalize(cross(m_vertices[currentVert - 2].pos - m_vertices[currentVert - 1].pos, m_vertices[currentVert - 1].pos - m_vertices[currentVert].pos));
+	}
+}
+
+void MarchingCubes::KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods, vec3 position)
+{
+	if (key == GLFW_KEY_SPACE && action == GLFW_RELEASE)
+	{
+		for (int i = 0; i < m_vertices.size(); i++)
+		{
+			if (distance(m_vertices[i].pos.x, position.x) < 3 && distance(m_vertices[i].pos.z, position.z))
+			{
+				m_vertices.erase(m_vertices.begin() + i);
+				m_indices.erase(m_indices.begin() + i);
+			}
+		}
+	}
+}

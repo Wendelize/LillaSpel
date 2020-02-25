@@ -148,6 +148,7 @@
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\Header Files\DebugDrawer.cpp" />
     <ClCompile Include="src\Header Files\MarchingCubes.cpp" />
+    <ClCompile Include="src\Header Files\PerlinNoise.cpp" />
     <ClCompile Include="src\Header Files\PowerUp.cpp" />
     <ClCompile Include="src\IMGUI\imgui.cpp" />
     <ClCompile Include="src\IMGUI\imgui_demo.cpp" />
@@ -181,6 +182,7 @@
     <ClInclude Include="src\Header Files\Mesh.h" />
     <ClInclude Include="src\Header Files\Model.h" />
     <ClInclude Include="src\Header Files\ObjectHandler.h" />
+    <ClInclude Include="src\Header Files\PerlinNoise.h" />
     <ClInclude Include="src\Header Files\Platform.h" />
     <ClInclude Include="src\Header Files\Player.h" />
     <ClInclude Include="src\Header Files\PowerUp.h" />

@@ -154,7 +154,6 @@ void Player::Update(float dt)
 		{
 			m_soundEngine->setSoundVolume(1.0f);
 			m_soundEngine->play2D("src/Audio/Player - Honk.mp3", false);
-			m_soundEngine->setSoundVolume(m_body->getLinearVelocity().length() / 40 + 0.3f);
 		}
 
 		if (m_controller->ButtonOptionsIsPressed(m_controllerID))

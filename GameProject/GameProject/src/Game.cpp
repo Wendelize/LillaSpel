@@ -9,7 +9,7 @@ Game::Game()
 	m_scene = new Scene();
 	m_scene->Init(); // H�r skapas modellerna
 	m_time = 0;
-	m_maxTime = 60.f;
+	m_maxTime = 150.f;
 	m_debug = false;
 	m_toggle = false;
 	m_platforms = m_scene->GetModels(0);
