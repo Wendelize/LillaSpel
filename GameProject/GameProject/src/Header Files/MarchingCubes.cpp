@@ -362,6 +362,7 @@ void MarchingCubes::Init()
 
 void MarchingCubes::Update()
 {
+	//Multithread PART
 	ClearMeshData();
 
 	if (m_way == true)
@@ -379,8 +380,7 @@ void MarchingCubes::Update()
 
 	CreateMeshData();
 	BuildMesh();
-//	UpdatePhysics();
-//	MapUpdate();
+
 }
 
 void MarchingCubes::MarchCube(vec3 position)
@@ -723,52 +723,20 @@ void MarchingCubes::UpdatePhysics()
 		}
 	}
 	m_newPlatformShape = new btBvhTriangleMeshShape(&m_tetraMesh, true, true);
-
-
-
-	/*	m_newPlatformShape = new btBvhTriangleMeshShape(&m_tetraMesh, true, true);
-	
-	btVector3 localInertia(0, 0, 0);
-
-	btRigidBody::btRigidBodyConstructionInfo rbInfo(0.f, m_motionState, m_newPlatformShape, localInertia);
-	m_newBody = new btRigidBody(rbInfo);*/
-	//delete m_body;
-	//delete m_platformShape;
-	//m_platformShape = m_newPlatformShape;
-	//m_body = m_newBody;
 }
 
 void MarchingCubes::MapUpdate()
 {
-//	CreateMeshData();
+	//Sync after mutli and update physics.
 	BuildMesh();
 	UpdatePhysics();
 
-
-
-	//btVector3 localInertia(0, 0, 0);
-	//btRigidBody::btRigidBodyConstructionInfo rbInfo(0.f, m_motionState, m_platformShape, localInertia);
-
-	/*delete m_platformShape;
-	delete m_body;
-	m_platformShape = m_newPlatformShape;
-	btVector3 localInertia(0, 0, 0);
-	m_newMotionState = new btDefaultMotionState(*m_newBtTransform);
-	*/
 	delete m_platformShape;
 	m_platformShape = m_newPlatformShape;
 	btVector3 localInertia(0, 0, 0);
 	btRigidBody::btRigidBodyConstructionInfo rbInfo(0.f, m_newMotionState, m_platformShape, localInertia);
 	delete m_body;
 	m_body = new btRigidBody(rbInfo);
-
-	/*
-	delete m_platformShape;
-	delete m_body;
-
-	m_platformShape	= m_newPlatformShape;
-	m_body = m_newBody;
-	*/
 }
 
 vector<VertexData> MarchingCubes::GetVertices()
