@@ -7,37 +7,50 @@ PowerUp::PowerUp(int spawn, btVector3 pos, int type,float duration)
 	m_duration = duration;
 	m_transform = new Transform;
 	m_model = 0;
+	float scale = 1.f;
 	switch (type) {
-		case 0: 
-			m_model = 1;
+		case 0: //Player sizeUp
+			m_model = 6;
 			m_color = vec3(0, 1, 0);
+			scale = 0.1;
 			break;
-		case 1: 
-			m_color = vec3(1, 0, 0);
+		case 1: //Enemy get inverted Controller
+			m_model = 2;
+			m_color = vec3(0, 1, 0);
+
+			scale = 0.2f;
 			break;
-		case 2: 
+		case 2: //Player PowerMutiplier
+			m_model = 4; // ! Exclamatin mark model 
 			m_color = vec3(0.5, 0, 1);
+			scale = 0.12f;
 			break;
-		case 3: 
-			m_model = 1;
+		case 3: // player sizeDown
+			m_model = 5;
 			m_color = vec3(1, 0.5, 0);
+			scale = 0.1f;
+
 			break;
-		case 4:
-			m_model = 1;
+		case 4: //Enemy sizeUp
+			m_model = 6;
 			m_color = vec3(1, 0, 0);
+
+			scale = 0.1f;
 			break;
-		case 5: 
-			m_model = 1;
+		case 5: //Enemy sizeDown
+			m_model = 5;
 			m_color = vec3(0, 1, 0);
+
+			scale = 0.1f;
 			break;
 	}
 	m_spawn = spawn;
-	float scale = 1.;
-	m_btTransform = new btTransform();
-	m_btTransform->setIdentity();
-	m_btTransform->setOrigin(m_pos);
-	m_transform->SetScale(scale, scale, scale);
 
+		m_btTransform = new btTransform();
+		m_btTransform->setIdentity();
+		m_btTransform->setOrigin(m_pos);
+		m_transform->SetScale(scale, scale, scale);
+	
 	btVector3 localInertia(0, 0, 0);
 
 	m_body = new btGhostObject();
@@ -46,7 +59,6 @@ PowerUp::PowerUp(int spawn, btVector3 pos, int type,float duration)
 	m_body->setWorldTransform(*m_btTransform);
 	vec3 testPos = vec3(m_btTransform->getOrigin().x(), m_btTransform->getOrigin().y(), m_btTransform->getOrigin().z());
 	m_transform->SetTranslation(testPos);
-
 }
 
 PowerUp::~PowerUp()
@@ -102,6 +114,7 @@ bool PowerUp::update(float dt)
 	bool destroy = true;
 	if (GetDuration() - dt > 0) {
 		SetDuration(GetDuration() - dt);
+		m_transform->Rotate(0.f, 0.15f, 0.f);
 		destroy = false;
 	}
 	return destroy;

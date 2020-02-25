@@ -332,7 +332,7 @@ void ObjectHandler::AddPowerUp()
 {
 	srand(time(NULL));
 	int spawnLocation = rand() % (20);
-	int type = 1;//rand() % (6);
+	int type = rand() % (6);
 	if (m_usedSpawns[spawnLocation] == true) {
 		bool notFound = true;
 		int i = 0;

@@ -107,6 +107,12 @@ void Scene::Init()
 	// Powers
 	m_power.push_back(new Model("src/Models/PowerUp.obj"));
 	m_power.push_back(new Model("src/Models/PowerUpCar.obj"));
+	m_power.push_back(new Model("src/Models/LowPolyController.obj"));
+	m_power.push_back(new Model("src/Models/Question.obj"));
+	m_power.push_back(new Model("src/Models/Exclamation.obj"));
+	m_power.push_back(new Model("src/Models/SizeDown2.0.obj"));
+	m_power.push_back(new Model("src/Models/SizeUP2.0.obj"));
+
 	//m_power.push_back(new Model("src/Models/PowerUp.obj"));
 
 	// Lights
