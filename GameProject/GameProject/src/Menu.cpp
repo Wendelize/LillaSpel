@@ -272,7 +272,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 					ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0, 0, 1));
 					if (time - m_p3Seconds >= 0.5 && (glfwGetGamepadState(2, &state)))
 					{
-						ImGui::Text(" Join? Press \"A\"! ");
+						ImGui::Text(" Join? Press \"A\"!");
 						if (state.buttons[GLFW_GAMEPAD_BUTTON_A])
 						{
 							m_p3Joined = true;
