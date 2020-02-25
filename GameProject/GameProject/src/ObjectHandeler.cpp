@@ -164,7 +164,7 @@ void ObjectHandler::Update(float dt)
 				if (checkPlayer == collidingPlayer) 
 				{
 					notFound = false;
-					if (m_powerUps.at(i)->GetType() == 5 || m_powerUps.at(i)->GetType() == 4) 
+					if (m_powerUps.at(i)->GetType() == 5 || m_powerUps.at(i)->GetType() == 4 || m_powerUps.at(i)->GetType() == 1)
 					{
 						for (int l = 0; l < m_players.size(); l++) 
 						{
@@ -332,7 +332,7 @@ void ObjectHandler::AddPowerUp()
 {
 	srand(time(NULL));
 	int spawnLocation = rand() % (20);
-	int type = rand() % (6);
+	int type = 1;//rand() % (6);
 	if (m_usedSpawns[spawnLocation] == true) {
 		bool notFound = true;
 		int i = 0;

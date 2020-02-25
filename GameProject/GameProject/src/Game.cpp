@@ -7,7 +7,7 @@ Game::Game()
 	m_scene = new Scene();
 	m_scene->Init(); // H�r skapas modellerna
 	m_time = 0;
-	m_maxTime = 15.0f;
+	m_maxTime = 240.0f;
 	m_menu = new Menu(m_scene, m_objectHandler);
 	// noMenu, start, select, pause, stats, restart, playerHud; // stats finns inte än
 	// väl playerHud om ni vill spela utan start menu

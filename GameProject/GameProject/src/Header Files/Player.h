@@ -26,6 +26,7 @@ private:
 	vector<ISoundSource*> m_carSounds;
 	ISound* m_sound;
 	bool m_fallen;
+	bool m_inverted;
 
 	//Variables 4 Fysik
 	btCollisionShape* m_carShape;

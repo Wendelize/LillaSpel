@@ -20,6 +20,7 @@ Player::Player(Model* model, int modelId, vec3 pos)
 	m_powerMultiplier = 1.0f;
 	m_powerActive = false;
 	m_powerType = 0;
+	m_inverted = false;
 	m_scale = vec3(scale, scale, scale);
 	m_transform->SetScale(scale, scale, scale);
 	m_carShape = new btSphereShape(radius);
@@ -196,12 +197,19 @@ void Player::Update(float dt)
 		}
 
 		// Left stick horisontal input
-		if (m_controller->GetLeftStickHorisontal(m_controllerID) > 0.2f || m_controller->GetLeftStickHorisontal(m_controllerID) < -0.2f)
+		if ((m_controller->GetLeftStickHorisontal(m_controllerID) > 0.2f || m_controller->GetLeftStickHorisontal(m_controllerID) < -0.2f) && m_inverted == false)
 		{
 			if (m_speed < 0)
 				rotate.y -= m_controller->GetLeftStickHorisontal(m_controllerID) * -1.0;
 			else
 				rotate.y -= m_controller->GetLeftStickHorisontal(m_controllerID);
+		}
+		else if ((m_controller->GetLeftStickHorisontal(m_controllerID) > 0.2f || m_controller->GetLeftStickHorisontal(m_controllerID) < -0.2f) && m_inverted == true)
+		{
+			if (m_speed < 0)
+				rotate.y -= m_controller->GetLeftStickHorisontal(m_controllerID);
+			else
+				rotate.y -= m_controller->GetLeftStickHorisontal(m_controllerID)* -1.0;
 		}
 		
 		//Set rotationSpeed depending on your speed, less speed--> Can turn less. 
@@ -382,7 +390,8 @@ void Player::GivePower(int type)
 			break;
 
 		case 1:
-			m_body->setRestitution(m_restitution * 1.2);
+			//m_body->setRestitution(m_restitution * 1.2);
+			m_inverted = true;
 			break;
 
 		case 2:
@@ -431,7 +440,8 @@ void Player::removePower(int type)
 		break;
 
 	case 1:
-		m_body->setRestitution(m_restitution);
+		//m_body->setRestitution(m_restitution);
+		m_inverted = false;
 		break;
 
 	case 2:
