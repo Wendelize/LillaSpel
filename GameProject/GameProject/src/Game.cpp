@@ -115,6 +115,7 @@ void Game::Update(float dt)
 		if (m_objectHandler->GetNumPlayers() == 1 && !m_gameOver)
 		{
 			m_winner = 0;
+			m_menu->SetActiveMenu(Menu::ActiveMenu::win);
 			m_gameOver = true;
 			if (m_soundEngine)
 			{
@@ -135,6 +136,8 @@ void Game::Update(float dt)
 		if (m_time > m_maxTime && !m_gameOver)
 		{
 			m_winner = m_objectHandler->GetWinnerIndex();
+			m_menu->SetWinner(m_winner);
+			m_menu->SetActiveMenu(Menu::ActiveMenu::win);
 			m_gameOver = true;
 			if (m_soundEngine)
 			{

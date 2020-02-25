@@ -14,13 +14,15 @@ public:
 		select = 2,
 		selectLives = 3,
 		pause = 4,
-		stats = 5,
-		restart = 6,
-		playerHud = 7
+		win = 5,
+		stats = 6,
+		restart = 7,
+		playerHud = 8
 	};
 
 	void RenderMenu(bool gameOver, float time, Model* model);
 	void SetActiveMenu(ActiveMenu activeMenu);
+	void SetWinner(int playerNum);
 	bool SelectMenuActive();
 	int GetMaxTime();
 	void LoadMenuPic();
@@ -37,6 +39,7 @@ private:
 	bool m_reset = false;
 	int m_maxLives = 3;
 	int m_maxTime = 60.0f;
+	int m_winner = 0;
 
 	int m_selected[4] = { 0, 0, 0, 0 };
 	int m_continue = 0;

@@ -20,11 +20,11 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 {
 	GLFWgamepadstate state;
 	Window* w = m_scene->GetOurWindow();
-	if (gameOver)
-	{
-		m_menu = ActiveMenu::restart;
-	}
-	else if ((m_menu == ActiveMenu::playerHud || m_menu == ActiveMenu::select) && glfwGetGamepadState(0, &state))
+	//if (gameOver)
+	//{
+	//	m_menu = ActiveMenu::restart;
+	//}
+	if ((m_menu == ActiveMenu::playerHud || m_menu == ActiveMenu::select) && glfwGetGamepadState(0, &state))
 	{
 		// TODO: maybe one should be able to access the pause menu from more places?
 		if (state.buttons[GLFW_GAMEPAD_BUTTON_START])
@@ -33,6 +33,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		}
 	}
 	double time = glfwGetTime();
+	int winnerIndex = 0;
 
 	GLFWwindow* wW = m_scene->GetWindow();
 
@@ -719,6 +720,50 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		}
 		ImGui::End();
 		break;
+	case ActiveMenu::win:
+		ImGui::SetNextWindowPos(ImVec2(width / 2 - 125, 0));
+		ImGui::SetNextWindowSize(ImVec2(250, 60));
+		if (m_objHand->GetPlayerControllerID(m_winner) == 0)
+		{
+			ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_p1Col.x, m_p1Col.y, m_p1Col.z, 0.5));
+
+		}
+		else if (m_objHand->GetPlayerControllerID(m_winner) == 1)
+		{
+			ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_p2Col.x, m_p2Col.y, m_p2Col.z, 0.5));
+
+		}
+		else if (m_objHand->GetPlayerControllerID(m_winner) == 2)
+		{
+			ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_p3Col.x, m_p3Col.y, m_p3Col.z, 0.5));
+
+		}
+		else
+		{
+			ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_p4Col.x, m_p4Col.y, m_p4Col.z, 0.5));
+
+		}
+
+		if (ImGui::Begin("##winner", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize))
+		{
+			
+			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0, 0.0, 0.0, 1));
+			ImGui::Text("Player sss %d Has Won!", m_objHand->GetPlayerControllerID(m_winner) + 1);
+			ImGui::PopStyleColor(2);
+			if (time - m_p1Seconds >= 0.5 && (glfwGetGamepadState(0, &state)))
+			{
+				if (state.buttons[GLFW_GAMEPAD_BUTTON_A])
+				{
+					m_menu = ActiveMenu::restart;
+				}
+				m_p1Seconds = time;
+			}
+		}
+		ImGui::End();
+		break;
+	case ActiveMenu::stats:
+
+		break;
 	case ActiveMenu::playerHud:
 		ImGui::SetNextWindowPos(ImVec2(width / 2 - 125, 0));
 		ImGui::SetNextWindowSize(ImVec2(250, 60));
@@ -846,6 +891,11 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 void Menu::SetActiveMenu(ActiveMenu activeMenu)
 {
 	m_menu = activeMenu;
+}
+
+void Menu::SetWinner(int playerNum)
+{
+	m_winner = playerNum;
 }
 
 bool Menu::SelectMenuActive()
