@@ -378,19 +378,12 @@ void MarchingCubes::Update(GLFWwindow* window)
 	cout << state << ", " << GLFW_PRESS << endl;
 	if (state == GLFW_PRESS)
 	{
-		m_hole = true;
-	}
-	else {
-		m_hole = false;
+		MakeTerrain(vec3(m_middle, 0, m_middle));
 	}
 
 	PopulateTerrainMap(m_currentLvl);
 
-
 	CreateMeshData();
-	MakeHole(vec3(m_middle, 0, m_middle));
-	//BuildMesh();
-
 }
 
 void MarchingCubes::MarchCube(vec3 position)
@@ -511,8 +504,7 @@ void MarchingCubes::PopulateTerrainMap(int level)
 						}
 						else
 						{
-							float thisHeight = (float)m_height * ((float)rand() / (RAND_MAX)) / 16.0f * 1.5f + 0.001f;
-							m_terrainMap[x][y][z] = (float)y - thisHeight;
+							m_terrainMap[x][y][z] = (float)y;
 						}
 					}
 					else
@@ -528,31 +520,33 @@ void MarchingCubes::PopulateTerrainMap(int level)
 					break;
 
 				case 1 :
-					if (x > m_middle - 5 && x < m_middle + 5 && z > m_middle - 5 && z < m_middle + 5)
+					if (x > m_middle - 6 && x < m_middle + 6 && z > m_middle - 6 && z < m_middle + 6)
 					{
 						m_terrainMap[x][y][z] = 1;
 					}
 					else
 					{
-						float thisHeight = (float)m_height * ((float)rand() / (RAND_MAX)) / 16.0f * 1.5f + 0.001f;
-						m_terrainMap[x][y][z] = (float)y - thisHeight;
+						m_terrainMap[x][y][z] = (float)y;
 					}
 
-					if (x >= m_width || z >= m_width || x <= 0 || z <= 0)
+					if (x >= m_width - m_shrink || z >= m_width - m_shrink || x <= m_shrink || z <= m_shrink)
 					{
 						m_terrainMap[x][y][z] = 1;
 					}
 					break;
 
-				case 2:
+				case 2: // TETRIS + MULTIFRACTAL
 					if (x <= m_middle && z <= m_middle)
 					{
 						m_terrainMap[x][y][z] = 1;
 					}
 					else
 					{
-						float thisHeight = (float)m_height * ((float)rand() / (RAND_MAX)) / 16.0f * 1.5f + 0.001f;
+						float thisHeight = (float)m_height * m_noise->CreateMultiFractal((float)x, (float)z);
 						m_terrainMap[x][y][z] = (float)y - thisHeight;
+
+						if (thisHeight < 0.0f)
+							m_terrainMap[x][y][z] = (float)y;
 					}
 
 					if (x >= m_width || z >= m_width || x <= 0 || z <= 0)
@@ -573,14 +567,12 @@ void MarchingCubes::PopulateTerrainMap(int level)
 					}
 					else
 					{
-						float thisHeight = (float)m_height * ((float)rand() / (RAND_MAX)) / 16.0f * 1.5f + 0.001f;
-						m_terrainMap[x][y][z] = (float)y - thisHeight;
+						m_terrainMap[x][y][z] = (float)y;
 					}
 
-					if (x >= m_width || z >= m_width || x <= 0 || z <= 0)
-					{
-						m_terrainMap[x][y][z] = 1;
-					}
+					if (distance(vec2(m_middle, m_middle), vec2((float)x, (float)z)) >= 24.0 - m_shrink)
+						m_terrainMap[x][y][z] = 1.0f;
+
 					break;
 					
 				case 4:
@@ -588,19 +580,16 @@ void MarchingCubes::PopulateTerrainMap(int level)
 					{
 						if (x > m_middle - 6 && x < m_middle + 6 && z > m_middle - 6 && z < m_middle + 6)
 						{
-							float thisHeight = (float)m_height * ((float)rand() / (RAND_MAX)) / 16.0f * 1.5f + 2.0f;
-							m_terrainMap[x][y][z] = (float)y - thisHeight;
+							m_terrainMap[x][y][z] = (float)y - 2.0f;
 						}
 						else
-						{
-							float thisHeight = (float)m_height * ((float)rand() / (RAND_MAX)) / 16.0f * 1.5f + 1.0f;
-							m_terrainMap[x][y][z] = (float)y - thisHeight;
+						{						
+							m_terrainMap[x][y][z] = (float)y - 1.0f;
 						}
 					}
 					else
-					{
-						float thisHeight = (float)m_height * ((float)rand() / (RAND_MAX)) / 16.0f * 1.5f + 0.001f;
-						m_terrainMap[x][y][z] = (float)y - thisHeight;
+					{		
+						m_terrainMap[x][y][z] = (float)y;
 					}
 
 
@@ -621,8 +610,7 @@ void MarchingCubes::PopulateTerrainMap(int level)
 					}
 					else
 					{
-						float thisHeight = (float)m_height * ((float)rand() / (RAND_MAX)) / 16.0f * 1.5f + 0.001f;
-						m_terrainMap[x][y][z] = (float)y - thisHeight;
+						m_terrainMap[x][y][z] = (float)y;
 					}
 
 					if (x >= m_width || z >= m_width || x <= 0 || z <= 0)
@@ -825,13 +813,9 @@ void MarchingCubes::CalculateNormals()
 	}
 }
 
-void MarchingCubes::MakeHole(vec3 position)
+void MarchingCubes::MakeTerrain(vec3 position)
 {
-	for (int i = 0; i < m_vertices.size(); i++)
-	{
-		if (distance(m_vertices[i].pos.x, position.x) < 10 && distance(m_vertices[i].pos.z, position.z) < 10)
-		{
-			m_terrainMap[(int)position.x][(int)position.y][(int)position.z] = 1.0f;
-		}
-	}
+	cout << "x: " << (int)position.x << " y: " << (int)position.y << " z: " << (int)position.z << endl;
+	m_terrainMap[(int)position.x][(int)position.y][(int)position.z] = 1.0f;
+	CreateMeshData();
 }

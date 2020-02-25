@@ -23,8 +23,10 @@ private:
 	Transform* m_transform;
 	ObjectInfo* m_info;
 	ISoundEngine* m_soundEngine;
+	ISoundEngine* m_honkEngine;
 	vector<ISoundSource*> m_carSounds;
 	ISound* m_sound;
+	ISound* m_honk;
 	bool m_fallen;
 
 	//Variables 4 Fysik

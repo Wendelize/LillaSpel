@@ -6,7 +6,10 @@
 #include "PerlinNoise.h"
 
 #define WIDTH 50 
-#define HEIGHT 12 
+#define HEIGHT 15
+#define HEIGHTREGULAR 1
+#define HEIGHTNOISE 40 // CAN BE ANYTHING.
+#define NROFMAXHOLES 20
 
 class MarchingCubes
 { 
@@ -31,13 +34,13 @@ private:
     int m_shrink = 0;
     float m_time = 0.0f;
     int m_currentLvl = 6;
-    int m_holeSize = 8;
+    float m_holeSize = m_middle / 2.0f;
     bool m_smoothTerrain = true;
     bool m_way = true;
     int m_lvlChanger = 0;
     int m_terraceHeight = 2;
     bool m_flatShaded = true;
-    bool m_hole = false;
+
     btRigidBody* m_body;
     btCollisionShape* m_platformShape;
     btTransform* m_btTransform;
@@ -75,6 +78,6 @@ public:
     int GetHoleSize();
     int VertForIndice(vec3 vertex);
     void CalculateNormals();
-    void MakeHole(vec3 position);
+    void MakeTerrain(vec3 position);
 };
 

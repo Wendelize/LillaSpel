@@ -37,7 +37,7 @@ Game::Game()
 			m_soundEngine->play2D("src/Audio/Music - Win.mp3", GL_TRUE);
 			m_soundEngine->play2D("src/Audio/Music - 16bit Sea Shanty 2.mp3", GL_TRUE);
 		*/
-		int randomNumber = rand () % 5;
+		int randomNumber = 1;//rand () % 5;
 		m_songs.push_back(m_soundEngine->addSoundSourceFromFile("src/Audio/Music - 16bit Sea Shanty 2.mp3"));
 		m_songs.push_back(m_soundEngine->addSoundSourceFromFile("src/Audio/Music - 16bit Deja Vu.mp3"));
 		m_songs.push_back(m_soundEngine->addSoundSourceFromFile("src/Audio/Music - Main Game.mp3"));
@@ -49,6 +49,8 @@ Game::Game()
 		if (m_music)
 		{
 			m_music->setVolume(0.9f);
+			if (randomNumber == 1)
+				m_music->setVolume(0.7f);
 		}
 
 		m_soundEngine->setListenerPosition(vec3df(0, 18, 33), vec3df(0, -4, 3)); // Listener position, view direction

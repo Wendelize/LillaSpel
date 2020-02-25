@@ -100,8 +100,9 @@ Player::Player(Model* model, int modelId, vec3 pos)
 	}
 
 	m_soundEngine = createIrrKlangDevice();
+	m_honkEngine = createIrrKlangDevice();
 
-	if (m_soundEngine)
+	if (m_soundEngine && m_honkEngine)
 	{
 		m_soundEngine->setListenerPosition(vec3df(0, 18, 33), vec3df(0, -4, 3)); // Listener position, view direction
 		m_soundEngine->setDefault3DSoundMinDistance(1.0f);
@@ -109,11 +110,15 @@ Player::Player(Model* model, int modelId, vec3 pos)
 
 		m_carSounds.push_back(m_soundEngine->addSoundSourceFromFile("src/Audio/Player - Engine2.0.mp3"));
 		m_carSounds.push_back(m_soundEngine->addSoundSourceFromFile("src/Audio/Player - Backing.mp3"));
+		m_carSounds.push_back(m_soundEngine->addSoundSourceFromFile("src/Audio/Player - HonkDELUXE.mp3"));
 
 		m_soundEngine->setSoundVolume(0.3f);
 
 		m_sound = m_soundEngine->play2D(m_carSounds[0], true, true);
 		m_sound->setPlaybackSpeed(1.0f);
+
+		m_honkEngine->setSoundVolume(0.2f);
+		m_honk = m_honkEngine->play2D(m_carSounds[2], false, true);
 	}
 
 }
@@ -134,6 +139,7 @@ Player::~Player()
 		m_carSounds.clear();
 
 		m_sound->drop();
+		m_honk->drop();
 	}
 }
 
@@ -149,10 +155,9 @@ void Player::Update(float dt)
 
 	if (glfwJoystickPresent(m_controllerID) == 1 && m_body->getWorldTransform().getOrigin().y() > -1.0f)
 	{
-		if (m_soundEngine && m_controller->ButtonRightJoystickIsPressed(m_controllerID))
+		if (m_honkEngine && m_soundEngine && m_controller->ButtonRightJoystickIsPressed(m_controllerID))
 		{
-			m_soundEngine->setSoundVolume(1.0f);
-			m_soundEngine->play2D("src/Audio/Player - Honk.mp3", false);
+			m_honkEngine->play2D(m_honk->getSoundSource(), false, false, true);
 		}
 
 		if (m_controller->ButtonOptionsIsPressed(m_controllerID))
@@ -218,7 +223,7 @@ void Player::Update(float dt)
 	if (m_soundEngine && m_body->getLinearVelocity().y() < 0.3f && m_body->getLinearVelocity().y() > -0.3f)
 	{
 		m_soundEngine->setSoundVolume(m_body->getLinearVelocity().length() / 40 + 0.3f);
-		m_sound->setPlaybackSpeed(m_body->getLinearVelocity().length() / 25 + 1.0f);
+		m_sound->setPlaybackSpeed(m_body->getLinearVelocity().length() / 15 + 1.0f);
 	}
 	m_body->applyDamping(dt);
 
