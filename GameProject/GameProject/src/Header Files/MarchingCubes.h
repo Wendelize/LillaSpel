@@ -37,7 +37,7 @@ private:
     int m_lvlChanger = 0;
     int m_terraceHeight = 2;
     bool m_flatShaded = true;
-
+    bool m_hole = false;
     btRigidBody* m_body;
     btCollisionShape* m_platformShape;
     btTransform* m_btTransform;
@@ -53,7 +53,7 @@ public:
     ~MarchingCubes();
 
     void Init();
-    void Update();
+    void Update(GLFWwindow* window);
     void MarchCube(vec3 position);
     void ClearMeshData();
     void BuildMesh();
@@ -75,6 +75,6 @@ public:
     int GetHoleSize();
     int VertForIndice(vec3 vertex);
     void CalculateNormals();
-    void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods, vec3 position);
+    void MakeHole(vec3 position);
 };
 

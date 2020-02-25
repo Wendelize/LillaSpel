@@ -275,6 +275,7 @@ void Scene::RenderImGui(btDiscreteDynamicsWorld* world)
 
 	if (m_debug) {
 		m_modelShader->SetUniform("u_Model", mat4(1));
+		m_modelShader->SetUniform("u_PlayerColor", vec3(1, 0, 0));
 		world->debugDrawWorld();
 
 	}

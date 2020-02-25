@@ -356,7 +356,7 @@ void MarchingCubes::Init()
 {
 }
 
-void MarchingCubes::Update()
+void MarchingCubes::Update(GLFWwindow* window)
 {
 	//Multithread PART
 	ClearMeshData();
@@ -372,10 +372,24 @@ void MarchingCubes::Update()
 		if(m_shrink == 0)
 			m_way = true;
 	}
+
+	int state = glfwGetKey(window, GLFW_KEY_SPACE);
+
+	cout << state << ", " << GLFW_PRESS << endl;
+	if (state == GLFW_PRESS)
+	{
+		m_hole = true;
+	}
+	else {
+		m_hole = false;
+	}
+
 	PopulateTerrainMap(m_currentLvl);
 
+
 	CreateMeshData();
-	BuildMesh();
+	MakeHole(vec3(m_middle, 0, m_middle));
+	//BuildMesh();
 
 }
 
@@ -811,17 +825,13 @@ void MarchingCubes::CalculateNormals()
 	}
 }
 
-void MarchingCubes::KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods, vec3 position)
+void MarchingCubes::MakeHole(vec3 position)
 {
-	if (key == GLFW_KEY_SPACE && action == GLFW_RELEASE)
+	for (int i = 0; i < m_vertices.size(); i++)
 	{
-		for (int i = 0; i < m_vertices.size(); i++)
+		if (distance(m_vertices[i].pos.x, position.x) < 10 && distance(m_vertices[i].pos.z, position.z) < 10)
 		{
-			if (distance(m_vertices[i].pos.x, position.x) < 3 && distance(m_vertices[i].pos.z, position.z))
-			{
-				m_vertices.erase(m_vertices.begin() + i);
-				m_indices.erase(m_indices.begin() + i);
-			}
+			m_terrainMap[(int)position.x][(int)position.y][(int)position.z] = 1.0f;
 		}
 	}
 }

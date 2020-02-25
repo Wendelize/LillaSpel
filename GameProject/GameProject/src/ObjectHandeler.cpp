@@ -225,7 +225,6 @@ void ObjectHandler::Update(float dt)
 				m_dynamicsWorld->removeRigidBody(m_players[isPlayer]->GetBody());
 				m_players[isPlayer]->removePower(m_players[isPlayer]->GetActivePower());
 				m_dynamicsWorld->addRigidBody(m_players[isPlayer]->GetBody());
-
 			}
 
 			if (m_soundEngine)
@@ -304,7 +303,7 @@ void ObjectHandler::AddPlatform(int modelId, Model* model)
 	m_platforms.push_back(new Platform(model, modelId));
 	m_platforms.back()->SetModelId(modelId);
 
-	m_dynamicsWorld->addRigidBody(m_platforms.back()->getBody());
+	m_dynamicsWorld->addRigidBody(m_platforms.back()->getBody(), 1, -1);
 }
 
 void ObjectHandler::RemovePlatform()

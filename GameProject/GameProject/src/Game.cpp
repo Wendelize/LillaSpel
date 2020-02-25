@@ -162,7 +162,7 @@ void Game::MutliThread(GLFWwindow* window)
 {
 	while (!glfwWindowShouldClose(window)) {
 		if (m_updateMap.load()) {
-			m_cube->Update();
+			m_cube->Update(window);
 			m_updateMap.store(false);// = false;
 			std::this_thread::sleep_for(std::chrono::milliseconds(10));
 			m_mapUpdateReady.store(true);

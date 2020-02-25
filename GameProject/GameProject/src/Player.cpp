@@ -68,7 +68,7 @@ Player::Player(Model* model, int modelId, vec3 pos)
 
 	btVector3 localInertia(0, 0, 0);
 	m_carShape->calculateLocalInertia(mass, localInertia);
-
+	
 	//using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
 	m_motionState = new btDefaultMotionState(*m_btTransform);
 	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, m_motionState, m_carShape, localInertia);
@@ -80,7 +80,6 @@ Player::Player(Model* model, int modelId, vec3 pos)
 	m_body->clearForces();
 	m_body->setRestitution(m_restitution);
 	m_currentPos = m_btTransform->getOrigin();
-
 	switch (modelId)
 	{
 	case 0:
@@ -148,7 +147,7 @@ void Player::Update(float dt)
 	float jump = 0;
 	bool pressed = false;
 
-	if (glfwJoystickPresent(m_controllerID) == 1 && m_body->getWorldTransform().getOrigin().y() < 4.0f && m_body->getWorldTransform().getOrigin().y() > -1.0f)
+	if (glfwJoystickPresent(m_controllerID) == 1 && m_body->getWorldTransform().getOrigin().y() > -1.0f)
 	{
 		if (m_soundEngine && m_controller->ButtonRightJoystickIsPressed(m_controllerID))
 		{
