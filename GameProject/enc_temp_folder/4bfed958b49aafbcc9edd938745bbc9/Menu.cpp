@@ -259,7 +259,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 			ImGui::End();
 		}
 		// TODO: Kanske Fixa s� det f�ljer kontrollerId eller n�tt
-		if(glfwGetGamepadState(2, &state))//m_objHand->GetNumPlayers() >= 3)
+		if(true)//glfwGetGamepadState(2, &state))//m_objHand->GetNumPlayers() >= 3)
 		{
 			ImGui::SetNextWindowPos(ImVec2(50, height - 200));
 			ImGui::SetNextWindowSize(ImVec2(350, 100));
