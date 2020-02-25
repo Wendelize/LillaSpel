@@ -3,6 +3,8 @@
 #include "Header Files/stb_image.h"
 Game::Game()
 {
+	m_mapUpdateReady.store(false);
+	m_updateMap.store(false);
 	m_objectHandler = new ObjectHandler();
 	m_scene = new Scene();
 	m_scene->Init(); // H�r skapas modellerna
@@ -75,15 +77,20 @@ void Game::Update(float dt)
 	m_timeSinceSpawn += dt;
 	m_timeSwapTrack += dt;
 
-	if (m_timeSwapTrack > 2.f) {
-		m_objectHandler->RemoveDynamicPlatformMesh(m_cube);
-		m_cube->Update();
-		m_objectHandler->AddDynamicPlatformMesh(m_cube);
-		m_timeSwapTrack = 0.f;
+	if (m_timeSwapTrack > 2.f && m_updateMap.load() == false && m_mapUpdateReady.load() == false) {
+		m_updateMap.store(true);
 	}
 
+	if (m_mapUpdateReady.load() == true && m_updateMap.load() == false) {
+		m_objectHandler->RemoveDynamicPlatformMesh(m_cube);
+		m_cube->MapUpdate();
+		m_objectHandler->AddDynamicPlatformMesh(m_cube);
+		m_timeSwapTrack = 0.f;
+		m_mapUpdateReady.store(false);
+
+	}
 	if (m_timeSinceSpawn > 5 && !m_gameOver) {
-		m_objectHandler->AddPowerUp();
+		//m_objectHandler->AddPowerUp();
 		m_timeSinceSpawn = 0;
 	}
 	if(!m_gameOver)
@@ -149,6 +156,21 @@ void Game::Render()
 GLFWwindow* Game::GetWindow()
 {
 	return m_scene->GetWindow();
+}
+
+void Game::MutliThread(GLFWwindow* window)
+{
+	while (!glfwWindowShouldClose(window)) {
+		if (m_updateMap.load()) {
+			m_cube->Update();
+			m_updateMap.store(false);// = false;
+			std::this_thread::sleep_for(std::chrono::milliseconds(10));
+			m_mapUpdateReady.store(true);
+		}
+		else {
+			std::this_thread::sleep_for(std::chrono::milliseconds(10));
+		}
+	}
 }
 
 void Game::Debug()

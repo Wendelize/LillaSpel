@@ -148,8 +148,7 @@ void ObjectHandler::Update(float dt)
 	int randomNumber = rand() % NRDEATHSOUNDS;
 
 	m_dynamicsWorld->stepSimulation(dt, 10);
-	int numManifolds = m_dynamicsWorld->getDispatcher()->getNumManifolds();
-
+	//int numManifolds = m_dynamicsWorld->getDispatcher()->getNumManifolds();
 	for (int i = 0; i < m_powerUps.size(); i++)
 	{
 		btAlignedObjectArray< btCollisionObject* >& pairs = m_powerUps.at(i)->getObject()->getOverlappingPairs();
@@ -158,6 +157,7 @@ void ObjectHandler::Update(float dt)
 			bool notFound = true;
 			for (int k = 0; k < m_players.size() && notFound; k++) 
 			{
+			
 				int checkPlayer = m_players.at(k)->GetControllerID();
 				int collidingPlayer = pairs.at(j)->getUserIndex();
 				if (checkPlayer == collidingPlayer) 

@@ -28,6 +28,9 @@ private:
 	float m_timeSwapTrack;
 	bool m_gameOver = false;
 	bool m_fastMusic = false;
+	std::atomic<bool> m_mapUpdateReady;
+	std::atomic<bool> m_updateMap;
+
 	void Debug();
 public:
 	Game();
@@ -35,4 +38,5 @@ public:
 	void Update(float dt);
 	void Render();
 	GLFWwindow* GetWindow();
+	void MutliThread(GLFWwindow* window);
 };

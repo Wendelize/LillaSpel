@@ -34,7 +34,12 @@ private:
     btCollisionShape* m_platformShape;
     btTransform* m_btTransform;
     btDefaultMotionState* m_motionState;
-
+    btCollisionShape*       m_newPlatformShape;
+    btTransform*            m_newBtTransform;
+    btDefaultMotionState*   m_newMotionState;
+    btRigidBody*            m_newBody;
+    btTriangleMesh m_newTetraMesh;
+    std::atomic<btRigidBody*> test; 
 public:  
     MarchingCubes();
     ~MarchingCubes();
@@ -53,6 +58,7 @@ public:
     btRigidBody* GetBody();
     void CreatePhysics();
     void UpdatePhysics();
+    void MapUpdate();
 
     vector<VertexData> GetVertices();
     void SetCurrentLevel(int level);

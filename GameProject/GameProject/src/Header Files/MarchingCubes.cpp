@@ -343,6 +343,7 @@ MarchingCubes::MarchingCubes()
 	BuildMesh();
 
 	CreatePhysics();
+//	MapUpdate();
 }
 
 MarchingCubes::~MarchingCubes()
@@ -378,7 +379,8 @@ void MarchingCubes::Update()
 
 	CreateMeshData();
 	BuildMesh();
-	//UpdatePhysics();
+//	UpdatePhysics();
+//	MapUpdate();
 }
 
 void MarchingCubes::MarchCube(vec3 position)
@@ -674,7 +676,8 @@ btRigidBody* MarchingCubes::GetBody()
 void MarchingCubes::CreatePhysics()
 {
 	vector<btVector3> points;
-
+	btTriangleMesh tetraMesh;
+	m_tetraMesh = tetraMesh;
 	for (int j = 0; j < m_mesh->m_vertices.size(); j++)
 	{
 
@@ -687,28 +690,85 @@ void MarchingCubes::CreatePhysics()
 			m_tetraMesh.addTriangleIndices(m_mesh->m_indices[j], m_mesh->m_indices[j+1], m_mesh->m_indices[j+2]);
 		}
 	}
-	m_platformShape = new btBvhTriangleMeshShape(&m_tetraMesh, true, true);
+	m_newPlatformShape = new btBvhTriangleMeshShape(&m_tetraMesh, true, true);
 
-	m_btTransform = new btTransform;
-	m_btTransform->setIdentity();
-	m_btTransform->setOrigin(btVector3(-16.f, -0.f, -16.f));
+	m_newBtTransform = new btTransform;
+	m_newBtTransform->setIdentity();
+	m_newBtTransform->setOrigin(btVector3(-16.f, -0.f, -16.f));
 	btScalar mass(0.);
 	btVector3 localInertia(0, 0, 0);
-	m_motionState = new btDefaultMotionState(*m_btTransform);
-	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, m_motionState, m_platformShape, localInertia);
+	m_newMotionState = new btDefaultMotionState(*m_newBtTransform);
+	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, m_newMotionState, m_newPlatformShape, localInertia);
 	m_body = new btRigidBody(rbInfo);
 
 	m_body->setFriction(3);
-
 }
 
 void MarchingCubes::UpdatePhysics()
 {
-	delete m_platformShape;
-	delete m_btTransform;
-	delete m_motionState;
+	vector<btVector3> points;
+
+	btTriangleMesh tetraMesh;
+	m_tetraMesh = tetraMesh;
+	for (int j = 0; j < m_mesh->m_vertices.size(); j++)
+	{
+
+		points.push_back(btVector3(m_mesh->m_vertices[j].pos.x, m_mesh->m_vertices[j].pos.y, m_mesh->m_vertices[j].pos.z));
+	}
+	if (points.size() > 3) {
+		for (int j = 0; j < points.size() - 3; j = j + 3)
+		{
+			m_tetraMesh.addTriangle(points[j], points[j + 1], points[j + 2], false);
+			m_tetraMesh.addTriangleIndices(m_mesh->m_indices[j], m_mesh->m_indices[j + 1], m_mesh->m_indices[j + 2]);
+		}
+	}
+	m_newPlatformShape = new btBvhTriangleMeshShape(&m_tetraMesh, true, true);
+
+
+
+	/*	m_newPlatformShape = new btBvhTriangleMeshShape(&m_tetraMesh, true, true);
+	
+	btVector3 localInertia(0, 0, 0);
+
+	btRigidBody::btRigidBodyConstructionInfo rbInfo(0.f, m_motionState, m_newPlatformShape, localInertia);
+	m_newBody = new btRigidBody(rbInfo);*/
+	//delete m_body;
+	//delete m_platformShape;
+	//m_platformShape = m_newPlatformShape;
+	//m_body = m_newBody;
+}
+
+void MarchingCubes::MapUpdate()
+{
+//	CreateMeshData();
+	BuildMesh();
+	UpdatePhysics();
+
+
+
+	//btVector3 localInertia(0, 0, 0);
+	//btRigidBody::btRigidBodyConstructionInfo rbInfo(0.f, m_motionState, m_platformShape, localInertia);
+
+	/*delete m_platformShape;
 	delete m_body;
-	CreatePhysics();
+	m_platformShape = m_newPlatformShape;
+	btVector3 localInertia(0, 0, 0);
+	m_newMotionState = new btDefaultMotionState(*m_newBtTransform);
+	*/
+	delete m_platformShape;
+	m_platformShape = m_newPlatformShape;
+	btVector3 localInertia(0, 0, 0);
+	btRigidBody::btRigidBodyConstructionInfo rbInfo(0.f, m_newMotionState, m_platformShape, localInertia);
+	delete m_body;
+	m_body = new btRigidBody(rbInfo);
+
+	/*
+	delete m_platformShape;
+	delete m_body;
+
+	m_platformShape	= m_newPlatformShape;
+	m_body = m_newBody;
+	*/
 }
 
 vector<VertexData> MarchingCubes::GetVertices()
