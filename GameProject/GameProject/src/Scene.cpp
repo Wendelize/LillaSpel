@@ -1,8 +1,8 @@
 #include "Header Files/Scene.h"
 Scene::Scene()
 {
-	m_screenWidth = 1600;
-	m_screenHeight = 900;
+	m_screenWidth = 1280;
+	m_screenHeight = 720;
 	m_shadowMapWidth = 1200;
 	m_shadowMapHeight = 1200;
 	m_bloomTextureScale = 0.2f;

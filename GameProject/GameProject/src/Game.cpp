@@ -76,6 +76,8 @@ Game::~Game()
 
 void Game::Update(float dt)
 {
+	DynamicCamera(dt);
+
 	// ska banan resettas?
 	if (m_menu->Reset())
 	{
@@ -172,57 +174,58 @@ void Game::Update(float dt)
 		{
 			m_toggle = false;
 		}
+	}
+}
 
-
-		//Dynamic Camera
-		vec3 focusPoint = vec3(0);
-		vec3 offset = vec3(0, -6, 0);
-		int numPlayers = m_objectHandler->GetNumPlayers();
-		for (int i = 0; i < numPlayers; i++)
+void Game::DynamicCamera(float dt)
+{
+	vec3 focusPoint = vec3(0);
+	vec3 offset = vec3(0, -6, 0);
+	int numPlayers = m_objectHandler->GetNumPlayers();
+	for (int i = 0; i < numPlayers; i++)
+	{
+		if (m_objectHandler->GetPlayerPos(i).y > 0)
 		{
-			if (m_objectHandler->GetPlayerPos(i).y > 0)
+			focusPoint += m_objectHandler->GetPlayerPos(i);
+		}
+	}
+
+	if (dt < 1.f)
+		m_scene->SetCameraFocus((focusPoint / vec3(numPlayers)));
+
+	mat4 matrix = m_scene->GetProjMatrix() * m_scene->GetCameraView();
+
+	int innerFrustum = 0;
+	int outerFrustum = 0;
+	int outside = 0;
+	for (int i = 0; i < numPlayers; i++)
+	{
+		vec4 modelSpace = matrix * vec4(m_objectHandler->GetPlayerPos(i), 1);
+
+		if (-modelSpace.w < modelSpace.x && modelSpace.x < modelSpace.w && -modelSpace.w < modelSpace.y && modelSpace.y < modelSpace.w)
+		{
+			if (-modelSpace.w < modelSpace.x - 20 && modelSpace.x + 20 < modelSpace.w && -modelSpace.w < modelSpace.y - 20 && modelSpace.y + 20 < modelSpace.w)
 			{
-				focusPoint += m_objectHandler->GetPlayerPos(i);
+				innerFrustum++;
+			}
+			else if (-modelSpace.w > modelSpace.x - 19 || modelSpace.x + 19 > modelSpace.w || -modelSpace.w > modelSpace.y - 19 || modelSpace.y + 19 > modelSpace.w)
+			{
+				outerFrustum++;
 			}
 		}
-
-		if (dt < 1.f)
-			m_scene->SetCameraFocus((focusPoint / vec3(numPlayers)));
-			
-		mat4 matrix = m_scene->GetProjMatrix() * m_scene->GetCameraView();
-
-		int innerFrustum = 0;
-		int outerFrustum = 0;
-		int outside = 0;
-		for (int i = 0; i < numPlayers; i++)
+		else
 		{
-			vec4 modelSpace = matrix * vec4(m_objectHandler->GetPlayerPos(i), 1);
+			outside++;
+		}
+	}
 
-			if (-modelSpace.w < modelSpace.x && modelSpace.x < modelSpace.w && -modelSpace.w < modelSpace.y && modelSpace.y < modelSpace.w)
-			{
-				if (-modelSpace.w < modelSpace.x - 20 && modelSpace.x + 20 < modelSpace.w && -modelSpace.w < modelSpace.y - 20 && modelSpace.y + 20 < modelSpace.w)
-				{
-					innerFrustum++;
-				}
-				else if(-modelSpace.w > modelSpace.x - 19 || modelSpace.x + 19 > modelSpace.w || -modelSpace.w > modelSpace.y - 19 || modelSpace.y + 19 > modelSpace.w)
-				{
-					outerFrustum++;
-				}
-			}
-			else
-			{
-				outside++;
-			}
-		}
-
-		if (innerFrustum == numPlayers && dt < 1.f)
-		{
-			m_scene->ZoomIn(dt * 5);
-		}
-		else if((outerFrustum != 0 || outside != 0) && dt < 1.f)
-		{
-			m_scene->ZoomOut(dt * 6);
-		}
+	if (innerFrustum == numPlayers && dt < 1.f)
+	{
+		m_scene->ZoomIn(dt * 5);
+	}
+	else if ((outerFrustum != 0 || outside != 0) && dt < 1.f)
+	{
+		m_scene->ZoomOut(dt * 6);
 	}
 }
 

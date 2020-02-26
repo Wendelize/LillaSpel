@@ -36,6 +36,7 @@ public:
 	Game();
 	~Game();
 	void Update(float dt);
+	void DynamicCamera(float dt);
 	void PlayWithLights(float dt);
 	void Render(float dt);
 	void Reset();
