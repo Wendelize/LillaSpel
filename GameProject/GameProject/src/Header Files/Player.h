@@ -75,4 +75,5 @@ public:
 	void removePower(int type);
 	bool updatePower(float dt);
 	int GetActivePower();
+	Controller* GetController();
 };

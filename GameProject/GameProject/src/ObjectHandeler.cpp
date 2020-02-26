@@ -148,7 +148,8 @@ void ObjectHandler::Update(float dt)
 	int randomNumber = rand() % NRDEATHSOUNDS;
 
 	m_dynamicsWorld->stepSimulation(dt, 10);
-	int numManifolds = m_dynamicsWorld->getDispatcher()->getNumManifolds();
+
+	UpdateVibration(dt);
 
 	for (int i = 0; i < m_powerUps.size(); i++)
 	{
@@ -255,31 +256,7 @@ void ObjectHandler::Update(float dt)
 
 					}
 				}
-				/*
-				int knockableCars = 0;
-
-				for (int i = 0; i < m_players.size(); i++)
-				{
-					if ( m_players[i]->GetCurrentPos().y() > -0.1f && m_players[i]->GetCurrentPos().y() < 2.0f)
-						knockableCars++;
-				}
-
-				if (numManifolds >= knockableCars + 1) // knockableCars are cars inside collision space. +1 because of platform.
-				{
-					if (m_players[isPlayer]->GetLinearVelocity() > 4.5f && m_players[isPlayer]->GetLinearVelocity() < 10.0f && m_players[isPlayer]->GetCurrentPos().y() > -0.1f)
-					{
-						m_soundEngine->play3D(m_crashes[0], vec3df(m_players[isPlayer]->GetCurrentPos().x(), m_players[isPlayer]->GetCurrentPos().y(), m_players[isPlayer]->GetCurrentPos().z()));
-					}
-					else if (m_players[isPlayer]->GetLinearVelocity() >= 10.0f && m_players[isPlayer]->GetLinearVelocity() < 17.0f && m_players[isPlayer]->GetCurrentPos().y() > -0.1f)
-					{
-						m_soundEngine->play3D(m_crashes[1], vec3df(m_players[isPlayer]->GetCurrentPos().x(), m_players[isPlayer]->GetCurrentPos().y(), m_players[isPlayer]->GetCurrentPos().z()));
-					}
-					else if (m_players[isPlayer]->GetLinearVelocity() >= 17.0f && m_players[isPlayer]->GetCurrentPos().y() > -0.1f)
-					{
-						m_soundEngine->play3D(m_crashes[2], vec3df(m_players[isPlayer]->GetCurrentPos().x(), m_players[isPlayer]->GetCurrentPos().y(), m_players[isPlayer]->GetCurrentPos().z()));
-					}
-				}
-				*/
+			
 			}
 			else
 			{
@@ -543,5 +520,48 @@ int ObjectHandler::GetWinnerIndex()
 		}
 	}
 	return winnerIndex;
+}
+
+void ObjectHandler::UpdateVibration(float dt)
+{
+	int numManifolds = m_dynamicsWorld->getDispatcher()->getNumManifolds();
+	for (int i = 0; i < numManifolds; ++i)
+	{
+		btPersistentManifold* contactManifold = m_dynamicsWorld->getDispatcher()->getManifoldByIndexInternal(i);
+		btCollisionObject* obA = const_cast<btCollisionObject*>(contactManifold->getBody0());
+		btCollisionObject* obB = const_cast<btCollisionObject*>(contactManifold->getBody1());
+
+		btCollisionShape* shapeA = obA->getCollisionShape();
+		btCollisionShape* shapeB = obB->getCollisionShape();
+
+		//Collision between spheres(cars)
+		if (shapeA->getShapeType() == 8 && shapeB->getShapeType() == 8)
+		{
+
+			for (int f = 0; f < m_players.size(); f++)
+			{
+				if (m_players.at(f)->GetBody() == obA)
+				{
+					m_players.at(f)->GetController()->Vibrate(f, 6553, 65535);
+				}
+				if (m_players.at(f)->GetBody() == obB)
+				{
+					m_players.at(f)->GetController()->Vibrate(f, 6553, 65535);
+				}
+			}
+		}
+	}
+
+	for (int f = 0; f < m_players.size(); f++)
+	{
+		if (m_players.at(f)->GetController()->GetVibrationTime() < 0.2)
+		{
+			m_players.at(f)->GetController()->AddVibrationTime(dt);
+		}
+		else
+		{
+			m_players.at(f)->GetController()->Vibrate(f, 0, 0);
+		}
+	}
 }
 

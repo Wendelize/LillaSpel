@@ -1,4 +1,4 @@
-﻿#include "Header Files/Scene.h"
+#include "Header Files/Scene.h"
 Scene::Scene()
 {
 	m_screenWidth = 1600;

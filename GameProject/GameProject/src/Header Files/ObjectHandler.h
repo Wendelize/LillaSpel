@@ -65,5 +65,6 @@ public:
 	btDiscreteDynamicsWorld* GetWorld();
 	DebugDrawer* GetDebugDrawer();
 	int GetWinnerIndex();
+	void UpdateVibration(float dt);
 
 };
