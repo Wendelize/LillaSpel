@@ -856,14 +856,6 @@ bool Menu::SelectMenuActive()
 		return false;
 }
 
-bool Menu::PlayerHudActive()
-{
-	if (m_menu == ActiveMenu::playerHud || m_menu == ActiveMenu::noMenu)
-		return true;
-	else
-		return false;
-}
-
 int Menu::GetMaxTime()
 {
 	return m_maxTime;

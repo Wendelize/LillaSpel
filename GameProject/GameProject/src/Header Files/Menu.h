@@ -22,7 +22,6 @@ public:
 	void RenderMenu(bool gameOver, float time, Model* model);
 	void SetActiveMenu(ActiveMenu activeMenu);
 	bool SelectMenuActive();
-	bool PlayerHudActive();
 	int GetMaxTime();
 	void LoadMenuPic();
 	bool Pause();

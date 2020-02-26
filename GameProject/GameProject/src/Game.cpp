@@ -13,7 +13,7 @@ Game::Game()
 	// väl playerHud om ni vill spela utan start menu
 	// välj noMenu om ni vill spela utan HUD och ingen restart, 
 	//	Pause meny bör fortfarande fungera med noMenu
-	m_menu->SetActiveMenu(Menu::ActiveMenu::playerHud);
+	m_menu->SetActiveMenu(Menu::ActiveMenu::start);
 	m_menu->LoadMenuPic();
 
 	m_debug = false;
@@ -27,9 +27,8 @@ Game::Game()
 	m_objectHandler->AddPlayer(vec3(10, 2, 3), 1, 0, vec3(0, 2, 0), m_cars[2]); // Passa modell
 	//m_objectHandler->AddPlayer(vec3(4, 7, -4), 2, rand() % 4, vec3(1, 1, 0), m_cars[1]); // Passa modell
 	//m_objectHandler->AddPlayer(vec3(-4, 7, -4), 3, rand() % 4, vec3(1, 1, 0), m_cars[3]); // Passa modell
-	
-	if (m_menu->PlayerHudActive())
-		m_scene->SetCameraPos(vec3(0, 22, 28));
+
+	m_scene->SetCameraPos(vec3(0, 22, 28));
 
 	m_soundEngine = createIrrKlangDevice();
 
