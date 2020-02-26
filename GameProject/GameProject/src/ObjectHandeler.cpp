@@ -175,10 +175,37 @@ void ObjectHandler::Update(float dt)
 				{
 					for (int k = 0; k < m_powerUps.size(); k++)
 					{
-						if (m_powerUps.at(k)->getObject() == obB) {
-							m_dynamicsWorld->removeRigidBody(m_players.at(f)->GetBody());
-							m_players.at(f)->GivePower(m_powerUps.at(k)->GetType());
-							m_dynamicsWorld->addRigidBody(m_players.at(f)->GetBody());
+						if (m_powerUps.at(k)->getObject() == obB)
+						{
+							if (m_powerUps.at(k)->GetType() == 5 || m_powerUps.at(k)->GetType() == 4)
+							{
+								for (int l = 0; l < m_players.size(); l++)
+								{
+									if (l != f)
+									{
+										m_dynamicsWorld->removeRigidBody(m_players.at(l)->GetBody());
+										m_players.at(l)->GivePower(m_powerUps.at(k)->GetType());
+
+										if (m_soundEngine)
+											m_soundEngine->play2D("src/Audio/Powerup - Pickup.mp3", false);
+										m_dynamicsWorld->addRigidBody(m_players.at(l)->GetBody());
+
+									}
+								}
+							}
+							else if (m_powerUps.at(k)->GetType() == 6) {
+								vec3 temp = vec3(m_powerUps.at(k)->GetPos().x(), m_powerUps.at(k)->GetPos().y(), m_powerUps.at(k)->GetPos().z());
+								m_bombZone.push_back(temp);
+							}
+							else 
+							{
+								if (m_soundEngine) {
+									m_soundEngine->play2D("src/Audio/Powerup - Pickup.mp3", false);
+								}
+								m_dynamicsWorld->removeRigidBody(m_players.at(f)->GetBody());
+								m_players.at(f)->GivePower(m_powerUps.at(k)->GetType());
+								m_dynamicsWorld->addRigidBody(m_players.at(f)->GetBody());
+							}
 							RemovePowerUp(k);
 
 						}
@@ -196,10 +223,36 @@ void ObjectHandler::Update(float dt)
 				{
 					for (int k = 0; k < m_powerUps.size(); k++)
 					{
-						if (m_powerUps.at(k)->getObject() == obA) {
-							m_dynamicsWorld->removeRigidBody(m_players.at(f)->GetBody());
-							m_players.at(f)->GivePower(m_powerUps.at(k)->GetType());
-							m_dynamicsWorld->addRigidBody(m_players.at(f)->GetBody());
+						if (m_powerUps.at(k)->getObject() == obA) 
+						{
+							if (m_powerUps.at(k)->GetType() == 5 || m_powerUps.at(k)->GetType() == 4)
+							{
+								for (int l = 0; l < m_players.size(); l++)
+								{
+									if (l != f)
+									{
+										m_dynamicsWorld->removeRigidBody(m_players.at(l)->GetBody());
+										m_players.at(l)->GivePower(m_powerUps.at(k)->GetType());
+
+										if (m_soundEngine)
+											m_soundEngine->play2D("src/Audio/Powerup - Pickup.mp3", false);
+										m_dynamicsWorld->addRigidBody(m_players.at(l)->GetBody());
+
+									}
+								}
+							}
+							else if (m_powerUps.at(k)->GetType() == 6) {
+								vec3 temp = vec3(m_powerUps.at(k)->GetPos().x(), m_powerUps.at(k)->GetPos().y(), m_powerUps.at(k)->GetPos().z());
+								m_bombZone.push_back(temp);
+							}
+							else
+							{
+								if (m_soundEngine)
+									m_soundEngine->play2D("src/Audio/Powerup - Pickup.mp3", false);
+								m_dynamicsWorld->removeRigidBody(m_players.at(f)->GetBody());
+								m_players.at(f)->GivePower(m_powerUps.at(k)->GetType());
+								m_dynamicsWorld->addRigidBody(m_players.at(f)->GetBody());
+							}
 							RemovePowerUp(k);
 						}
 					}
@@ -487,4 +540,9 @@ void ObjectHandler::RemoveDynamicPlatformMesh(MarchingCubes* cube)
 {
 	m_dynamicsWorld->removeRigidBody(cube->GetBody());
 
+}
+
+vector<vec3> ObjectHandler::GetBomb()
+{
+	return m_bombZone;
 }

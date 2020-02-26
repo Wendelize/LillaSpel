@@ -824,8 +824,3 @@ void MarchingCubes::MakeTerrain(vec3 position)
 	m_terrainMap[(int)position.x][(int)position.y][(int)position.z] = 1.0f;
 	CreateMeshData();
 }
-
-float MarchingCubes::GetHeight(vec3 pos)
-{
-	return m_heightArray[(int)(pos.x+m_middle)][(int)(pos.z+m_middle)];
-}

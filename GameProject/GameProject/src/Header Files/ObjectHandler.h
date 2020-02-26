@@ -20,7 +20,7 @@ private:
 	vector<Platform*> m_platforms;
 	vector<PowerUp*> m_powerUps;
 	vector<ObjectInfo*> m_structs;
-
+	vector<vec3> m_bombZone;
 	ISoundEngine* m_soundEngine;
 	vector<ISoundSource*> m_crashes;
 
@@ -36,6 +36,7 @@ private:
 	btGhostPairCallback* m_ghostCallback;
 
 	MarchingCubes* m_cube;
+
 public:
 	ObjectHandler();
 	~ObjectHandler();
@@ -64,4 +65,5 @@ public:
 	DebugDrawer* GetDebugDrawer();
 	void AddDynamicPlatformMesh(MarchingCubes* cube);
 	void RemoveDynamicPlatformMesh(MarchingCubes* cube);
+	vector<vec3> GetBomb();
 };
