@@ -98,20 +98,21 @@ void Scene::Init()
 	m_vehicles.push_back(new Model("src/Models/Cybertruck.obj"));
 	// shoppingcart scale 0.01 
 	m_vehicles.push_back(new Model("src/Models/shoppingcart.obj"));
-	m_vehicles.push_back(new Model("src/Models/ape.obj"));
-	m_vehicles.push_back(new Model("src/Models/CAT.obj"));
+
 
 	// Platforms
 	m_platform.push_back(new Model("src/Models/platform2.obj"));
 
 	// Powers
-	m_power.push_back(new Model("src/Models/PowerUp.obj"));
-	m_power.push_back(new Model("src/Models/PowerUpCar.obj"));
-	m_power.push_back(new Model("src/Models/LowPolyController.obj"));
-	m_power.push_back(new Model("src/Models/Question.obj"));
-	m_power.push_back(new Model("src/Models/Exclamation.obj"));
-	m_power.push_back(new Model("src/Models/SizeDown2.0.obj"));
-	m_power.push_back(new Model("src/Models/SizeUP2.0.obj"));
+	m_power.push_back(new Model("src/Models/CartoonBomb.obj"));			//0
+	m_power.push_back(new Model("src/Models/PowerUpCar.obj"));			//1
+	m_power.push_back(new Model("src/Models/LowPolyController.obj"));	//2
+	m_power.push_back(new Model("src/Models/Question.obj"));			//3
+	m_power.push_back(new Model("src/Models/Exclamation.obj"));			//4
+	m_power.push_back(new Model("src/Models/SizeDown2.0.obj"));			//5
+	m_power.push_back(new Model("src/Models/SizeUP2.0.obj"));			//6
+	m_power.push_back(new Model("src/Models/Bulb.obj"));				//7
+	m_power.push_back(new Model("src/Models/Love.obj"));				//8
 
 	//m_power.push_back(new Model("src/Models/PowerUp.obj"));
 

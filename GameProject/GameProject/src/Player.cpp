@@ -418,7 +418,6 @@ void Player::GivePower(int type)
 			break;
 
 		case 1:
-			//m_body->setRestitution(m_restitution * 1.2);
 			m_inverted = true;
 			break;
 
@@ -433,6 +432,7 @@ void Player::GivePower(int type)
 			m_transform->SetScale(m_scale.x * (0.75f), m_scale.y * (0.75f), m_scale.z * (0.75f));
 			m_powerMultiplier = 1.0f;
 			break;
+
 		case 4:
 			mass = m_body->getMass() * 1.5f;
 			m_body->getCollisionShape()->calculateLocalInertia(mass, localInertia);
@@ -447,6 +447,20 @@ void Player::GivePower(int type)
 			m_body->setMassProps(mass, localInertia);
 			m_transform->SetScale(m_scale.x * (0.75f), m_scale.y * (0.75f), m_scale.z * (0.75f));
 			m_powerMultiplier = 1.0f;
+			break;
+
+		case 6: 
+			m_body->setRestitution(m_restitution * 1.2);
+			break;
+
+		case 7: 
+			break;
+
+		case 8:
+			m_lives++;
+			break;
+
+		case 9:
 			break;
 	}
 }
@@ -468,7 +482,6 @@ void Player::removePower(int type)
 		break;
 
 	case 1:
-		//m_body->setRestitution(m_restitution);
 		m_inverted = false;
 		break;
 
@@ -501,6 +514,16 @@ void Player::removePower(int type)
 		m_body->setMassProps(mass, localInertia);
 		m_powerMultiplier = 1.f;
 		m_transform->SetScale(m_scale.x, m_scale.y, m_scale.z);
+		break;
+	case 6:
+		m_body->setRestitution(m_restitution);
+		break;
+	case 7:
+		break;
+	case 8:
+		//No functionality needed
+		break;
+	case 9:
 		break;
 	}
 }

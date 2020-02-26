@@ -14,34 +14,57 @@ PowerUp::PowerUp(int spawn, btVector3 pos, int type,float duration)
 			m_color = vec3(0, 1, 0);
 			scale = 0.1;
 			break;
+
 		case 1: //Enemy get inverted Controller
 			m_model = 2;
 			m_color = vec3(0, 1, 0);
-
 			scale = 0.2f;
 			break;
+
 		case 2: //Player PowerMutiplier
-			m_model = 4; // ! Exclamatin mark model 
-			m_color = vec3(0.5, 0, 1);
+			m_model = 4; //Exclamation mark
+			m_color = vec3(0, 0, 3);
 			scale = 0.12f;
 			break;
-		case 3: // player sizeDown
+
+		case 3: //player sizeDown
 			m_model = 5;
 			m_color = vec3(1, 0.5, 0);
 			scale = 0.1f;
-
 			break;
+
 		case 4: //Enemy sizeUp
 			m_model = 6;
 			m_color = vec3(1, 0, 0);
-
 			scale = 0.1f;
 			break;
+
 		case 5: //Enemy sizeDown
 			m_model = 5;
 			m_color = vec3(0, 1, 0);
-
 			scale = 0.1f;
+			break;
+
+		case 6:
+			m_model = 0; //Bomb - Temporärt kollision koeficient ökad. 
+			m_color = vec3(0, 0.1, 0.1);
+			scale = 0.3f;
+			break;
+
+		case 7: 
+			m_model = 7; //LightBulb - INGEN FUNKTION KOPPLAD
+			m_color = vec3(2, 2, 0);
+			scale = 0.15f;
+			break;
+		case 8:
+			m_model = 8; //Heart
+			m_color = vec3(5.000, 0.719, 0.738);
+			scale = 0.01f;
+			break;
+		case 9:
+			m_model = 3; //Question mark - INGEN FUNKTION KOPPLAD
+			m_color = vec3(0.741, 0.520, 3.000);
+			scale = 0.09f;
 			break;
 	}
 	m_spawn = spawn;
