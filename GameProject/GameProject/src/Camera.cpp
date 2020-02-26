@@ -3,6 +3,7 @@
 Camera::Camera(vec3 pos, vec3 point, vec3 up)
 {
 	m_position = pos;
+	m_translationPoint = pos;
 	m_direction = normalize(m_position - point);
 	m_parallel = normalize(cross({ 0,1,0 }, m_direction));
 	m_up = normalize(cross(m_direction, m_parallel));
@@ -11,6 +12,7 @@ Camera::Camera(vec3 pos, vec3 point, vec3 up)
 	m_focusTranslation = vec3(0);
 	m_focusTranslationPoint = vec3(0);
 	m_translationDistance = 0;
+	m_positionTranslation = vec3(0);
 }
 
 Camera::~Camera()
@@ -54,7 +56,14 @@ mat4 Camera::GetView()
 void Camera::ChangePos(vec3 pos)
 {
 	m_position = pos;
+	m_translationPoint = pos;
 	m_viewMatrix = lookAt(m_position, vec3(0, -6, 3), m_up);
+}
+
+void Camera::TranslatePos(vec3 pos)
+{
+	m_translationPoint = pos;
+	m_positionTranslation = m_translationPoint - m_position;
 }
 
 void Camera::ChangeDir(vec3 dir)
@@ -75,6 +84,9 @@ void Camera::MoveCamera(vec3 newPos)
 
 void Camera::UpdateMovement(float deltaTime, float speed)
 {
+	m_positionTranslation = m_translationPoint - m_position;
+	m_position += m_positionTranslation * deltaTime * speed;
+
 	m_focusTranslation = m_focusTranslationPoint - m_focusPoint;
 	m_translationDistance = m_focusTranslation.length();
 
@@ -83,6 +95,5 @@ void Camera::UpdateMovement(float deltaTime, float speed)
 	m_parallel = normalize(cross({ 0,1,0 }, m_direction));
 	m_up = normalize(cross(m_direction, m_parallel));
 	m_viewMatrix = lookAt(m_position, m_focusPoint, m_up);
-
 }
 

@@ -10,7 +10,7 @@ Scene::Scene()
 
 	m_window = new Window(m_screenWidth, m_screenHeight);
 
-	m_camera = new Camera({ 0, 22, 28 });
+	m_camera = new Camera({ 0, 10, 20 }); // 0 22 28
 	m_modelShader = new Shader("src/Shaders/SceneVS.glsl", "src/Shaders/SceneFS.glsl");
 	m_skyboxShader = new Shader("src/Shaders/SkyboxVS.glsl", "src/Shaders/SkyboxFS.glsl");
 	m_skyDomeShader = new Shader("src/Shaders/SkyDomeVS.glsl", "src/Shaders/SkyDomeFS.glsl");
@@ -164,7 +164,9 @@ void Scene::LightToShader()
 
 void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, bool gameOver, int winner, float dt)
 {
-	m_camera->UpdateMovement(dt, 1);
+	if(dt < 1)
+		m_camera->UpdateMovement(dt, 1);
+
 	m_viewMatrix = m_camera->GetView();
 
 	/* Render here */
@@ -270,7 +272,7 @@ void Scene::RenderSky()
 
 	glCullFace(GL_BACK);
 
-	m_sky->RenderSkyPlane(m_skyPlaneShader, scale(translate(mat4(1.0f), vec3(0, -10, 0)), vec3(50)), m_camera->GetView(), m_projMatrix);
+	m_sky->RenderSkyPlane(m_skyPlaneShader, scale(translate(mat4(1.0f), vec3(0, -20, 0)), vec3(50)), m_camera->GetView(), m_projMatrix);
 
 	glDepthMask(GL_TRUE);
 	glDepthFunc(GL_LESS);
@@ -459,6 +461,11 @@ void Scene::ZoomOut(float dt)
 void Scene::SetCameraPos(vec3 pos)
 {
 	m_camera->ChangePos(pos);
+}
+
+void Scene::TranslateCameraPos(vec3 pos)
+{
+	m_camera->TranslatePos(pos);
 }
 
 void Scene::SetCameraFocus(vec3 pos)

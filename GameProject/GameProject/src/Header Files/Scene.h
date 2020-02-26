@@ -59,6 +59,7 @@ public:
 	void ZoomOut(float dt);
 
 	void SetCameraPos(vec3 pos);
+	void TranslateCameraPos(vec3 pos);
 	void SetCameraFocus(vec3 pos);
 
 	void SetWindowSize(int width, int height);

@@ -3,7 +3,7 @@
 class Camera
 {
 private:
-	vec3 m_direction, m_position, m_up, m_parallel, m_focusPoint, m_focusTranslation, m_focusTranslationPoint;
+	vec3 m_direction, m_position, m_up, m_parallel, m_focusPoint, m_focusTranslation, m_focusTranslationPoint, m_positionTranslation, m_translationPoint;
 	float m_translationDistance;
 	mat4 m_viewMatrix;
 
@@ -13,6 +13,7 @@ public:
 
 	void SetFocusPoint(vec3 p);
 	void TranslateFocusPoint(vec3 p);
+	void TranslatePos(vec3 pos);
 	vec3 GetDir();
 	vec3 GetPos();
 	vec3 GetUp();

@@ -28,6 +28,9 @@ Game::Game()
 	//m_objectHandler->AddPlayer(vec3(4, 7, -4), 2, rand() % 4, vec3(1, 1, 0), m_cars[1]); // Passa modell
 	//m_objectHandler->AddPlayer(vec3(-4, 7, -4), 3, rand() % 4, vec3(1, 1, 0), m_cars[3]); // Passa modell
 	
+	if (m_menu->PlayerHudActive())
+		m_scene->SetCameraPos(vec3(0, 22, 28));
+
 	m_soundEngine = createIrrKlangDevice();
 
 	if (m_soundEngine)
@@ -94,7 +97,8 @@ void Game::Update(float dt)
 	{
 		m_wasSelect = false;
 		// TODO: fixa snyggare kamera transition?
-		m_scene->SetCameraPos(vec3(0, 16, 25));
+		//m_scene->SetCameraPos(vec3(0, 22, 28));
+		m_scene->TranslateCameraPos(vec3(0, 22, 28));
 	}
 	// är vi på en meny som ska pausa spelet? sluta då updatera deltaTime
 	if (m_menu->Pause())
