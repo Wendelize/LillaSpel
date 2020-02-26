@@ -54,7 +54,6 @@ PowerUp::PowerUp(int spawn, btVector3 pos, int type,float duration)
 
 	vec3 btPos = vec3(m_btTransform->getOrigin().x(), m_btTransform->getOrigin().y(), m_btTransform->getOrigin().z());
 	m_transform->SetTranslation(btPos);
-	cout << "TYPE: " << m_body->getCollisionShape()->getShapeType() << endl;
 	m_currentPos = m_body->getWorldTransform().getOrigin();
 	
 }

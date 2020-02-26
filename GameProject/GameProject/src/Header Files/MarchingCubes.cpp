@@ -626,7 +626,7 @@ void MarchingCubes::PopulateTerrainMap(int level)
 						//m_heightArray[x][z] = (float)y + 1;
 
 
-					if (distance(vec2(m_middle, m_middle), vec2((float)x, (float)z)) >= 24.0 - m_shrink) 
+					if (distance(vec2(m_middle, m_middle), vec2((float)x, (float)z)) >= (m_middle - 1) - m_shrink) 
 						m_terrainMap[x][y][z] = 1.0f; 
 						//m_heightArray[x][z] = 1.0f;
 					break;

@@ -5,9 +5,8 @@
 #include <thread>
 #include "PerlinNoise.h"
 
-#define WIDTH 50 
+#define WIDTH 35 
 #define HEIGHT 15
-#define NROFMAXHOLES 20
 
 class MarchingCubes
 { 
