@@ -167,8 +167,6 @@ void ObjectHandler::Update(float dt)
 		//Collision between sphere(cars) && BOX (PowerUp)
 		if (shapeA->getShapeType() == 8 && shapeB->getShapeType() == 0) // TYPE 0 = BOX , TYPE 8 = SPHERE
 		{
-			// used for statsMenu
-
 			for (int f = 0; f < m_players.size(); f++)
 			{
 				if (m_players.at(f)->GetBody() == obA)
@@ -383,7 +381,7 @@ void ObjectHandler::AddPowerUp()
 {
 //	srand(time(NULL));
 	int spawnLocation = rand() % (20);
-	int type = rand() % (6);
+	int type = rand() % (7) ;
 	if (m_usedSpawns[spawnLocation] == true) {
 		bool notFound = true;
 		int i = 0;

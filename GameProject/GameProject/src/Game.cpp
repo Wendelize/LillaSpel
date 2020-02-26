@@ -26,8 +26,8 @@ Game::Game()
 	m_objectHandler->AddPlayer(vec3(-4, 7, -4), 1, rand() % 4, vec3(0, 1, 0), m_cars[2]); // Passa modell
 	m_objectHandler->AddPlayer(vec3(4, 7, -4), 2, rand() % 4, vec3(1, 1, 0), m_cars[1]); // Passa modell
 	//m_objectHandler->AddPlayer(vec3(-4, 7, -4), 3, rand() % 4, vec3(1, 1, 0), m_cars[3]); // Passa modell
-	m_objectHandler->AddPlayer(vec3(-4, 7, 4), 3, rand() % 4, vec3(1, 1, 0), m_cars[1]); // Passa modell
-
+	//m_objectHandler->AddPlayer(vec3(-4, 7, 4), 3, rand() % 4, vec3(1, 1, 0), m_cars[1]); // Passa modell
+	
 	m_soundEngine = createIrrKlangDevice();
 
 	if (m_soundEngine)
