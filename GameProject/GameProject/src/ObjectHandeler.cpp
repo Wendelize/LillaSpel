@@ -423,6 +423,17 @@ int ObjectHandler::GetPlayerLives(int index)
 	return m_players[index]->GetLives();
 }
 
+vec3 ObjectHandler::GetPlayerPos(int index)
+{
+	btVector3 temp = m_players[index]->GetCurrentPos();
+	return vec3(temp.getX(), temp.getY(), temp.getZ());
+}
+
+mat4 ObjectHandler::GetPlayerMatrix(int index)
+{
+	return m_players[index]->GetMatrix();
+}
+
 void ObjectHandler::SetNumberOfLives(int num)
 {
 	for (int i = 0; i < m_players.size(); i++)

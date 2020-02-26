@@ -48,6 +48,8 @@ public:
 	void RemovePowerUp(int index);
 	int GetNumPlayers();
 	int GetPlayerLives(int index);
+	vec3 GetPlayerPos(int index);
+	mat4 GetPlayerMatrix(int index);
 	void SetNumberOfLives(int num);
 	vec3 GetPlayerDirection(int index);
 	int GetPlayerControllerID(int index);

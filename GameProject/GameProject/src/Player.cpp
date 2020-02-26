@@ -332,6 +332,11 @@ vec3 Player::GetDirection()
 	return m_transform->GetForward();
 }
 
+mat4 Player::GetMatrix()
+{
+	return m_transform->GetMatrix();
+}
+
 ObjectInfo* Player::GetObjectInfo()
 {
 	m_info = new ObjectInfo(m_transform->GetMatrix(), m_modelId, 0, m_color, false);

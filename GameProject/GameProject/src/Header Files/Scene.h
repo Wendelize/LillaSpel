@@ -36,6 +36,7 @@ private:
 	int m_shadowMapHeight;
 	float m_bloomTextureScale;
 	int m_bloomNrOfGaussianBlur;
+	float m_fov;
 
 public:
 
@@ -54,8 +55,11 @@ public:
 	void RenderParticlesVictory(ObjectInfo* object, float dt);
 	void RenderExhaust(vector<ObjectInfo*> objects);
 	void SwapBuffer();
+	void ZoomIn(float dt);
+	void ZoomOut(float dt);
 
 	void SetCameraPos(vec3 pos);
+	void SetCameraFocus(vec3 pos);
 
 	void SetWindowSize(int width, int height);
 	GLFWwindow* GetWindow();
@@ -63,6 +67,8 @@ public:
 	int GetNumPlayerModels();
 	int GetNumPlatformModels();
 	int GetNumPowerUpModels();
+	mat4 GetProjMatrix();
+	mat4 GetCameraView();
 	vector<Model*> GetModels(int index);
 
 	vector<Light*> GetLight();

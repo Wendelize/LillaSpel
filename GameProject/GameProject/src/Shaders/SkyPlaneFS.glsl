@@ -16,11 +16,11 @@ uniform float u_secondTranslationZ;
 
 void main()
 {
-	vec3 temp = texture2D(u_Texture1, (UV.xy * 2.5 + vec2(u_firstTranslationX, u_firstTranslationZ))).xyz * 1.65;
+	vec3 temp = texture2D(u_Texture1, (UV.xy * 7 + vec2(u_firstTranslationX, u_firstTranslationZ))).xyz * 1.65;
 
 	vec4 overLayer = vec4(temp, dot(temp, vec3(0.20)));
 
-	temp = texture2D(u_Texture2, (UV.xy * 1 + vec2(u_secondTranslationX, u_secondTranslationZ))).xyz * 1.5;
+	temp = texture2D(u_Texture2, (UV.xy * 3 + vec2(u_secondTranslationX, u_secondTranslationZ))).xyz * 1.5;
 
 	vec4 underLayer = vec4(temp, dot(temp, vec3(0.20)));
 

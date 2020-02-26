@@ -60,6 +60,7 @@ public:
 	int GetControllerID();
 	void SetControllerID(int id);
 	vec3 GetDirection();
+	mat4 GetMatrix();
 	ObjectInfo* GetObjectInfo();
 	btRigidBody* GetBody();
 	btVector3 GetCurrentPos();

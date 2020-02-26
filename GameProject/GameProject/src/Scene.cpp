@@ -1,8 +1,8 @@
 ﻿#include "Header Files/Scene.h"
 Scene::Scene()
 {
-	m_screenWidth = 1920;
-	m_screenHeight = 1080;
+	m_screenWidth = 1600;
+	m_screenHeight = 900;
 	m_shadowMapWidth = 1200;
 	m_shadowMapHeight = 1200;
 	m_bloomTextureScale = 0.2f;
@@ -83,7 +83,8 @@ Scene::~Scene()
 void Scene::Init()
 {
 	glEnable(GL_DEPTH_TEST);
-	m_projMatrix = perspective(radians(60.0f), (float)m_window->GetWidht() / (float)m_window->GetHeight(), 0.1f, 100.0f);
+	m_fov = 60.0f;
+	m_projMatrix = perspective(radians(m_fov), (float)m_window->GetWidht() / (float)m_window->GetHeight(), 0.1f, 100.0f);
 	m_viewMatrix = m_camera->GetView();
 	m_modelMatrix = mat4(1.0);
 
@@ -163,6 +164,8 @@ void Scene::LightToShader()
 
 void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, bool gameOver, int winner, float dt)
 {
+	m_camera->UpdateMovement(dt, 1);
+	m_viewMatrix = m_camera->GetView();
 
 	/* Render here */
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -267,7 +270,7 @@ void Scene::RenderSky()
 
 	glCullFace(GL_BACK);
 
-	m_sky->RenderSkyPlane(m_skyPlaneShader, translate(mat4(1.0f), m_camera->GetPos()), m_camera->GetView(), m_projMatrix);
+	m_sky->RenderSkyPlane(m_skyPlaneShader, scale(translate(mat4(1.0f), vec3(0, -10, 0)), vec3(50)), m_camera->GetView(), m_projMatrix);
 
 	glDepthMask(GL_TRUE);
 	glDepthFunc(GL_LESS);
@@ -435,9 +438,33 @@ void Scene::SwapBuffer()
 	glfwSwapBuffers(m_window->m_window);
 }
 
+void Scene::ZoomIn(float dt)
+{
+	if (m_fov > 40)
+	{
+		m_fov -= dt * (m_fov - 40) * 0.1f;
+		m_projMatrix = perspective(radians(m_fov), (float)m_window->GetWidht() / (float)m_window->GetHeight(), 0.1f, 100.0f);
+	}
+}
+
+void Scene::ZoomOut(float dt)
+{
+	if (m_fov < 60)
+	{
+		m_fov += dt * (60 - m_fov) * 0.1f;
+		m_projMatrix = perspective(radians(m_fov), (float)m_window->GetWidht() / (float)m_window->GetHeight(), 0.1f, 100.0f);
+	}
+}
+
 void Scene::SetCameraPos(vec3 pos)
 {
 	m_camera->ChangePos(pos);
+}
+
+void Scene::SetCameraFocus(vec3 pos)
+{
+	//m_camera->SetFocusPoint(pos);
+	m_camera->TranslateFocusPoint(pos);
 }
 
 
@@ -470,6 +497,16 @@ int Scene::GetNumPlatformModels()
 int Scene::GetNumPowerUpModels()
 {
 	return m_power.size();
+}
+
+mat4 Scene::GetProjMatrix()
+{
+	return m_projMatrix;;
+}
+
+mat4 Scene::GetCameraView()
+{
+	return m_camera->GetView();
 }
 
 vector<Model*> Scene::GetModels(int index)

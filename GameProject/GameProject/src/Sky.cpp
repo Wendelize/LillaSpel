@@ -115,7 +115,7 @@ void Sky::RenderSkyPlane(Shader* shader, mat4 model, mat4 view, mat4 proj)
 	glBindTexture(GL_TEXTURE_2D, m_texture[2]);
 	shader->SetTexture2D(2, "u_Texture3", m_texture[2]);
 
-	shader->SetUniform("u_Model", translate(model, vec3(0, -1, -2)));
+	shader->SetUniform("u_Model", model);
 	shader->SetUniform("u_View", view);
 	shader->SetUniform("u_Projection", proj);
 	shader->SetUniform("u_firstTranslationX", m_textureTranslation[0]);

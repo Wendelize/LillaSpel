@@ -7,13 +7,13 @@ Game::Game()
 	m_scene = new Scene();
 	m_scene->Init(); // H�r skapas modellerna
 	m_time = 0;
-	m_maxTime = 15.0f;
+	m_maxTime = 180.0f;
 	m_menu = new Menu(m_scene, m_objectHandler);
 	// noMenu, start, select, pause, stats, restart, playerHud; // stats finns inte än
 	// väl playerHud om ni vill spela utan start menu
 	// välj noMenu om ni vill spela utan HUD och ingen restart, 
 	//	Pause meny bör fortfarande fungera med noMenu
-	m_menu->SetActiveMenu(Menu::ActiveMenu::start);
+	m_menu->SetActiveMenu(Menu::ActiveMenu::playerHud);
 	m_menu->LoadMenuPic();
 
 	m_debug = false;
@@ -171,6 +171,57 @@ void Game::Update(float dt)
 		else
 		{
 			m_toggle = false;
+		}
+
+
+		//Dynamic Camera
+		vec3 focusPoint = vec3(0);
+		vec3 offset = vec3(0, -6, 0);
+		int numPlayers = m_objectHandler->GetNumPlayers();
+		for (int i = 0; i < numPlayers; i++)
+		{
+			if (m_objectHandler->GetPlayerPos(i).y > 0)
+			{
+				focusPoint += m_objectHandler->GetPlayerPos(i);
+			}
+		}
+
+		if (dt < 1.f)
+			m_scene->SetCameraFocus((focusPoint / vec3(numPlayers)));
+			
+		mat4 matrix = m_scene->GetProjMatrix() * m_scene->GetCameraView();
+
+		int innerFrustum = 0;
+		int outerFrustum = 0;
+		int outside = 0;
+		for (int i = 0; i < numPlayers; i++)
+		{
+			vec4 modelSpace = matrix * vec4(m_objectHandler->GetPlayerPos(i), 1);
+
+			if (-modelSpace.w < modelSpace.x && modelSpace.x < modelSpace.w && -modelSpace.w < modelSpace.y && modelSpace.y < modelSpace.w)
+			{
+				if (-modelSpace.w < modelSpace.x - 20 && modelSpace.x + 20 < modelSpace.w && -modelSpace.w < modelSpace.y - 20 && modelSpace.y + 20 < modelSpace.w)
+				{
+					innerFrustum++;
+				}
+				else if(-modelSpace.w > modelSpace.x - 19 || modelSpace.x + 19 > modelSpace.w || -modelSpace.w > modelSpace.y - 19 || modelSpace.y + 19 > modelSpace.w)
+				{
+					outerFrustum++;
+				}
+			}
+			else
+			{
+				outside++;
+			}
+		}
+
+		if (innerFrustum == numPlayers && dt < 1.f)
+		{
+			m_scene->ZoomIn(dt * 5);
+		}
+		else if((outerFrustum != 0 || outside != 0) && dt < 1.f)
+		{
+			m_scene->ZoomOut(dt * 6);
 		}
 	}
 }
