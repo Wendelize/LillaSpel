@@ -66,4 +66,5 @@ public:
 	void AddDynamicPlatformMesh(MarchingCubes* cube);
 	void RemoveDynamicPlatformMesh(MarchingCubes* cube);
 	vector<vec3> GetBomb();
+	void ClearBombs();
 };

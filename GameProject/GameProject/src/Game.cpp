@@ -84,7 +84,7 @@ void Game::Update(float dt)
 		m_objectHandler->AddDynamicPlatformMesh(m_cube);
 		m_timeSwapTrack = 0.f;
 		m_mapUpdateReady.store(false);
-
+		m_objectHandler->ClearBombs();
 	}
 	if (m_timeSinceSpawn > 5 && !m_gameOver) {
 		m_objectHandler->AddPowerUp();
@@ -159,7 +159,7 @@ void Game::MutliThread(GLFWwindow* window)
 {
 	while (!glfwWindowShouldClose(window)) {
 		if (m_updateMap.load()) {
-			m_cube->Update(window);
+			m_cube->Update(window, m_objectHandler->GetBomb());
 			m_updateMap.store(false);// = false;
 			m_mapUpdateReady.store(true);
 		}

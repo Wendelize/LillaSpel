@@ -354,7 +354,7 @@ void MarchingCubes::Init()
 {
 }
 
-void MarchingCubes::Update(GLFWwindow* window)
+void MarchingCubes::Update(GLFWwindow* window, vector<vec3> bombPos)
 {
 	//Multithread PART
 	ClearMeshData();
@@ -373,12 +373,12 @@ void MarchingCubes::Update(GLFWwindow* window)
 
 	PopulateTerrainMap(m_currentLvl);
 
-	// Check actual collisionpoint!
-	int state = glfwGetKey(window, GLFW_KEY_SPACE);
-	cout << state << ", " << GLFW_PRESS << endl;
-	if (state == GLFW_PRESS)
+	if (bombPos.size() > 0)
 	{
-		MakeHole(vec3(rand() % m_width, rand() % 6, rand() % m_width));
+		for (int i = 0; i < bombPos.size(); i++)
+		{
+			MakeHole(bombPos.at(i));
+		}
 	}
 
 	if (m_holes.size() > 0)
@@ -821,12 +821,13 @@ void MarchingCubes::MakeHole(vec3 position)
 		{
 			for (int z = 0; z < m_width + 1; z++)
 			{
-				if (distance(position, vec3(x, y, z)) < 3.0f)
+				vec3 posToTerrain = vec3(position.x + m_middle, position.y, position.z + m_middle);
+				if (distance(posToTerrain, vec3(x, y, z)) < 3.0f)
 				{
 					Hole temp;
 					 
 					temp.position = vec3(x, y, z);
-					temp.depth = 3.0 / (distance(position, vec3(x, y, z)) + 0.1);
+					temp.depth = 3.0 / (distance(posToTerrain, vec3(x, y, z)) + 0.1);
 					m_holes.push_back(temp);
 				}
 			}

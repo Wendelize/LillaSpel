@@ -49,13 +49,13 @@ private:
     btDefaultMotionState*   m_newMotionState;
     btRigidBody*            m_newBody;
     btTriangleMesh m_newTetraMesh;
-    std::atomic<btRigidBody*> test; 
+
 public:  
     MarchingCubes();
     ~MarchingCubes();
 
     void Init();
-    void Update(GLFWwindow* window);
+    void Update(GLFWwindow* window, vector<vec3> bombPos);
     void MarchCube(vec3 position);
     void ClearMeshData();
     void BuildMesh();

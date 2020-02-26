@@ -546,3 +546,8 @@ vector<vec3> ObjectHandler::GetBomb()
 {
 	return m_bombZone;
 }
+
+void ObjectHandler::ClearBombs()
+{
+	m_bombZone.clear();
+}
