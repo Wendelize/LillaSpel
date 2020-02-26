@@ -25,7 +25,6 @@ Player::Player(Model* model, int modelId, vec3 pos)
 	m_carShape = new btSphereShape(radius);
 	m_btTransform = new btTransform();
 	m_btTransform->setIdentity();
-
 	// ConvexHullShape for car. Very precise but expensive since it creates A LOT of lines.
 	/*vector<btVector3> points;
 
@@ -65,6 +64,22 @@ Player::Player(Model* model, int modelId, vec3 pos)
 	m_btTransform->setOrigin(btVector3(pos.x,pos.y,pos.z));
 	vec3 testPos = vec3(m_btTransform->getOrigin().x(), m_btTransform->getOrigin().y()- radius * scale, m_btTransform->getOrigin().z());
 	m_transform->SetTranslation(testPos);
+
+	//float dotRotation = dot(m_transform->GetForward(), m_transform->GetPos());
+	vec2 forward = vec2(m_transform->GetForward().x, m_transform->GetForward().z);
+	vec2 posVec2 = vec2(m_transform->GetPos().x, m_transform->GetPos().z);
+	float forwardLenght = sqrt(pow(forward.x, 2) + pow(forward.y, 2));
+	float posLenght = sqrt(pow(posVec2.x, 2) + pow(posVec2.y, 2));
+
+	float theta = acos(dot(normalize(forward), normalize(posVec2)));
+
+	if (posVec2.x < 0) {
+		m_transform->Rotate(vec3(0, -theta, 0));
+	}
+	else {
+		m_transform->Rotate(vec3(0, theta, 0));
+	}
+
 
 	btVector3 localInertia(0, 0, 0);
 	m_carShape->calculateLocalInertia(mass, localInertia);
@@ -310,8 +325,8 @@ vec3 Player::GetScale()
 
 void Player::SetScale(vec3 scale)
 {
-//	m_scale = scale;
-//	m_transform->SetScale(scale.x, scale.y, scale.z);
+	m_scale = scale;
+	m_transform->SetScale(scale.x, scale.y, scale.z);
 }
 
 int Player::GetControllerID()
@@ -361,8 +376,6 @@ void Player::GivePower(int type)
 	if (m_powerActive) {
 		removePower(m_powerType);
 	}
-	cout << "Activating power type " << type  << endl;
-
 	m_powerType = type;
 	m_powerDuration = 300.f;
 	m_powerActive = true;
@@ -417,7 +430,6 @@ void Player::removePower(int type)
 	btVector3 localInertia(0, 0, 0);
 
 	m_powerActive = false;
-	cout << "Deactivating power type " << type << " for player " << m_controllerID << endl;
 	switch (type) {
 	case 0:
 		mass = m_body->getMass() / 1.5f;
@@ -437,7 +449,6 @@ void Player::removePower(int type)
 
 	case 3:
 		mass = m_body->getMass() * 1.5f;
-		cout << mass << endl;
 		m_body->getCollisionShape()->calculateLocalInertia(mass, localInertia);
 		m_body->setMassProps(mass, localInertia);
 		m_powerMultiplier = 1.f;
@@ -446,7 +457,6 @@ void Player::removePower(int type)
 
 	case 4:
 		mass = m_body->getMass() / 1.5f;
-		cout << mass << endl;
 		m_body->getCollisionShape()->calculateLocalInertia(mass, localInertia);
 		m_body->setMassProps(mass, localInertia);
 		m_powerMultiplier = 1.f;
@@ -455,7 +465,6 @@ void Player::removePower(int type)
 
 	case 5:
 		mass = m_body->getMass() * 1.5f;
-		cout << mass << endl;
 		m_body->getCollisionShape()->calculateLocalInertia(mass, localInertia);
 		m_body->setMassProps(mass, localInertia);
 		m_powerMultiplier = 1.f;
