@@ -5,6 +5,7 @@ Game::Game()
 {
 	m_mapUpdateReady.store(false);
 	m_updateMap.store(false);
+
 	m_objectHandler = new ObjectHandler();
 	m_scene = new Scene();
 	m_scene->Init(); // H�r skapas modellerna
@@ -14,7 +15,7 @@ Game::Game()
 	m_toggle = false;
 	m_platforms = m_scene->GetModels(0);
 	m_cars = m_scene->GetModels(1);
-	m_cube = new MarchingCubes;
+	m_cube = new MarchingCubes();
 	m_objectHandler->AddDynamicPlatformMesh(m_cube);
 
 	m_timeSinceSpawn = 0;
@@ -25,18 +26,12 @@ Game::Game()
 	m_objectHandler->AddPlayer(vec3(-4, 7, -4), 1, rand() % 4, vec3(0, 1, 0), m_cars[2]); // Passa modell
 	m_objectHandler->AddPlayer(vec3(4, 7, -4), 2, rand() % 4, vec3(1, 1, 0), m_cars[1]); // Passa modell
 	//m_objectHandler->AddPlayer(vec3(-4, 7, -4), 3, rand() % 4, vec3(1, 1, 0), m_cars[3]); // Passa modell
+	m_objectHandler->AddPlayer(vec3(-4, 7, 4), 3, rand() % 4, vec3(1, 1, 0), m_cars[1]); // Passa modell
+
 	m_soundEngine = createIrrKlangDevice();
 
 	if (m_soundEngine)
 	{
-		/*
-			m_soundEngine->play2D("src/Audio/Music - 16bit Deja Vu.mp3", GL_TRUE);
-			m_soundEngine->play2D("src/Audio/Music - Main Game 2 Players Left.mp3", GL_TRUE);
-			m_soundEngine->play2D("src/Audio/Music - Main Game.mp3", GL_TRUE);
-			m_soundEngine->play2D("src/Audio/Music - Menu.mp3", GL_TRUE);
-			m_soundEngine->play2D("src/Audio/Music - Win.mp3", GL_TRUE);
-			m_soundEngine->play2D("src/Audio/Music - 16bit Sea Shanty 2.mp3", GL_TRUE);
-		*/
 		int randomNumber = rand () % 5;
 		m_songs.push_back(m_soundEngine->addSoundSourceFromFile("src/Audio/Music - 16bit Sea Shanty 2.mp3"));
 		m_songs.push_back(m_soundEngine->addSoundSourceFromFile("src/Audio/Music - 16bit Deja Vu.mp3"));
@@ -92,7 +87,7 @@ void Game::Update(float dt)
 
 	}
 	if (m_timeSinceSpawn > 5 && !m_gameOver) {
-		//m_objectHandler->AddPowerUp();
+		m_objectHandler->AddPowerUp();
 		m_timeSinceSpawn = 0;
 	}
 	if(!m_gameOver)
@@ -166,7 +161,6 @@ void Game::MutliThread(GLFWwindow* window)
 		if (m_updateMap.load()) {
 			m_cube->Update(window);
 			m_updateMap.store(false);// = false;
-			std::this_thread::sleep_for(std::chrono::milliseconds(10));
 			m_mapUpdateReady.store(true);
 		}
 		else {

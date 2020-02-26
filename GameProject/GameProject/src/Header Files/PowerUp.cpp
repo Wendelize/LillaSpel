@@ -39,14 +39,24 @@ PowerUp::PowerUp(int spawn, btVector3 pos, int type,float duration)
 	m_transform->SetScale(scale, scale, scale);
 
 	btVector3 localInertia(0, 0, 0);
-
-	m_body = new btGhostObject();
+	float mass = 1.f;
 	m_shape = new btBoxShape(btVector3(0.75f * scale, 0.75f * scale, 0.75f * scale));
+	m_motionState = new btDefaultMotionState(*m_btTransform);
+
+	m_shape->calculateLocalInertia(mass, localInertia);
+
+	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, m_motionState, m_shape, localInertia);
+
+	m_body = new btRigidBody(rbInfo);
 	m_body->setCollisionShape(m_shape);
 	m_body->setWorldTransform(*m_btTransform);
-	vec3 testPos = vec3(m_btTransform->getOrigin().x(), m_btTransform->getOrigin().y(), m_btTransform->getOrigin().z());
-	m_transform->SetTranslation(testPos);
+	m_body->setLinearVelocity(btVector3(0.0f, -1.0f, 0.0f));
 
+	vec3 btPos = vec3(m_btTransform->getOrigin().x(), m_btTransform->getOrigin().y(), m_btTransform->getOrigin().z());
+	m_transform->SetTranslation(btPos);
+	cout << "TYPE: " << m_body->getCollisionShape()->getShapeType() << endl;
+	m_currentPos = m_body->getWorldTransform().getOrigin();
+	
 }
 
 PowerUp::~PowerUp()
@@ -63,7 +73,7 @@ void PowerUp::SetPos(btVector3 pos)
 
 btVector3 PowerUp::GetPos()
 {
-	return m_pos;
+	return m_currentPos;
 }
 
 void PowerUp::SetType(int type)
@@ -86,7 +96,7 @@ float PowerUp::GetDuration()
 	return m_duration;
 }
 
-btGhostObject* PowerUp::getObject()
+btRigidBody* PowerUp::getObject()
 {
 	return m_body;
 }
@@ -104,6 +114,11 @@ bool PowerUp::update(float dt)
 		SetDuration(GetDuration() - dt);
 		destroy = false;
 	}
+	//m_body->setLinearVelocity(btVector3(0,-1,0));
+	btVector3 moveVector = m_body->getWorldTransform().getOrigin() - m_currentPos;
+	m_transform->Translate(vec3(moveVector.x(), moveVector.y(), moveVector.z()));
+	m_currentPos = m_body->getWorldTransform().getOrigin();
+
 	return destroy;
 }
 

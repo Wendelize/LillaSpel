@@ -5,13 +5,6 @@
 #define STB_IMAGE_IMPLEMENTATION
 
 Game* GAME;
-void sumUp(std::atomic<unsigned long long>& sum, GLFWwindow* window) {
-
-	while (window) {
-		sum.fetch_add(1);
-	}
-
-}
 
 
 int main(void)
@@ -22,8 +15,6 @@ int main(void)
 
 	float _deltaTime = 0.0, _curTime = 0.0, _lastTime = 0.0;
 	GLFWwindow* _window = GAME->GetWindow();
-	std::atomic<bool> sum(false);
-
 
 	std::thread t(&Game::MutliThread, GAME, _window);
 	while (!glfwWindowShouldClose(_window))
@@ -36,7 +27,7 @@ int main(void)
 		GAME->Render(); 
 	}
 	
-	//t1.join();
+	t.join();
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();

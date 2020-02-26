@@ -27,6 +27,7 @@ public:
 	void SetScale(float x, float y, float z);
 
 	vec3 GetForward();
-
+	void SetForward(vec3 forward);
+	vec3 GetPos();
 	mat4 GetMatrix();
 };

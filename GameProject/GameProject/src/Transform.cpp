@@ -104,6 +104,16 @@ vec3 Transform::GetForward()
 	return m_forward;
 }
 
+void Transform::SetForward(vec3 forward)
+{
+	m_forward = forward;
+}
+
+vec3 Transform::GetPos()
+{
+	return m_position;
+}
+
 mat4 Transform::GetMatrix()
 {
 	if (m_isDirty)

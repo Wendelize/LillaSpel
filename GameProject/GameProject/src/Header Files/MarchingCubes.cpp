@@ -307,7 +307,6 @@ int triTable[256][16] =
 
 MarchingCubes::MarchingCubes()
 {
-	//MultiThreading
 	VertexData tempVertex;
 	tempVertex.pos = vec3(0, 0, 0);
 	tempVertex.color = vec3(0, 0, 0);
@@ -506,11 +505,13 @@ void MarchingCubes::PopulateTerrainMap(int level)
 					{
 						float thisHeight = (float)m_height * ((float)rand() / (RAND_MAX)) / 16.0f * 1.5f + 0.001f;
 						m_terrainMap[x][y][z] = (float)y - thisHeight;
+
 					}
 
 					if (x >= m_width - m_shrink || z >= m_width - m_shrink || x <= m_shrink || z <= m_shrink)
 					{
 						m_terrainMap[x][y][z] = 1;
+
 					}
 					break;
 
@@ -611,19 +612,23 @@ void MarchingCubes::PopulateTerrainMap(int level)
 					if (x >= m_width || z >= m_width || x <= 0 || z <= 0)
 					{
 						m_terrainMap[x][y][z] = 1;
+						m_heightArray[x][y] = 1;
 					}
 					break;
 					
 				default:
 					float thisHeight = (float)m_height * m_noise->CreatePerlinNoise((float)x, (float)z); // ((float)rand() / (RAND_MAX)) / 16.0f * 1.5f + 0.001f; 
 					m_terrainMap[x][y][z] = (float)y - thisHeight;
+					m_heightArray[x][z] = (float)y - thisHeight + 1;
 
 					if (thisHeight < 0.0f)
 						m_terrainMap[x][y][z] = (float)y;
+						//m_heightArray[x][z] = (float)y + 1;
+
 
 					if (distance(vec2(m_middle, m_middle), vec2((float)x, (float)z)) >= 24.0 - m_shrink) 
 						m_terrainMap[x][y][z] = 1.0f; 
-
+						//m_heightArray[x][z] = 1.0f;
 					break;
 				}
 			}

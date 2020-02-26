@@ -28,6 +28,7 @@ private:
     int m_width = WIDTH;
     int m_height = HEIGHT;
     float m_terrainMap[WIDTH + 1][HEIGHT + 1][WIDTH + 1]; // width height width 
+    float m_heightArray[WIDTH + 1][WIDTH + 1];
     float m_middle = WIDTH / 2;
     int m_shrink = 0;
     float m_time = 0.0f;
