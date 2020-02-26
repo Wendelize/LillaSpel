@@ -86,3 +86,8 @@ struct ObjectInfo
 
 	}
 };
+
+struct Hole {
+	vec3 position;
+	float depth;
+};

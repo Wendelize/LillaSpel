@@ -7,8 +7,6 @@
 
 #define WIDTH 50 
 #define HEIGHT 15
-#define HEIGHTREGULAR 1
-#define HEIGHTNOISE 40 // CAN BE ANYTHING.
 #define NROFMAXHOLES 20
 
 class MarchingCubes
@@ -39,7 +37,7 @@ private:
     bool m_way = true;
     int m_lvlChanger = 0;
     int m_terraceHeight = 2;
-    bool m_flatShaded = true;
+    vector<Hole> m_holes;
 
     btRigidBody* m_body;
     btCollisionShape* m_platformShape;
@@ -78,6 +76,7 @@ public:
     int GetHoleSize();
     int VertForIndice(vec3 vertex);
     void CalculateNormals();
-    void MakeTerrain(vec3 position);
+    void MakeHole(vec3 position);
+    void UpdateHoles();
 };
 

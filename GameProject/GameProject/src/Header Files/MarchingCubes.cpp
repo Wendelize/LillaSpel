@@ -305,7 +305,6 @@ int triTable[256][16] =
 	{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1} 
 };
 
-
 MarchingCubes::MarchingCubes()
 {
 	//MultiThreading
@@ -373,17 +372,21 @@ void MarchingCubes::Update(GLFWwindow* window)
 			m_way = true;
 	}
 
-	int state = glfwGetKey(window, GLFW_KEY_SPACE);
+	PopulateTerrainMap(m_currentLvl);
 
+	// Check actual collisionpoint!
+	int state = glfwGetKey(window, GLFW_KEY_SPACE);
 	cout << state << ", " << GLFW_PRESS << endl;
 	if (state == GLFW_PRESS)
 	{
-		MakeTerrain(vec3(m_middle, 0, m_middle));
+		MakeHole(vec3(rand() % m_width, rand() % 6, rand() % m_width));
 	}
 
-	PopulateTerrainMap(m_currentLvl);
+	if (m_holes.size() > 0)
+		UpdateHoles();
 
 	CreateMeshData();
+
 }
 
 void MarchingCubes::MarchCube(vec3 position)
@@ -402,7 +405,6 @@ void MarchingCubes::MarchCube(vec3 position)
 		return;
 
 	VertexData temp;
-	vec3 tempNormal0, tempNormal1, tempNormal2;
 
 	temp.normal = vec3(0, 1, 0); // Calculate per vertex for better result
 	temp.color = vec3(1, 0, 0);
@@ -445,13 +447,6 @@ void MarchingCubes::MarchCube(vec3 position)
 			temp.pos = vPos;
 			m_vertices.push_back(temp);
 			m_indices.push_back(m_vertices.size() - 1);
-
-			// make it not flat shaded... :O 
-			if (!m_flatShaded)
-			{
-				VertForIndice(vPos);
-				CalculateNormals();
-			}
 
 			edgeIndex++;
 		}
@@ -813,9 +808,31 @@ void MarchingCubes::CalculateNormals()
 	}
 }
 
-void MarchingCubes::MakeTerrain(vec3 position)
+void MarchingCubes::MakeHole(vec3 position)
 {
-	cout << "x: " << (int)position.x << " y: " << (int)position.y << " z: " << (int)position.z << endl;
-	m_terrainMap[(int)position.x][(int)position.y][(int)position.z] = 1.0f;
-	CreateMeshData();
+	for (int x = 0; x < m_width + 1; x++)
+	{
+		for (int y = 0; y < m_height + 1; y++)
+		{
+			for (int z = 0; z < m_width + 1; z++)
+			{
+				if (distance(position, vec3(x, y, z)) < 3.0f)
+				{
+					Hole temp;
+					 
+					temp.position = vec3(x, y, z);
+					temp.depth = 3.0 / (distance(position, vec3(x, y, z)) + 0.1);
+					m_holes.push_back(temp);
+				}
+			}
+		}
+	}
+}
+
+void MarchingCubes::UpdateHoles()
+{
+	for (int i = 0; i < m_holes.size(); i++)
+	{
+		m_terrainMap[(int)m_holes[i].position.x][(int)m_holes[i].position.y][(int)m_holes[i].position.z] = m_terrainMap[(int)m_holes[i].position.x][(int)m_holes[i].position.y][(int)m_holes[i].position.z] + m_holes[i].depth;
+	}
 }
