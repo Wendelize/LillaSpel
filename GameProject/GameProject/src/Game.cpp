@@ -7,13 +7,13 @@ Game::Game()
 	m_scene = new Scene();
 	m_scene->Init(); // H�r skapas modellerna
 	m_time = 0;
-	m_maxTime = 180.0f;
+	m_maxTime = 60.0f;
 	m_menu = new Menu(m_scene, m_objectHandler);
 	// noMenu, start, select, pause, stats, restart, playerHud; // stats finns inte än
 	// väl playerHud om ni vill spela utan start menu
 	// välj noMenu om ni vill spela utan HUD och ingen restart, 
 	//	Pause meny bör fortfarande fungera med noMenu
-	m_menu->SetActiveMenu(Menu::ActiveMenu::start);
+	m_menu->SetActiveMenu(Menu::ActiveMenu::playerHud);
 	m_menu->LoadMenuPic();
 
 	m_debug = false;
@@ -79,6 +79,13 @@ Game::~Game()
 void Game::Update(float dt)
 {
 	DynamicCamera(dt);
+
+	SHORT key = GetAsyncKeyState(VK_LSHIFT);
+	const int KEY_UP = 0x1;
+	if ((key & KEY_UP) == KEY_UP)
+	{
+		m_scene->ShakeCamera(0.4f, 1);
+	}
 
 	// ska banan resettas?
 	if (m_menu->Reset())

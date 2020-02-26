@@ -7,6 +7,12 @@ private:
 	float m_translationDistance;
 	mat4 m_viewMatrix;
 
+	vec3 m_posBeforeShake;
+	float m_shakeCounter;
+	float m_shakeIntensity;
+	float m_shakeFade;
+	int k; // används för att sänka m_shakefade varannan iteration.
+
 public:
 	Camera(vec3 pos = { 0,0,2 }, vec3 point = { 0,0,0 }, vec3 up = { 0,1,0 });
 	~Camera();
@@ -18,6 +24,7 @@ public:
 	vec3 GetPos();
 	vec3 GetUp();
 	mat4 GetView();
+	void Shake(float intensity, float duration);
 	void ChangePos(vec3 pos);
 	void ChangeDir(vec3 dir);
 	void ChangeUp(vec3 up);

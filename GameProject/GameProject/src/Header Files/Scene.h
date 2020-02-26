@@ -61,6 +61,7 @@ public:
 	void SetCameraPos(vec3 pos);
 	void TranslateCameraPos(vec3 pos);
 	void SetCameraFocus(vec3 pos);
+	void ShakeCamera(float intensity, float duration);
 
 	void SetWindowSize(int width, int height);
 	GLFWwindow* GetWindow();

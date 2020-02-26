@@ -19,7 +19,7 @@ Scene::Scene()
 	m_sky = new Sky();
 	m_shadowMap = new ShadowMap(m_shadowMapWidth, m_shadowMapHeight);
 	m_bloom = new Bloom(m_screenWidth, m_screenHeight, m_bloomTextureScale);
-	for(int i =0; i< 4 ; i++)
+	for(int i = 0; i < 4; i++)
 	m_particles.push_back(new ParticleSystem(50));
 
 	m_modelMatrix = mat4(1.0);
@@ -84,7 +84,7 @@ void Scene::Init()
 {
 	glEnable(GL_DEPTH_TEST);
 	m_fov = 60.0f;
-	m_projMatrix = perspective(radians(m_fov), (float)m_window->GetWidht() / (float)m_window->GetHeight(), 0.1f, 100.0f);
+	m_projMatrix = perspective(radians(m_fov), (float)m_window->GetWidht() / (float)m_window->GetHeight(), 0.1f, 500.0f);
 	m_viewMatrix = m_camera->GetView();
 	m_modelMatrix = mat4(1.0);
 
@@ -272,7 +272,7 @@ void Scene::RenderSky()
 
 	glCullFace(GL_BACK);
 
-	m_sky->RenderSkyPlane(m_skyPlaneShader, scale(translate(mat4(1.0f), vec3(0, -20, 0)), vec3(50)), m_camera->GetView(), m_projMatrix);
+	m_sky->RenderSkyPlane(m_skyPlaneShader, scale(translate(mat4(1.0f), vec3(0, -120, -150)), vec3(200)), m_camera->GetView(), m_projMatrix);
 
 	glDepthMask(GL_TRUE);
 	glDepthFunc(GL_LESS);
@@ -445,7 +445,7 @@ void Scene::ZoomIn(float dt)
 	if (m_fov > 40)
 	{
 		m_fov -= dt * (m_fov - 40) * 0.1f;
-		m_projMatrix = perspective(radians(m_fov), (float)m_window->GetWidht() / (float)m_window->GetHeight(), 0.1f, 100.0f);
+		m_projMatrix = perspective(radians(m_fov), (float)m_window->GetWidht() / (float)m_window->GetHeight(), 0.1f, 500.0f);
 	}
 }
 
@@ -454,7 +454,7 @@ void Scene::ZoomOut(float dt)
 	if (m_fov < 60)
 	{
 		m_fov += dt * (60 - m_fov) * 0.1f;
-		m_projMatrix = perspective(radians(m_fov), (float)m_window->GetWidht() / (float)m_window->GetHeight(), 0.1f, 100.0f);
+		m_projMatrix = perspective(radians(m_fov), (float)m_window->GetWidht() / (float)m_window->GetHeight(), 0.1f, 500.0f);
 	}
 }
 
@@ -472,6 +472,11 @@ void Scene::SetCameraFocus(vec3 pos)
 {
 	//m_camera->SetFocusPoint(pos);
 	m_camera->TranslateFocusPoint(pos);
+}
+
+void Scene::ShakeCamera(float intensity, float duration)
+{
+	m_camera->Shake(intensity, duration);
 }
 
 

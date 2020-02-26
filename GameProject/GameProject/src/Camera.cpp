@@ -13,6 +13,7 @@ Camera::Camera(vec3 pos, vec3 point, vec3 up)
 	m_focusTranslationPoint = vec3(0);
 	m_translationDistance = 0;
 	m_positionTranslation = vec3(0);
+	m_shakeCounter = 0;
 }
 
 Camera::~Camera()
@@ -53,6 +54,15 @@ mat4 Camera::GetView()
 	return m_viewMatrix;
 }
 
+void Camera::Shake(float intensity, float duration)
+{
+	m_shakeCounter = duration;
+	m_shakeIntensity = intensity;
+	m_posBeforeShake = m_position;
+	m_shakeFade = 1;
+	k = 0;
+}
+
 void Camera::ChangePos(vec3 pos)
 {
 	m_position = pos;
@@ -84,6 +94,20 @@ void Camera::MoveCamera(vec3 newPos)
 
 void Camera::UpdateMovement(float deltaTime, float speed)
 {
+	if (m_shakeCounter > 0)
+	{
+		m_position.x = m_posBeforeShake.x - sin(m_shakeCounter * 83) * m_shakeFade * m_shakeIntensity;
+		m_position.y = m_posBeforeShake.y - sin(m_shakeCounter * 71) * m_shakeFade * m_shakeIntensity;
+
+		k++;
+		if (k >= 2)
+		{
+			k = 0;
+			m_shakeFade = m_shakeCounter * 0.9f;
+		}
+		
+		m_shakeCounter -= deltaTime;
+	}
 	m_positionTranslation = m_translationPoint - m_position;
 	m_position += m_positionTranslation * deltaTime * speed;
 
