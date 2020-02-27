@@ -469,7 +469,6 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		m_continue = 0;
 		break;
 	case ActiveMenu::selectLevel:
-		cout << "kill me now :) " << endl;
 	
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 10);
 		ImGui::SetNextWindowPos(ImVec2((float)width / 3 - (slWidth / 2), height / 4));
