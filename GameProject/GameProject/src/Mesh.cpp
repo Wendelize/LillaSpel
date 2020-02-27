@@ -43,6 +43,7 @@ Mesh::Mesh(vector<VertexData> vertices, vector<unsigned int> indices, vector<Tex
 
 Mesh::~Mesh()
 {
+	glBindVertexArray(0);
 }
 
 void Mesh::SetTexture(Shader shader)
@@ -101,5 +102,18 @@ void Mesh::Draw(Shader* shader)
 	SetMaterial(shader);
 	glBindVertexArray(m_vertexArray);
 	glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, 0);
+	glBindVertexArray(0);
+}
+
+void Mesh::UpdateMesh(vector<VertexData> vertices, vector<unsigned int> indices)
+{
+	m_vertices = vertices;
+	m_indices = indices;
+	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER, VertexBufferSize(), &m_vertices[0], GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indicesBuffer);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, IndicesBufferSize(), &m_indices[0], GL_STATIC_DRAW);
+
 	glBindVertexArray(0);
 }

@@ -25,7 +25,6 @@ Player::Player(Model* model, int modelId, vec3 pos)
 	m_carShape = new btSphereShape(radius);
 	m_btTransform = new btTransform();
 	m_btTransform->setIdentity();
-
 	// ConvexHullShape for car. Very precise but expensive since it creates A LOT of lines.
 	/*vector<btVector3> points;
 
@@ -66,9 +65,25 @@ Player::Player(Model* model, int modelId, vec3 pos)
 	vec3 testPos = vec3(m_btTransform->getOrigin().x(), m_btTransform->getOrigin().y()- radius * scale, m_btTransform->getOrigin().z());
 	m_transform->SetTranslation(testPos);
 
+	//float dotRotation = dot(m_transform->GetForward(), m_transform->GetPos());
+	vec2 forward = vec2(m_transform->GetForward().x, m_transform->GetForward().z);
+	vec2 posVec2 = vec2(m_transform->GetPos().x, m_transform->GetPos().z);
+	float forwardLenght = sqrt(pow(forward.x, 2) + pow(forward.y, 2));
+	float posLenght = sqrt(pow(posVec2.x, 2) + pow(posVec2.y, 2));
+
+	float theta = acos(dot(normalize(forward), normalize(posVec2)));
+
+	if (posVec2.x < 0) {
+		m_transform->Rotate(vec3(0, -theta, 0));
+	}
+	else {
+		m_transform->Rotate(vec3(0, theta, 0));
+	}
+
+
 	btVector3 localInertia(0, 0, 0);
 	m_carShape->calculateLocalInertia(mass, localInertia);
-
+	
 	//using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
 	m_motionState = new btDefaultMotionState(*m_btTransform);
 	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, m_motionState, m_carShape, localInertia);
@@ -80,7 +95,6 @@ Player::Player(Model* model, int modelId, vec3 pos)
 	m_body->clearForces();
 	m_body->setRestitution(m_restitution);
 	m_currentPos = m_btTransform->getOrigin();
-
 	switch (modelId)
 	{
 	case 0:
@@ -101,8 +115,9 @@ Player::Player(Model* model, int modelId, vec3 pos)
 	}
 
 	m_soundEngine = createIrrKlangDevice();
+	m_honkEngine = createIrrKlangDevice();
 
-	if (m_soundEngine)
+	if (m_soundEngine && m_honkEngine)
 	{
 		m_soundEngine->setListenerPosition(vec3df(0, 18, 33), vec3df(0, -4, 3)); // Listener position, view direction
 		m_soundEngine->setDefault3DSoundMinDistance(1.0f);
@@ -110,11 +125,15 @@ Player::Player(Model* model, int modelId, vec3 pos)
 
 		m_carSounds.push_back(m_soundEngine->addSoundSourceFromFile("src/Audio/Player - Engine2.0.mp3"));
 		m_carSounds.push_back(m_soundEngine->addSoundSourceFromFile("src/Audio/Player - Backing.mp3"));
+		m_carSounds.push_back(m_soundEngine->addSoundSourceFromFile("src/Audio/Player - HonkDELUXE.mp3"));
 
 		m_soundEngine->setSoundVolume(0.3f);
 
 		m_sound = m_soundEngine->play2D(m_carSounds[0], true, true);
 		m_sound->setPlaybackSpeed(1.0f);
+
+		m_honkEngine->setSoundVolume(0.2f);
+		m_honk = m_honkEngine->play2D(m_carSounds[2], false, true);
 	}
 
 }
@@ -135,6 +154,7 @@ Player::~Player()
 		m_carSounds.clear();
 
 		m_sound->drop();
+		m_honk->drop();
 	}
 }
 
@@ -148,14 +168,11 @@ void Player::Update(float dt)
 	float jump = 0;
 	bool pressed = false;
 
-	if (glfwJoystickPresent(m_controllerID) == 1 && m_body->getWorldTransform().getOrigin().y() < 4.0f && m_body->getWorldTransform().getOrigin().y() > -1.0f)
+	if (glfwJoystickPresent(m_controllerID) == 1 && m_body->getWorldTransform().getOrigin().y() > -1.0f)
 	{
-		if (m_soundEngine && m_controller->ButtonRightJoystickIsPressed(m_controllerID))
+		if (m_honkEngine && m_soundEngine && m_controller->ButtonRightJoystickIsPressed(m_controllerID))
 		{
-			//Temporary
-			m_soundEngine->setSoundVolume(1.0f);
-			m_soundEngine->play2D("src/Audio/Player - Honk2.0.mp3", false);
-			
+			m_honkEngine->play2D(m_honk->getSoundSource(), false, false, true);
 		}
 
 		if (m_controller->ButtonOptionsIsPressed(m_controllerID))
@@ -221,7 +238,7 @@ void Player::Update(float dt)
 	if (m_soundEngine && m_body->getLinearVelocity().y() < 0.3f && m_body->getLinearVelocity().y() > -0.3f)
 	{
 		m_soundEngine->setSoundVolume(m_body->getLinearVelocity().length() / 40 + 0.3f);
-		m_sound->setPlaybackSpeed(m_body->getLinearVelocity().length() / 25 + 1.0f);
+		m_sound->setPlaybackSpeed(m_body->getLinearVelocity().length() / 15 + 1.0f);
 	}
 	m_body->applyDamping(dt);
 
@@ -313,8 +330,8 @@ vec3 Player::GetScale()
 
 void Player::SetScale(vec3 scale)
 {
-//	m_scale = scale;
-//	m_transform->SetScale(scale.x, scale.y, scale.z);
+	m_scale = scale;
+	m_transform->SetScale(scale.x, scale.y, scale.z);
 }
 
 int Player::GetControllerID()
@@ -369,8 +386,6 @@ void Player::GivePower(int type)
 	if (m_powerActive) {
 		removePower(m_powerType);
 	}
-	cout << "Activating power type " << type  << endl;
-
 	m_powerType = type;
 	m_powerDuration = 300.f;
 	m_powerActive = true;
@@ -425,7 +440,6 @@ void Player::removePower(int type)
 	btVector3 localInertia(0, 0, 0);
 
 	m_powerActive = false;
-	cout << "Deactivating power type " << type << " for player " << m_controllerID << endl;
 	switch (type) {
 	case 0:
 		mass = m_body->getMass() / 1.5f;
@@ -445,7 +459,6 @@ void Player::removePower(int type)
 
 	case 3:
 		mass = m_body->getMass() * 1.5f;
-		cout << mass << endl;
 		m_body->getCollisionShape()->calculateLocalInertia(mass, localInertia);
 		m_body->setMassProps(mass, localInertia);
 		m_powerMultiplier = 1.f;
@@ -454,7 +467,6 @@ void Player::removePower(int type)
 
 	case 4:
 		mass = m_body->getMass() / 1.5f;
-		cout << mass << endl;
 		m_body->getCollisionShape()->calculateLocalInertia(mass, localInertia);
 		m_body->setMassProps(mass, localInertia);
 		m_powerMultiplier = 1.f;
@@ -463,7 +475,6 @@ void Player::removePower(int type)
 
 	case 5:
 		mass = m_body->getMass() * 1.5f;
-		cout << mass << endl;
 		m_body->getCollisionShape()->calculateLocalInertia(mass, localInertia);
 		m_body->setMassProps(mass, localInertia);
 		m_powerMultiplier = 1.f;

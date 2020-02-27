@@ -77,7 +77,6 @@ Scene::~Scene()
 
 	
 	delete m_window;
-
 }
 
 void Scene::Init()
@@ -163,6 +162,7 @@ void Scene::LightToShader()
 }
 
 void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, bool gameOver, int winner, float dt)
+void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, MarchingCubes* cube)
 {
 	if(dt < 1)
 		m_camera->UpdateMovement(dt, 1);
@@ -197,6 +197,8 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, 
 	// Texture(shadowmap)
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_shadowMap->GetTexture());
+
+	cube->Draw(m_modelShader);
 
 	// Light uniforms
 	LightToShader();
@@ -318,6 +320,7 @@ void Scene::RenderImGui(btDiscreteDynamicsWorld* world)
 
 	if (m_debug) {
 		m_modelShader->SetUniform("u_Model", mat4(1));
+		m_modelShader->SetUniform("u_PlayerColor", vec3(1, 0, 0));
 		world->debugDrawWorld();
 
 	}

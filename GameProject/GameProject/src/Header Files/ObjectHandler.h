@@ -3,6 +3,7 @@
 #include "Platform.h"
 #include "Player.h"
 #include "PowerUp.h"
+#include "MarchingCubes.h"
 
 class ObjectHandler
 {
@@ -10,16 +11,16 @@ private:
 	bool m_usedSpawns[20];
 	btVector3 m_spawnpoints[20] = 
 	{
-	btVector3(2,1,2), btVector3(5,1,5),btVector3(-5,1,5), btVector3(9,1,9), btVector3(-9,1,9),
-	btVector3(2,1,-2), btVector3(5,1,-5), btVector3(-5,1,-5), btVector3(9,1,-9), btVector3(-9,1,-9),
-	btVector3(-2,1,2), btVector3(2,1,0), btVector3(-2,1,0), btVector3(5,1,0), btVector3(-5,1,0),
-	btVector3(-2,1,-2), btVector3(0,1,2), btVector3(0,1,5), btVector3(0,1,-2), btVector3(0,1,0)
+	btVector3(2,3,2), btVector3(5,3,5),btVector3(-5,3,5), btVector3(9,3,9), btVector3(-9,3,9),
+	btVector3(2,3,-2), btVector3(5,3,-5), btVector3(-5,3,-5), btVector3(9,3,-9), btVector3(-9,3,-9),
+	btVector3(-2,3,2), btVector3(2,3,0), btVector3(-2,3,0), btVector3(5,3,0), btVector3(-5,3,0),
+	btVector3(-2,3,-2), btVector3(0,3,2), btVector3(0,3,5), btVector3(0,3,-2), btVector3(0,3,0)
 	};
 	vector<Player*> m_players;
 	vector<Platform*> m_platforms;
 	vector<PowerUp*> m_powerUps;
 	vector<ObjectInfo*> m_structs;
-
+	vector<vec3> m_bombZone;
 	ISoundEngine* m_soundEngine;
 	vector<ISoundSource*> m_crashes;
 
@@ -33,6 +34,9 @@ private:
 	DebugDrawer* m_debugDrawer;
 	btAlignedObjectArray<btCollisionShape*> m_collisionShapes;
 	btGhostPairCallback* m_ghostCallback;
+
+	MarchingCubes* m_cube;
+
 public:
 	ObjectHandler();
 	~ObjectHandler();
@@ -64,6 +68,10 @@ public:
 	vector<ObjectInfo*> GetObjects();
 	btDiscreteDynamicsWorld* GetWorld();
 	DebugDrawer* GetDebugDrawer();
+	void AddDynamicPlatformMesh(MarchingCubes* cube);
+	void RemoveDynamicPlatformMesh(MarchingCubes* cube);
+	vector<vec3> GetBomb();
+	void ClearBombs();
 	int GetWinnerIndex();
 	void UpdateVibration(float dt);
 

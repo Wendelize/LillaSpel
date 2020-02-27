@@ -1,5 +1,6 @@
 #pragma once
 #include "Include.h"
+#include "MarchingCubes.h"
 
 
 class Scene
@@ -45,6 +46,7 @@ public:
 
 	void Init();
 	void LightToShader();
+	void Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, MarchingCubes* cube);
 	void Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, bool gameOver, int winner, float dt);
 	void RenderSceneInfo(Shader * shader, vector<ObjectInfo*> objects);
 	void RenderSkybox();

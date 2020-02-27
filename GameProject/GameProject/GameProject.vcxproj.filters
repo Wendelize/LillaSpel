@@ -88,6 +88,12 @@
     <ClCompile Include="src\Sky.cpp">
       <Filter>Src</Filter>
     </ClCompile>
+    <ClCompile Include="src\Header Files\MarchingCubes.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Header Files\PerlinNoise.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Header Files\Camera.h">
@@ -181,6 +187,12 @@
       <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="src\Header Files\Sky.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Header Files\MarchingCubes.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Header Files\PerlinNoise.h">
       <Filter>Header</Filter>
     </ClInclude>
   </ItemGroup>

@@ -3,11 +3,13 @@
 #include "Header Files/stb_image.h"
 Game::Game()
 {
+	m_mapUpdateReady.store(false);
+	m_updateMap.store(false);
+
 	m_objectHandler = new ObjectHandler();
 	m_scene = new Scene();
 	m_scene->Init(); // H�r skapas modellerna
 	m_time = 0;
-	m_maxTime = 60.0f;
 	m_menu = new Menu(m_scene, m_objectHandler);
 	// noMenu, start, select, pause, stats, restart, playerHud; // stats finns inte än
 	// väl playerHud om ni vill spela utan start menu
@@ -16,34 +18,27 @@ Game::Game()
 	m_menu->SetActiveMenu(Menu::ActiveMenu::playerHud);
 	m_menu->LoadMenuPic();
 
+	m_maxTime = 150.f;
 	m_debug = false;
 	m_toggle = false;
 	m_platforms = m_scene->GetModels(0);
 	m_cars = m_scene->GetModels(1);
+	m_cube = new MarchingCubes();
+	m_objectHandler->AddDynamicPlatformMesh(m_cube);
+
 	m_timeSinceSpawn = 0;
-	m_objectHandler->AddPlatform(0, m_platforms[0]); // Passa modell
 
 	m_objectHandler->AddPlayer(vec3(-10, 2, 3), 0, 0, vec3(0.5, 1, 9), m_cars[0]); // Passa modell
 	m_objectHandler->AddPlayer(vec3(10, 2, 3), 1, 0, vec3(0, 2, 0), m_cars[2]); // Passa modell
-	//m_objectHandler->AddPlayer(vec3(4, 7, -4), 2, rand() % 4, vec3(1, 1, 0), m_cars[1]); // Passa modell
 	//m_objectHandler->AddPlayer(vec3(-4, 7, -4), 3, rand() % 4, vec3(1, 1, 0), m_cars[3]); // Passa modell
-
 	m_scene->SetCameraPos(vec3(0, 22, 28));
+
 
 	m_soundEngine = createIrrKlangDevice();
 
 	if (m_soundEngine)
 	{
-		/*
-			m_soundEngine->play2D("src/Audio/Music - 16bit Deja Vu.mp3", GL_TRUE);
-			m_soundEngine->play2D("src/Audio/Music - Main Game 2 Players Left.mp3", GL_TRUE);
-			m_soundEngine->play2D("src/Audio/Music - Main Game.mp3", GL_TRUE);
-			m_soundEngine->play2D("src/Audio/Music - Menu.mp3", GL_TRUE);
-			m_soundEngine->play2D("src/Audio/Music - Win.mp3", GL_TRUE);
-			m_soundEngine->play2D("src/Audio/Music - 16bit Sea Shanty 2.mp3", GL_TRUE);
-		*/
-		srand(time(NULL));
-		int randomNumber = rand() % 5;
+		int randomNumber = rand () % 5;
 		m_songs.push_back(m_soundEngine->addSoundSourceFromFile("src/Audio/Music - 16bit Sea Shanty 2.mp3"));
 		m_songs.push_back(m_soundEngine->addSoundSourceFromFile("src/Audio/Music - 16bit Deja Vu.mp3"));
 		m_songs.push_back(m_soundEngine->addSoundSourceFromFile("src/Audio/Music - Main Game.mp3"));
@@ -55,6 +50,8 @@ Game::Game()
 		if (m_music)
 		{
 			m_music->setVolume(0.9f);
+			if (randomNumber == 1)
+				m_music->setVolume(0.6f);
 		}
 
 		m_soundEngine->setListenerPosition(vec3df(0, 18, 33), vec3df(0, -4, 3)); // Listener position, view direction
@@ -66,6 +63,7 @@ Game::~Game()
 {
 	delete m_objectHandler;
 	delete m_scene;
+	delete m_cube;
 	delete m_menu;
 	if (m_soundEngine)
 	{
@@ -78,6 +76,25 @@ Game::~Game()
 
 void Game::Update(float dt)
 {
+	m_time += dt;
+	m_timeSinceSpawn += dt;
+	m_timeSwapTrack += dt;
+
+	if (m_timeSwapTrack > 2.f && m_updateMap.load() == false && m_mapUpdateReady.load() == false) {
+		m_updateMap.store(true);
+	}
+
+	if (m_mapUpdateReady.load() == true && m_updateMap.load() == false) {
+		m_objectHandler->RemoveDynamicPlatformMesh(m_cube);
+		m_cube->MapUpdate();
+		m_objectHandler->AddDynamicPlatformMesh(m_cube);
+		m_timeSwapTrack = 0.f;
+		m_mapUpdateReady.store(false);
+		m_objectHandler->ClearBombs();
+	}
+	if (m_timeSinceSpawn > 5 && !m_gameOver) {
+		m_objectHandler->AddPowerUp();
+		m_timeSinceSpawn = 0;
 	DynamicCamera(dt);
 
 	SHORT key = GetAsyncKeyState(VK_LSHIFT);
@@ -86,6 +103,16 @@ void Game::Update(float dt)
 	{
 		m_scene->ShakeCamera(0.4f, 1);
 	}
+	if(!m_gameOver)
+		m_objectHandler->Update(dt);
+	
+	if (m_objectHandler->GetNumPlayers() == 1 && !m_gameOver) {
+		m_gameOver = true;
+		if (m_soundEngine) {
+			m_soundEngine->stopAllSounds();
+			m_soundEngine->play2D("src/Audio/Music - Win.mp3", true);
+			m_objectHandler->StopAllSound();
+		}
 
 	// ska banan resettas?
 	if (m_menu->Reset())
@@ -251,7 +278,8 @@ void Game::Render(float dt)
 	m_objects = m_objectHandler->GetObjects();
 	m_scene->Render(m_objects, m_objectHandler->GetWorld(), m_gameOver, m_winner, dt);
 
-	
+	m_scene->Render(m_objects, m_objectHandler->GetWorld(), m_cube);
+
 	if (m_debug)
 	{
 		Debug();
@@ -297,6 +325,20 @@ void Game::Reset()
 GLFWwindow* Game::GetWindow()
 {
 	return m_scene->GetWindow();
+}
+
+void Game::MutliThread(GLFWwindow* window)
+{
+	while (!glfwWindowShouldClose(window)) {
+		if (m_updateMap.load()) {
+			m_cube->Update(window, m_objectHandler->GetBomb());
+			m_updateMap.store(false);// = false;
+			m_mapUpdateReady.store(true);
+		}
+		else {
+			std::this_thread::sleep_for(std::chrono::milliseconds(10));
+		}
+	}
 }
 
 void Game::Debug()
