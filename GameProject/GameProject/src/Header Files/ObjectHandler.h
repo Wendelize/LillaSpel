@@ -83,4 +83,5 @@ public:
 	void CheckPowerUpCollision();
 	bool CheckCollisionCars(float dt);
 	bool GetLightsOut();
+	void SetLightsOut(bool state);
 };

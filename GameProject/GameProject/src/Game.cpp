@@ -137,7 +137,7 @@ void Game::Update(float dt)
 			m_mapUpdateReady.store(false);
 			m_objectHandler->ClearBombs();
 		}
-		if (m_timeSinceSpawn > 1 && !m_gameOver)
+		if (m_timeSinceSpawn > 5 && !m_gameOver)
 		{
 			m_objectHandler->AddPowerUp();
 			m_timeSinceSpawn = 0;
@@ -316,6 +316,7 @@ void Game::Reset()
 	m_menu->ResetReset();
 	m_gameOver = false;
 	m_time = 0;
+	m_objectHandler->SetLightsOut(false);
 	//m_maxTime = 240.f;
 	m_timeSinceSpawn = 0;
 	// delete remeaning players so we can spawn them back att spawn positions

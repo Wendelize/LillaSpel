@@ -732,3 +732,8 @@ bool ObjectHandler::GetLightsOut()
 {
 	return m_lightsOut;
 }
+
+void ObjectHandler::SetLightsOut(bool state)
+{
+	m_lightsOut = state;
+}
