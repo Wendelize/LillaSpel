@@ -54,6 +54,8 @@ Scene::~Scene()
 	}
 	m_lights.clear();
 
+	m_carLights.clear();
+
 	for (uint i = 0; i < m_particles.size(); i++)
 	{
 		delete m_particles.at(i);
