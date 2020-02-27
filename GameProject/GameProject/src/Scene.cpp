@@ -54,6 +54,8 @@ Scene::~Scene()
 	}
 	m_lights.clear();
 
+	m_carLights.clear();
+
 	for (uint i = 0; i < m_particles.size(); i++)
 	{
 		delete m_particles.at(i);
@@ -131,45 +133,58 @@ void Scene::Init()
 
 }
 
-void Scene::LightToShader()
+void Scene::LightToShader(bool lightsOut)
 {
-	m_modelShader->Uniform("u_NrOf", m_nrOfLights);
 	m_nrOfLights = m_lights.size();
+	m_nrOfCarLights = m_carLights.size();
 
-	for (int i = 0; i < m_lights.size(); i++)
+	vector<Light*> temp;
+	for (int i = 0; i < m_nrOfLights; i++)
+	{
+		temp.push_back(m_lights.at(i));
+	}
+	for (int i = 0; i < m_nrOfCarLights; i++)
+	{
+		temp.push_back(m_carLights.at(i));
+	}
+
+	int nrOf = temp.size();
+	m_modelShader->Uniform("u_NrOf", nrOf);
+
+
+	for (uint i = 0; i < temp.size(); i++)
 	{
 		string _nr = to_string(i);
-		switch (m_lights[i]->GetType())
+		switch (temp[i]->GetType())
 		{
 		case 0:
-			m_modelShader->Uniform("u_Lights[" + _nr + "].type", m_lights[i]->GetType());
-			m_modelShader->Uniform("u_Lights[" + _nr + "].dir", m_lights[i]->GetDirection());
-			m_modelShader->Uniform("u_Lights[" + _nr + "].color", m_lights[i]->GetColor());
+			m_modelShader->Uniform("u_Lights[" + _nr + "].type", temp[i]->GetType());
+			m_modelShader->Uniform("u_Lights[" + _nr + "].dir", temp[i]->GetDirection());
+			m_modelShader->Uniform("u_Lights[" + _nr + "].color", temp[i]->GetColor());
 			break;
 		case 1:
-			m_modelShader->Uniform("u_Lights[" + _nr + "].type", m_lights[i]->GetType());
-			m_modelShader->Uniform("u_Lights[" + _nr + "].pos", m_lights[i]->GetPos());
-			m_modelShader->Uniform("u_Lights[" + _nr + "].color", m_lights[i]->GetColor());
+			m_modelShader->Uniform("u_Lights[" + _nr + "].type", temp[i]->GetType());
+			m_modelShader->Uniform("u_Lights[" + _nr + "].pos", temp[i]->GetPos());
+			m_modelShader->Uniform("u_Lights[" + _nr + "].color", temp[i]->GetColor());
 			break;
 		case 2:
-			m_modelShader->Uniform("u_Lights[" + _nr + "].type", m_lights[i]->GetType());
-			m_modelShader->Uniform("u_Lights[" + _nr + "].pos", m_lights[i]->GetPos());
-			m_modelShader->Uniform("u_Lights[" + _nr + "].dir", m_lights[i]->GetDirection());
-			m_modelShader->Uniform("u_Lights[" + _nr + "].color", m_lights[i]->GetColor());
+			m_modelShader->Uniform("u_Lights[" + _nr + "].type", temp[i]->GetType());
+			m_modelShader->Uniform("u_Lights[" + _nr + "].pos", temp[i]->GetPos());
+			m_modelShader->Uniform("u_Lights[" + _nr + "].dir", temp[i]->GetDirection());
+			m_modelShader->Uniform("u_Lights[" + _nr + "].color", temp[i]->GetColor());
+			m_modelShader->Uniform("u_Lights[" + _nr + "].cutOff", temp[i]->GetCutOff());
 			break;
 		default:
 			break;
 		}
 
-		m_modelShader->Uniform("u_Lights[" + _nr + "].ambient", m_lights[i]->GetAmbient());
-		m_modelShader->Uniform("u_Lights[" + _nr + "].diffuse", m_lights[i]->GetDiffuse());
-		m_modelShader->Uniform("u_Lights[" + _nr + "].specular", m_lights[i]->GetSpecular());
-		m_nrOfLights++;
+		m_modelShader->Uniform("u_Lights[" + _nr + "].ambient", temp[i]->GetAmbient());
+		m_modelShader->Uniform("u_Lights[" + _nr + "].diffuse", temp[i]->GetDiffuse());
+		m_modelShader->Uniform("u_Lights[" + _nr + "].specular", temp[i]->GetSpecular());
 	}
 }
-//void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, MarchingCubes* cube)
 
-void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, MarchingCubes* cube, bool gameOver, int winner, float dt)
+void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, MarchingCubes* cube, bool gameOver, int winner, float dt, bool lightsOut)
 {
 	if(dt < 1)
 		m_camera->UpdateMovement(dt, 1);
@@ -208,7 +223,9 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, 
 	cube->Draw(m_modelShader);
 
 	// Light uniforms
-	LightToShader();
+	
+		LightToShader(lightsOut);
+	
 
 	// Draw all objects
 	RenderSceneInfo(m_modelShader, objects);
@@ -285,6 +302,11 @@ void Scene::RenderSky()
 
 	glDepthMask(GL_TRUE);
 	glDepthFunc(GL_LESS);
+}
+
+void Scene::RenderLights(vector<Light*> light)
+{
+	m_carLights = light;
 }
 
 void Scene::RenderShadows(vector<ObjectInfo*> objects)
@@ -488,7 +510,6 @@ void Scene::ShakeCamera(float intensity, float duration)
 {
 	m_camera->Shake(intensity, duration);
 }
-
 
 void Scene::SetWindowSize(int width, int height)
 {

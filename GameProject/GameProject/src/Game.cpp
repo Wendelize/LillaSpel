@@ -208,6 +208,7 @@ void Game::Update(float dt)
 		}
 	}
 }
+
 void Game::DynamicCamera(float dt)
 {
 	vec3 focusPoint = vec3(0);
@@ -287,8 +288,11 @@ void Game::Render(float dt)
 
 	m_menu->RenderMenu(m_gameOver, m_time, m_cars[0]);
 
+	
 	m_objects = m_objectHandler->GetObjects();
-	m_scene->Render(m_objects, m_objectHandler->GetWorld(), m_cube, m_gameOver, m_winner, dt);
+	m_carLight = m_objectHandler->GetLights();
+	m_scene->RenderLights(m_carLight);
+	m_scene->Render(m_objects, m_objectHandler->GetWorld(), m_cube, m_gameOver, m_winner, dt, m_objectHandler->GetLightsOut());
 //
 //	m_scene->Render(m_objects, m_objectHandler->GetWorld(), m_cube);
 

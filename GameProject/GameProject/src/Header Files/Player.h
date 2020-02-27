@@ -30,6 +30,8 @@ private:
 	ISound* m_honk;
 	bool m_fallen;
 	bool m_inverted;
+	Light* m_lights[2];
+	bool m_lightsOn = true;
 
 	//Variables 4 Fysik
 	btCollisionShape* m_carShape;
@@ -66,6 +68,7 @@ public:
 	vec3 GetDirection();
 	mat4 GetMatrix();
 	ObjectInfo* GetObjectInfo();
+	Light* GetLight(int index);
 	btRigidBody* GetBody();
 	btVector3 GetCurrentPos();
 	void SetPos(vec3 pos);
@@ -80,4 +83,6 @@ public:
 	bool updatePower(float dt);
 	int GetActivePower();
 	Controller* GetController();
+	bool GetBoolLights();
+	void SetBoolLights(bool state);
 };

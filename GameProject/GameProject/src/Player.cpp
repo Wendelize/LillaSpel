@@ -398,6 +398,31 @@ ObjectInfo* Player::GetObjectInfo()
 	return m_info;
 }
 
+Light* Player::GetLight(int index)
+{
+	vec3 pos = vec3(m_transform->GetMatrix()[3][0], m_transform->GetMatrix()[3][1], m_transform->GetMatrix()[3][2]);
+	vec3 t = cross(m_transform->GetForward(), { 0,1,0 });
+	switch (index)
+	{
+	case 0:
+		m_lights[0] = new Light(2, -m_transform->GetForward() - vec3(0, 0.05, 0), pos /*+ m_transform->GetForward() * 1.f*/ + t * 0.5f + vec3(0, 0.5, 0), vec3(m_color.x * 5, m_color.y * 5, m_color.z * 5), 12.5);
+		break;
+	case 1:
+		m_lights[1] = new Light(2, -m_transform->GetForward() - vec3(0, 0.05, 0), pos /*+ m_transform->GetForward() * 1.f*/ - t * 0.5f + vec3(0, 0.5, 0), vec3(m_color.x * 5, m_color.y * 5, m_color.z * 5), 12.5);
+		break;
+	case 2:
+		m_lights[2] = new Light(2, m_transform->GetForward() - vec3(0, 0.05, 0), pos + vec3(-0.5, 0.5, 0), vec3(m_color.x * 5, m_color.y * 5, m_color.z * 5), 12.5);
+		break;
+	case 3:
+		m_lights[3] = new Light(2, m_transform->GetForward() - vec3(0, 0.05, 0), pos + vec3(0.5, 0.5, 0), vec3(m_color.x * 5, m_color.y * 5, m_color.z * 5), 12.5);
+		break;
+	default:
+		break;
+	}
+
+	return m_lights[index];
+}
+
 btRigidBody* Player::GetBody()
 {
 	return m_body;
@@ -545,6 +570,8 @@ void Player::removePower(int type)
 		m_body->setRestitution(m_restitution);
 		break;
 	}
+
+	m_powerType = NULL;
 }
 
 bool Player::updatePower(float dt)
@@ -567,6 +594,16 @@ int Player::GetActivePower()
 Controller* Player::GetController()
 {
 	return m_controller;
+}
+
+bool Player::GetBoolLights()
+{
+	return m_lightsOn;
+}
+
+void Player::SetBoolLights(bool state)
+{
+	m_lightsOn = state;
 }
 
 void Player::SetFallen()

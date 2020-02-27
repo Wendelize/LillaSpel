@@ -12,6 +12,7 @@ private:
 	Menu* m_menu;
 
 	vector<ObjectInfo*> m_objects;
+	vector<Light*> m_carLight;
 	vector<Model*> m_platforms;
 	vector<Model*> m_cars;
 	ISoundEngine* m_soundEngine;

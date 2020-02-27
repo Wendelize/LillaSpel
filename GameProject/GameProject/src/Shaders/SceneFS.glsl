@@ -35,9 +35,11 @@ struct Material {
 
 // UNIFORMS
 uniform int u_NrOf;
+uniform int u_NrOfCarLights;
 uniform vec3 u_ViewPos;
 uniform int u_LightType;
 uniform Light u_Lights[MAX_NR_OF_LIGHTS];
+uniform Light u_CarLights[MAX_NR_OF_LIGHTS];
 uniform Material u_Material;
 uniform bool u_Glow;
 
@@ -129,7 +131,7 @@ vec3 CalcPointLight(Light light, vec3 p, vec3 n, vec3 eye, bool blinn){
     vec3 specular = CalcSpecular(light, lightVec, lookVec, n, blinn) * u_Material.specular;
 
     float distance = length(light.pos - p);
-    float attenuation = 1.0 / (1.0 + 0.09 * distance + 0.0022 * (distance * distance));    
+    float attenuation = 1.0 / (1.0 + 0.09 * distance + 0.092 * (distance * distance));    
 
     ambient *= attenuation;
     diffuse *= attenuation;
@@ -139,10 +141,53 @@ vec3 CalcPointLight(Light light, vec3 p, vec3 n, vec3 eye, bool blinn){
 }
 
 
+// SPOTLIGHT
+vec3 CalcSpotLight(Light light, vec3 p, vec3 n, vec3 eye, bool blinn) {
+	vec3 lightVec = normalize(light.pos - p);
+	float theta = dot(lightVec, normalize(-light.dir));
+	vec3 result = vec3(0);
+	float lightLength = length(light.pos - p);
+
+	if(lightLength < 10)
+	{
+		if(theta > light.cutOff)
+		{
+			vec3 col = normalize(vi.color);
+			vec3 lookVec = normalize(eye - p);
+
+			vec3 ambient = light.ambient * u_Material.ambient * col;
+		
+			vec3 diffuse = CalcDiffuse(light, lightVec, n) * u_Material.diffuse * col;
+
+			vec3 specular = CalcSpecular(light, lightVec, lookVec, n, blinn) * u_Material.specular;
+
+			float distance = length(light.pos - p);
+			float attenuation = 1.0 / (1.0 + 0.09 * distance + 0.12 * (distance * distance));    
+
+			diffuse *= attenuation;
+			specular *= attenuation;
+
+			result = ( diffuse + specular) ;
+		}
+		else
+			{
+				result = vec3(0);
+			}
+	}
+	else
+	{
+		result = vec3(0);
+	}
+	return result;
+}
+
+
 // MAIN
 void main(){
 	vec3 result = vec3(0.0);
 	bool blinn = true;
+	vec3 col = normalize(vi.color);
+	vec3 ambient = u_Material.ambient * col * 0.05;
 
 	for(int i = 0; i < u_NrOf; i++)
 	{
@@ -150,12 +195,12 @@ void main(){
 			result += CalcDirLight(u_Lights[i], vi.position, vi.normal, u_ViewPos, true, true);
 		} else if (u_Lights[i].type == 1) {
 			result += CalcPointLight(u_Lights[i], vi.position, vi.normal, u_ViewPos, blinn); 
+		} else if (u_Lights[i].type == 2) {
+			result += CalcSpotLight(u_Lights[i], vi.position, vi.normal, u_ViewPos, false); 
 		}
 	}
-    float c = CalcShadow(u_Lights[0], vi.positionLightSpace, vi.position, vi.normal, u_ViewPos);
-    vec3 m = vi.positionLightSpace.xyz;
 
-    FragColor = vec4(result, 1.0);
+    FragColor = vec4(result + ambient, 1.0);
 
     float brightness = dot(result.rgb, vec3(0.2126, 0.7152, 0.0722));
     if(u_Glow)// && brightness > 1)

@@ -16,6 +16,7 @@ ObjectHandler::ObjectHandler()
 	m_dynamicsWorld->setDebugDrawer(m_debugDrawer);
 	m_ghostCallback = new btGhostPairCallback();
 	m_dynamicsWorld->getPairCache()->setInternalGhostPairCallback(m_ghostCallback);
+	m_lightsOut = false;
 
 	m_soundEngine = createIrrKlangDevice();
 	if (m_soundEngine)
@@ -77,11 +78,27 @@ ObjectHandler::~ObjectHandler()
 	}
 	m_powerUps.clear();
 	m_platforms.clear();
+
 	for (size_t i = 0; i < m_structs.size(); i++)
 	{
 		delete m_structs.at(i);
 	}
 	m_structs.clear();
+
+	for (size_t i = 0; i < m_carLights.size(); i++)
+	{
+		delete m_carLights.at(i);
+	}
+	m_carLights.clear();
+
+	if (m_soundEngine)
+	{
+		for (uint i = 0; i < m_crashes.size(); i++)
+		{
+			m_crashes[i]->drop();
+		}
+		m_crashes.clear();
+	}
 
 	for (int i = m_dynamicsWorld->getNumCollisionObjects() - 1; i >= 0; i--)
 	{
@@ -127,7 +144,23 @@ void ObjectHandler::Update(float dt)
 	m_dynamicsWorld->stepSimulation(dt, 10);
 
 	CheckPowerUpCollision();
+	CheckCollisionCars(dt);
 	UpdateVibration(dt);
+
+	//LightsOut power-up update
+	bool active = false;
+	for (auto p : m_players)
+	{
+		if (p->GetActivePower() == 7)
+		{
+			active = true;
+			m_lightsOut = true;
+		}
+	}
+	if (m_lightsOut == true && active == false)
+	{
+		m_lightsOut = false;
+	}
 
 	for (size_t i = 0; i < m_dynamicsWorld->getNumCollisionObjects(); i++)
 	{
@@ -183,6 +216,7 @@ void ObjectHandler::Update(float dt)
 				}
 				m_players[isPlayer]->SetPos(spawn);
 				m_players[isPlayer]->ReduceLife();
+				m_players[isPlayer]->SetBoolLights(true);
 				if (m_soundEngine)
 				{
 					m_players[isPlayer]->SetNotFallen();
@@ -276,7 +310,7 @@ void ObjectHandler::AddPowerUp()
 			}
 		}
 	}*/
-	int type = rand() % (10);
+	int type = 7;//rand() % (10);
 	bool spawnFound = false;
 	vec3 spawn = vec3(0);// = vec3((rand() % 30) - 15, 7, (rand() % 20 - 15)));
 	while (!spawnFound) {
@@ -433,6 +467,27 @@ vector<ObjectInfo*> ObjectHandler::GetObjects()
 	return m_structs;
 }
 
+vector<Light*> ObjectHandler::GetLights()
+{
+	for (size_t i = 0; i < m_carLights.size(); i++)
+	{
+		delete m_carLights.at(i);
+	}
+	m_carLights.clear();
+
+	for (uint j = 0; j < m_players.size(); j++)
+	{
+		if (m_players.at(j)->GetBoolLights())
+		{
+			m_carLights.push_back(m_players[j]->GetLight(0));
+			m_carLights.push_back(m_players[j]->GetLight(1));
+		}
+	}
+
+
+	return m_carLights;
+}
+
 btDiscreteDynamicsWorld* ObjectHandler::GetWorld()
 {
 	return m_dynamicsWorld;
@@ -538,6 +593,8 @@ void ObjectHandler::CheckPowerUpCollision()
 	int numManifolds = m_dynamicsWorld->getDispatcher()->getNumManifolds();
 	for (int i = 0; i < numManifolds; ++i)
 	{
+		//TODO
+		//Powerup spawn on car, exception thrown
 		btPersistentManifold* contactManifold = m_dynamicsWorld->getDispatcher()->getManifoldByIndexInternal(i);
 		btCollisionObject* obA = const_cast<btCollisionObject*>(contactManifold->getBody0());
 		btCollisionObject* obB = const_cast<btCollisionObject*>(contactManifold->getBody1());
@@ -644,3 +701,41 @@ void ObjectHandler::CheckPowerUpCollision()
 
 }
 
+bool ObjectHandler::CheckCollisionCars(float dt)
+{
+	m_collision = false;
+	int numManifolds = m_dynamicsWorld->getDispatcher()->getNumManifolds();
+	for (int i = 0; i < numManifolds; ++i)
+	{
+		btPersistentManifold* contactManifold = m_dynamicsWorld->getDispatcher()->getManifoldByIndexInternal(i);
+		btCollisionObject* obA = const_cast<btCollisionObject*>(contactManifold->getBody0());
+		btCollisionObject* obB = const_cast<btCollisionObject*>(contactManifold->getBody1());
+		btCollisionShape* shapeA = obA->getCollisionShape();
+		btCollisionShape* shapeB = obB->getCollisionShape();
+
+		//Collision between spheres(cars)
+		if (shapeA->getShapeType() == 8 && shapeB->getShapeType() == 8)
+		{
+			for (int f = 0; f < m_players.size(); f++)
+			{
+				if (m_players.at(f)->GetBody() == obA)
+				{
+					m_collision = true;
+					m_players.at(f)->SetBoolLights(false);
+				}
+				if (m_players.at(f)->GetBody() == obB)
+				{
+					m_collision = true;
+					m_players.at(f)->SetBoolLights(false);
+				}
+			}
+		}
+	}
+
+	return m_collision;
+}
+
+bool ObjectHandler::GetLightsOut()
+{
+	return m_lightsOut;
+}
