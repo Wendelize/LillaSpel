@@ -20,6 +20,7 @@ Player::Player(Model* model, int modelId, vec3 pos)
 	m_powerMultiplier = 1.0f;
 	m_powerActive = false;
 	m_powerType = 0;
+	m_inverted = false;
 	m_scale = vec3(scale, scale, scale);
 	m_transform->SetScale(scale, scale, scale);
 	m_carShape = new btSphereShape(radius);
@@ -184,14 +185,29 @@ void Player::Update(float dt)
 		if (m_controller->ButtonAIsPressed(m_controllerID))
 		{
 			//Acceleration
-			m_speed = 700000.f * m_powerMultiplier / (dt*60) ;
+			
+			if (m_inverted == false)
+			{
+				m_speed = 700000.f * m_powerMultiplier / (dt * 60);
+			}
+			else if (m_inverted == true)
+			{
+				m_speed = -700000.f * m_powerMultiplier / (dt * 60);
+			}
 			pressed = true;
 		}
 
 		if (m_controller->ButtonXIsPressed(m_controllerID))
 		{
-			m_speed = -500000.f * m_powerMultiplier / (dt * 60);
-			pressed = true;
+			if (m_inverted == false)
+			{
+				m_speed = -500000.f * m_powerMultiplier / (dt * 60);
+			}
+			else if (m_inverted == true)
+			{
+				m_speed = 500000.f * m_powerMultiplier / (dt * 60);
+			}
+				pressed = true;
 		}
 
 		//Triggers
@@ -199,26 +215,46 @@ void Player::Update(float dt)
 		{
 			//Left trigger pressed
 			//Speed-Up
-			m_speed = 1100000.f * m_powerMultiplier / (dt * 60);
+			if (m_inverted == false)
+			{
+				m_speed = 1100000.f * m_powerMultiplier / (dt * 60);
+			}
+			else if (m_inverted == true)
+			{
+				m_speed = -1100000.f * m_powerMultiplier / (dt * 60);
+			}
 			pressed = true;
-
 		}
 		if (m_controller->GetLeftTrigger(m_controllerID) != -1)
 		{
 			//Left trigger pressed
 			//Speed-Up
-			m_speed = -900000.f * m_powerMultiplier / (dt * 60);
+			
+			if (m_inverted == false)
+			{
+				m_speed = -900000.f * m_powerMultiplier / (dt * 60);
+			}
+			else if (m_inverted == true)
+			{
+				m_speed = 900000.f * m_powerMultiplier / (dt * 60);
+			}
 			pressed = true;
-
 		}
 
 		// Left stick horisontal input
-		if (m_controller->GetLeftStickHorisontal(m_controllerID) > 0.2f || m_controller->GetLeftStickHorisontal(m_controllerID) < -0.2f)
+		if ((m_controller->GetLeftStickHorisontal(m_controllerID) > 0.2f || m_controller->GetLeftStickHorisontal(m_controllerID) < -0.2f) && m_inverted == false)
 		{
 			if (m_speed < 0)
 				rotate.y -= m_controller->GetLeftStickHorisontal(m_controllerID) * -1.0;
 			else
 				rotate.y -= m_controller->GetLeftStickHorisontal(m_controllerID);
+		}
+		else if ((m_controller->GetLeftStickHorisontal(m_controllerID) > 0.2f || m_controller->GetLeftStickHorisontal(m_controllerID) < -0.2f) && m_inverted == true)
+		{
+			if (m_speed < 0)
+				rotate.y -= m_controller->GetLeftStickHorisontal(m_controllerID);
+			else
+				rotate.y -= m_controller->GetLeftStickHorisontal(m_controllerID)* -1.0;
 		}
 		
 		//Set rotationSpeed depending on your speed, less speed--> Can turn less. 
@@ -402,7 +438,7 @@ void Player::GivePower(int type)
 			break;
 
 		case 1:
-			m_body->setRestitution(m_restitution * 1.2);
+			m_inverted = true;
 			break;
 
 		case 2:
@@ -416,6 +452,7 @@ void Player::GivePower(int type)
 			m_transform->SetScale(m_scale.x * (0.75f), m_scale.y * (0.75f), m_scale.z * (0.75f));
 			m_powerMultiplier = 1.0f;
 			break;
+
 		case 4:
 			mass = m_body->getMass() * 1.5f;
 			m_body->getCollisionShape()->calculateLocalInertia(mass, localInertia);
@@ -430,6 +467,20 @@ void Player::GivePower(int type)
 			m_body->setMassProps(mass, localInertia);
 			m_transform->SetScale(m_scale.x * (0.75f), m_scale.y * (0.75f), m_scale.z * (0.75f));
 			m_powerMultiplier = 1.0f;
+			break;
+
+		case 6: 
+			m_body->setRestitution(m_restitution * 1.2);
+			break;
+
+		case 7: 
+			break;
+
+		case 8:
+			m_lives++;
+			break;
+
+		case 9:
 			break;
 	}
 }
@@ -450,7 +501,7 @@ void Player::removePower(int type)
 		break;
 
 	case 1:
-		m_body->setRestitution(m_restitution);
+		m_inverted = false;
 		break;
 
 	case 2:
@@ -479,6 +530,16 @@ void Player::removePower(int type)
 		m_body->setMassProps(mass, localInertia);
 		m_powerMultiplier = 1.f;
 		m_transform->SetScale(m_scale.x, m_scale.y, m_scale.z);
+		break;
+	case 6:
+		m_body->setRestitution(m_restitution);
+		break;
+	case 7:
+		break;
+	case 8:
+		//No functionality needed
+		break;
+	case 9:
 		break;
 	}
 }
