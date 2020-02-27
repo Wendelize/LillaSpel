@@ -11,9 +11,9 @@ Game::Game()
 	m_menu = new Menu(m_scene, m_objectHandler);
 	// noMenu, start, select, pause, stats, restart, playerHud; // stats finns inte än
 	// väl playerHud om ni vill spela utan start menu
-	// välj noMenu om ni vill spela utan HUD och ingen restart, 
+	// välj noMenu om ni vill spela utan HUD 
 	//	Pause meny bör fortfarande fungera med noMenu
-	m_menu->SetActiveMenu(Menu::ActiveMenu::selectLives);
+	m_menu->SetActiveMenu(Menu::ActiveMenu::start);
 	m_menu->LoadMenuPic();
 
 	m_debug = false;
@@ -102,6 +102,7 @@ void Game::Update(float dt)
 
 	if ((!m_menu->Pause() && !m_wasSelect)) // Vet inte om det kan göras snyggare?
 	{
+
 		m_time += dt;
 		m_timeSinceSpawn += dt;
 		if (m_timeSinceSpawn > 5 && !m_gameOver)
@@ -115,6 +116,7 @@ void Game::Update(float dt)
 		if (m_objectHandler->GetNumPlayers() == 1 && !m_gameOver)
 		{
 			m_winner = 0;
+			m_menu->RankPlayers();
 			m_menu->SetActiveMenu(Menu::ActiveMenu::win);
 			m_gameOver = true;
 			if (m_soundEngine)
@@ -135,7 +137,8 @@ void Game::Update(float dt)
 		}
 		if (m_time > m_maxTime && !m_gameOver)
 		{
-			m_winner = m_objectHandler->GetWinnerIndex();
+			m_winner = m_objectHandler->GetWinnerID();
+			m_menu->RankPlayers();
 			m_menu->SetWinner(m_winner);
 			m_menu->SetActiveMenu(Menu::ActiveMenu::win);
 			m_gameOver = true;
@@ -174,6 +177,16 @@ void Game::Update(float dt)
 		else
 		{
 			m_toggle = false;
+		}
+
+		if (m_objectHandler->GetCollisionHappened())
+		{
+			m_menu->CollisionTracking();
+		}
+
+		if (m_objectHandler->GetDeath())
+		{
+			m_menu->KillCount();
 		}
 	}
 }

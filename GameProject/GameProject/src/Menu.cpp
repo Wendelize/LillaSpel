@@ -7,8 +7,15 @@ Menu::Menu(Scene* scene, ObjectHandler* objHand)
 	m_scene = scene;
 	m_objHand = objHand;
 
+	m_kills.push_back(m_p1KillList);
+	m_kills.push_back(m_p2KillList);
+	m_kills.push_back(m_p3KillList);
+	m_kills.push_back(m_p4KillList);
 	
-	
+	m_killers.push_back(m_p1KillerList);
+	m_killers.push_back(m_p2KillerList);
+	m_killers.push_back(m_p3KillerList);
+	m_killers.push_back(m_p4KillerList);
 }
 
 Menu::~Menu()
@@ -118,7 +125,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 			int index = 0;
 			for (int i = 0; i < m_objHand->GetNumPlayers(); i++)
 			{
-				if (m_objHand->GetPlayerControllerID(i) == 0)
+				if (m_objHand->GetPlayerControllerIDBloo(i, 27) == 0)
 				{
 					index = i;
 				}
@@ -195,7 +202,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				int index = 1;
 				for (int i = 0; i < m_objHand->GetNumPlayers(); i++)
 				{
-					if (m_objHand->GetPlayerControllerID(i) == 1)
+					if (m_objHand->GetPlayerControllerIDBloo(i, 28) == 1)
 					{
 						index = i;
 					}
@@ -288,7 +295,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 					int index = 2;
 					for (int i = 0; i < m_objHand->GetNumPlayers(); i++)
 					{
-						if (m_objHand->GetPlayerControllerID(i) == 2)
+						if (m_objHand->GetPlayerControllerIDBloo(i, 29) == 2)
 						{
 							index = i;
 						}
@@ -384,7 +391,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 					int index = 3;
 					for (int i = 0; i < m_objHand->GetNumPlayers(); i++)
 					{
-						if (m_objHand->GetPlayerControllerID(i) == 3)
+						if (m_objHand->GetPlayerControllerIDBloo(i, 30) == 3)
 						{
 							index = i;
 						}
@@ -723,17 +730,17 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 	case ActiveMenu::win:
 		ImGui::SetNextWindowPos(ImVec2(width / 2 - 150, 0));
 		ImGui::SetNextWindowSize(ImVec2(300, 110));
-		if (m_objHand->GetPlayerControllerID(m_winner) == 0)
+		if (m_winnerID == 0)
 		{
 			ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_p1Col.x, m_p1Col.y, m_p1Col.z, 0.5));
 
 		}
-		else if (m_objHand->GetPlayerControllerID(m_winner) == 1)
+		else if (m_winnerID == 1)
 		{
 			ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_p2Col.x, m_p2Col.y, m_p2Col.z, 0.5));
 
 		}
-		else if (m_objHand->GetPlayerControllerID(m_winner) == 2)
+		else if (m_winnerID == 2)
 		{
 			ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_p3Col.x, m_p3Col.y, m_p3Col.z, 0.5));
 
@@ -748,7 +755,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		{
 			
 			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0, 0.0, 0.0, 1));
-			ImGui::Text("\t\tPlayer  %d Has Won!", m_objHand->GetPlayerControllerID(m_winner) + 1);
+			ImGui::Text("\t\tPlayer  %d Has Won!", m_winnerID + 1);
 
 			
 			if (time - m_p1Seconds >= 0.5 && (glfwGetGamepadState(0, &state)))
@@ -757,7 +764,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 
 				if (state.buttons[GLFW_GAMEPAD_BUTTON_A])
 				{
-					m_menu = ActiveMenu::restart;
+					m_menu = ActiveMenu::stats;
 					m_p1Seconds = time;
 				}
 				
@@ -767,7 +774,190 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		ImGui::End();
 		break;
 	case ActiveMenu::stats:
+		// Winner
+		ImGui::SetNextWindowPos(ImVec2(0, 0));
+		ImGui::SetNextWindowSize(ImVec2(250, 65));
+		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_p1Col.x, m_p1Col.y, m_p1Col.z, 1));
+		if (ImGui::Begin("##statsP1.1", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize))
+		{
+			ImGui::Text("# 1 Player\t%d ", m_winnerID + 1);
+			
+			ImGui::PopStyleColor();
+		}
+		ImGui::End();
 
+		ImGui::SetNextWindowPos(ImVec2(0, height / 6 * 2));
+		ImGui::SetNextWindowSize(ImVec2(250, 500));
+		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_p1Col.x, m_p1Col.y, m_p1Col.z, 1));
+		if (ImGui::Begin("##statsP1.2", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize))
+		{
+			ImGui::Text("Kills : \t ");
+
+			for (int i = 0; i < m_kills[m_winOrder[0]].size(); i++)
+			{
+				ImGui::Text("\tPlayer %d ", (m_kills[m_winOrder[0]]).at(i) + 1);
+			}
+			ImGui::Separator();
+			ImGui::Text("Killed You : ");
+			for (int i = 0; i < m_killers[m_winOrder[0]].size(); i++)
+			{
+				if (i % 2 != 0)
+				{
+					ImGui::SameLine();
+				}
+				ImGui::Text("\t%d, ", (m_killers[m_winOrder[0]]).at(i) + 1);
+			}
+			ImGui::Separator();
+			ImGui::Text("Collisions: \t%d ", m_timesCollided[m_winOrder[0]]); 
+
+
+			ImGui::PopStyleColor();
+		}
+		ImGui::End();
+
+
+
+		// Second Place
+		ImGui::SetNextWindowPos(ImVec2(width / 9 * 2, 0));
+		ImGui::SetNextWindowSize(ImVec2(250, 65));
+		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_p1Col.x, m_p1Col.y, m_p1Col.z, 1));
+		if (ImGui::Begin("##statsP2.1", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize))
+		{
+			ImGui::Text("# 2 Player\t%d ", m_winOrder[1] + 1);
+			ImGui::PopStyleColor();
+		}
+		ImGui::End();
+
+		ImGui::SetNextWindowPos(ImVec2(width / 9 * 2, height / 6 * 2));
+		ImGui::SetNextWindowSize(ImVec2(250, 500));
+		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_p1Col.x, m_p1Col.y, m_p1Col.z, 1));
+		if (ImGui::Begin("##statsP2.2", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize))
+		{
+			ImGui::Text("You Killed : \t ");
+
+			for (int i = 0; i < m_kills[m_winOrder[1]].size(); i++)
+			{
+				ImGui::Text("\tPlayer %d ", (m_kills[m_winOrder[1]]).at(i) + 1);
+			}
+			ImGui::Separator();
+			ImGui::Text("Killed You : ");
+			for (int i = 0; i < m_killers[m_winOrder[1]].size(); i++)
+			{
+				if (i % 2 != 0)
+				{
+					ImGui::SameLine();
+				}
+				ImGui::Text("\t%d, ", (m_killers[m_winOrder[1]]).at(i) + 1);
+			}
+			ImGui::Separator();
+			ImGui::Text("Collisions: \t%d ", m_timesCollided[m_winOrder[1]]);
+
+			ImGui::PopStyleColor();
+		}
+		ImGui::End();
+
+		// Third Place
+		if (m_winOrder.size() >= 3)
+		{
+			ImGui::SetNextWindowPos(ImVec2(width / 9 * 6, 0));
+			ImGui::SetNextWindowSize(ImVec2(250, 65));
+			ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_p1Col.x, m_p1Col.y, m_p1Col.z, 1));
+			if (ImGui::Begin("##statsP3.1", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize))
+			{
+				ImGui::Text("# 3 Player\t%d ", m_winOrder[2] + 1);
+
+				ImGui::PopStyleColor();
+			}
+			ImGui::End();
+
+			ImGui::SetNextWindowPos(ImVec2(width / 9 * 6, height / 6 * 2));
+			ImGui::SetNextWindowSize(ImVec2(250, 500));
+			ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_p1Col.x, m_p1Col.y, m_p1Col.z, 1));
+			if (ImGui::Begin("##statsP3.2", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize))
+			{
+				ImGui::Text("You Killed : \t ");
+
+				for (int i = 0; i < m_kills[m_winOrder[2]].size(); i++)
+				{
+					ImGui::Text("\tPlayer %d ", (m_kills[m_winOrder[2]]).at(i) + 1);
+				}
+				ImGui::Separator();
+				ImGui::Text("Killed You : ");
+				for (int i = 0; i < m_killers[m_winOrder[2]].size(); i++)
+				{
+					if (i % 2 != 0)
+					{
+						ImGui::SameLine();
+					}
+					ImGui::Text("\t%d, ", (m_killers[m_winOrder[2]]).at(i) + 1);
+				}
+				ImGui::Separator();
+				ImGui::Text("Collisions: \t%d ", m_timesCollided[m_winOrder[2]]);
+
+				ImGui::PopStyleColor();
+			}
+			ImGui::End();
+		}
+
+		// Fourth Place
+		if (m_winOrder.size() >= 4)
+		{
+			ImGui::SetNextWindowPos(ImVec2(width / 9 * 8, 0));
+			ImGui::SetNextWindowSize(ImVec2(250, 65));
+			ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_p1Col.x, m_p1Col.y, m_p1Col.z, 1));
+			if (ImGui::Begin("##statsP4.1", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize))
+			{
+				ImGui::Text("# 4 Player\t%d ", m_winOrder[3] + 1);
+
+				ImGui::PopStyleColor();
+			}
+			ImGui::End();
+
+			ImGui::SetNextWindowPos(ImVec2(width / 9 * 8, height / 6 * 2));
+			ImGui::SetNextWindowSize(ImVec2(250, 500));
+			ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_p1Col.x, m_p1Col.y, m_p1Col.z, 1));
+			if (ImGui::Begin("##statsP4.2", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize))
+			{
+				ImGui::Text("You Killed : \t ");
+
+				for (int i = 0; i < m_kills[m_winOrder[3]].size(); i++)
+				{
+					ImGui::Text("\tPlayer %d ", (m_kills[m_winOrder[3]]).at(i) + 1);
+				}
+				ImGui::Separator();
+				ImGui::Text("Killed You : ");
+				for (int i = 0; i < m_killers[m_winOrder[3]].size(); i++)
+				{
+					if (i % 2 != 0)
+					{
+						ImGui::SameLine();
+					}
+					ImGui::Text("\t%d, ", (m_killers[m_winOrder[3]]).at(i) + 1);
+				}
+				ImGui::Separator();
+				ImGui::Text("Collisions: \t%d ", m_timesCollided[m_winOrder[3]]);
+
+				ImGui::PopStyleColor();
+			}
+			ImGui::End();
+		}
+		// Continue Prompt
+		if (time - m_p1Seconds >= 1.0 && (glfwGetGamepadState(0, &state)))
+		{
+			ImGui::SetNextWindowPos(ImVec2(width / 2 - 150, 0));
+			ImGui::SetNextWindowSize(ImVec2(300, 60));
+			if (ImGui::Begin("##statsCont", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize))
+			{
+				ImGui::Text(" Press  \"A \"  To Continue!");
+
+				if (state.buttons[GLFW_GAMEPAD_BUTTON_A])
+				{
+					m_menu = ActiveMenu::restart;
+					m_p1Seconds = time;
+				}
+			}
+			ImGui::End();
+		}
 		break;
 	case ActiveMenu::playerHud:
 		ImGui::SetNextWindowPos(ImVec2(width / 2 - 125, 0));
@@ -794,7 +984,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 			int lives = 0;
 			for (int i = 0; i < m_objHand->GetNumPlayers(); i++)
 			{
-				if (m_objHand->GetPlayerControllerID(i) == 0)
+				if (m_objHand->GetPlayerControllerIDBloo(i, 23) == 0)
 				{
 					index = i;
 				}
@@ -819,7 +1009,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 			int lives = 0;
 			for (int i = 0; i < m_objHand->GetNumPlayers(); i++)
 			{
-				if (m_objHand->GetPlayerControllerID(i) == 1)
+				if (m_objHand->GetPlayerControllerIDBloo(i, 24) == 1)
 				{
 					index = i;
 				}
@@ -845,7 +1035,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				int lives = 0;
 				for (int i = 0; i < m_objHand->GetNumPlayers(); i++)
 				{
-					if (m_objHand->GetPlayerControllerID(i) == 2)
+					if (m_objHand->GetPlayerControllerIDBloo(i, 25) == 2)
 					{
 						index = i;
 					}
@@ -872,7 +1062,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				int lives = 0;
 				for (int i = 0; i < m_objHand->GetNumPlayers(); i++)
 				{
-					if (m_objHand->GetPlayerControllerID(i) == 3)
+					if (m_objHand->GetPlayerControllerIDBloo(i, 26) == 3)
 					{
 						index = i;
 					}
@@ -898,9 +1088,9 @@ void Menu::SetActiveMenu(ActiveMenu activeMenu)
 	m_menu = activeMenu;
 }
 
-void Menu::SetWinner(int playerNum)
+void Menu::SetWinner(int playerID)
 {
-	m_winner = playerNum;
+	m_winnerID = playerID;
 }
 
 bool Menu::SelectMenuActive()
@@ -967,6 +1157,261 @@ void Menu::ResetReset()
 	}
 	m_objHand->SetNumberOfLives(m_maxLives);
 	m_continue = 0;
+
+	m_p1KillerList.clear();
+	m_p1KillList.clear();
+	m_p2KillerList.clear();
+	m_p2KillList.clear();
+	m_p3KillerList.clear();
+	m_p3KillList.clear();
+	m_p4KillerList.clear();
+	m_p4KillList.clear();
+
+	m_deathOrderID.clear();
+	m_winOrder.clear();
+
+}
+
+void Menu::CollisionTracking()
+{
+ 	m_objHand->SetCollisionHappened(false);
+	//int oldAIndex = 
+	int aId = m_objHand->GetACollisionId();
+	int bId = m_objHand->GetBCollisionId();
+
+	m_timesCollided[aId] += 1;
+	m_lastCollied[aId] = bId;
+	m_timesCollided[bId] += 1;
+	m_lastCollied[bId] = aId;
+
+}
+
+void Menu::KillCount()
+{
+	m_objHand->SetDeath(false);
+	int deadId = m_objHand->GetDeadId();
+	int killerId = m_lastCollied[deadId];
+	
+	// if killerId == -1 then you killed yourself
+	m_killers[deadId].push_back(killerId);
+
+	if (killerId != -1)
+	{
+		m_kills[killerId].push_back(deadId);
+	}
+
+	
+}
+
+void Menu::RankPlayers()
+{
+	int winnerIndex = 0;
+	int winnerLife = 0;
+
+	int first = -1;
+	int second = -1;
+	int third = -1;
+	int fourth = -1;
+
+	int last = -1;
+	int secondLast = -1;
+	int thirdLast = -1;
+	int fourthLast = -1;
+	vector<int> deathOrder = m_objHand->GetDeathOrder();
+	//TODO: add shared placing if same amount of lifes and kills
+	for (int i = deathOrder.size() - 1; i >= 0; i--)
+	{
+		if (i == 0)
+		{
+			m_deathOrderID.push_back(deathOrder[i]); // first to die fourth in list
+		}
+		else if (i == 1)
+		{
+			m_deathOrderID.push_back(deathOrder[i]); // second to die third in list
+		}
+		else if (i == 2)
+		{
+			m_deathOrderID.push_back(deathOrder[i]); // third to die second in list
+		}
+		else if (i == 3)
+		{
+			m_deathOrderID.push_back(deathOrder[i]); // fourth to die first in list
+		}
+	}
+
+
+	int livesForPlayerWithIndex[4] = { -1, -1 , -1, -1 };
+	int newLifeId[4] = { -1, -1 , -1, -1 };
+
+	if (m_deathOrderID.size() == 0)
+	{
+		for (int i = 0; i < m_objHand->GetNumPlayers(); i++)
+		{
+			livesForPlayerWithIndex[i] = m_objHand->GetPlayerLives(i);
+		}
+
+		int newI[4] = { -1, -1 , -1, -1 };
+
+		for (int j = 0; j < m_objHand->GetNumPlayers(); j++)
+		{
+			
+			int tempLives = -1;
+
+			for (int i = 0; i < 4; i++)
+			{
+				if (tempLives < livesForPlayerWithIndex[i] && i != newI[0] && i != newI[1] && i != newI[2] && i != newI[3])
+				{
+					tempLives = livesForPlayerWithIndex[i];
+					newI[j] = i;
+				}
+			}
+			newLifeId[j] = m_objHand->GetPlayerControllerIDBloo(newI[j], 1);
+		}
+
+	}
+	else if (m_deathOrderID.size() == 1)
+	{
+		for (int i = 0; i < m_objHand->GetNumPlayers(); i++)
+		{
+			if (m_objHand->GetPlayerControllerIDBloo(i, 2) != m_deathOrderID[0])
+			{
+				livesForPlayerWithIndex[i] = m_objHand->GetPlayerLives(i);
+			}
+		}
+
+		int newI[4] = { -1, -1 , -1, -1 };
+
+		for (int j = 0; j < m_objHand->GetNumPlayers(); j++)
+		{
+			int tempLives = -1;
+
+			for (int i = 0; i < 3; i++)
+			{
+				if (tempLives < livesForPlayerWithIndex[i] && i != newI[0] && i != newI[1] && i != newI[2] && i != newI[3])
+				{
+					tempLives = livesForPlayerWithIndex[i];
+					newI[j] = i;
+				}
+			}
+			newLifeId[j] = m_objHand->GetPlayerControllerIDBloo(newI[j], 3);
+		}
+	}
+	else if (m_deathOrderID.size() == 2)
+	{
+		for (int i = 0; i < m_objHand->GetNumPlayers(); i++)
+		{
+			if (m_objHand->GetPlayerControllerIDBloo(i, 4) != m_deathOrderID[0] && m_objHand->GetPlayerControllerIDBloo(i, 5) != m_deathOrderID[1])
+			{
+				livesForPlayerWithIndex[i] = m_objHand->GetPlayerLives(i);
+			}
+		}
+
+		int newI[4] = { -1, -1 , -1, -1 };
+
+		for (int j = 0; j < m_objHand->GetNumPlayers(); j++)
+		{
+			int tempLives = -1;
+
+			for (int i = 0; i < 2; i++)
+			{
+				if (tempLives < livesForPlayerWithIndex[i] && i != newI[0] && i != newI[1] && i != newI[2] && i != newI[3])
+				{
+					tempLives = livesForPlayerWithIndex[i];
+					newI[j] = i;
+				}
+			}
+			newLifeId[j] = m_objHand->GetPlayerControllerIDBloo(newI[j], 6);
+		}
+	}
+	else if (m_deathOrderID.size() == 3)
+	{
+		for (int i = 0; i < m_objHand->GetNumPlayers(); i++)
+		{
+			if (m_objHand->GetPlayerControllerIDBloo(i, 7) != m_deathOrderID[0] && m_objHand->GetPlayerControllerIDBloo(i, 8) != m_deathOrderID[1] && m_objHand->GetPlayerControllerIDBloo(i, 9) != m_deathOrderID[3])
+			{
+				livesForPlayerWithIndex[i] = m_objHand->GetPlayerLives(i);
+			}
+		}
+
+		int newI[4] = { -1, -1 , -1, -1 };
+
+		for (int j = 0; j < m_objHand->GetNumPlayers(); j++)
+		{
+			int tempLives = -1;
+
+			for (int i = 0; i < 1; i++)
+			{
+				if (tempLives < livesForPlayerWithIndex[i] && i != newI[0] && i != newI[1] && i != newI[2] && i != newI[3])
+				{
+					tempLives = livesForPlayerWithIndex[i];
+					newI[j] = i;
+				}
+			}
+			newLifeId[j] = m_objHand->GetPlayerControllerIDBloo(newI[j], 10);
+		}
+	}
+	//cout << "last : " << m_deathOrderID[0] << endl;
+	//cout << "secondLast : " << m_deathOrderID[1] << endl;
+	//cout << "thirdLast : " << m_deathOrderID[2] << endl;
+	//cout << "fourthLast : " << m_deathOrderID[3] << endl;
+
+	for (int i = 0; i < 4; i++)
+	{
+		if (newLifeId[i] != -1)
+		{
+			cout << "#" << i << " is player : " << newLifeId[i] << endl;
+			m_winOrder.push_back(newLifeId[i]);
+		}
+		else
+		{
+			/*
+			if (i < m_deathOrderID.size())//m_deathOrderID[i] != -1)
+			{
+				cout << "#" << i << " is player : " << m_deathOrderID[i] << endl;
+				//m_deathOrderID[i] = -1;
+
+			}
+			else if (m_deathOrderID[2] != -1)
+			{
+				cout << "#" << i << " is player : " << m_deathOrderID[] << endl;
+				m_deathOrderID[] = -1;
+
+			}
+			else if (m_deathOrderID[1] != -1)
+			{
+				cout << "#" << i << " is player : " << m_deathOrderID[] << endl;
+				m_deathOrderID[] = -1;
+
+			}
+			else if (m_deathOrderID[0] != -1)
+			{
+				cout << "#" << i << " is player : " << m_deathOrderID[] << endl;
+				m_deathOrderID[] = -1;
+
+			}*/
+		}
+	}
+	for (int j = 0; j < m_deathOrderID.size(); j++)
+	{
+		cout << "#" << j << " is player : " << m_deathOrderID[j] << endl;
+		m_winOrder.push_back(m_deathOrderID[j]);
+	}
+
+	for (int j = 0; j < m_winOrder.size(); j++)
+	{
+		cout << "#" << j << " is player : " << m_winOrder[j] << endl;
+	}
+
+
+	/*
+	for (auto w : m_objHand. m_players)
+	{
+		if (w->GetLives() > winnerLife)
+		{
+			winnerLife = w->GetLives();
+			winnerIndex = w->GetControllerID();
+		}
+	}*/
 }
 
 
