@@ -1,4 +1,4 @@
-#include "PerlinNoise.h" 
+#include "Header Files/PerlinNoise.h" 
 
 float PerlinNoise::GenNoise(int x)
 {

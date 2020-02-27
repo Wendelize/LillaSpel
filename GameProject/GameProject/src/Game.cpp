@@ -31,7 +31,7 @@ Game::Game()
 	m_objectHandler->AddPlayer(vec3(-10, 2, 3), 0, 0, vec3(0.5, 1, 9), m_cars[0]); // Passa modell
 	m_objectHandler->AddPlayer(vec3(10, 2, 3), 1, 0, vec3(0, 2, 0), m_cars[2]); // Passa modell
 	//m_objectHandler->AddPlayer(vec3(-4, 7, -4), 3, rand() % 4, vec3(1, 1, 0), m_cars[3]); // Passa modell
-	m_scene->SetCameraPos(vec3(0, 22, 28));
+	m_scene->SetCameraPos(CAMERAPOS_GAME);
 
 
 	m_soundEngine = createIrrKlangDevice();
@@ -88,6 +88,7 @@ void Game::Update(float dt)
 	if (m_menu->Reset())
 	{
 		Reset();
+		m_scene->TranslateCameraPos(vec3(CAMERAPOS_GAME));
 		m_objectHandler->ClearHoles();
 		m_updateMap.store(true);
 		m_timeSwapTrack = 0;
@@ -96,14 +97,15 @@ void Game::Update(float dt)
 	if (m_menu->SelectMenuActive())
 	{
 		SelectionMenu();
+		m_scene->TranslateCameraPos(vec3(CAMERAPOS_SELECT));
 		m_maxTime = m_menu->GetMaxTime();
 	}
 	else if (m_menu->SelectMenuActive() == false && m_wasSelect == true)
 	{
 		m_wasSelect = false;
 		// TODO: fixa snyggare kamera transition?
-		//m_scene->SetCameraPos(vec3(0, 22, 28));
-		m_scene->TranslateCameraPos(vec3(0, 22, 28));
+		//m_scene->SetCameraPos(CAMERAPOS_GAME);
+		m_scene->TranslateCameraPos(CAMERAPOS_GAME);
 	}
 	// är vi på en meny som ska pausa spelet? sluta då updatera deltaTime
 	if (m_menu->Pause())
@@ -206,50 +208,69 @@ void Game::DynamicCamera(float dt)
 	vec3 focusPoint = vec3(0);
 	vec3 offset = vec3(0, -6, 0);
 	int numPlayers = m_objectHandler->GetNumPlayers();
-	for (int i = 0; i < numPlayers; i++)
+
+	if (m_menu->RestartMenuActive())
 	{
-		if (m_objectHandler->GetPlayerPos(i).y > 0)
+		focusPoint = m_objectHandler->GetPlayerPos(m_winner) + vec3(0, 0.5, 0);
+		cout << to_string(m_winner);
+	}
+	else
+	{
+		for (int i = 0; i < numPlayers; i++)
 		{
-			focusPoint += m_objectHandler->GetPlayerPos(i);
+			if (m_objectHandler->GetPlayerPos(i).y > 0)
+			{
+				focusPoint += m_objectHandler->GetPlayerPos(i);
+			}
 		}
+		focusPoint /= vec3(numPlayers);
 	}
 
 	if (dt < 1.f)
-		m_scene->SetCameraFocus((focusPoint / vec3(numPlayers)));
+		m_scene->SetCameraFocus(focusPoint);
 
-	mat4 matrix = m_scene->GetProjMatrix() * m_scene->GetCameraView();
-
-	int innerFrustum = 0;
-	int outerFrustum = 0;
-	int outside = 0;
-	for (int i = 0; i < numPlayers; i++)
+	if (m_menu->RestartMenuActive())
 	{
-		vec4 modelSpace = matrix * vec4(m_objectHandler->GetPlayerPos(i), 1);
+		vec3 vec = normalize(m_objectHandler->GetPlayerPos(m_winner) - (m_objectHandler->GetPlayerPos(m_winner) - m_objectHandler->GetPlayerDirection(m_winner)));
+		vec3 right = cross(vec, vec3(0, 1, 0));
+		m_scene->TranslateCameraPos(m_objectHandler->GetPlayerPos(m_winner) + -vec * 3.f + right * 3.f + vec3(0, -0.6, 0));
+	}
+	else
+	{
+		mat4 matrix = m_scene->GetProjMatrix() * m_scene->GetCameraView();
 
-		if (-modelSpace.w < modelSpace.x && modelSpace.x < modelSpace.w && -modelSpace.w < modelSpace.y && modelSpace.y < modelSpace.w)
+		int innerFrustum = 0;
+		int outerFrustum = 0;
+		int outside = 0;
+		for (int i = 0; i < numPlayers; i++)
 		{
-			if (-modelSpace.w < modelSpace.x - 20 && modelSpace.x + 20 < modelSpace.w && -modelSpace.w < modelSpace.y - 20 && modelSpace.y + 20 < modelSpace.w)
+			vec4 modelSpace = matrix * vec4(m_objectHandler->GetPlayerPos(i), 1);
+
+			if (-modelSpace.w < modelSpace.x && modelSpace.x < modelSpace.w && -modelSpace.w < modelSpace.y && modelSpace.y < modelSpace.w)
 			{
-				innerFrustum++;
+				if (-modelSpace.w < modelSpace.x - 20 && modelSpace.x + 20 < modelSpace.w && -modelSpace.w < modelSpace.y - 20 && modelSpace.y + 20 < modelSpace.w)
+				{
+					innerFrustum++;
+				}
+				else if (-modelSpace.w > modelSpace.x - 19 || modelSpace.x + 19 > modelSpace.w || -modelSpace.w > modelSpace.y - 19 || modelSpace.y + 19 > modelSpace.w)
+				{
+					outerFrustum++;
+				}
 			}
-			else if (-modelSpace.w > modelSpace.x - 19 || modelSpace.x + 19 > modelSpace.w || -modelSpace.w > modelSpace.y - 19 || modelSpace.y + 19 > modelSpace.w)
+			else
 			{
-				outerFrustum++;
+				outside++;
 			}
 		}
-		else
-		{
-			outside++;
-		}
-	}
 
-	if (innerFrustum == numPlayers && dt < 1.f)
-	{
-		m_scene->ZoomIn(dt * 5);
-	}
-	else if ((outerFrustum != 0 || outside != 0) && dt < 1.f)
-	{
-		m_scene->ZoomOut(dt * 6);
+		if (innerFrustum == numPlayers && dt < 1.f)
+		{
+			m_scene->ZoomIn(dt * 5);
+		}
+		else if ((outerFrustum != 0 || outside != 0) && dt < 1.f)
+		{
+			m_scene->ZoomOut(dt * 6);
+		}
 	}
 }
 
@@ -481,7 +502,7 @@ void Game::SelectionMenu()
 {
 	if (m_wasSelect == false)
 	{
-		m_scene->SetCameraPos(vec3(0, 10, 20));
+		m_scene->SetCameraPos(vec3(CAMERAPOS_SELECT));
 		m_wasSelect = true;
 	}
 	

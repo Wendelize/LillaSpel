@@ -14,7 +14,7 @@ void main()
 
 	if(height > 1.0f)
 	{
-		FragColor = mix(vec4(u_ApexColor, 1), vec4(0, 0, 0, 1), (height - 1) * 8);
+		FragColor = mix(vec4(u_ApexColor, 1), vec4(0, 0, 0.1, 1), (height - 1) * 3);
 	}
 	else
 	{

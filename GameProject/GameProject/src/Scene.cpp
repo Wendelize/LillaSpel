@@ -10,7 +10,7 @@ Scene::Scene()
 
 	m_window = new Window(m_screenWidth, m_screenHeight);
 
-	m_camera = new Camera({ 0, 10, 20 }); // 0 22 28
+	m_camera = new Camera(CAMERAPOS_SELECT);
 	m_modelShader = new Shader("src/Shaders/SceneVS.glsl", "src/Shaders/SceneFS.glsl");
 	m_skyboxShader = new Shader("src/Shaders/SkyboxVS.glsl", "src/Shaders/SkyboxFS.glsl");
 	m_skyDomeShader = new Shader("src/Shaders/SkyDomeVS.glsl", "src/Shaders/SkyDomeFS.glsl");

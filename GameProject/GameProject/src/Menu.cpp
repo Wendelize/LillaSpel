@@ -931,6 +931,14 @@ bool Menu::SelectMenuActive()
 		return false;
 }
 
+bool Menu::RestartMenuActive()
+{
+	if (m_menu == ActiveMenu::restart)
+		return true;
+	else
+		return false;
+}
+
 int Menu::GetMaxTime()
 {
 	return m_maxTime;
