@@ -1,4 +1,4 @@
-#include "MarchingCubes.h"
+#include "Header Files/MarchingCubes.h"
 
 /* MARCHING CUBES RELATED DATA FOR TRIANGULATION */
 vec3 cornerTable[8] = 

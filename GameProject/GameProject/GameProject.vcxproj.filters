@@ -49,9 +49,6 @@
     <ClCompile Include="src\Skybox.cpp">
       <Filter>Src</Filter>
     </ClCompile>
-    <ClCompile Include="src\Header Files\DebugDrawer.cpp">
-      <Filter>Src</Filter>
-    </ClCompile>
     <ClCompile Include="src\IMGUI\imgui.cpp">
       <Filter>IMGUI</Filter>
     </ClCompile>
@@ -76,9 +73,6 @@
     <ClCompile Include="src\Bloom.cpp">
       <Filter>Src</Filter>
     </ClCompile>
-    <ClCompile Include="src\Header Files\PowerUp.cpp">
-      <Filter>Src</Filter>
-    </ClCompile>
     <ClCompile Include="src\ParticleSystem.cpp">
       <Filter>Src</Filter>
     </ClCompile>
@@ -88,10 +82,16 @@
     <ClCompile Include="src\Sky.cpp">
       <Filter>Src</Filter>
     </ClCompile>
-    <ClCompile Include="src\Header Files\MarchingCubes.cpp">
+    <ClCompile Include="src\PowerUp.cpp">
       <Filter>Src</Filter>
     </ClCompile>
-    <ClCompile Include="src\Header Files\PerlinNoise.cpp">
+    <ClCompile Include="src\PerlinNoise.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MarchingCubes.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DebugDrawer.cpp">
       <Filter>Src</Filter>
     </ClCompile>
   </ItemGroup>
