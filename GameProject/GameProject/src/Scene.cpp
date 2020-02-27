@@ -133,7 +133,7 @@ void Scene::Init()
 
 }
 
-void Scene::LightToShader()
+void Scene::LightToShader(bool lightsOut)
 {
 	m_nrOfLights = m_lights.size();
 	m_nrOfCarLights = m_carLights.size();
@@ -223,11 +223,9 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, 
 	cube->Draw(m_modelShader);
 
 	// Light uniforms
-	cout << lightsOut << endl;
-	if (lightsOut == false)
-	{
-		LightToShader();
-	}
+	
+		LightToShader(lightsOut);
+	
 
 	// Draw all objects
 	RenderSceneInfo(m_modelShader, objects);

@@ -46,7 +46,7 @@ public:
 	~Scene();
 
 	void Init();
-	void LightToShader();
+	void LightToShader(bool lightsOut);
 	//void Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, MarchingCubes* cube);
 	void Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, MarchingCubes* cube, bool gameOver, int winner, float dt, bool lightsOut);
 	void RenderSceneInfo(Shader * shader, vector<ObjectInfo*> objects);
