@@ -146,7 +146,7 @@ bool PowerUp::update(float dt)
 	bool destroy = true;
 	if (GetDuration() - dt > 0) {
 		SetDuration(GetDuration() - dt);
-		m_transform->Rotate(0.f, 0.15f, 0.f);
+		m_transform->Rotate(0.f, 2.0f * dt, 0.f);
 		destroy = false;
 	}
 	//m_body->setLinearVelocity(btVector3(0,-1,0));
