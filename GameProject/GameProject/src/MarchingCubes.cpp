@@ -861,3 +861,20 @@ bool MarchingCubes::IsNotHole(vec3 pos)
 	}
 	return false;
 }
+
+float MarchingCubes::GetHeight(vec3 pos)
+{
+	float height = 0;
+	for (int k = pos.z - 2; k < pos.z + 2; k++) {
+		for (int j = pos.x - 2; j < pos.x + 2; j++) {
+			for (int i = 0; i < m_height; i++) {
+				if (m_terrainMap[(int)(pos.x + m_middle)][i][(int)(pos.z + m_middle)] <= 0) {
+					if (height < m_terrainMap[(int)(pos.x + m_middle)][i][(int)(pos.z + m_middle)] * -1) {
+						height = m_terrainMap[(int)(pos.x + m_middle)][i][(int)(pos.z + m_middle)] * -1;
+					}
+				}
+			}
+		}
+	}
+	return height;
+}

@@ -80,5 +80,6 @@ public:
     void UpdateHoles();
     void ClearHoles();
     bool IsNotHole(vec3 pos);
+    float GetHeight(vec3 pos);
 };
 

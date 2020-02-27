@@ -76,4 +76,5 @@ public:
 	void UpdateVibration(float dt);
 	void ClearHoles();
 	MarchingCubes* GetCube();
+	void CheckPowerUpCollision();
 };
