@@ -801,11 +801,11 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 			ImGui::Text("Killed You : ");
 			for (int i = 0; i < m_killers[m_winOrder[0]].size(); i++)
 			{
-				if (i % 2 != 0)
+				if (i % 3 != 0)
 				{
 					ImGui::SameLine();
 				}
-				ImGui::Text("\t%d, ", (m_killers[m_winOrder[0]]).at(i) + 1);
+				ImGui::Text("\tP%d, ", (m_killers[m_winOrder[0]]).at(i) + 1);
 			}
 			ImGui::Separator();
 			ImGui::Text("Collisions: \t%d ", m_timesCollided[m_winOrder[0]]); 
@@ -843,11 +843,11 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 			ImGui::Text("Killed You : ");
 			for (int i = 0; i < m_killers[m_winOrder[1]].size(); i++)
 			{
-				if (i % 2 != 0)
+				if (i % 3 != 0)
 				{
 					ImGui::SameLine();
 				}
-				ImGui::Text("\t%d, ", (m_killers[m_winOrder[1]]).at(i) + 1);
+				ImGui::Text("\tP%d, ", (m_killers[m_winOrder[1]]).at(i) + 1);
 			}
 			ImGui::Separator();
 			ImGui::Text("Collisions: \t%d ", m_timesCollided[m_winOrder[1]]);
@@ -885,11 +885,11 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				ImGui::Text("Killed You : ");
 				for (int i = 0; i < m_killers[m_winOrder[2]].size(); i++)
 				{
-					if (i % 2 != 0)
+					if (i % 3 != 0)
 					{
 						ImGui::SameLine();
 					}
-					ImGui::Text("\t%d, ", (m_killers[m_winOrder[2]]).at(i) + 1);
+					ImGui::Text("\tP%d, ", (m_killers[m_winOrder[2]]).at(i) + 1);
 				}
 				ImGui::Separator();
 				ImGui::Text("Collisions: \t%d ", m_timesCollided[m_winOrder[2]]);
@@ -928,11 +928,11 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				ImGui::Text("Killed You : ");
 				for (int i = 0; i < m_killers[m_winOrder[3]].size(); i++)
 				{
-					if (i % 2 != 0)
+					if (i % 3 != 0)
 					{
 						ImGui::SameLine();
 					}
-					ImGui::Text("\t%d, ", (m_killers[m_winOrder[3]]).at(i) + 1);
+					ImGui::Text("\tP%d, ", (m_killers[m_winOrder[3]]).at(i) + 1);
 				}
 				ImGui::Separator();
 				ImGui::Text("Collisions: \t%d ", m_timesCollided[m_winOrder[3]]);
