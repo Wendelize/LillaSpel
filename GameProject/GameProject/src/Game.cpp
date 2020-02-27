@@ -76,25 +76,24 @@ Game::~Game()
 
 void Game::Update(float dt)
 {
-	m_time += dt;
+/*	m_time += dt;
 	m_timeSinceSpawn += dt;
 	m_timeSwapTrack += dt;
 
-	if (m_timeSwapTrack > 2.f && m_updateMap.load() == false && m_mapUpdateReady.load() == false) {
+	if (m_timeSwapTrack > 2.f && m_updateMap.load() == false && m_mapUpdateReady.load() == false) 
+	{
 		m_updateMap.store(true);
 	}
 
-	if (m_mapUpdateReady.load() == true && m_updateMap.load() == false) {
+	if (m_mapUpdateReady.load() == true && m_updateMap.load() == false) 
+	{
 		m_objectHandler->RemoveDynamicPlatformMesh(m_cube);
 		m_cube->MapUpdate();
 		m_objectHandler->AddDynamicPlatformMesh(m_cube);
 		m_timeSwapTrack = 0.f;
 		m_mapUpdateReady.store(false);
 		m_objectHandler->ClearBombs();
-	}
-	if (m_timeSinceSpawn > 5 && !m_gameOver) {
-		m_objectHandler->AddPowerUp();
-		m_timeSinceSpawn = 0;
+	}*/
 	DynamicCamera(dt);
 
 	SHORT key = GetAsyncKeyState(VK_LSHIFT);
@@ -103,21 +102,13 @@ void Game::Update(float dt)
 	{
 		m_scene->ShakeCamera(0.4f, 1);
 	}
-	if(!m_gameOver)
-		m_objectHandler->Update(dt);
-	
-	if (m_objectHandler->GetNumPlayers() == 1 && !m_gameOver) {
-		m_gameOver = true;
-		if (m_soundEngine) {
-			m_soundEngine->stopAllSounds();
-			m_soundEngine->play2D("src/Audio/Music - Win.mp3", true);
-			m_objectHandler->StopAllSound();
-		}
-
 	// ska banan resettas?
 	if (m_menu->Reset())
 	{
 		Reset();
+		m_objectHandler->ClearHoles();
+		m_updateMap.store(true);
+		m_timeSwapTrack = 0;
 	}
 	// är select menyn aktiverad? ändra kameran till inzoomad
 	if (m_menu->SelectMenuActive())
@@ -138,11 +129,27 @@ void Game::Update(float dt)
 	{
 		dt = 0;
 	}
-
+	cout << m_menu->Pause() << endl;
 	if ((!m_menu->Pause() && !m_wasSelect)) // Vet inte om det kan göras snyggare?
 	{
 		m_time += dt;
 		m_timeSinceSpawn += dt;
+		m_timeSwapTrack += dt;
+
+		if (m_timeSwapTrack > 2.f && m_updateMap.load() == false && m_mapUpdateReady.load() == false)
+		{
+			m_updateMap.store(true);
+		}
+
+		if (m_mapUpdateReady.load() == true && m_updateMap.load() == false)
+		{
+			m_objectHandler->RemoveDynamicPlatformMesh(m_cube);
+			m_cube->MapUpdate();
+			m_objectHandler->AddDynamicPlatformMesh(m_cube);
+			m_timeSwapTrack = 0.f;
+			m_mapUpdateReady.store(false);
+			m_objectHandler->ClearBombs();
+		}
 		if (m_timeSinceSpawn > 5 && !m_gameOver)
 		{
 			m_objectHandler->AddPowerUp();
@@ -155,6 +162,7 @@ void Game::Update(float dt)
 		{
 			m_winner = 0;
 			m_gameOver = true;
+
 			if (m_soundEngine)
 			{
 				m_soundEngine->stopAllSounds();
@@ -213,7 +221,6 @@ void Game::Update(float dt)
 		}
 	}
 }
-
 void Game::DynamicCamera(float dt)
 {
 	vec3 focusPoint = vec3(0);
@@ -276,9 +283,9 @@ void Game::Render(float dt)
 	m_menu->RenderMenu(m_gameOver, m_time, m_cars[0]);
 
 	m_objects = m_objectHandler->GetObjects();
-	m_scene->Render(m_objects, m_objectHandler->GetWorld(), m_gameOver, m_winner, dt);
-
-	m_scene->Render(m_objects, m_objectHandler->GetWorld(), m_cube);
+	m_scene->Render(m_objects, m_objectHandler->GetWorld(), m_cube, m_gameOver, m_winner, dt);
+//
+//	m_scene->Render(m_objects, m_objectHandler->GetWorld(), m_cube);
 
 	if (m_debug)
 	{

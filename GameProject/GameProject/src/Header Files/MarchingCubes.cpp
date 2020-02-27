@@ -842,3 +842,8 @@ void MarchingCubes::UpdateHoles()
 		m_terrainMap[(int)m_holes[i].position.x][(int)m_holes[i].position.y][(int)m_holes[i].position.z] = m_terrainMap[(int)m_holes[i].position.x][(int)m_holes[i].position.y][(int)m_holes[i].position.z] + m_holes[i].depth;
 	}
 }
+
+void MarchingCubes::ClearHoles()
+{
+	m_holes.clear();
+}

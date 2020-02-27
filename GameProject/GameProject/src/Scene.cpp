@@ -160,9 +160,9 @@ void Scene::LightToShader()
 		m_nrOfLights++;
 	}
 }
+//void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, MarchingCubes* cube)
 
-void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, bool gameOver, int winner, float dt)
-void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, MarchingCubes* cube)
+void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, MarchingCubes* cube, bool gameOver, int winner, float dt)
 {
 	if(dt < 1)
 		m_camera->UpdateMovement(dt, 1);
@@ -210,7 +210,7 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, 
 	RenderImGui(world);
 
 	//// Render Particles
-	RenderParticlesCollision(0.03, world);
+	RenderParticlesCollision(dt, world);
 	//RenderExhaust(objects);
 	if (gameOver == true)
 	{

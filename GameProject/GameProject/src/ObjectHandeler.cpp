@@ -639,3 +639,8 @@ void ObjectHandler::UpdateVibration(float dt)
 	}
 }
 
+void ObjectHandler::ClearHoles()
+{
+	m_cube->ClearHoles();
+}
+

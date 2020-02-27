@@ -74,5 +74,5 @@ public:
 	void ClearBombs();
 	int GetWinnerIndex();
 	void UpdateVibration(float dt);
-
+	void ClearHoles();
 };

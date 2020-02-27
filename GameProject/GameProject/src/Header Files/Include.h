@@ -28,7 +28,6 @@
 #include <string>
 #include <vector>
 #include <math.h>
-#include <windows.h>
 #include <time.h>
 #include <cstdlib>
 #include <ctime>

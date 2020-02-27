@@ -5,7 +5,7 @@
 #include <thread>
 #include "PerlinNoise.h"
 
-#define WIDTH 35 
+#define WIDTH 50 
 #define HEIGHT 15
 
 class MarchingCubes
@@ -78,5 +78,6 @@ public:
     void CalculateNormals();
     void MakeHole(vec3 position);
     void UpdateHoles();
+    void ClearHoles();
 };
 
