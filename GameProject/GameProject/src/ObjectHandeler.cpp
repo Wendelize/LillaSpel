@@ -719,12 +719,6 @@ bool ObjectHandler::CheckCollisionCars(float dt)
 		btPersistentManifold* contactManifold = m_dynamicsWorld->getDispatcher()->getManifoldByIndexInternal(i);
 		btCollisionObject* obA = const_cast<btCollisionObject*>(contactManifold->getBody0());
 		btCollisionObject* obB = const_cast<btCollisionObject*>(contactManifold->getBody1());
-bool ObjectHandler::GetLightsOut()
-{
-	return m_lightsOut;
-}
-
-
 		btCollisionShape* shapeA = obA->getCollisionShape();
 		btCollisionShape* shapeB = obB->getCollisionShape();
 
@@ -750,3 +744,7 @@ bool ObjectHandler::GetLightsOut()
 	return m_collision;
 }
 
+bool ObjectHandler::GetLightsOut()
+{
+	return m_lightsOut;
+}
