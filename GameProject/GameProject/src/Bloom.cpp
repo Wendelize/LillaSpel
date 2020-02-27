@@ -75,8 +75,6 @@ void Bloom::InitPingPong()
 			std::cout << "Framebuffer not complete!" << std::endl;
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void Bloom::PingPongRender(int nrOfSteps) //gaussian blur on the bloom texture
