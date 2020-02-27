@@ -76,24 +76,6 @@ Game::~Game()
 
 void Game::Update(float dt)
 {
-/*	m_time += dt;
-	m_timeSinceSpawn += dt;
-	m_timeSwapTrack += dt;
-
-	if (m_timeSwapTrack > 2.f && m_updateMap.load() == false && m_mapUpdateReady.load() == false) 
-	{
-		m_updateMap.store(true);
-	}
-
-	if (m_mapUpdateReady.load() == true && m_updateMap.load() == false) 
-	{
-		m_objectHandler->RemoveDynamicPlatformMesh(m_cube);
-		m_cube->MapUpdate();
-		m_objectHandler->AddDynamicPlatformMesh(m_cube);
-		m_timeSwapTrack = 0.f;
-		m_mapUpdateReady.store(false);
-		m_objectHandler->ClearBombs();
-	}*/
 	DynamicCamera(dt);
 
 	SHORT key = GetAsyncKeyState(VK_LSHIFT);
@@ -136,7 +118,7 @@ void Game::Update(float dt)
 		m_timeSinceSpawn += dt;
 		m_timeSwapTrack += dt;
 
-		if (m_timeSwapTrack > 2.f && m_updateMap.load() == false && m_mapUpdateReady.load() == false)
+		if (m_timeSwapTrack > 1.f && m_updateMap.load() == false && m_mapUpdateReady.load() == false)
 		{
 			m_updateMap.store(true);
 		}
@@ -355,9 +337,18 @@ GLFWwindow* Game::GetWindow()
 
 void Game::MutliThread(GLFWwindow* window)
 {
+	bool shrink = true;
 	while (!glfwWindowShouldClose(window)) {
 		if (m_updateMap.load()) {
-			m_cube->Update(window, m_objectHandler->GetBomb());
+			if (shrink)
+			{
+				shrink = false;
+
+			}
+			else {
+				shrink = true;
+			}
+			m_cube->Update(window, m_objectHandler->GetBomb(),shrink);
 			m_updateMap.store(false);// = false;
 			m_mapUpdateReady.store(true);
 		}
