@@ -568,6 +568,8 @@ void Player::removePower(int type)
 		m_body->setRestitution(m_restitution);
 		break;
 	}
+
+	m_powerType = NULL;
 }
 
 bool Player::updatePower(float dt)

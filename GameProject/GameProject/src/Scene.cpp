@@ -133,7 +133,7 @@ void Scene::Init()
 
 }
 
-void Scene::LightToShader()
+void Scene::LightToShader(bool lightsOut)
 {
 	m_nrOfLights = m_lights.size();
 	m_nrOfCarLights = m_carLights.size();
@@ -184,7 +184,7 @@ void Scene::LightToShader()
 	}
 }
 
-void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, MarchingCubes* cube, bool gameOver, int winner, float dt)
+void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, MarchingCubes* cube, bool gameOver, int winner, float dt, bool lightsOut)
 {
 	if(dt < 1)
 		m_camera->UpdateMovement(dt, 1);
@@ -223,7 +223,9 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, 
 	cube->Draw(m_modelShader);
 
 	// Light uniforms
-	LightToShader();
+	
+		LightToShader(lightsOut);
+	
 
 	// Draw all objects
 	RenderSceneInfo(m_modelShader, objects);
@@ -508,7 +510,6 @@ void Scene::ShakeCamera(float intensity, float duration)
 {
 	m_camera->Shake(intensity, duration);
 }
-
 
 void Scene::SetWindowSize(int width, int height)
 {

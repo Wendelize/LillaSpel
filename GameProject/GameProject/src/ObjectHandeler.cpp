@@ -16,6 +16,7 @@ ObjectHandler::ObjectHandler()
 	m_dynamicsWorld->setDebugDrawer(m_debugDrawer);
 	m_ghostCallback = new btGhostPairCallback();
 	m_dynamicsWorld->getPairCache()->setInternalGhostPairCallback(m_ghostCallback);
+	m_lightsOut = false;
 
 	m_soundEngine = createIrrKlangDevice();
 	if (m_soundEngine)
@@ -156,6 +157,21 @@ void ObjectHandler::Update(float dt)
 	CheckPowerUpCollision();
 	CheckCollisionCars(dt);
 	UpdateVibration(dt);
+
+	//LightsOut power-up update
+	bool active = false;
+	for (auto p : m_players)
+	{
+		if (p->GetActivePower() == 7)
+		{
+			active = true;
+			m_lightsOut = true;
+		}
+	}
+	if (m_lightsOut == true && active == false)
+	{
+		m_lightsOut = false;
+	}
 
 	for (size_t i = 0; i < m_dynamicsWorld->getNumCollisionObjects(); i++)
 	{
@@ -305,7 +321,7 @@ void ObjectHandler::AddPowerUp()
 			}
 		}
 	}*/
-	int type = rand() % (10);
+	int type = 7;//rand() % (10);
 	bool spawnFound = false;
 	vec3 spawn = vec3(0);// = vec3((rand() % 30) - 15, 7, (rand() % 20 - 15)));
 	while (!spawnFound) {
@@ -704,8 +720,6 @@ bool ObjectHandler::CheckCollisionCars(float dt)
 		btPersistentManifold* contactManifold = m_dynamicsWorld->getDispatcher()->getManifoldByIndexInternal(i);
 		btCollisionObject* obA = const_cast<btCollisionObject*>(contactManifold->getBody0());
 		btCollisionObject* obB = const_cast<btCollisionObject*>(contactManifold->getBody1());
-
-
 		btCollisionShape* shapeA = obA->getCollisionShape();
 		btCollisionShape* shapeB = obB->getCollisionShape();
 
@@ -731,3 +745,7 @@ bool ObjectHandler::CheckCollisionCars(float dt)
 	return m_collision;
 }
 
+bool ObjectHandler::GetLightsOut()
+{
+	return m_lightsOut;
+}
