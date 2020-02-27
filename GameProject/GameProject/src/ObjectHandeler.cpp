@@ -211,6 +211,7 @@ void ObjectHandler::Update(float dt)
 				}
 				m_players[isPlayer]->SetPos(spawn);
 				m_players[isPlayer]->ReduceLife();
+				m_players[isPlayer]->SetBoolLights(true);
 				if (m_soundEngine)
 				{
 					m_players[isPlayer]->SetNotFallen();
