@@ -28,6 +28,7 @@ private:
 	ISound* m_sound;
 	ISound* m_honk;
 	bool m_fallen;
+	bool m_inverted;
 
 	//Variables 4 Fysik
 	btCollisionShape* m_carShape;

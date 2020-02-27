@@ -3,44 +3,80 @@
 PowerUp::PowerUp(int spawn, btVector3 pos, int type,float duration)
 {
 	m_pos = pos;
-	m_type = 6;
+	m_type = type;
 	m_duration = duration;
 	m_transform = new Transform;
 	m_model = 0;
-	switch (6) {
-		case 0: 
-			m_model = 1;
+	float scale = 1.f;
+	switch (type) {
+		case 0: //Player sizeUp
+			m_model = 6;
 			m_color = vec3(0, 1, 0);
+			scale = 0.1;
 			break;
-		case 1: 
-			m_color = vec3(1, 0, 0);
+
+		case 1: //Enemy get inverted Controller
+			m_model = 2;
+			m_color = vec3(0, 1, 0);
+			scale = 0.2f;
 			break;
-		case 2: 
-			m_color = vec3(0.5, 0, 1);
+
+		case 2: //Player PowerMutiplier
+			m_model = 4; //Exclamation mark
+			m_color = vec3(0, 0, 3);
+			scale = 0.12f;
 			break;
-		case 3: 
-			m_model = 1;
+
+		case 3: //player sizeDown
+			m_model = 5;
 			m_color = vec3(1, 0.5, 0);
+			scale = 0.1f;
 			break;
-		case 4:
-			m_model = 1;
+
+		case 4: //Enemy sizeUp
+			m_model = 6;
 			m_color = vec3(1, 0, 0);
+			scale = 0.1f;
 			break;
-		case 5: 
-			m_model = 1;
+
+		case 5: //Enemy sizeDown
+			m_model = 5;
 			m_color = vec3(0, 1, 0);
+			scale = 0.1f;
+			break;
+
+		case 6:
+			m_model = 0; //Bomb - Tempor�rt kollision koeficient �kad. 
+			m_color = vec3(0, 0.1, 0.1);
+			scale = 0.3f;
+			break;
+
+		case 7: 
+			m_model = 7; //LightBulb - INGEN FUNKTION KOPPLAD
+			m_color = vec3(2, 2, 0);
+			scale = 0.15f;
+			break;
+		case 8:
+			m_model = 8; //Heart
+			m_color = vec3(5.000, 0.719, 0.738);
+			scale = 0.01f;
+			break;
+		case 9:
+			m_model = 3; //Question mark - INGEN FUNKTION KOPPLAD
+			m_color = vec3(0.741, 0.520, 3.000);
+			scale = 0.09f;
 			break;
 	}
 	m_spawn = spawn;
-	float scale = 1.;
-	m_btTransform = new btTransform();
-	m_btTransform->setIdentity();
-	m_btTransform->setOrigin(m_pos);
-	m_transform->SetScale(scale, scale, scale);
 
+		m_btTransform = new btTransform();
+		m_btTransform->setIdentity();
+		m_btTransform->setOrigin(m_pos);
+		m_transform->SetScale(scale, scale, scale);
+	
 	btVector3 localInertia(0, 0, 0);
 	float mass = 1.f;
-	m_shape = new btBoxShape(btVector3(0.75f * scale, 0.75f * scale, 0.75f * scale));
+	m_shape = new btBoxShape(btVector3(0.75f, 0.75f, 0.75f));
 	m_motionState = new btDefaultMotionState(*m_btTransform);
 
 	m_shape->calculateLocalInertia(mass, localInertia);
@@ -111,6 +147,7 @@ bool PowerUp::update(float dt)
 	bool destroy = true;
 	if (GetDuration() - dt > 0) {
 		SetDuration(GetDuration() - dt);
+		m_transform->Rotate(0.f, 0.15f, 0.f);
 		destroy = false;
 	}
 	//m_body->setLinearVelocity(btVector3(0,-1,0));
