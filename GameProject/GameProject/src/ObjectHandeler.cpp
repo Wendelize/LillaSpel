@@ -644,3 +644,8 @@ void ObjectHandler::ClearHoles()
 	m_cube->ClearHoles();
 }
 
+MarchingCubes* ObjectHandler::GetCube()
+{
+	return m_cube;
+}
+

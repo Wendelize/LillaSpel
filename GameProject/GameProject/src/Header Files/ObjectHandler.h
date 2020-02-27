@@ -75,4 +75,5 @@ public:
 	int GetWinnerIndex();
 	void UpdateVibration(float dt);
 	void ClearHoles();
+	MarchingCubes* GetCube();
 };

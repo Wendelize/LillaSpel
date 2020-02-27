@@ -12,11 +12,12 @@ public:
 		noMenu = 0,
 		start = 1,
 		select = 2,
-		selectLives = 3,
-		pause = 4,
-		stats = 5,
-		restart = 6,
-		playerHud = 7
+		selectLevel = 3,
+		selectLives = 4,
+		pause = 5,
+		stats = 6,
+		restart = 7,
+		playerHud = 8
 	};
 
 	void RenderMenu(bool gameOver, float time, Model* model);
@@ -37,6 +38,7 @@ private:
 	bool m_reset = false;
 	int m_maxLives = 3;
 	int m_maxTime = 60.0f;
+	int m_mapID = 0;
 
 	int m_selected[4] = { 0, 0, 0, 0 };
 	int m_continue = 0;

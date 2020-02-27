@@ -459,7 +459,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 
 		if (m_continue == m_objHand->GetNumPlayers())
 		{
-			m_menu = ActiveMenu::selectLives;
+			m_menu = ActiveMenu::selectLevel;
 
 			for (int i = 0; i < m_objHand->GetNumPlayers(); i++)
 			{
@@ -468,6 +468,82 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		}
 		m_continue = 0;
 		break;
+	case ActiveMenu::selectLevel:
+		cout << "kill me now :) " << endl;
+	
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 10);
+		ImGui::SetNextWindowPos(ImVec2((float)width / 3 - (slWidth / 2), height / 4));
+		ImGui::SetNextWindowSize(ImVec2((float)width / 3 + slWidth, height / 4 - 300));
+		if (ImGui::Begin("##selectLevel", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiNavInput_Activate))
+		{
+			if (m_selected[0] == 0)
+			{
+				ImGui::Text("\t\t\t <  Which level do you want to play? : %d  > ", m_mapID);
+				ImGui::Text("\t\t\t\t Press \"B\" to Select Vehicles Again.. ");
+			}
+			else if (m_selected[0] == 1)
+			{
+				m_menu = ActiveMenu::selectLives;
+				m_selected[0] = 0;
+				m_objHand->SetNumberOfLives(m_maxLives);
+			}
+			else // b�r bara kunna vara -1
+			{
+				m_menu = ActiveMenu::select;
+				m_selected[0] = 0;
+			}
+
+			if (time - m_p1Seconds >= 0.5 && (glfwGetGamepadState(0, &state)))
+			{
+				if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_RIGHT])
+				{
+					if (m_selected[0] == 0)
+					{
+						if (m_mapID < 6)
+						{
+							m_mapID += 1;
+						}
+						else
+						{
+							m_mapID = 0;
+						}
+
+					}
+				}
+				else if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_LEFT])
+				{
+
+					if (m_selected[0] == 0)
+					{
+						if (m_mapID <= 6 && m_mapID > 0)
+						{
+							m_mapID -= 1;
+						}
+						else
+						{
+							m_mapID = 0;
+						}
+
+					}
+				}
+				else if (state.buttons[GLFW_GAMEPAD_BUTTON_A] && m_selected[0] <= 2)
+				{
+					m_selected[0] += 1;
+					m_objHand->GetCube()->SetCurrentLevel(m_mapID);
+				}
+				else if (state.buttons[GLFW_GAMEPAD_BUTTON_B] && m_selected[0] > -1)
+				{
+					m_selected[0] -= 1;
+				}
+				m_p1Seconds = time;
+
+			}
+			//ImGui::PopStyleColor();
+			ImGui::PopStyleVar();
+		}
+		ImGui::End();
+		break;
+
 	case ActiveMenu::selectLives:
 		//GLFWgamepadstate state;
 	////	int fillerSize = 300;
@@ -483,7 +559,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 			if (m_selected[0] == 0)
 			{
 				ImGui::Text("\t\t\t <  How Many Lives Should Players Have? : %d  > ", m_maxLives);
-				ImGui::Text("\t\t\t\t Press \"B\" to Select Vehicles Again.. ");
+				ImGui::Text("\t\t\t\t Press \"B\" to Select Level Again.. ");
 			}
 			else if (m_selected[0] == 1)
 			{
@@ -500,7 +576,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 			}
 			else // b�r bara kunna vara -1
 			{
-				m_menu = ActiveMenu::select;
+				m_menu = ActiveMenu::selectLevel;
 				m_selected[0] = 0;
 			}
 
