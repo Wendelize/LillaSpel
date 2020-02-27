@@ -470,7 +470,6 @@ void Player::GivePower(int type)
 			break;
 
 		case 6: 
-			m_body->setRestitution(m_restitution * 1.2);
 			break;
 
 		case 7: 
@@ -481,6 +480,7 @@ void Player::GivePower(int type)
 			break;
 
 		case 9:
+			m_body->setRestitution(m_restitution * 1.2);
 			break;
 	}
 }
@@ -532,7 +532,7 @@ void Player::removePower(int type)
 		m_transform->SetScale(m_scale.x, m_scale.y, m_scale.z);
 		break;
 	case 6:
-		m_body->setRestitution(m_restitution);
+		
 		break;
 	case 7:
 		break;
@@ -540,6 +540,7 @@ void Player::removePower(int type)
 		//No functionality needed
 		break;
 	case 9:
+		m_body->setRestitution(m_restitution);
 		break;
 	}
 }

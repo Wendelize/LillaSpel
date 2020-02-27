@@ -3,7 +3,7 @@
 PowerUp::PowerUp(int spawn, btVector3 pos, int type,float duration)
 {
 	m_pos = pos;
-	m_type = 6;
+	m_type = type;
 	m_duration = duration;
 	m_transform = new Transform;
 	m_model = 0;
@@ -76,7 +76,7 @@ PowerUp::PowerUp(int spawn, btVector3 pos, int type,float duration)
 	
 	btVector3 localInertia(0, 0, 0);
 	float mass = 1.f;
-	m_shape = new btBoxShape(btVector3(0.75f * scale, 0.75f * scale, 0.75f * scale));
+	m_shape = new btBoxShape(btVector3(0.75f, 0.75f, 0.75f));
 	m_motionState = new btDefaultMotionState(*m_btTransform);
 
 	m_shape->calculateLocalInertia(mass, localInertia);
