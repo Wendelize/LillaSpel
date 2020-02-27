@@ -25,6 +25,6 @@ void main()
 		+ u_CameraRight * a_Quad.x * particleSize
 		+ u_CameraUp * a_Quad.y * particleSize;
 
-	gl_Position = u_Proj * u_View * vec4(vert + particleCenter_worldspace, 1.0f);
+	gl_Position = u_Proj * u_View * vec4(vertexPosition_worldspace, 1.0f);
 	vo.color = a_Color;
 }
