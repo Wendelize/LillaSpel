@@ -9,6 +9,7 @@ class ObjectHandler
 {
 private:
 	bool m_usedSpawns[20];
+	bool m_collision;
 	btVector3 m_spawnpoints[20] = 
 	{
 	btVector3(2,3,2), btVector3(5,3,5),btVector3(-5,3,5), btVector3(9,3,9), btVector3(-9,3,9),
@@ -20,6 +21,7 @@ private:
 	vector<Platform*> m_platforms;
 	vector<PowerUp*> m_powerUps;
 	vector<ObjectInfo*> m_structs;
+	vector<Light*> m_carLights;
 	vector<vec3> m_bombZone;
 	ISoundEngine* m_soundEngine;
 	vector<ISoundSource*> m_crashes;
@@ -68,6 +70,7 @@ public:
 	void SetPlayerScale(int index, vec3 scale);
 	void StopAllSound();
 	vector<ObjectInfo*> GetObjects();
+	vector<Light*> GetLights();
 	btDiscreteDynamicsWorld* GetWorld();
 	DebugDrawer* GetDebugDrawer();
 	void AddDynamicPlatformMesh(MarchingCubes* cube);
@@ -79,5 +82,6 @@ public:
 	void ClearHoles();
 	MarchingCubes* GetCube();
 	void CheckPowerUpCollision();
+	bool CheckCollisionCars(float dt);
 	bool GetLightsOut();
 };

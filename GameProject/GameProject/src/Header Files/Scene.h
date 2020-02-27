@@ -29,7 +29,8 @@ private:
 	vector<Model*> m_vehicles, m_platform, m_power;
 	
 	vector <Light*> m_lights;
-	int m_nrOfLights = 0;
+	vector <Light*> m_carLights;
+	int m_nrOfLights = 0, m_nrOfCarLights = 0;
 
 	int m_screenWidth;
 	int m_screenHeight;
@@ -51,6 +52,7 @@ public:
 	void RenderSceneInfo(Shader * shader, vector<ObjectInfo*> objects);
 	void RenderSkybox();
 	void RenderSky();
+	void RenderLights(vector<Light*> light);
 	void RenderShadows(vector<ObjectInfo*> objects);
 	void RenderImGui(btDiscreteDynamicsWorld* world);
 	void RenderParticlesCollision(float dt, btDiscreteDynamicsWorld* world);
