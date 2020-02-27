@@ -91,14 +91,7 @@ ObjectHandler::~ObjectHandler()
 	}
 	m_carLights.clear();
 
-	if (m_soundEngine)
-	{
-		for (uint i = 0; i < m_crashes.size(); i++)
-		{
-			m_crashes[i]->drop();
-		}
-		m_crashes.clear();
-	}
+
 
 	for (int i = m_dynamicsWorld->getNumCollisionObjects() - 1; i >= 0; i--)
 	{
@@ -310,7 +303,7 @@ void ObjectHandler::AddPowerUp()
 			}
 		}
 	}*/
-	int type = 7;//rand() % (10);
+	int type = rand() % (10);
 	bool spawnFound = false;
 	vec3 spawn = vec3(0);// = vec3((rand() % 30) - 15, 7, (rand() % 20 - 15)));
 	while (!spawnFound) {
@@ -321,7 +314,7 @@ void ObjectHandler::AddPowerUp()
 		}
 	}
 
-	btVector3 spawnPoint = btVector3(spawn.x, m_cube->GetHeight(spawn) + 1.5, spawn.z);
+	btVector3 spawnPoint = btVector3(spawn.x, m_cube->GetHeight(spawn) + 6.5, spawn.z);
 	m_powerUps.push_back(new PowerUp(0, spawnPoint, type));
 	m_dynamicsWorld->addRigidBody(m_powerUps.back()->getObject());
 
