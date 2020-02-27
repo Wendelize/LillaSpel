@@ -115,7 +115,6 @@ void Game::Update(float dt)
 	{
 		SelectionMenu();
 		m_maxTime = m_menu->GetMaxTime();
-		cout << m_maxTime << endl;
 	}
 	else if (m_menu->SelectMenuActive() == false && m_wasSelect == true)
 	{
@@ -129,7 +128,6 @@ void Game::Update(float dt)
 	{
 		dt = 0;
 	}
-	cout << m_menu->Pause() << endl;
 	if ((!m_menu->Pause() && !m_wasSelect)) // Vet inte om det kan göras snyggare?
 	{
 		m_time += dt;
