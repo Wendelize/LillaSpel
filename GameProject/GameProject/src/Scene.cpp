@@ -150,6 +150,7 @@ void Scene::LightToShader(bool lightsOut)
 
 	int nrOf = temp.size();
 	m_modelShader->Uniform("u_NrOf", nrOf);
+	m_modelShader->Uniform("u_LightsOut", lightsOut);
 
 
 	for (uint i = 0; i < temp.size(); i++)
