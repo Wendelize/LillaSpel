@@ -79,5 +79,6 @@ public:
     void MakeHole(vec3 position);
     void UpdateHoles();
     void ClearHoles();
+    bool IsNotHole(vec3 pos);
 };
 

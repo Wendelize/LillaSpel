@@ -16,13 +16,6 @@ ObjectHandler::ObjectHandler()
 	m_dynamicsWorld->setDebugDrawer(m_debugDrawer);
 	m_ghostCallback = new btGhostPairCallback();
 	m_dynamicsWorld->getPairCache()->setInternalGhostPairCallback(m_ghostCallback);
-	/*for (int i = 0; i < 20; i++) {
-		m_usedSpawns[i] = false;
-		float height = m_cube->GetHeight(vec3(m_spawnpoints[i].x(), m_spawnpoints[i].y(), m_spawnpoints[i].z()));
-		//m_spawnpoints[i].setValue(m_spawnpoints[i].x(), height, m_spawnpoints[i].z());
-		m_spawnpoints[i].setY(height);
-		cout << height << endl;
-	}*/
 
 	m_soundEngine = createIrrKlangDevice();
 	if (m_soundEngine)
@@ -305,8 +298,15 @@ void ObjectHandler::Update(float dt)
 			}
 			if (m_players[isPlayer]->GetCurrentPos().y() < -20.f && m_players[isPlayer]->GetLives() > 0)
 			{
-
-				m_players[isPlayer]->SetPos(vec3(rand() % 10 - 10, 7, rand() % 10 - 10));
+				bool spawnFound = false;
+				vec3 spawn = vec3(0);// = vec3((rand() % 30) - 15, 7, (rand() % 20 - 15)));
+				while (!spawnFound) {
+					spawn = vec3((rand() % 15) - 7, 7, (rand() % 15 - 7));
+					if (m_cube->IsNotHole(spawn)) {
+						spawnFound = true;
+					}
+				}
+				m_players[isPlayer]->SetPos(spawn);
 				m_players[isPlayer]->ReduceLife();
 				if (m_soundEngine)
 				{
@@ -381,7 +381,7 @@ void ObjectHandler::RemovePlatform()
 void ObjectHandler::AddPowerUp()
 {
 //	srand(time(NULL));
-	int spawnLocation = rand() % (20);
+/*	int spawnLocation = rand() % (20);
 	int type = rand() % (10);
 	if (m_usedSpawns[spawnLocation] == true) {
 		bool notFound = true;
@@ -400,21 +400,29 @@ void ObjectHandler::AddPowerUp()
 				spawnLocation = 19;
 			}
 		}
+	}*/
+	int type = rand() % (10);
+	bool spawnFound = false;
+	vec3 spawn = vec3(0);// = vec3((rand() % 30) - 15, 7, (rand() % 20 - 15)));
+	while (!spawnFound) {
+		spawn = vec3((rand() % 15) - 7, 7, (rand() % 15 - 7));
+		if (m_cube->IsNotHole(spawn)) {
+			spawnFound = true;
+		}
 	}
-	m_usedSpawns[spawnLocation] = true;
-	btVector3 spawnPoint = btVector3(m_spawnpoints[spawnLocation].x(), 10, m_spawnpoints[spawnLocation].z());
-	m_powerUps.push_back(new PowerUp(spawnLocation, spawnPoint, type));
+
+	btVector3 spawnPoint = btVector3(spawn.x, 10, spawn.z);
+	m_powerUps.push_back(new PowerUp(0, spawnPoint, type));
 	m_dynamicsWorld->addRigidBody(m_powerUps.back()->getObject());
 
-		if (m_soundEngine)
-		{
-			m_soundEngine->setSoundVolume(1.4f);
-			m_soundEngine->play2D("src/Audio/Powerup - Spawn.mp3", false);
-			m_soundEngine->setSoundVolume(0.6f);
-		}
-	//}
-
+	if (m_soundEngine)
+	{
+		m_soundEngine->setSoundVolume(1.4f);
+		m_soundEngine->play2D("src/Audio/Powerup - Spawn.mp3", false);
+		m_soundEngine->setSoundVolume(0.6f);
+	}
 }
+
 
 int ObjectHandler::GetNumPowerUps()
 {

@@ -212,7 +212,6 @@ void Game::DynamicCamera(float dt)
 	if (m_menu->RestartMenuActive())
 	{
 		focusPoint = m_objectHandler->GetPlayerPos(m_winner) + vec3(0, 0.5, 0);
-		cout << to_string(m_winner);
 	}
 	else
 	{
