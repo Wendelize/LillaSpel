@@ -16,6 +16,7 @@ ObjectHandler::ObjectHandler()
 	m_dynamicsWorld->setDebugDrawer(m_debugDrawer);
 	m_ghostCallback = new btGhostPairCallback();
 	m_dynamicsWorld->getPairCache()->setInternalGhostPairCallback(m_ghostCallback);
+	m_lightsOut = false;
 
 	m_soundEngine = createIrrKlangDevice();
 	if (m_soundEngine)
@@ -148,6 +149,21 @@ void ObjectHandler::Update(float dt)
 
 	CheckPowerUpCollision();
 	UpdateVibration(dt);
+
+	//LightsOut power-up update
+	bool active = false;
+	for (auto p : m_players)
+	{
+		if (p->GetActivePower() == 7)
+		{
+			active = true;
+			m_lightsOut = true;
+		}
+	}
+	if (m_lightsOut == true && active == false)
+	{
+		m_lightsOut = false;
+	}
 
 	for (size_t i = 0; i < m_dynamicsWorld->getNumCollisionObjects(); i++)
 	{
@@ -296,7 +312,7 @@ void ObjectHandler::AddPowerUp()
 			}
 		}
 	}*/
-	int type = rand() % (10);
+	int type = 7;//rand() % (10);
 	bool spawnFound = false;
 	vec3 spawn = vec3(0);// = vec3((rand() % 30) - 15, 7, (rand() % 20 - 15)));
 	while (!spawnFound) {
@@ -661,5 +677,10 @@ void ObjectHandler::CheckPowerUpCollision()
 
 	}
 
+}
+
+bool ObjectHandler::GetLightsOut()
+{
+	return m_lightsOut;
 }
 

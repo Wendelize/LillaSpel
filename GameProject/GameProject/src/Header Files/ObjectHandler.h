@@ -37,6 +37,8 @@ private:
 
 	MarchingCubes* m_cube;
 
+	bool m_lightsOut;
+
 public:
 	ObjectHandler();
 	~ObjectHandler();
@@ -77,4 +79,5 @@ public:
 	void ClearHoles();
 	MarchingCubes* GetCube();
 	void CheckPowerUpCollision();
+	bool GetLightsOut();
 };

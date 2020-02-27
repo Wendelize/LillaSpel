@@ -169,7 +169,7 @@ void Scene::LightToShader()
 }
 //void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, MarchingCubes* cube)
 
-void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, MarchingCubes* cube, bool gameOver, int winner, float dt)
+void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, MarchingCubes* cube, bool gameOver, int winner, float dt, bool lightsOut)
 {
 	if(dt < 1)
 		m_camera->UpdateMovement(dt, 1);
@@ -208,7 +208,11 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, 
 	cube->Draw(m_modelShader);
 
 	// Light uniforms
-	LightToShader();
+	cout << lightsOut << endl;
+	if (lightsOut == false)
+	{
+		LightToShader();
+	}
 
 	// Draw all objects
 	RenderSceneInfo(m_modelShader, objects);
@@ -488,7 +492,6 @@ void Scene::ShakeCamera(float intensity, float duration)
 {
 	m_camera->Shake(intensity, duration);
 }
-
 
 void Scene::SetWindowSize(int width, int height)
 {
