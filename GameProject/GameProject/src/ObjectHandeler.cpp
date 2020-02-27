@@ -154,6 +154,7 @@ void ObjectHandler::Update(float dt)
 	m_dynamicsWorld->stepSimulation(dt, 10);
 
 	CheckPowerUpCollision();
+	CheckCollisionCars(dt);
 	UpdateVibration(dt);
 
 	for (size_t i = 0; i < m_dynamicsWorld->getNumCollisionObjects(); i++)
@@ -585,6 +586,8 @@ void ObjectHandler::CheckPowerUpCollision()
 	int numManifolds = m_dynamicsWorld->getDispatcher()->getNumManifolds();
 	for (int i = 0; i < numManifolds; ++i)
 	{
+		//TODO
+		//Powerup spawn on car, exception thrown
 		btPersistentManifold* contactManifold = m_dynamicsWorld->getDispatcher()->getManifoldByIndexInternal(i);
 		btCollisionObject* obA = const_cast<btCollisionObject*>(contactManifold->getBody0());
 		btCollisionObject* obB = const_cast<btCollisionObject*>(contactManifold->getBody1());

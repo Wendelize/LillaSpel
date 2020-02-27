@@ -131,7 +131,7 @@ vec3 CalcPointLight(Light light, vec3 p, vec3 n, vec3 eye, bool blinn){
     vec3 specular = CalcSpecular(light, lightVec, lookVec, n, blinn) * u_Material.specular;
 
     float distance = length(light.pos - p);
-    float attenuation = 1.0 / (1.0 + 0.09 * distance + 0.052 * (distance * distance));    
+    float attenuation = 1.0 / (1.0 + 0.09 * distance + 0.092 * (distance * distance));    
 
     ambient *= attenuation;
     diffuse *= attenuation;
@@ -146,26 +146,33 @@ vec3 CalcSpotLight(Light light, vec3 p, vec3 n, vec3 eye, bool blinn) {
 	vec3 lightVec = normalize(light.pos - p);
 	float theta = dot(lightVec, normalize(-light.dir));
 	vec3 result = vec3(0);
+	float lightLength = length(light.pos - p);
 
-
-	if(theta > light.cutOff)
+	if(lightLength < 10)
 	{
-		vec3 col = normalize(vi.color);
-		vec3 lookVec = normalize(eye - p);
+		if(theta > light.cutOff)
+		{
+			vec3 col = normalize(vi.color);
+			vec3 lookVec = normalize(eye - p);
 
-		vec3 ambient = light.ambient * u_Material.ambient * col;
+			vec3 ambient = light.ambient * u_Material.ambient * col;
 		
-		vec3 diffuse = CalcDiffuse(light, lightVec, n) * u_Material.diffuse * col;
+			vec3 diffuse = CalcDiffuse(light, lightVec, n) * u_Material.diffuse * col;
 
-		vec3 specular = CalcSpecular(light, lightVec, lookVec, n, blinn) * u_Material.specular;
+			vec3 specular = CalcSpecular(light, lightVec, lookVec, n, blinn) * u_Material.specular;
 
-		float distance = length(light.pos - p);
-		float attenuation = 1.0 / (1.0 + 0.09 * distance + 0.052 * (distance * distance));    
+			float distance = length(light.pos - p);
+			float attenuation = 1.0 / (1.0 + 0.09 * distance + 0.12 * (distance * distance));    
 
-		diffuse *= attenuation;
-		specular *= attenuation;
+			diffuse *= attenuation;
+			specular *= attenuation;
 
-		result = ( diffuse + specular) ;
+			result = ( diffuse + specular) ;
+		}
+		else
+			{
+				result = vec3(0);
+			}
 	}
 	else
 	{
@@ -179,7 +186,8 @@ vec3 CalcSpotLight(Light light, vec3 p, vec3 n, vec3 eye, bool blinn) {
 void main(){
 	vec3 result = vec3(0.0);
 	bool blinn = true;
-	vec3 ambient = u_Material.ambient * vi.color * 0.05;
+	vec3 col = normalize(vi.color);
+	vec3 ambient = u_Material.ambient * col * 0.05;
 
 	for(int i = 0; i < u_NrOf; i++)
 	{
