@@ -344,9 +344,9 @@ MarchingCubes::MarchingCubes()
 MarchingCubes::~MarchingCubes()
 {
 	delete m_mesh;
-
-	delete m_transform;
 	delete m_platformShape;
+	delete m_newPlatformShape;
+	delete m_transform;
 	delete m_btTransform;
 }
 
@@ -708,13 +708,13 @@ void MarchingCubes::CreatePhysics()
 	}
 	m_newPlatformShape = new btBvhTriangleMeshShape(&m_tetraMesh, true, true);
 
-	m_newBtTransform = new btTransform;
-	m_newBtTransform->setIdentity();
-	m_newBtTransform->setOrigin(btVector3(-m_middle, -0.f, -m_middle));
+	m_btTransform = new btTransform;
+	m_btTransform->setIdentity();
+	m_btTransform->setOrigin(btVector3(-m_middle, -0.f, -m_middle));
 	btScalar mass(0.);
 	btVector3 localInertia(0, 0, 0);
-	m_newMotionState = new btDefaultMotionState(*m_newBtTransform);
-	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, m_newMotionState, m_newPlatformShape, localInertia);
+	m_motionState = new btDefaultMotionState(*m_btTransform);
+	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, m_motionState, m_newPlatformShape, localInertia);
 	m_body = new btRigidBody(rbInfo);
 
 	m_body->setFriction(3);
@@ -738,6 +738,7 @@ void MarchingCubes::UpdatePhysics()
 			m_tetraMesh.addTriangleIndices(m_mesh->m_indices[j], m_mesh->m_indices[j + 1], m_mesh->m_indices[j + 2]);
 		}
 	}
+	delete m_newPlatformShape;
 	m_newPlatformShape = new btBvhTriangleMeshShape(&m_tetraMesh, true, true);
 }
 
@@ -746,12 +747,12 @@ void MarchingCubes::MapUpdate()
 	//Sync after mutli and update physics.
 	BuildMesh();
 	UpdatePhysics();
-
+	delete m_body;
 	delete m_platformShape;
 	m_platformShape = m_newPlatformShape;
+	m_newPlatformShape = new btBvhTriangleMeshShape(&m_tetraMesh, true, true);
 	btVector3 localInertia(0, 0, 0);
-	btRigidBody::btRigidBodyConstructionInfo rbInfo(0.f, m_newMotionState, m_platformShape, localInertia);
-	delete m_body;
+	btRigidBody::btRigidBodyConstructionInfo rbInfo(0.f, m_motionState, m_platformShape, localInertia);
 	m_body = new btRigidBody(rbInfo);
 }
 

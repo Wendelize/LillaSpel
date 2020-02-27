@@ -24,7 +24,6 @@ private:
 	vector<Light*> m_carLights;
 	vector<vec3> m_bombZone;
 	ISoundEngine* m_soundEngine;
-	vector<ISoundSource*> m_crashes;
 
 	const char* m_soundFiles[NRDEATHSOUNDS];
 

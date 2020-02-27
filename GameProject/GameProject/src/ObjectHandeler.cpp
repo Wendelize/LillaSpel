@@ -23,19 +23,9 @@ ObjectHandler::ObjectHandler()
 	{
 		m_soundEngine->setSoundVolume(1.3f);
 
-		m_crashes.push_back(m_soundEngine->addSoundSourceFromFile("src/Audio/Player - Crash Small.mp3"));
-		m_crashes.push_back(m_soundEngine->addSoundSourceFromFile("src/Audio/Player - Crash Medium.mp3"));
-		m_crashes.push_back(m_soundEngine->addSoundSourceFromFile("src/Audio/Player - Crash Biggest.mp3"));
-
-		for (int i = 0; i < m_crashes.size(); i++)
-		{
-			m_crashes[i]->setDefaultVolume(0.55f);
-		}
-
 		m_soundEngine->setListenerPosition(vec3df(0, 18, 33), vec3df(0, -4, 3)); // Listener position, view direction
 		m_soundEngine->setDefault3DSoundMinDistance(70.0f);
 	}
-
 
 	m_soundFiles[0] = "src/Audio/Player - Dying 1.mp3";
 	m_soundFiles[1] = "src/Audio/Player - Dying 2.mp3"; 
@@ -101,14 +91,7 @@ ObjectHandler::~ObjectHandler()
 	}
 	m_carLights.clear();
 
-	if (m_soundEngine)
-	{
-		for (uint i = 0; i < m_crashes.size(); i++)
-		{
-			m_crashes[i]->drop();
-		}
-		m_crashes.clear();
-	}
+
 
 	for (int i = m_dynamicsWorld->getNumCollisionObjects() - 1; i >= 0; i--)
 	{
@@ -124,6 +107,7 @@ ObjectHandler::~ObjectHandler()
 		m_dynamicsWorld->removeCollisionObject(obj);
 		delete obj;
 	}
+
 	delete m_ghostCallback;
 	//delete dynamics world
 	delete m_dynamicsWorld;
@@ -143,8 +127,6 @@ ObjectHandler::~ObjectHandler()
 	m_collisionShapes.clear();
 	
 	delete m_debugDrawer;
-
-	// m_soundEngine->drop(); // Might need to delete but no memory leaks found.
 }
 
 void ObjectHandler::Update(float dt)
@@ -227,6 +209,7 @@ void ObjectHandler::Update(float dt)
 				}
 				m_players[isPlayer]->SetPos(spawn);
 				m_players[isPlayer]->ReduceLife();
+				m_players[isPlayer]->SetBoolLights(true);
 				if (m_soundEngine)
 				{
 					m_players[isPlayer]->SetNotFallen();
@@ -320,7 +303,7 @@ void ObjectHandler::AddPowerUp()
 			}
 		}
 	}*/
-	int type = 7;//rand() % (10);
+	int type = rand() % (10);
 	bool spawnFound = false;
 	vec3 spawn = vec3(0);// = vec3((rand() % 30) - 15, 7, (rand() % 20 - 15)));
 	while (!spawnFound) {
@@ -331,7 +314,7 @@ void ObjectHandler::AddPowerUp()
 		}
 	}
 
-	btVector3 spawnPoint = btVector3(spawn.x, m_cube->GetHeight(spawn) + 1.5, spawn.z);
+	btVector3 spawnPoint = btVector3(spawn.x, m_cube->GetHeight(spawn) + 6.5, spawn.z);
 	m_powerUps.push_back(new PowerUp(0, spawnPoint, type));
 	m_dynamicsWorld->addRigidBody(m_powerUps.back()->getObject());
 
@@ -363,6 +346,7 @@ void ObjectHandler::RemovePowerUp(int index)
 	delete temp;
 
 	m_dynamicsWorld->removeCollisionObject(m_powerUps.at(index)->getObject());
+	delete m_powerUps.at(index)->getObject()->getMotionState();
 	delete m_powerUps.at(index)->getObject();
 	delete m_powerUps.at(index)->GetObjectInfo();
 	delete m_powerUps.at(index);

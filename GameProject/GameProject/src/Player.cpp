@@ -145,7 +145,6 @@ Player::~Player()
 	delete m_transform;
 	delete m_btTransform;
 	delete m_carShape;
-
 	if (m_soundEngine) 
 	{
 		for (uint i = 0; i < m_carSounds.size(); i++)
@@ -156,7 +155,10 @@ Player::~Player()
 
 		m_sound->drop();
 		m_honk->drop();
+		m_honkEngine->drop();
+
 	}
+
 }
 
 void Player::Update(float dt)
