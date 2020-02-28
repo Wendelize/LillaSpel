@@ -879,3 +879,8 @@ float MarchingCubes::GetHeight(vec3 pos)
 	}
 	return height;
 }
+
+int MarchingCubes::GetWidth()
+{
+	return m_width;
+}
