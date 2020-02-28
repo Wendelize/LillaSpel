@@ -131,7 +131,7 @@ void Scene::Init()
 
 }
 
-void Scene::LightToShader()
+void Scene::LightToShader(bool lightsOut)
 {
 	m_nrOfLights = m_lights.size();
 	m_nrOfCarLights = m_carLights.size();
@@ -148,6 +148,7 @@ void Scene::LightToShader()
 
 	int nrOf = temp.size();
 	m_modelShader->Uniform("u_NrOf", nrOf);
+	m_modelShader->Uniform("u_LightsOut", lightsOut);
 
 
 	for (uint i = 0; i < temp.size(); i++)
@@ -182,7 +183,7 @@ void Scene::LightToShader()
 	}
 }
 
-void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, MarchingCubes* cube, bool gameOver, int winner, float dt)
+void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, MarchingCubes* cube, bool gameOver, int winner, float dt, bool lightsOut)
 {
 	if(dt < 1)
 		m_camera->UpdateMovement(dt, 1);
@@ -198,7 +199,6 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, 
 	RenderShadows(objects);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, m_bloom->getFBO());
-
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	//RENDER SKY DOME HERE
@@ -218,11 +218,12 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_shadowMap->GetTexture());
 
+	// Terrain
 	cube->Draw(m_modelShader);
 
 	// Light uniforms
-	LightToShader();
-
+	LightToShader(lightsOut);
+	
 	// Draw all objects
 	RenderSceneInfo(m_modelShader, objects);
 

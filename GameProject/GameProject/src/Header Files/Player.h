@@ -24,6 +24,7 @@ private:
 	ObjectInfo* m_info;
 	ISoundEngine* m_soundEngine;
 	ISoundEngine* m_honkEngine;
+
 	vector<ISoundSource*> m_carSounds;
 	ISound* m_sound;
 	ISound* m_honk;
@@ -31,6 +32,7 @@ private:
 	bool m_inverted;
 	Light* m_lights[2];
 	bool m_lightsOn = true;
+	float m_timeOut;
 
 	//Variables 4 Fysik
 	btCollisionShape* m_carShape;
@@ -84,4 +86,5 @@ public:
 	Controller* GetController();
 	bool GetBoolLights();
 	void SetBoolLights(bool state);
+
 };

@@ -42,6 +42,7 @@ uniform Light u_Lights[MAX_NR_OF_LIGHTS];
 uniform Light u_CarLights[MAX_NR_OF_LIGHTS];
 uniform Material u_Material;
 uniform bool u_Glow;
+uniform bool u_LightsOut;
 
 uniform sampler2D u_ShadowMap;
 
@@ -188,17 +189,23 @@ void main(){
 	bool blinn = true;
 	vec3 col = normalize(vi.color);
 	vec3 ambient = u_Material.ambient * col * 0.05;
-
+	
 	for(int i = 0; i < u_NrOf; i++)
 	{
-		if(u_Lights[i].type == 0) {
+		if(u_Lights[i].type == 0)
+		{
+			if(u_LightsOut== false)
 			result += CalcDirLight(u_Lights[i], vi.position, vi.normal, u_ViewPos, true, true);
-		} else if (u_Lights[i].type == 1) {
+
+		} else if (u_Lights[i].type == 1)
+		{
 			result += CalcPointLight(u_Lights[i], vi.position, vi.normal, u_ViewPos, blinn); 
-		} else if (u_Lights[i].type == 2) {
+		} else if (u_Lights[i].type == 2) 
+		{
 			result += CalcSpotLight(u_Lights[i], vi.position, vi.normal, u_ViewPos, false); 
 		}
 	}
+	
 
     FragColor = vec4(result + ambient, 1.0);
 

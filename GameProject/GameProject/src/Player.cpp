@@ -145,7 +145,6 @@ Player::~Player()
 	delete m_transform;
 	delete m_btTransform;
 	delete m_carShape;
-
 	if (m_soundEngine) 
 	{
 		for (uint i = 0; i < m_carSounds.size(); i++)
@@ -156,7 +155,10 @@ Player::~Player()
 
 		m_sound->drop();
 		m_honk->drop();
+		m_honkEngine->drop();
+
 	}
+
 }
 
 void Player::Update(float dt)
@@ -168,6 +170,13 @@ void Player::Update(float dt)
 	float rotationSpeed = 2.f;
 	float jump = 0;
 	bool pressed = false;
+
+	m_timeOut += dt;
+	if (m_timeOut >= 2 && !m_lightsOn)
+	{
+		m_lightsOn = true;
+	}
+
 
 	if (glfwJoystickPresent(m_controllerID) == 1 && m_body->getWorldTransform().getOrigin().y() > -1.0f)
 	{
@@ -568,6 +577,8 @@ void Player::removePower(int type)
 		m_body->setRestitution(m_restitution);
 		break;
 	}
+
+	m_powerType = NULL;
 }
 
 bool Player::updatePower(float dt)
@@ -600,6 +611,10 @@ bool Player::GetBoolLights()
 void Player::SetBoolLights(bool state)
 {
 	m_lightsOn = state;
+	if (!m_lightsOn)
+	{
+		m_timeOut = 0;
+	}
 }
 
 void Player::SetFallen()

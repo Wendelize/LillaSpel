@@ -16,25 +16,16 @@ ObjectHandler::ObjectHandler()
 	m_dynamicsWorld->setDebugDrawer(m_debugDrawer);
 	m_ghostCallback = new btGhostPairCallback();
 	m_dynamicsWorld->getPairCache()->setInternalGhostPairCallback(m_ghostCallback);
+	m_lightsOut = false;
 
 	m_soundEngine = createIrrKlangDevice();
 	if (m_soundEngine)
 	{
 		m_soundEngine->setSoundVolume(1.3f);
 
-		m_crashes.push_back(m_soundEngine->addSoundSourceFromFile("src/Audio/Player - Crash Small.mp3"));
-		m_crashes.push_back(m_soundEngine->addSoundSourceFromFile("src/Audio/Player - Crash Medium.mp3"));
-		m_crashes.push_back(m_soundEngine->addSoundSourceFromFile("src/Audio/Player - Crash Biggest.mp3"));
-
-		for (int i = 0; i < m_crashes.size(); i++)
-		{
-			m_crashes[i]->setDefaultVolume(0.55f);
-		}
-
 		m_soundEngine->setListenerPosition(vec3df(0, 18, 33), vec3df(0, -4, 3)); // Listener position, view direction
 		m_soundEngine->setDefault3DSoundMinDistance(70.0f);
 	}
-
 
 	m_soundFiles[0] = "src/Audio/Player - Dying 1.mp3";
 	m_soundFiles[1] = "src/Audio/Player - Dying 2.mp3"; 
@@ -100,14 +91,7 @@ ObjectHandler::~ObjectHandler()
 	}
 	m_carLights.clear();
 
-	if (m_soundEngine)
-	{
-		for (uint i = 0; i < m_crashes.size(); i++)
-		{
-			m_crashes[i]->drop();
-		}
-		m_crashes.clear();
-	}
+
 
 	for (int i = m_dynamicsWorld->getNumCollisionObjects() - 1; i >= 0; i--)
 	{
@@ -123,6 +107,7 @@ ObjectHandler::~ObjectHandler()
 		m_dynamicsWorld->removeCollisionObject(obj);
 		delete obj;
 	}
+
 	delete m_ghostCallback;
 	//delete dynamics world
 	delete m_dynamicsWorld;
@@ -142,8 +127,6 @@ ObjectHandler::~ObjectHandler()
 	m_collisionShapes.clear();
 	
 	delete m_debugDrawer;
-
-	// m_soundEngine->drop(); // Might need to delete but no memory leaks found.
 }
 
 void ObjectHandler::Update(float dt)
@@ -156,6 +139,21 @@ void ObjectHandler::Update(float dt)
 	CheckPowerUpCollision();
 	CheckCollisionCars(dt);
 	UpdateVibration(dt);
+
+	//LightsOut power-up update
+	bool active = false;
+	for (auto p : m_players)
+	{
+		if (p->GetActivePower() == 7)
+		{
+			active = true;
+			m_lightsOut = true;
+		}
+	}
+	if (m_lightsOut == true && active == false)
+	{
+		m_lightsOut = false;
+	}
 
 	for (size_t i = 0; i < m_dynamicsWorld->getNumCollisionObjects(); i++)
 	{
@@ -211,6 +209,7 @@ void ObjectHandler::Update(float dt)
 				}
 				m_players[isPlayer]->SetPos(spawn);
 				m_players[isPlayer]->ReduceLife();
+				m_players[isPlayer]->SetBoolLights(true);
 				if (m_soundEngine)
 				{
 					m_players[isPlayer]->SetNotFallen();
@@ -283,39 +282,18 @@ void ObjectHandler::RemovePlatform()
 
 void ObjectHandler::AddPowerUp()
 {
-//	srand(time(NULL));
-/*	int spawnLocation = rand() % (20);
-	int type = rand() % (10);
-	if (m_usedSpawns[spawnLocation] == true) {
-		bool notFound = true;
-		int i = 0;
-		while (notFound) {
-			i++;
-			spawnLocation++;
-			if (spawnLocation == 20) {
-				spawnLocation = 0;
-			}
-			if (m_usedSpawns[spawnLocation] == false) {
-				notFound = false;
-			}
-			if (i == 20) {
-				notFound = false;
-				spawnLocation = 19;
-			}
-		}
-	}*/
 	int type = rand() % (10);
 	bool spawnFound = false;
 	vec3 spawn = vec3(0);// = vec3((rand() % 30) - 15, 7, (rand() % 20 - 15)));
 	while (!spawnFound) {
-		spawn = vec3((rand() % 30) - 15, 7, (rand() % 30 - 15));
+		spawn = vec3((rand() % m_cube->GetWidth()) - m_cube->GetWidth()/2, 7, (rand() % m_cube->GetWidth()) - m_cube->GetWidth()/2);
 		if (m_cube->IsNotHole(spawn)) {
 			spawnFound = true;
 			m_cube->GetHeight(spawn);
 		}
 	}
 
-	btVector3 spawnPoint = btVector3(spawn.x, m_cube->GetHeight(spawn) + 1.5, spawn.z);
+	btVector3 spawnPoint = btVector3(spawn.x, m_cube->GetHeight(spawn) + 6.5, spawn.z);
 	m_powerUps.push_back(new PowerUp(0, spawnPoint, type));
 	m_dynamicsWorld->addRigidBody(m_powerUps.back()->getObject());
 
@@ -347,6 +325,7 @@ void ObjectHandler::RemovePowerUp(int index)
 	delete temp;
 
 	m_dynamicsWorld->removeCollisionObject(m_powerUps.at(index)->getObject());
+	delete m_powerUps.at(index)->getObject()->getMotionState();
 	delete m_powerUps.at(index)->getObject();
 	delete m_powerUps.at(index)->GetObjectInfo();
 	delete m_powerUps.at(index);
@@ -703,8 +682,6 @@ bool ObjectHandler::CheckCollisionCars(float dt)
 		btPersistentManifold* contactManifold = m_dynamicsWorld->getDispatcher()->getManifoldByIndexInternal(i);
 		btCollisionObject* obA = const_cast<btCollisionObject*>(contactManifold->getBody0());
 		btCollisionObject* obB = const_cast<btCollisionObject*>(contactManifold->getBody1());
-
-
 		btCollisionShape* shapeA = obA->getCollisionShape();
 		btCollisionShape* shapeB = obB->getCollisionShape();
 
@@ -730,3 +707,12 @@ bool ObjectHandler::CheckCollisionCars(float dt)
 	return m_collision;
 }
 
+bool ObjectHandler::GetLightsOut()
+{
+	return m_lightsOut;
+}
+
+void ObjectHandler::SetLightsOut(bool state)
+{
+	m_lightsOut = state;
+}

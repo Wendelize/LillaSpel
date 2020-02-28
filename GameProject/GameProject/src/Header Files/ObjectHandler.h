@@ -24,7 +24,6 @@ private:
 	vector<Light*> m_carLights;
 	vector<vec3> m_bombZone;
 	ISoundEngine* m_soundEngine;
-	vector<ISoundSource*> m_crashes;
 
 	const char* m_soundFiles[NRDEATHSOUNDS];
 
@@ -38,6 +37,8 @@ private:
 	btGhostPairCallback* m_ghostCallback;
 
 	MarchingCubes* m_cube;
+
+	bool m_lightsOut;
 
 public:
 	ObjectHandler();
@@ -81,4 +82,6 @@ public:
 	MarchingCubes* GetCube();
 	void CheckPowerUpCollision();
 	bool CheckCollisionCars(float dt);
+	bool GetLightsOut();
+	void SetLightsOut(bool state);
 };

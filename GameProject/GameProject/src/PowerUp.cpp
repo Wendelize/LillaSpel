@@ -73,7 +73,7 @@ PowerUp::PowerUp(int spawn, btVector3 pos, int type,float duration)
 		m_btTransform->setIdentity();
 		m_btTransform->setOrigin(m_pos);
 		m_transform->SetScale(scale, scale, scale);
-	
+
 	btVector3 localInertia(0, 0, 0);
 	float mass = 1.f;
 	m_shape = new btBoxShape(btVector3(0.75f, 0.75f, 0.75f));
@@ -85,9 +85,6 @@ PowerUp::PowerUp(int spawn, btVector3 pos, int type,float duration)
 
 	m_body = new btRigidBody(rbInfo);
 	m_body->setCollisionShape(m_shape);
-	m_body->setWorldTransform(*m_btTransform);
-	//m_body->setLinearVelocity(btVector3(0.0f, -1.0f, 0.0f));
-	//m_body->setDamping(1, 0);
 	m_body->setRestitution(0);
 	m_body->setFriction(100);
 	vec3 btPos = vec3(m_btTransform->getOrigin().x(), m_btTransform->getOrigin().y(), m_btTransform->getOrigin().z());
@@ -149,7 +146,7 @@ bool PowerUp::update(float dt)
 	bool destroy = true;
 	if (GetDuration() - dt > 0) {
 		SetDuration(GetDuration() - dt);
-		m_transform->Rotate(0.f, 0.15f, 0.f);
+		m_transform->Rotate(0.f, 2.0f * dt, 0.f);
 		destroy = false;
 	}
 	//m_body->setLinearVelocity(btVector3(0,-1,0));

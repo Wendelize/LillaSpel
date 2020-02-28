@@ -30,7 +30,7 @@ Game::Game()
 
 	m_objectHandler->AddPlayer(vec3(-10, 4, 3), 0, 0, vec3(0.5, 1, 9), m_cars[0]); // Passa modell
 	m_objectHandler->AddPlayer(vec3(10, 4, 3), 1, 0, vec3(0, 2, 0), m_cars[2]); // Passa modell
-	//m_objectHandler->AddPlayer(vec3(-4, 7, -4), 3, rand() % 4, vec3(1, 1, 0), m_cars[3]); // Passa modell
+	m_objectHandler->AddPlayer(vec3(-4, 7, -4), 3, rand() % 4, vec3(1, 1, 0), m_cars[3]); // Passa modell
 	m_scene->SetCameraPos(CAMERAPOS_GAME);
 
 
@@ -67,10 +67,15 @@ Game::~Game()
 	delete m_menu;
 	if (m_soundEngine)
 	{
+		for (int i = 0; i < m_songs.size(); i++)
+		{
+			m_songs[i]->drop();
+
+		}
 		if (m_music)
 			m_music->drop();
 
-		m_soundEngine->drop();
+		//m_soundEngine->drop();
 	}
 }
 
@@ -309,10 +314,11 @@ void Game::Render(float dt)
 
 	m_menu->RenderMenu(m_gameOver, m_time, m_cars[0]);
 
+	
 	m_objects = m_objectHandler->GetObjects();
 	m_carLight = m_objectHandler->GetLights();
 	m_scene->RenderLights(m_carLight);
-	m_scene->Render(m_objects, m_objectHandler->GetWorld(), m_cube, m_gameOver, m_winner, dt);
+	m_scene->Render(m_objects, m_objectHandler->GetWorld(), m_cube, m_gameOver, m_winner, dt, m_objectHandler->GetLightsOut());
 //
 //	m_scene->Render(m_objects, m_objectHandler->GetWorld(), m_cube);
 
@@ -336,6 +342,7 @@ void Game::Reset()
 	m_menu->ResetReset();
 	m_gameOver = false;
 	m_time = 0;
+	m_objectHandler->SetLightsOut(false);
 	//m_maxTime = 240.f;
 	m_timeSinceSpawn = 0;
 	// delete remeaning players so we can spawn them back att spawn positions
