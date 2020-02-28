@@ -719,6 +719,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 15);
 		ImGui::SetNextWindowPos(ImVec2((float)width / 3 - (pauseMenuWidth / 2), height / 4 - (pauseMenuHeight / 2)));
 		ImGui::SetNextWindowSize(ImVec2((float)width / 3 + pauseMenuWidth, height / 4 + 150 + pauseMenuHeight));
+		ImGui::SetNextWindowBgAlpha(0.1);
 		if (ImGui::Begin("##RestartMenu", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiNavInput_Activate))
 		{
 

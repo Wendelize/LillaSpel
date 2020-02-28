@@ -55,7 +55,8 @@ public:
 	void RenderLights(vector<Light*> light);
 	void RenderShadows(vector<ObjectInfo*> objects);
 	void RenderImGui(btDiscreteDynamicsWorld* world);
-	void RenderParticlesCollision(float dt, btDiscreteDynamicsWorld* world);
+	void CheckCollision(btDiscreteDynamicsWorld* world);
+	void RenderParticles(float dt);
 	void RenderParticlesVictory(ObjectInfo* object, float dt);
 	void RenderExhaust(vector<ObjectInfo*> objects);
 	void SwapBuffer();
@@ -66,6 +67,8 @@ public:
 	void TranslateCameraPos(vec3 pos);
 	void SetCameraFocus(vec3 pos);
 	void ShakeCamera(float intensity, float duration);
+
+	void AddParticleEffect(vec3 pos, vec3 color1, vec3 color2, float velocity, vec3 dir, int nr, float duration, float size);
 
 	void SetWindowSize(int width, int height);
 	GLFWwindow* GetWindow();

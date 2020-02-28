@@ -78,6 +78,8 @@ void Game::Update(float dt)
 {
 	DynamicCamera(dt);
 
+	m_scene->CheckCollision(m_objectHandler->GetWorld());
+
 	SHORT key = GetAsyncKeyState(VK_LSHIFT);
 	const int KEY_UP = 0x1;
 	if ((key & KEY_UP) == KEY_UP)
@@ -204,6 +206,14 @@ void Game::Update(float dt)
 	}
 }
 
+void Game::UpdateParticles(float dt)
+{
+	if (m_gameOver)
+	{
+		m_scene->AddParticleEffect(m_objectHandler->GetPlayerPos(m_winner), vec3(NULL), vec3(NULL), 10, vec3(0, 5, 0), 10, 1, 0.2);
+	}
+}
+
 void Game::DynamicCamera(float dt)
 {
 	vec3 focusPoint = vec3(0);
@@ -233,7 +243,23 @@ void Game::DynamicCamera(float dt)
 	{
 		vec3 vec = normalize(m_objectHandler->GetPlayerPos(m_winner) - (m_objectHandler->GetPlayerPos(m_winner) - m_objectHandler->GetPlayerDirection(m_winner)));
 		vec3 right = cross(vec, vec3(0, 1, 0));
-		m_scene->TranslateCameraPos(m_objectHandler->GetPlayerPos(m_winner) + -vec * 3.f + right * 3.f + vec3(0, -0.6, 0));
+
+		vec = m_objectHandler->GetPlayerPos(m_winner) + -vec * 3.f + right * 3.f + vec3(0, -0.6, 0);
+
+		m_scene->TranslateCameraPos(vec);
+
+		right = cross(normalize(m_objectHandler->GetPlayerPos(m_winner) - vec), vec3(0, 1, 0));
+
+		vec3 in = m_objectHandler->GetPlayerPos(m_winner) - (m_objectHandler->GetPlayerPos(m_winner) + right * 2.0f);
+
+		if (GetAsyncKeyState(VK_DELETE))
+		{
+			m_scene->AddParticleEffect(m_objectHandler->GetPlayerPos(m_winner) + right * 2.0f + vec3(0, -1, 0), vec3(NULL), vec3(NULL), 0.9, vec3(0, 7, 0) + in + vec3(0, -1, 0), 1, 1, 0.1);
+
+			m_scene->AddParticleEffect(m_objectHandler->GetPlayerPos(m_winner) - right * 2.0f + vec3(0, -1, 0), vec3(NULL), vec3(NULL), 0.9, vec3(0, 7, 0) - in + vec3(0, -1, 0), 1, 1, 0.1);
+		}
+
+		
 	}
 	else
 	{

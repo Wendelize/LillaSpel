@@ -19,8 +19,6 @@ Scene::Scene()
 	m_sky = new Sky();
 	m_shadowMap = new ShadowMap(m_shadowMapWidth, m_shadowMapHeight);
 	m_bloom = new Bloom(m_screenWidth, m_screenHeight, m_bloomTextureScale);
-	for(int i = 0; i < 4; i++)
-	m_particles.push_back(new ParticleSystem(50));
 
 	m_modelMatrix = mat4(1.0);
 	m_projMatrix = mat4(1.0);
@@ -231,14 +229,22 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, 
 	// Render Imgui
 	RenderImGui(world);
 
-	//// Render Particles
-	RenderParticlesCollision(dt, world);
-	//RenderExhaust(objects);
-	if (gameOver == true)
+	// Render Particles
+
+	int k = 0;
+	for (int i = 0; i < m_particles.size(); i++)
 	{
-		RenderParticlesVictory(objects[winner], dt);
+		if (!m_particles[k]->GetActive())
+		{
+			delete m_particles[k];
+			m_particles.erase(m_particles.begin() + k);
+		}
+		else
+			k++;
 	}
 
+	RenderParticles(dt);
+	
 	// Render Skybox
 	//RenderSkybox();
 
@@ -353,7 +359,7 @@ void Scene::RenderImGui(btDiscreteDynamicsWorld* world)
 	}
 }
 
-void Scene::RenderParticlesCollision(float dt, btDiscreteDynamicsWorld* world)
+void Scene::CheckCollision(btDiscreteDynamicsWorld* world)
 {
 	// Browse all collision pairs 
 	int numManifolds = world->getDispatcher()->getNumManifolds();
@@ -369,62 +375,97 @@ void Scene::RenderParticlesCollision(float dt, btDiscreteDynamicsWorld* world)
 		//Collision between spheres(cars)
 		if (shapeA->getShapeType() == 8 && shapeB->getShapeType() == 8)
 		{
-			bool A = false;
-			bool B = false;
 			vec3 particlePos;
+			btTransform mat = obA->getWorldTransform();
+			btVector3 vec = mat.getOrigin();
+			particlePos = vec3(vec.x(), vec.y(), vec.z());
+			btVector3 spread = obA->getInterpolationLinearVelocity();
+			float fspread = (spread.x() + spread.y() + spread.z()) / 3.f;
 
-			//Check for available particlesystem
-			for (auto ps : m_particles)
+			if (fspread < 1.f)
 			{
-				//Car A
-				if (ps->GetActive() == false && A == false)
-				{
-
-					btTransform matA = obA->getWorldTransform();
-					btVector3 vecA = matA.getOrigin();
-
-					particlePos = vec3(vecA.x(), vecA.y(), vecA.z());
-
-					btVector3 spread = obA->getInterpolationLinearVelocity();
-
-					float fspread = (spread.x() + spread.y() + spread.z()) / 3.f;
-					if (fspread < 1.f)
-					{
-						fspread = 6.f;
-					}
-
-					//Set of particlesystem for collider A
-					ps->SetActive();
-					ps->GenerateParticlesForCollision(particlePos, fspread);
-					A = true;	
-				}
-				//Car B
-				if (ps->GetActive() == false && B == false)
-				{
-					btTransform matB = obB->getWorldTransform();
-					btVector3 vecB = matB.getOrigin();
-					particlePos = vec3(vecB.x(), vecB.y(), vecB.z());
-
-					btVector3 spread = obB->getInterpolationLinearVelocity();
-
-					float fspread = (spread.x() + spread.y() + spread.z()) / 3.f;
-					if (fspread < 1.f)
-					{
-						fspread = 6.f;
-					}
-
-					//Set of particlesystem for collider B
-					ps->SetActive();
-					ps->GenerateParticlesForCollision(particlePos, fspread);
-					B = true;
-					//Both particlesystem are set of, no need to search futher
-					break;
-				}
+				fspread = 6.f;
 			}
+
+			AddParticleEffect(particlePos, vec3(1, 0, 0), vec3(0, 1, 0), 6, vec3(1, 0, 0), 50, 0.5, 0.4);
+
+			mat = obB->getWorldTransform();
+			vec = mat.getOrigin();
+			particlePos = vec3(vec.x(), vec.y(), vec.z());
+			spread = obB->getInterpolationLinearVelocity();
+			fspread = (spread.x() + spread.y() + spread.z()) / 3.f;
+
+			if (fspread < 1.f)
+			{
+				fspread = 6.f;
+			}
+
+			AddParticleEffect(particlePos, vec3(1, 0, 0), vec3(0, 1, 0), 6, vec3(0, 1, 0), 50, 0.5, 0.4);
+
+
+			//Set of particlesystem for collider A
+			/*ps->SetActive();
+			ps->GenerateParticlesForCollision(particlePos, fspread, 0.5f, vec3(1, 0, 0), 0.25, vec3(0, 0.8, 0));
+			A = true;*/
+
+			//bool A = false;
+			//bool B = false;
+			//vec3 particlePos;
+
+			////Check for available particlesystem
+			//for (auto ps : m_particles)
+			//{
+			//	//Car A
+			//	if (ps->GetActive() == false && A == false)
+			//	{
+
+			//		btTransform matA = obA->getWorldTransform();
+			//		btVector3 vecA = matA.getOrigin();
+
+			//		particlePos = vec3(vecA.x(), vecA.y(), vecA.z());
+
+			//		btVector3 spread = obA->getInterpolationLinearVelocity();
+
+			//		float fspread = (spread.x() + spread.y() + spread.z()) / 3.f;
+			//		if (fspread < 1.f)
+			//		{
+			//			fspread = 6.f;
+			//		}
+
+			//		//Set of particlesystem for collider A
+			//		ps->SetActive();
+			//		ps->GenerateParticlesForCollision(particlePos, fspread, 0.5f, vec3(1, 0, 0), 0.25, vec3(0, 0.8, 0));
+			//		A = true;	
+			//	}
+			//	//Car B
+			//	if (ps->GetActive() == false && B == false)
+			//	{
+			//		btTransform matB = obB->getWorldTransform();
+			//		btVector3 vecB = matB.getOrigin();
+			//		particlePos = vec3(vecB.x(), vecB.y(), vecB.z());
+
+			//		btVector3 spread = obB->getInterpolationLinearVelocity();
+
+			//		float fspread = (spread.x() + spread.y() + spread.z()) / 3.f;
+			//		if (fspread < 1.f)
+			//		{
+			//			fspread = 6.f;
+			//		}
+
+			//		//Set of particlesystem for collider B
+			//		ps->SetActive();
+			//		ps->GenerateParticlesForCollision(particlePos, fspread, 5.f, vec3(0, 1, 0), 0.25, vec3(0, 0.8, 0));
+			//		B = true;
+			//		//Both particlesystem are set of, no need to search futher
+			//		break;
+			//	}
+			//}
 		}
 	}
-		
-	// Render the active particlesystems
+}
+
+void Scene::RenderParticles(float dt)
+{
 	for (auto ps : m_particles)
 	{
 		if (ps->GetActive() == true)
@@ -434,35 +475,10 @@ void Scene::RenderParticlesCollision(float dt, btDiscreteDynamicsWorld* world)
 			ps->GetShader()->SetUniform("u_View", temp);
 			ps->GetShader()->SetUniform("u_Proj", m_projMatrix);
 
-			ps->Collision(dt);
+			ps->Simulate(dt);
 			ps->Draw();
 		}
 	}
-}
-
-void Scene::RenderParticlesVictory(ObjectInfo* object, float dt)
-{
-	mat4 temp = m_viewMatrix;
-	m_particles.back()->GetShader()->UseShader();
-	m_particles.back()->GetShader()->SetUniform("u_View", temp);
-	m_particles.back()->GetShader()->SetUniform("u_Proj", m_projMatrix);
-	
-	for (auto ps : m_particles)
-	{
-		ps->Victory(dt, vec3(object->modelMatrix[3][0], object->modelMatrix[3][1], object->modelMatrix[3][2]));
-		ps->Draw();
-	}
-}
-
-void Scene::RenderExhaust(vector<ObjectInfo*> objects)
-{
-	mat4 temp = m_viewMatrix;
-	m_particles.back()->GetShader()->UseShader();
-	m_particles.back()->GetShader()->SetUniform("u_View", temp);
-	m_particles.back()->GetShader()->SetUniform("u_Proj", m_projMatrix);
-	
-	m_particles.back()->Exhaust(0.03, vec3(objects[0]->modelMatrix[3][0], objects[0]->modelMatrix[3][1], objects[0]->modelMatrix[3][2]) );
-	m_particles.back()->Draw();
 }
 
 void Scene::SwapBuffer()
@@ -507,6 +523,13 @@ void Scene::SetCameraFocus(vec3 pos)
 void Scene::ShakeCamera(float intensity, float duration)
 {
 	m_camera->Shake(intensity, duration);
+}
+
+void Scene::AddParticleEffect(vec3 pos, vec3 color1, vec3 color2, float velocity, vec3 dir, int nr, float duration, float size)
+{
+	m_particles.push_back(new ParticleSystem(nr));
+	m_particles.back()->SetActive();
+	m_particles.back()->GenerateParticles(pos, velocity, duration, color1, color2, size, dir);
 }
 
 

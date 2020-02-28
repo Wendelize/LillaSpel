@@ -40,20 +40,20 @@ public:
 	void Init();
 	int FindParticle();
 	void SortParticles();
-	void GenerateParticles(float dt, vec3 emitterPos, float velocity);
-	void SimulateParticles(float dt, vec3 emitterPos);
+	//void GenerateParticles(float dt, vec3 emitterPos, float velocity);
+	//void SimulateParticles(float dt, vec3 emitterPos);
 	void Draw();
 	Shader* GetShader();
 
-	void DriftParticles();
+	//void DriftParticles();
 
-	void GenerateParticlesForCollision( vec3 emitterPos, float velocity);
-	void Collision(float dt);
+	void GenerateParticles(vec3 emitterPos, float spread, float life, vec3 color1, vec3 color2, float size, vec3 dir);
+	void Simulate(float dt);
 
-	void GenerateParticlesForVictory(vec3 emitterPos);
-	void Victory(float dt, vec3 emitterPos);
+	//void GenerateParticlesForVictory(vec3 emitterPos);
+	//void Victory(float dt, vec3 emitterPos);
 
-	void Exhaust(float dt, vec3 emitterPos);
+	//void Exhaust(float dt, vec3 emitterPos);
 
 	void SetActive();
 	bool GetActive();

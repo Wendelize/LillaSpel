@@ -42,6 +42,7 @@ public:
 	Game();
 	~Game();
 	void Update(float dt);
+	void UpdateParticles(float dt);
 	void DynamicCamera(float dt);
 	void PlayWithLights(float dt);
 	void Render(float dt);
