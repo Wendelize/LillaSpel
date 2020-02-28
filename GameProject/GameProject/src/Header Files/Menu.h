@@ -45,7 +45,8 @@ private:
 	int m_maxTime = 60.0f;
 	int m_winnerID = 0;
 
-	int m_lastCollied[4] = { -1 }; 	// TODO: resetta det jag laggt till efter jag gjorde resett funktionen
+	int m_lastCollied[4] = { -1, -1, -1, -1 }; 	// TODO: resetta det jag laggt till efter jag gjorde resett funktionen
+	int m_lastCollisionTime[4] = { 0, 0, 0, 0 };
 	int m_timesCollided[4] = { 0 };
 	vector<vector<int>> m_kills;		// who you've killed
 	vector<vector<int>> m_killers;	// who killed you
@@ -58,31 +59,31 @@ private:
 	int m_p1ModelId = 0;
 	double m_p1Seconds = 1;
 	vec3 m_p1Col = vec3(0.5, 1, 9);
-	vector<int> m_p1KillList;	// who you've killed
-	vector<int> m_p1KillerList;	// who killed you 
+	//vector<int> m_p1KillList;	// who you've killed
+	//vector<int> m_p1KillerList;	// who killed you 
 
 	
 	int m_p2ModelId = 0;
 	double m_p2Seconds = 1;
 	vec3 m_p2Col = vec3(0, 1, 0);
-	vector<int> m_p2KillList;	// who you've killed
-	vector<int> m_p2KillerList;	// who killed you
+	//vector<int> m_p2KillList;	// who you've killed
+	//vector<int> m_p2KillerList;	// who killed you
 
 	
 	int m_p3ModelId = -1;
 	double m_p3Seconds = 1;
 	bool m_p3Joined = false;
 	vec3 m_p3Col = vec3(3, 0, 0);
-	vector<int> m_p3KillList;	// who you've killed
-	vector<int> m_p3KillerList;	// who killed you
+	//vector<int> m_p3KillList;	// who you've killed
+	//vector<int> m_p3KillerList;	// who killed you
 
 
 	int m_p4ModelId = -1;
 	double m_p4Seconds = 1;
 	bool m_p4Joined = false;
 	vec3 m_p4Col = vec3(1, 1, 0);
-	vector<int> m_p4KillList;	// who you've killed
-	vector<int> m_p4KillerList;	// who killed you
+	//vector<int> m_p4KillList;	// who you've killed
+	//vector<int> m_p4KillerList;	// who killed you
 	
 	ActiveMenu m_menu = ActiveMenu::start;
 

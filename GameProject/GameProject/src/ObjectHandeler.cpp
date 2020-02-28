@@ -275,7 +275,7 @@ void ObjectHandler::Update(float dt)
 					m_players[isPlayer]->ReduceLife(); 
 					// used for statsMenu
 					m_death = true;
-					m_dead = isPlayer;
+					m_dead = m_players[isPlayer]->GetControllerID();
 				}
 				else 
 				{
@@ -606,6 +606,7 @@ void ObjectHandler::UpdateVibration(float dt)
 			// used for statsMenu
 			int oldAIndex = m_aCollisionPlayerId;
 			int oldBIndex = m_bCollisionPlayerId;
+			double time = glfwGetTime();
 
 			for (int f = 0; f < m_players.size(); f++)
 			{
@@ -623,15 +624,11 @@ void ObjectHandler::UpdateVibration(float dt)
 				}
 			}
 			// used for statsMenu
-			if (m_collidTimer <= 0.5 && ((oldAIndex == m_aCollisionPlayerId && oldBIndex == m_bCollisionPlayerId) || (oldBIndex == m_aCollisionPlayerId && oldAIndex == m_bCollisionPlayerId) ))
+			if (!(time - m_collidTimer <= 0.5 && ((oldAIndex == m_aCollisionPlayerId && oldBIndex == m_bCollisionPlayerId) || (oldBIndex == m_aCollisionPlayerId && oldAIndex == m_bCollisionPlayerId) )))
 			{
 				// TODO: kanske om det fuckar för mycket när fera krockar samtidigt så fixa bättre lösning
-				m_collidTimer += dt;
-			}
-			else
-			{
 				m_collisionHappened = true;
-				m_collidTimer = 0;
+				m_collidTimer = time;
 			}
 
 		}

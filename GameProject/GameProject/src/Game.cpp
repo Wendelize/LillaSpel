@@ -226,7 +226,7 @@ void Game::Reset()
 	m_time = 0;
 	//m_maxTime = 240.f;
 	m_timeSinceSpawn = 0;
-	// delete remeaning players so we can spawn them back att spawn positions
+	// delete remaning players so we can spawn them back att spawn positions
 	for (int i = 0; i < 4; i++)
 	{
 		
