@@ -282,32 +282,11 @@ void ObjectHandler::RemovePlatform()
 
 void ObjectHandler::AddPowerUp()
 {
-//	srand(time(NULL));
-/*	int spawnLocation = rand() % (20);
-	int type = rand() % (10);
-	if (m_usedSpawns[spawnLocation] == true) {
-		bool notFound = true;
-		int i = 0;
-		while (notFound) {
-			i++;
-			spawnLocation++;
-			if (spawnLocation == 20) {
-				spawnLocation = 0;
-			}
-			if (m_usedSpawns[spawnLocation] == false) {
-				notFound = false;
-			}
-			if (i == 20) {
-				notFound = false;
-				spawnLocation = 19;
-			}
-		}
-	}*/
 	int type = rand() % (10);
 	bool spawnFound = false;
 	vec3 spawn = vec3(0);// = vec3((rand() % 30) - 15, 7, (rand() % 20 - 15)));
 	while (!spawnFound) {
-		spawn = vec3((rand() % 30) - 15, 7, (rand() % 30 - 15));
+		spawn = vec3((rand() % m_cube->GetWidth()) - m_cube->GetWidth()/2, 7, (rand() % m_cube->GetWidth()) - m_cube->GetWidth()/2);
 		if (m_cube->IsNotHole(spawn)) {
 			spawnFound = true;
 			m_cube->GetHeight(spawn);
@@ -731,4 +710,9 @@ bool ObjectHandler::CheckCollisionCars(float dt)
 bool ObjectHandler::GetLightsOut()
 {
 	return m_lightsOut;
+}
+
+void ObjectHandler::SetLightsOut(bool state)
+{
+	m_lightsOut = state;
 }
