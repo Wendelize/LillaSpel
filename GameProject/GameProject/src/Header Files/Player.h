@@ -32,6 +32,7 @@ private:
 	bool m_inverted;
 	Light* m_lights[2];
 	bool m_lightsOn = true;
+	float m_timeOut;
 
 	//Variables 4 Fysik
 	btCollisionShape* m_carShape;
@@ -85,4 +86,5 @@ public:
 	Controller* GetController();
 	bool GetBoolLights();
 	void SetBoolLights(bool state);
+
 };

@@ -171,6 +171,13 @@ void Player::Update(float dt)
 	float jump = 0;
 	bool pressed = false;
 
+	m_timeOut += dt;
+	if (m_timeOut >= 2 && !m_lightsOn)
+	{
+		m_lightsOn = true;
+	}
+
+
 	if (glfwJoystickPresent(m_controllerID) == 1 && m_body->getWorldTransform().getOrigin().y() > -1.0f)
 	{
 		if (m_honkEngine && m_soundEngine && m_controller->ButtonRightJoystickIsPressed(m_controllerID))
@@ -604,6 +611,10 @@ bool Player::GetBoolLights()
 void Player::SetBoolLights(bool state)
 {
 	m_lightsOn = state;
+	if (!m_lightsOn)
+	{
+		m_timeOut = 0;
+	}
 }
 
 void Player::SetFallen()

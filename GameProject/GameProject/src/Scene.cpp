@@ -201,7 +201,6 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, 
 	RenderShadows(objects);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, m_bloom->getFBO());
-
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	//RENDER SKY DOME HERE
@@ -221,21 +220,21 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_shadowMap->GetTexture());
 
+	// Terrain
 	cube->Draw(m_modelShader);
 
 	// Light uniforms
+	LightToShader(lightsOut);
 	
-		LightToShader(lightsOut);
-	
-
 	// Draw all objects
 	RenderSceneInfo(m_modelShader, objects);
 
 	// Render Imgui
 	RenderImGui(world);
 
-	//// Render Particles
+	// Render Particles
 	RenderParticlesCollision(dt, world);
+
 	//RenderExhaust(objects);
 	if (gameOver == true)
 	{
