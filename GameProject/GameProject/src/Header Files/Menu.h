@@ -26,6 +26,8 @@ public:
 	void SetWinner(int playerNum);
 	bool SelectMenuActive();
 	bool RestartMenuActive();
+	bool WinMenuActive();
+	bool StatsMenuActive();
 	int GetMaxTime();
 	void LoadMenuPic();
 	bool Pause();

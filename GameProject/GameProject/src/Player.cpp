@@ -450,7 +450,7 @@ void Player::GivePower(int type)
 		removePower(m_powerType);
 	}
 	m_powerType = type;
-	m_powerDuration = 300.f;
+	m_powerDuration = 10.f;
 	m_powerActive = true;
 
 	float mass;

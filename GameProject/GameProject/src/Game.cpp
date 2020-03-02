@@ -261,7 +261,7 @@ void Game::DynamicCamera(float dt)
 	if (dt < 1.f)
 		m_scene->SetCameraFocus(focusPoint);
 
-	if (m_menu->RestartMenuActive())
+	if (m_menu->WinMenuActive() || m_menu->RestartMenuActive() || m_menu->StatsMenuActive())
 	{
 		vec3 infront = normalize(m_objectHandler->GetPlayerPos(m_winner) - (m_objectHandler->GetPlayerPos(m_winner) - m_objectHandler->GetPlayerDirection(m_winner)));
 		vec3 right = cross(infront, vec3(0, 1, 0));
