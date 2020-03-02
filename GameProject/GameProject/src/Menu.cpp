@@ -133,7 +133,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				ImGui::Text("\t\t\tVehicle Selected! \n\t\tPress \"B\" to Unselect!");
 			}
 
-			if (time - m_p1Seconds >= 0.5 && (glfwGetGamepadState(0, &state)))
+			if (time - m_p1Seconds >= 0.3 && (glfwGetGamepadState(0, &state)))
 			{
 				if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_RIGHT] && m_selected[0] == 0)
 				{
@@ -147,7 +147,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 					}
 
 					m_objHand->RemovePlayer(index);
-					m_objHand->AddPlayer(vec3(-10, 2, 3), 0, m_p1ModelId, m_p1Col, model);
+					m_objHand->AddPlayer(vec3(-10, 6, 3), 0, m_p1ModelId, m_p1Col, model);
 
 					m_p1Seconds = time;
 				}
@@ -164,7 +164,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 					}
 
 					m_objHand->RemovePlayer(index);
-					m_objHand->AddPlayer(vec3(-10, 2, 3), 0, m_p1ModelId, m_p1Col, model);
+					m_objHand->AddPlayer(vec3(-10, 6, 3), 0, m_p1ModelId, m_p1Col, model);
 
 					m_p1Seconds = time;
 				}
@@ -211,7 +211,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 
 				}
 
-				if (time - m_p2Seconds >= 0.5 && (glfwGetGamepadState(1, &state)))
+				if (time - m_p2Seconds >= 0.3 && (glfwGetGamepadState(1, &state)))
 				{
 					if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_RIGHT] && m_selected[1] == 0)
 					{
@@ -224,7 +224,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 							m_p2ModelId = 0;
 						}
 						m_objHand->RemovePlayer(index);
-						m_objHand->AddPlayer(vec3(10, 2, 3), 1, m_p2ModelId, m_p2Col, model);
+						m_objHand->AddPlayer(vec3(10, 6, 3), 1, m_p2ModelId, m_p2Col, model);
 						m_p2Seconds = time;
 					}
 					else if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_LEFT] && m_selected[1] == 0)
@@ -240,7 +240,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 						}
 
 						m_objHand->RemovePlayer(index);
-						m_objHand->AddPlayer(vec3(10, 2, 3), 1, m_p2ModelId, m_p2Col, model);
+						m_objHand->AddPlayer(vec3(10, 6, 3), 1, m_p2ModelId, m_p2Col, model);
 						m_p2Seconds = time;
 					}
 					else if (state.buttons[GLFW_GAMEPAD_BUTTON_A])
@@ -269,13 +269,13 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				if (m_p3Joined == false)
 				{
 					ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0, 0, 1));
-					if (time - m_p3Seconds >= 0.5 && (glfwGetGamepadState(2, &state)))
+					if (time - m_p3Seconds >= 0.3 && (glfwGetGamepadState(2, &state)))
 					{
 						ImGui::Text(" Join? Press \"A\"! ");
 						if (state.buttons[GLFW_GAMEPAD_BUTTON_A])
 						{
 							m_p3Joined = true;
-							m_objHand->AddPlayer(vec3(-7, 2, 15), 2, 0, vec3(3, 0, 0), model);
+							m_objHand->AddPlayer(vec3(-7, 6, 15), 2, 0, vec3(3, 0, 0), model);
 							m_p3Seconds = time;
 							m_p3ModelId = 0;
 						}
@@ -303,7 +303,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 						ImGui::Text("\t\t\tVehicle Selected! \n\t\tPress \"B\" to Unselect!");
 					}
 
-					if (time - m_p3Seconds >= 0.5 && (glfwGetGamepadState(2, &state)))
+					if (time - m_p3Seconds >= 0.3 && (glfwGetGamepadState(2, &state)))
 					{
 						if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_RIGHT] && m_selected[2] == 0)
 						{
@@ -317,7 +317,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 							}
 
 							m_objHand->RemovePlayer(index);
-							m_objHand->AddPlayer(vec3(-7, 2, 15), 2, m_p3ModelId, m_p3Col, model);
+							m_objHand->AddPlayer(vec3(-7, 6, 15), 2, m_p3ModelId, m_p3Col, model);
 							m_p3Seconds = time;
 						}
 						else if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_LEFT] && m_selected[2] == 0)
@@ -333,7 +333,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 							}
 
 							m_objHand->RemovePlayer(index);
-							m_objHand->AddPlayer(vec3(-7, 2, 15), 2, m_p3ModelId, m_p3Col, model);
+							m_objHand->AddPlayer(vec3(-7, 6, 15), 2, m_p3ModelId, m_p3Col, model);
 							m_p3Seconds = time;
 						}
 						else if (state.buttons[GLFW_GAMEPAD_BUTTON_A])
@@ -364,13 +364,13 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				if (m_p4Joined == false)
 				{
 					ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0, 0, 1));
-					if (time - m_p4Seconds >= 0.5 && (glfwGetGamepadState(3, &state)))
+					if (time - m_p4Seconds >= 0.3 && (glfwGetGamepadState(3, &state)))
 					{
 						ImGui::Text(" Join? Press \"A\"! ");
 						if (state.buttons[GLFW_GAMEPAD_BUTTON_A])
 						{
 							m_p4Joined = true;
-							m_objHand->AddPlayer(vec3(7, 2, 15), 3, 0, vec3(1, 1, 0), model);
+							m_objHand->AddPlayer(vec3(7, 6, 15), 3, 0, vec3(1, 1, 0), model);
 							m_p4Seconds = time;
 							m_p4ModelId = 0;
 						}
@@ -399,7 +399,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 						ImGui::Text("\t\t\tVehicle Selected! \n\t\tPress \"B\" to Unselect!");
 					}
 
-					if (time - m_p4Seconds >= 0.5 && (glfwGetGamepadState(3, &state)))
+					if (time - m_p4Seconds >= 0.3 && (glfwGetGamepadState(3, &state)))
 					{
 						if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_RIGHT] && m_selected[3] == 0)
 						{
@@ -413,7 +413,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 							}
 
 							m_objHand->RemovePlayer(index);
-							m_objHand->AddPlayer(vec3(7, 2, 15), 3, m_p4ModelId, m_p4Col, model);
+							m_objHand->AddPlayer(vec3(7, 6, 15), 3, m_p4ModelId, m_p4Col, model);
 							m_p4Seconds = time;
 						}
 						else if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_LEFT] && m_selected[3] == 0)
@@ -429,7 +429,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 							}
 
 							m_objHand->RemovePlayer(index);
-							m_objHand->AddPlayer(vec3(7, 2, 15), 3, m_p4ModelId, m_p4Col, model);
+							m_objHand->AddPlayer(vec3(7, 6, 15), 3, m_p4ModelId, m_p4Col, model);
 							m_p4Seconds = time;
 						}
 						else if (state.buttons[GLFW_GAMEPAD_BUTTON_A])
@@ -492,7 +492,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				m_selected[0] = 0;
 			}
 
-			if (time - m_p1Seconds >= 0.5 && (glfwGetGamepadState(0, &state)))
+			if (time - m_p1Seconds >= 0.7 && (glfwGetGamepadState(0, &state)))
 			{
 				if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_RIGHT])
 				{
@@ -501,13 +501,19 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 						if (m_mapID < 6)
 						{
 							m_mapID += 1;
+							m_objHand->GetCube()->SetCurrentLevel(m_mapID);
+
 						}
 						else
 						{
 							m_mapID = 0;
+							m_objHand->GetCube()->SetCurrentLevel(m_mapID);
+
 						}
 
 					}
+					m_p1Seconds = time;
+
 				}
 				else if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_LEFT])
 				{
@@ -517,25 +523,31 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 						if (m_mapID <= 6 && m_mapID > 0)
 						{
 							m_mapID -= 1;
+							m_objHand->GetCube()->SetCurrentLevel(m_mapID);
+
 						}
 						else
 						{
-							m_mapID = 0;
-						}
+							m_mapID = 6;
+							m_objHand->GetCube()->SetCurrentLevel(m_mapID);
 
+						}
 					}
+					m_p1Seconds = time;
 				}
 				else if (state.buttons[GLFW_GAMEPAD_BUTTON_A] && m_selected[0] <= 2)
 				{
 					m_selected[0] += 1;
 					m_objHand->GetCube()->SetCurrentLevel(m_mapID);
+					m_p1Seconds = time;
+
 				}
 				else if (state.buttons[GLFW_GAMEPAD_BUTTON_B] && m_selected[0] > -1)
 				{
 					m_selected[0] -= 1;
-				}
-				m_p1Seconds = time;
+					m_p1Seconds = time;
 
+				}
 			}
 			//ImGui::PopStyleColor();
 			ImGui::PopStyleVar();
@@ -579,7 +591,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				m_selected[0] = 0;
 			}
 
-			if (time - m_p1Seconds >= 0.5 && (glfwGetGamepadState(0, &state)))
+			if (time - m_p1Seconds >= 0.3 && (glfwGetGamepadState(0, &state)))
 			{
 				if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_RIGHT])
 				{
@@ -591,7 +603,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 						}
 						else
 						{
-							m_maxLives = 0;
+							m_maxLives = 1;
 						}
 
 					}
@@ -610,7 +622,6 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 							m_maxTime = 15;
 						}
 					}
-					
 					m_p1Seconds = time;
 				}
 				else if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_LEFT])
@@ -618,13 +629,13 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 
 					if (m_selected[0] == 0)
 					{
-						if (m_maxLives <= 10 && m_maxLives > 0)
+						if (m_maxLives <= 10 && m_maxLives > 1)
 						{
 							m_maxLives -= 1;
 						}
 						else
 						{
-							m_maxLives = 0;
+							m_maxLives = 10;
 						}
 
 					}

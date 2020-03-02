@@ -54,7 +54,7 @@ public:
     ~MarchingCubes();
 
     void Init();
-    void Update(GLFWwindow* window, vector<vec3> bombPos, bool shrink);
+    void Update(GLFWwindow* window, vector<vec3> bombPos);
     void MarchCube(vec3 position);
     void ClearMeshData();
     void BuildMesh();

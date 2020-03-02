@@ -293,7 +293,7 @@ void ObjectHandler::AddPowerUp()
 		}
 	}
 
-	btVector3 spawnPoint = btVector3(spawn.x, m_cube->GetHeight(spawn) + 6.5, spawn.z);
+	btVector3 spawnPoint = btVector3(spawn.x, m_cube->GetHeight(spawn) + 10.f, spawn.z);
 	m_powerUps.push_back(new PowerUp(0, spawnPoint, type));
 	m_dynamicsWorld->addRigidBody(m_powerUps.back()->getObject());
 
@@ -319,12 +319,11 @@ void ObjectHandler::RemovePowerUp(int index)
 	for (int i = 0; i < m_structs.size(); i++) {
 		if (m_structs.at(i)->modelMatrix == temp->modelMatrix && m_structs.at(i)->typeId == temp->typeId) {
 			delete m_structs.at(i);
-			m_structs.at(i) = new ObjectInfo(mat4(0),1,1,vec3(0), false);
+			m_structs.at(i) = new ObjectInfo(mat4(0), 1, 1, vec3(0), false);
 		}
 	}
 	delete temp;
 
-	m_dynamicsWorld->removeCollisionObject(m_powerUps.at(index)->getObject());
 	delete m_powerUps.at(index)->getObject()->getMotionState();
 	delete m_powerUps.at(index)->getObject();
 	delete m_powerUps.at(index)->GetObjectInfo();
@@ -716,3 +715,4 @@ void ObjectHandler::SetLightsOut(bool state)
 {
 	m_lightsOut = state;
 }
+
