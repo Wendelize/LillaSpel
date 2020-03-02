@@ -1355,30 +1355,7 @@ void Menu::RankPlayers()
 	}
 	else if (m_deathOrderID.size() == 3)
 	{
-		for (int i = 0; i < m_objHand->GetNumPlayers(); i++)
-		{
-			if (m_objHand->GetPlayerControllerIDBloo(i, 7) != m_deathOrderID[0] && m_objHand->GetPlayerControllerIDBloo(i, 8) != m_deathOrderID[1] && m_objHand->GetPlayerControllerIDBloo(i, 9) != m_deathOrderID[3])
-			{
-				livesForPlayerWithIndex[i] = m_objHand->GetPlayerLives(i);
-			}
-		}
-
-		int newI[4] = { -1, -1 , -1, -1 };
-
-		for (int j = 0; j < m_objHand->GetNumPlayers(); j++)
-		{
-			int tempLives = -1;
-
-			for (int i = 0; i < 1; i++)
-			{
-				if (tempLives < livesForPlayerWithIndex[i] && i != newI[0] && i != newI[1] && i != newI[2] && i != newI[3])
-				{
-					tempLives = livesForPlayerWithIndex[i];
-					newI[j] = i;
-				}
-			}
-			newLifeId[j] = m_objHand->GetPlayerControllerIDBloo(newI[j], 10);
-		}
+			newLifeId[0] = m_objHand->GetPlayerControllerIDBloo(0, 10);
 	}
 
 	//	adding the deathOrder and remaning lives to the same list in order to get the final rankings
