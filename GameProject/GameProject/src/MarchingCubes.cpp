@@ -773,6 +773,21 @@ void MarchingCubes::MapUpdate()
 	m_body = new btRigidBody(rbInfo);
 }
 
+bool MarchingCubes::GetExplosion()
+{
+	return m_explosion;
+}
+
+void MarchingCubes::SetExplosion(bool b)
+{
+	m_explosion = b;
+}
+
+vec3 MarchingCubes::GetExplosionPosition()
+{
+	return m_explosionPosition;
+}
+
 vector<VertexData> MarchingCubes::GetVertices()
 {
 	return m_vertices;
@@ -857,6 +872,8 @@ void MarchingCubes::MakeHole(vec3 position)
 	{
 		m_bombEngine->play2D(m_bombSounds[randomNumber], false);
 	}
+	m_explosion = true;
+	m_explosionPosition = position;
 }
 
 void MarchingCubes::UpdateHoles()

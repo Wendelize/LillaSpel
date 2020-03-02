@@ -21,6 +21,9 @@ private:
     btBvhTriangleMeshShape* m_physicsMesh;
     btTriangleMesh m_tetraMesh;
 
+	bool m_explosion;
+	vec3 m_explosionPosition;
+
     PerlinNoise* m_noise;
 
     float m_terrainSurface = 0.5f;
@@ -70,6 +73,10 @@ public:
     void CreatePhysics();
     void UpdatePhysics();
     void MapUpdate();
+
+	bool GetExplosion();
+	void SetExplosion(bool b);
+	vec3 GetExplosionPosition();
 
     vector<VertexData> GetVertices();
     void SetCurrentLevel(int level);
