@@ -165,7 +165,7 @@ void Game::Update(float dt)
 		{
 			if (m_soundEngine)
 			{
-				m_music->setPlaybackSpeed(1.4);
+				m_music->setPlaybackSpeed(1.2);
 				m_fastMusic = true;
 			}
 

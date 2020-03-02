@@ -38,6 +38,8 @@ private:
     int m_lvlChanger = 0;
     int m_terraceHeight = 2;
     vector<Hole> m_holes;
+    ISoundEngine* m_bombEngine;
+    vector<ISoundSource*> m_bombSounds;
 
     btRigidBody* m_body;
     btCollisionShape* m_platformShape;
