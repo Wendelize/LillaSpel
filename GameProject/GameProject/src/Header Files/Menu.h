@@ -58,6 +58,7 @@ private:
 	vector<vector<int>> m_killers;	// who killed you
 	vector<int> m_deathOrderID;		// ID for order players died in 
 	vector<int> m_winOrder;			// ID for the final ranking
+	int m_points[4] = { 0, 0, 0, 0 };
 
 	int m_selected[4] = { 0, 0, 0, 0 };
 	int m_continue = 0;
