@@ -1247,6 +1247,8 @@ void Menu::RankPlayers()
 	int fourthLast = -1;
 	vector<int> deathOrder = m_objHand->GetDeathOrder();
 	//TODO: add shared placing if same amount of lifes and kills
+
+	// getting the order players died in
 	for (int i = deathOrder.size() - 1; i >= 0; i--)
 	{
 		if (i == 0)
@@ -1270,7 +1272,7 @@ void Menu::RankPlayers()
 
 	int livesForPlayerWithIndex[4] = { -1, -1 , -1, -1 };
 	int newLifeId[4] = { -1, -1 , -1, -1 };
-
+	// getting the amount of lives the remaining players have
 	if (m_deathOrderID.size() == 0)
 	{
 		for (int i = 0; i < m_objHand->GetNumPlayers(); i++)
@@ -1378,68 +1380,20 @@ void Menu::RankPlayers()
 			newLifeId[j] = m_objHand->GetPlayerControllerIDBloo(newI[j], 10);
 		}
 	}
-	//cout << "last : " << m_deathOrderID[0] << endl;
-	//cout << "secondLast : " << m_deathOrderID[1] << endl;
-	//cout << "thirdLast : " << m_deathOrderID[2] << endl;
-	//cout << "fourthLast : " << m_deathOrderID[3] << endl;
 
+	//	adding the deathOrder and remaning lives to the same list in order to get the final rankings
 	for (int i = 0; i < 4; i++)
 	{
 		if (newLifeId[i] != -1)
 		{
-			//cout << "#" << i << " is player : " << newLifeId[i] << endl;
 			m_winOrder.push_back(newLifeId[i]);
-		}/*
-		else
-		{
-			
-			if (i < m_deathOrderID.size())//m_deathOrderID[i] != -1)
-			{
-				cout << "#" << i << " is player : " << m_deathOrderID[i] << endl;
-				//m_deathOrderID[i] = -1;
-
-			}
-			else if (m_deathOrderID[2] != -1)
-			{
-				cout << "#" << i << " is player : " << m_deathOrderID[] << endl;
-				m_deathOrderID[] = -1;
-
-			}
-			else if (m_deathOrderID[1] != -1)
-			{
-				cout << "#" << i << " is player : " << m_deathOrderID[] << endl;
-				m_deathOrderID[] = -1;
-
-			}
-			else if (m_deathOrderID[0] != -1)
-			{
-				cout << "#" << i << " is player : " << m_deathOrderID[] << endl;
-				m_deathOrderID[] = -1;
-
-			}
-		}*/
+		}
 	}
 	for (int j = 0; j < m_deathOrderID.size(); j++)
 	{
-		//cout << "#" << j << " is player : " << m_deathOrderID[j] << endl;
 		m_winOrder.push_back(m_deathOrderID[j]);
 	}
-/*
-	for (int j = 0; j < m_winOrder.size(); j++)
-	{
-		cout << "#" << j << " is player : " << m_winOrder[j] << endl;
-	}
-	*/
 
-	/*
-	for (auto w : m_objHand. m_players)
-	{
-		if (w->GetLives() > winnerLife)
-		{
-			winnerLife = w->GetLives();
-			winnerIndex = w->GetControllerID();
-		}
-	}*/
 }
 
 
