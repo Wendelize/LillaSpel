@@ -98,7 +98,10 @@ void Game::Update(float dt)
 		m_objectHandler->ClearHoles();
 		m_updateMap.store(true);
 		m_timeSwapTrack = 0;
+		m_menu->SetMapUpdate(false);
 	}
+
+
 	// är select menyn aktiverad? ändra kameran till inzoomad
 	if (m_menu->SelectMenuActive())
 	{
@@ -117,6 +120,20 @@ void Game::Update(float dt)
 	if (m_menu->Pause())
 	{
 		dt = 0;
+		if (m_menu->GetMapUpdate()) {
+			cout << "hmm" << endl;
+			m_updateMap.store(true);
+			m_menu->SetMapUpdate(false);
+		}
+		if (m_mapUpdateReady.load() == true && m_updateMap.load() == false)
+		{
+			m_objectHandler->RemoveDynamicPlatformMesh(m_cube);
+			m_cube->MapUpdate();
+			m_objectHandler->AddDynamicPlatformMesh(m_cube);
+			m_timeSwapTrack = 0.f;
+			m_mapUpdateReady.store(false);
+			m_objectHandler->ClearBombs();
+		}
 	}
 	if ((!m_menu->Pause() && !m_wasSelect)) // Vet inte om det kan göras snyggare?
 	{
@@ -124,8 +141,7 @@ void Game::Update(float dt)
 		m_time += dt;
 		m_timeSinceSpawn += dt;
 		m_timeSwapTrack += dt;
-
-		if (m_timeSwapTrack > 2.f && m_updateMap.load() == false && m_mapUpdateReady.load() == false)
+		if ((m_timeSwapTrack > 2.f && m_updateMap.load() == false && m_mapUpdateReady.load() == false) || m_menu->GetMapUpdate())
 		{
 			m_updateMap.store(true);
 		}
@@ -365,6 +381,7 @@ void Game::MutliThread(GLFWwindow* window)
 {
 	while (!glfwWindowShouldClose(window)) {
 		if (m_updateMap.load()) {
+			cout << "testmulti" << endl;
 			m_cube->Update(window, m_objectHandler->GetBomb());
 			m_updateMap.store(false);// = false;
 			m_mapUpdateReady.store(true);

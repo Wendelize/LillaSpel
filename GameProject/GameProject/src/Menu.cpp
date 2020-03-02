@@ -510,12 +510,14 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 						{
 							m_mapID += 1;
 							m_objHand->GetCube()->SetCurrentLevel(m_mapID);
+							m_updateMap = true;
 
 						}
 						else
 						{
 							m_mapID = 0;
 							m_objHand->GetCube()->SetCurrentLevel(m_mapID);
+							m_updateMap = true;
 
 						}
 
@@ -532,12 +534,14 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 						{
 							m_mapID -= 1;
 							m_objHand->GetCube()->SetCurrentLevel(m_mapID);
+							m_updateMap = true;
 
 						}
 						else
 						{
 							m_mapID = 6;
 							m_objHand->GetCube()->SetCurrentLevel(m_mapID);
+							m_updateMap = true;
 
 						}
 					}
@@ -547,6 +551,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				{
 					m_selected[0] += 1;
 					m_objHand->GetCube()->SetCurrentLevel(m_mapID);
+					m_updateMap = true;
 					m_p1Seconds = time;
 
 				}
@@ -1465,6 +1470,16 @@ void Menu::RankPlayers()
 		m_winOrder.push_back(m_deathOrderID[j]);
 	}
 
+}
+
+bool Menu::GetMapUpdate()
+{
+	return m_updateMap;
+}
+
+void Menu::SetMapUpdate(bool map)
+{
+	m_updateMap = map;
 }
 
 
