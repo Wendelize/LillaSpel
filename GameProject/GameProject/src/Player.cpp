@@ -275,7 +275,7 @@ void Player::Update(float dt)
 
 	if (m_soundEngine && m_body->getLinearVelocity().y() < 0.3f && m_body->getLinearVelocity().y() > -0.3f)
 	{
-		m_soundEngine->setSoundVolume(m_body->getLinearVelocity().length() / 20 + 0.4f);
+		m_soundEngine->setSoundVolume(m_body->getLinearVelocity().length() / 25 + 0.3f);
 		m_sound->setPlaybackSpeed(m_body->getLinearVelocity().length() / 15 + 1.0f);
 	}
 	m_body->applyDamping(dt);
