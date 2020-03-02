@@ -195,6 +195,7 @@ void ObjectHandler::Update(float dt)
 					m_soundEngine->play2D(filename, false);
 					m_players[isPlayer]->SetFallen();
 					m_players[isPlayer]->StopEngineSounds();
+
 				}
 			}
 			if (m_players[isPlayer]->GetCurrentPos().y() < -20.f && m_players[isPlayer]->GetLives() > 0)
@@ -217,13 +218,42 @@ void ObjectHandler::Update(float dt)
 					m_soundEngine->play2D("src/Audio/Powerup - Spawn.mp3", false);
 					m_soundEngine->setSoundVolume(0.6f);
 					m_players[isPlayer]->StartEngineSounds();
+					// used for statsMenu
+					m_death = true;
+					m_dead = m_players[isPlayer]->GetControllerID();
 				}
-			}
-			else {
-				if (m_players[isPlayer]->GetLives() == 0) {
-					RemovePlayer(isPlayer);
-					isPlayer--;
+				else {
+					if (m_players[isPlayer]->GetLives() == 0) 
+					{
+						// used for statsMenu
+						m_deathOrder.push_back(m_players[isPlayer]->GetControllerID());
 
+						RemovePlayer(isPlayer);
+						isPlayer--;
+					}
+				}
+			
+			}
+			else
+			{
+				if (m_players[isPlayer]->GetCurrentPos().y() < -20.f && m_players[isPlayer]->GetLives() > 0)
+				{
+					m_players[isPlayer]->SetPos(vec3(rand() % 10 - 10, 7, rand() % 10 - 10));
+					m_players[isPlayer]->ReduceLife(); 
+					// used for statsMenu
+					m_death = true;
+					m_dead = m_players[isPlayer]->GetControllerID();
+				}
+				else 
+				{
+					if (m_players[isPlayer]->GetLives() == 0) 
+					{
+						// used for statsMenu
+						m_deathOrder.push_back(m_players[isPlayer]->GetControllerID());
+
+						RemovePlayer(isPlayer);
+						isPlayer--;
+					}
 				}
 			}			
 		}
@@ -368,6 +398,23 @@ vec3 ObjectHandler::GetPlayerDirection(int index)
 
 int ObjectHandler::GetPlayerControllerID(int index)
 {
+	// TODO: ta bort denna ifsats när spelet är klart?
+	if (index == -1 || this->GetNumPlayers() -1 < index)
+	{
+			// otillåtna värden som index
+			cout << "invalid index send to getPlayerControlerID! index : " << index << endl;
+	}
+	return m_players[index]->GetControllerID();
+}
+
+int ObjectHandler::GetPlayerControllerIDBloo(int index, int bloo)
+{
+	// TODO: ta bort denna ifsats när spelet är klart?
+	if (index == -1 || this->GetNumPlayers() - 1 < index)
+	{
+		// otillåtna värden som index
+		cout << "invalid index send to getPlayerControlerID! index : " << index << " from int : " << bloo << endl;
+	}
 	return m_players[index]->GetControllerID();
 }
 
@@ -404,6 +451,50 @@ vec3 ObjectHandler::GetPlayerScale(int index)
 void ObjectHandler::SetPlayerScale(int index, vec3 scale)
 {
 	m_players[index]->SetScale(scale);
+}
+
+int ObjectHandler::GetACollisionId()
+{
+	return m_aCollisionPlayerId;
+}
+
+int ObjectHandler::GetBCollisionId()
+{
+	return m_bCollisionPlayerId;
+}
+
+bool ObjectHandler::GetCollisionHappened()
+{
+	return m_collisionHappened;
+}
+
+void ObjectHandler::SetCollisionHappened(bool setfalse)
+{
+	m_collisionHappened = setfalse;
+}
+
+bool ObjectHandler::GetDeath()
+{
+	return m_death;
+}
+
+void ObjectHandler::SetDeath(bool setFalse)
+{
+	m_death = setFalse;
+}
+
+int ObjectHandler::GetDeadId()
+{
+	int temp = m_dead;
+	m_dead = -1;
+	return temp;
+}
+
+vector<int> ObjectHandler::GetDeathOrder()
+{
+	vector<int> temp = m_deathOrder;
+	m_deathOrder.clear();
+	return temp;
 }
 
 void ObjectHandler::StopAllSound()
@@ -491,19 +582,19 @@ void ObjectHandler::ClearBombs()
 	m_bombZone.clear();
 }
 
-int ObjectHandler::GetWinnerIndex()
+int ObjectHandler::GetWinnerID()
 {
-	int winnerIndex = 0;
+	int winnerID = 0;
 	int winnerLife = 0;
 	for (auto w : m_players)
 	{
 		if (w->GetLives() > winnerLife)
 		{
 			winnerLife = w->GetLives();
-			winnerIndex = w->GetControllerID();
+			winnerID = w->GetControllerID();
 		}
 	}
-	return winnerIndex;
+	return winnerID;
 }
 
 void ObjectHandler::UpdateVibration(float dt)
@@ -521,18 +612,34 @@ void ObjectHandler::UpdateVibration(float dt)
 		//Collision between spheres(cars)
 		if (shapeA->getShapeType() == 8 && shapeB->getShapeType() == 8)
 		{
+			// used for statsMenu
+			int oldAIndex = m_aCollisionPlayerId;
+			int oldBIndex = m_bCollisionPlayerId;
+			double time = glfwGetTime();
 
 			for (int f = 0; f < m_players.size(); f++)
 			{
 				if (m_players.at(f)->GetBody() == obA)
 				{
-					m_players.at(f)->GetController()->Vibrate(f, 6553, 65535);
+					m_players.at(f)->GetController()->Vibrate(m_players.at(f)->GetControllerID(), 6553, 65535);
+					// used for statsMenu
+					m_aCollisionPlayerId = m_players.at(f)->GetControllerID();
 				}
 				if (m_players.at(f)->GetBody() == obB)
 				{
-					m_players.at(f)->GetController()->Vibrate(f, 6553, 65535);
+					m_players.at(f)->GetController()->Vibrate(m_players.at(f)->GetControllerID(), 6553, 65535);
+					// used for statsMenu
+					m_bCollisionPlayerId = m_players.at(f)->GetControllerID();
 				}
 			}
+			// used for statsMenu
+			if (!(time - m_collidTimer <= 0.5 && ((oldAIndex == m_aCollisionPlayerId && oldBIndex == m_bCollisionPlayerId) || (oldBIndex == m_aCollisionPlayerId && oldAIndex == m_bCollisionPlayerId) )))
+			{
+				// TODO: kanske om det fuckar för mycket när fera krockar samtidigt så fixa bättre lösning
+				m_collisionHappened = true;
+				m_collidTimer = time;
+			}
+
 		}
 	}
 
@@ -544,7 +651,7 @@ void ObjectHandler::UpdateVibration(float dt)
 		}
 		else
 		{
-			m_players.at(f)->GetController()->Vibrate(f, 0, 0);
+			m_players.at(f)->GetController()->Vibrate(m_players.at(f)->GetControllerID(), 0, 0);
 		}
 	}
 }
