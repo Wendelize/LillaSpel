@@ -369,16 +369,16 @@ void Scene::CheckCollision(btDiscreteDynamicsWorld* world)
 			btVector3 spread = obA->getInterpolationLinearVelocity();
 			float fspread = (spread.x() + spread.y() + spread.z()) / 3.f;
 
-			if (fspread < 1.f)
+			/*if (fspread < 1.f)
 			{
 				fspread = 6.f;
 			}
 
-			AddParticleEffect(particlePos, vec3(1, 0, 0), vec3(0, 1, 0), 6, vec3(1, 0, 0), 50, 0.5, 0.4);
+			AddParticleEffect(particlePos, vec3(1, 0, 0), vec3(0, 1, 0), 1, 6, vec3(1, 0, 0), 50, 0.5, 0.4);*/
 
 			mat = obB->getWorldTransform();
 			vec = mat.getOrigin();
-			particlePos = vec3(vec.x(), vec.y(), vec.z());
+			particlePos += vec3(vec.x(), vec.y(), vec.z());
 			spread = obB->getInterpolationLinearVelocity();
 			fspread = (spread.x() + spread.y() + spread.z()) / 3.f;
 
@@ -387,7 +387,7 @@ void Scene::CheckCollision(btDiscreteDynamicsWorld* world)
 				fspread = 6.f;
 			}
 
-			AddParticleEffect(particlePos, vec3(1, 0, 0), vec3(0, 1, 0), 6, vec3(0, 1, 0), 50, 0.5, 0.4);
+			AddParticleEffect(particlePos / 2.f, vec3(1, 0, 0), vec3(0, 1, 0), 1, 6, vec3(0, 1, 0), 50, 0.5, 0.15);
 		}
 	}
 }
@@ -463,11 +463,11 @@ void Scene::ShakeCamera(float intensity, float duration)
 	m_camera->Shake(intensity, duration);
 }
 
-void Scene::AddParticleEffect(vec3 pos, vec3 color1, vec3 color2, float velocity, vec3 dir, int nr, float duration, float size)
+void Scene::AddParticleEffect(vec3 pos, vec3 color1, vec3 color2, float speed, float spread, vec3 dir, int nr, float duration, float size)
 {
 	m_particles.push_back(new ParticleSystem(nr));
 	m_particles.back()->SetActive();
-	m_particles.back()->GenerateParticles(pos, velocity, duration, color1, color2, size, dir);
+	m_particles.back()->GenerateParticles(pos, speed, spread, duration, color1, color2, size, dir);
 }
 
 

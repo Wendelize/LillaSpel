@@ -126,11 +126,12 @@ Shader* ParticleSystem::GetShader()
 	return m_particleShader;
 }
 
-void ParticleSystem::GenerateParticles( vec3 emitterPos, float spread, float life, vec3 color1, vec3 color2, float size, vec3 dir)
+void ParticleSystem::GenerateParticles( vec3 emitterPos, float speed ,float spread, float life, vec3 color1, vec3 color2, float size, vec3 dir)
 {
 	for (int i = 0; i < m_nrOfParticle; i++)
 	{
 		m_particles[i].life = life;
+		m_startLife = life;
 		m_particles[i].position = emitterPos;
 
 		//glm::vec3 maindir = glm::vec3(0.0f, 8.0f, 0.0f);
@@ -139,7 +140,7 @@ void ParticleSystem::GenerateParticles( vec3 emitterPos, float spread, float lif
 			(rand() % 2000 - 1000.0f) / 1000.0f,
 			(rand() % 2000 - 1000.0f) / 1000.0f
 		);
-		m_particles[i].velocity = dir + randomdir * spread;
+		m_particles[i].velocity = (dir + randomdir * spread) * speed;
 
 		float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 		if (color1 == vec3(NULL))
@@ -165,6 +166,7 @@ void ParticleSystem::GenerateParticles( vec3 emitterPos, float spread, float lif
 		}
 		
 		m_particles[i].size = size;
+		m_startSize = size;
 	}
 }
 
@@ -183,7 +185,7 @@ void ParticleSystem::Simulate(float dt)
 			p.velocity += glm::vec3(0.0f, -9.82, 0.0f) * (float)dt;
 			p.position += p.velocity * (float)dt;
 			p.cameraDist = length(p.position - vec3(0, 3, 33));
-			p.size *= 0.95; //Instead of trancparancy reduce size
+			p.size = m_startSize * (p.life) / m_startLife;
 			
 			// Fill the GPU buffer
 			m_particlePos[4 * i + 0] = p.position.x;
