@@ -7,17 +7,20 @@ ParticleSystem::ParticleSystem(int nrOfParticles)
 	m_particleShader = new Shader("src/Shaders/ParticleVS.glsl", "src/Shaders/ParticleFS.glsl");
 	m_particlePos	= new GLfloat[4 * m_nrOfParticle];
 	m_particleColor = new GLfloat[4 * m_nrOfParticle];
-	m_active = false;
+	m_active = true;
 
 	this->Init();
 }
 
 ParticleSystem::~ParticleSystem()
 {
+	glDeleteBuffers(1, &m_billBoardBuffer);
+	glDeleteBuffers(1, &m_particlePosBuffer);
+	glDeleteBuffers(1, &m_particleColorBuffer);
 	delete[] m_particles;
 	delete m_particleShader;
-	delete m_particlePos;
-	delete m_particleColor;
+	delete[] m_particlePos;
+	delete[] m_particleColor;
 	
 }
 

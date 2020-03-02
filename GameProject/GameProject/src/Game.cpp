@@ -18,7 +18,7 @@ Game::Game()
 	m_menu->SetActiveMenu(Menu::ActiveMenu::playerHud);
 	m_menu->LoadMenuPic();
 
-	m_maxTime = 60.f;
+	m_maxTime = 15.f;
 	m_debug = false;
 	m_toggle = false;
 	m_platforms = m_scene->GetModels(0);
@@ -246,10 +246,10 @@ void Game::DynamicCamera(float dt)
 
 	if (m_menu->RestartMenuActive())
 	{
-		vec3 vec = normalize(m_objectHandler->GetPlayerPos(m_winner) - (m_objectHandler->GetPlayerPos(m_winner) - m_objectHandler->GetPlayerDirection(m_winner)));
-		vec3 right = cross(vec, vec3(0, 1, 0));
+		vec3 infront = normalize(m_objectHandler->GetPlayerPos(m_winner) - (m_objectHandler->GetPlayerPos(m_winner) - m_objectHandler->GetPlayerDirection(m_winner)));
+		vec3 right = cross(infront, vec3(0, 1, 0));
 
-		vec = m_objectHandler->GetPlayerPos(m_winner) + -vec * 3.f + right * 3.f + vec3(0, -0.6, 0);
+		vec3 vec = m_objectHandler->GetPlayerPos(m_winner) + -infront * 3.f + right * 3.f + vec3(0, -0.6, 0);
 
 		m_scene->TranslateCameraPos(vec);
 
@@ -257,14 +257,26 @@ void Game::DynamicCamera(float dt)
 
 		vec3 in = m_objectHandler->GetPlayerPos(m_winner) - (m_objectHandler->GetPlayerPos(m_winner) + right * 2.0f);
 
-		if (GetAsyncKeyState(VK_DELETE))
-		{
-			m_scene->AddParticleEffect(m_objectHandler->GetPlayerPos(m_winner) + right * 2.0f + vec3(0, -1, 0), vec3(NULL), vec3(NULL), 0.9, vec3(0, 7, 0) + in + vec3(0, -1, 0), 1, 1, 0.1);
 
-			m_scene->AddParticleEffect(m_objectHandler->GetPlayerPos(m_winner) - right * 2.0f + vec3(0, -1, 0), vec3(NULL), vec3(NULL), 0.9, vec3(0, 7, 0) - in + vec3(0, -1, 0), 1, 1, 0.1);
-		}
+		m_scene->AddParticleEffect(m_objectHandler->GetPlayerPos(m_winner) + right * 2.0f + vec3(0, -1, 0), vec3(NULL), vec3(NULL), 0.9, vec3(0, 7, 0) + in + vec3(0, -1, 0), 10, 1, 0.1);
+		m_scene->AddParticleEffect(m_objectHandler->GetPlayerPos(m_winner) - right * 2.0f + vec3(0, -1, 0), vec3(NULL), vec3(NULL), 0.9, vec3(0, 7, 0) - in + vec3(0, -1, 0), 10, 1, 0.1);
 
-		
+		vec3 behind = m_objectHandler->GetPlayerPos(m_winner) + (m_objectHandler->GetPlayerPos(m_winner) - vec) * 13.f + vec3(0, 26, 0);
+
+		vec3 x = normalize(in) * (static_cast <float> (rand()) / static_cast <float> (RAND_MAX)) * 60.f;
+		x = x * 2.f - normalize(in) * 60.f;
+
+		vec3 y = vec3(0, 1, 0) * (static_cast <float> (rand()) / static_cast <float> (RAND_MAX)) * 13.f;
+		y = y * 2.f - vec3(0, 1, 0) * 13.f;
+
+		vec3 randPos = x + y;
+
+		vec3 randCol;
+		randCol.x = (static_cast <float> (rand()) / static_cast <float> (RAND_MAX));
+		randCol.y = (static_cast <float> (rand()) / static_cast <float> (RAND_MAX));
+		randCol.z = (static_cast <float> (rand()) / static_cast <float> (RAND_MAX));
+
+		m_scene->AddParticleEffect(behind + randPos, randCol, vec3(0, 0, 0), 6, vec3(1, 0, 0), 50, 0.5, 0.4);	
 	}
 	else
 	{

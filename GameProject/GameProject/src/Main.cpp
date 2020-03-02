@@ -26,7 +26,7 @@ int main(void)
 		GAME->Update(_deltaTime);
 		GAME->Render(_deltaTime);
 	}
-	
+
 	t.join();
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
