@@ -356,6 +356,7 @@ void ObjectHandler::RemovePowerUp(int index)
 			m_structs.at(i) = new ObjectInfo(mat4(0), 1, 1, vec3(0), false);
 		}
 	}
+
 	delete temp;
 
 	delete m_powerUps.at(index)->getObject()->getMotionState();
