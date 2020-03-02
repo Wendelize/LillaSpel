@@ -1,7 +1,6 @@
 #include "Header Files/Menu.h"
 #include "Header Files/stb_image.h"
 
-
 Menu::Menu(Scene* scene, ObjectHandler* objHand)
 {
 	m_scene = scene;
@@ -11,6 +10,20 @@ Menu::Menu(Scene* scene, ObjectHandler* objHand)
 	m_kills.push_back(temp);
 	m_kills.push_back(temp);
 	m_kills.push_back(temp);
+
+	m_soundEngine = createIrrKlangDevice();
+
+	if (m_soundEngine)
+	{
+		m_soundEngine->setListenerPosition(vec3df(0, 18, 33), vec3df(0, -4, 3)); // Listener position, view direction
+		m_soundEngine->setDefault3DSoundMinDistance(1.0f);
+
+		m_menuSounds.push_back(m_soundEngine->addSoundSourceFromFile("src/Audio/UI - Toggle.mp3"));
+		m_menuSounds.push_back(m_soundEngine->addSoundSourceFromFile("src/Audio/UI - Select.mp3"));
+		m_menuSounds.push_back(m_soundEngine->addSoundSourceFromFile("src/Audio/UI - Back.mp3"));
+
+		m_soundEngine->setSoundVolume(0.65f);
+	}
 	
 	m_killers.push_back(temp);
 	m_killers.push_back(temp);
@@ -20,12 +33,21 @@ Menu::Menu(Scene* scene, ObjectHandler* objHand)
 
 Menu::~Menu()
 {
+	if (m_soundEngine)
+	{
+		for (uint i = 0; i < m_menuSounds.size(); i++)
+		{
+			m_menuSounds[i]->drop();
+		}
+		m_menuSounds.clear();
+	}
 }
 
 
 void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 {
 	GLFWgamepadstate state;
+
 	Window* w = m_scene->GetOurWindow();
 	//if (gameOver)
 	//{
@@ -36,6 +58,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		// TODO: maybe one should be able to access the pause menu from more places?
 		if (state.buttons[GLFW_GAMEPAD_BUTTON_START])
 		{
+			if (m_soundEngine)
+				m_soundEngine->play2D(m_menuSounds[1], false);
 			m_menu = ActiveMenu::pause;
 		}
 	}
@@ -83,6 +107,16 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		ImGui::SetNextWindowSize(ImVec2((float)width + 4, height + 4));
 		if (ImGui::Begin("##MainMenu", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_AlwaysAutoResize | ImGuiNavInput_Activate))
 		{
+			if (time - m_inputSeconds >= 0.3 && glfwGetGamepadState(0, &state))
+			{
+				if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_DOWN] || state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_UP])
+				{
+					if (m_soundEngine)
+						m_soundEngine->play2D(m_menuSounds[0], false);
+					m_inputSeconds = time;
+				}
+			}
+
 			float middle = (float)width * 0.5f;
 			ImGui::PushFont(m_scene->GetOurWindow()->m_fonts[1]);
 
@@ -94,6 +128,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 			ImGui::SetCursorPos(ImVec2(middle - 75, 500 - mainMenuButonHeight));
 			if (ImGui::Button("Start", ImVec2(200, 75)))
 			{
+				if (m_soundEngine)
+					m_soundEngine->play2D(m_menuSounds[1], false);
 				m_menu = ActiveMenu::select;
 				m_p1Seconds = time;
 				m_p2Seconds = time;
@@ -103,6 +139,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 			ImGui::SetCursorPos(ImVec2(middle - 75, 600 - mainMenuButonHeight));
 			if (ImGui::Button("Exit", ImVec2(200, 75)))
 			{
+				if (m_soundEngine)
+					m_soundEngine->play2D(m_menuSounds[2], false);
 				glfwSetWindowShouldClose(m_scene->GetWindow(), 1);
 			}
 			//ImGui::PopStyleVar(1); // pop all the styles
@@ -145,6 +183,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 			{
 				if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_RIGHT] && m_selected[0] == 0)
 				{
+					if (m_soundEngine)
+						m_soundEngine->play2D(m_menuSounds[0], false);
 					if ((m_p1ModelId + 1) <= m_scene->GetNumPlayerModels() - 1)
 					{
 						m_p1ModelId += 1;
@@ -161,7 +201,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				}
 				else if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_LEFT] && m_selected[0] == 0)
 				{
-
+					if (m_soundEngine)
+						m_soundEngine->play2D(m_menuSounds[0], false);
 					if ((m_p1ModelId - 1) >= 0)
 					{
 						m_p1ModelId -= 1;
@@ -178,11 +219,15 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				}
 				else if (state.buttons[GLFW_GAMEPAD_BUTTON_A])
 				{
+					if (m_soundEngine)
+						m_soundEngine->play2D(m_menuSounds[1], false);
 					m_selected[0] = 1;
 					m_p1Seconds = time;
 				}
 				else if (m_selected[0] == 1 && state.buttons[GLFW_GAMEPAD_BUTTON_B])
 				{
+					if (m_soundEngine)
+						m_soundEngine->play2D(m_menuSounds[2], false);
 					m_selected[0] = 0;
 				}
 
@@ -223,6 +268,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				{
 					if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_RIGHT] && m_selected[1] == 0)
 					{
+						if (m_soundEngine)
+							m_soundEngine->play2D(m_menuSounds[0], false);
 						if ((m_p2ModelId + 1) <= m_scene->GetNumPlayerModels() - 1)
 						{
 							m_p2ModelId += 1;
@@ -237,7 +284,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 					}
 					else if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_LEFT] && m_selected[1] == 0)
 					{
-
+						if (m_soundEngine)
+							m_soundEngine->play2D(m_menuSounds[0], false);
 						if ((m_p2ModelId - 1) >= 0)
 						{
 							m_p2ModelId -= 1;
@@ -253,10 +301,14 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 					}
 					else if (state.buttons[GLFW_GAMEPAD_BUTTON_A])
 					{
+						if (m_soundEngine)
+							m_soundEngine->play2D(m_menuSounds[1], false);
 						m_selected[1] = 1;
 					}
 					else if (m_selected[1] == 1 && state.buttons[GLFW_GAMEPAD_BUTTON_B])
 					{
+						if (m_soundEngine)
+							m_soundEngine->play2D(m_menuSounds[2], false);
 						m_selected[1] = 0;
 					}
 
@@ -282,6 +334,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 						ImGui::Text(" Join? Press \"A\"!");
 						if (state.buttons[GLFW_GAMEPAD_BUTTON_A])
 						{
+							if (m_soundEngine)
+								m_soundEngine->play2D(m_menuSounds[1], false);
 							m_p3Joined = true;
 							m_objHand->AddPlayer(vec3(-7, 6, 15), 2, 0, vec3(3, 0, 0), model);
 							m_p3Seconds = time;
@@ -315,6 +369,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 					{
 						if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_RIGHT] && m_selected[2] == 0)
 						{
+							if (m_soundEngine)
+								m_soundEngine->play2D(m_menuSounds[0], false);
 							if ((m_p3ModelId + 1) <= m_scene->GetNumPlayerModels() - 1)
 							{
 								m_p3ModelId += 1;
@@ -330,7 +386,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 						}
 						else if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_LEFT] && m_selected[2] == 0)
 						{
-
+							if (m_soundEngine)
+								m_soundEngine->play2D(m_menuSounds[0], false);
 							if ((m_p3ModelId - 1) >= 0)
 							{
 								m_p3ModelId -= 1;
@@ -346,10 +403,14 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 						}
 						else if (state.buttons[GLFW_GAMEPAD_BUTTON_A])
 						{
+							if (m_soundEngine)
+								m_soundEngine->play2D(m_menuSounds[1], false);
 							m_selected[2] = 1;
 						}
 						else if (m_selected[2] == 1 && state.buttons[GLFW_GAMEPAD_BUTTON_B])
 						{
+							if (m_soundEngine)
+								m_soundEngine->play2D(m_menuSounds[2], false);
 							m_selected[2] = 0;
 						}
 
@@ -377,6 +438,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 						ImGui::Text(" Join? Press \"A\"! ");
 						if (state.buttons[GLFW_GAMEPAD_BUTTON_A])
 						{
+							if (m_soundEngine)
+								m_soundEngine->play2D(m_menuSounds[1], false);
 							m_p4Joined = true;
 							m_objHand->AddPlayer(vec3(7, 6, 15), 3, 0, vec3(1, 1, 0), model);
 							m_p4Seconds = time;
@@ -411,6 +474,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 					{
 						if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_RIGHT] && m_selected[3] == 0)
 						{
+							if (m_soundEngine)
+								m_soundEngine->play2D(m_menuSounds[0], false);
 							if ((m_p4ModelId + 1) <= m_scene->GetNumPlayerModels() - 1)
 							{
 								m_p4ModelId += 1;
@@ -426,7 +491,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 						}
 						else if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_LEFT] && m_selected[3] == 0)
 						{
-
+							if (m_soundEngine)
+								m_soundEngine->play2D(m_menuSounds[0], false);
 							if ((m_p4ModelId - 1) >= 0)
 							{
 								m_p4ModelId -= 1;
@@ -442,10 +508,14 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 						}
 						else if (state.buttons[GLFW_GAMEPAD_BUTTON_A])
 						{
+							if (m_soundEngine)
+								m_soundEngine->play2D(m_menuSounds[1], false);
 							m_selected[3] = 1;
 						}
 						else if (m_selected[3] == 1 && state.buttons[GLFW_GAMEPAD_BUTTON_B])
 						{
+							if (m_soundEngine)
+								m_soundEngine->play2D(m_menuSounds[2], false);
 							m_selected[3] = 0;
 						}
 
@@ -500,10 +570,12 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				m_selected[0] = 0;
 			}
 
-			if (time - m_p1Seconds >= 0.7 && (glfwGetGamepadState(0, &state)))
+			if (time - m_p1Seconds >= 0.3 && (glfwGetGamepadState(0, &state)))
 			{
 				if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_RIGHT])
 				{
+					if (m_soundEngine)
+						m_soundEngine->play2D(m_menuSounds[0], false);
 					if (m_selected[0] == 0)
 					{
 						if (m_mapID < 6)
@@ -525,7 +597,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				}
 				else if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_LEFT])
 				{
-
+					if (m_soundEngine)
+						m_soundEngine->play2D(m_menuSounds[0], false);
 					if (m_selected[0] == 0)
 					{
 						if (m_mapID <= 6 && m_mapID > 0)
@@ -545,6 +618,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				}
 				else if (state.buttons[GLFW_GAMEPAD_BUTTON_A] && m_selected[0] <= 2)
 				{
+					if (m_soundEngine)
+						m_soundEngine->play2D(m_menuSounds[1], false);
 					m_selected[0] += 1;
 					m_objHand->GetCube()->SetCurrentLevel(m_mapID);
 					m_p1Seconds = time;
@@ -552,6 +627,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				}
 				else if (state.buttons[GLFW_GAMEPAD_BUTTON_B] && m_selected[0] > -1)
 				{
+					if (m_soundEngine)
+						m_soundEngine->play2D(m_menuSounds[2], false);
 					m_selected[0] -= 1;
 					m_p1Seconds = time;
 
@@ -603,6 +680,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 			{
 				if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_RIGHT])
 				{
+					if (m_soundEngine)
+						m_soundEngine->play2D(m_menuSounds[0], false);
 					if (m_selected[0] == 0)
 					{
 						if (m_maxLives < 10)
@@ -634,7 +713,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				}
 				else if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_LEFT])
 				{
-
+					if (m_soundEngine)
+						m_soundEngine->play2D(m_menuSounds[0], false);
 					if (m_selected[0] == 0)
 					{
 						if (m_maxLives <= 10 && m_maxLives > 1)
@@ -666,11 +746,15 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				}
 				else if (state.buttons[GLFW_GAMEPAD_BUTTON_A] && m_selected[0] <=2)
 				{
+					if (m_soundEngine)
+						m_soundEngine->play2D(m_menuSounds[1], false);
 					m_selected[0] += 1;
 					m_p1Seconds = time;
 				}
 				else if (state.buttons[GLFW_GAMEPAD_BUTTON_B] && m_selected[0] > -1)
 				{
+					if (m_soundEngine)
+						m_soundEngine->play2D(m_menuSounds[2], false);
 					m_selected[0] -= 1;
 					m_p1Seconds = time;
 				}
@@ -687,6 +771,15 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		ImGui::SetNextWindowSize(ImVec2((float)width / 3 + pauseMenuWidth, height / 4 + 150 + pauseMenuHeight));
 		if (ImGui::Begin("##PauseMenu", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiNavInput_Activate))
 		{
+			if (time - m_inputSeconds >= 0.3 && glfwGetGamepadState(0, &state))
+			{
+				if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_DOWN] || state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_UP])
+				{
+					if (m_soundEngine)
+						m_soundEngine->play2D(m_menuSounds[0], false);
+					m_inputSeconds = time;
+				}
+			}
 
 			float middle = (float)width * 0.5f;
 			ImGui::SetCursorPos(ImVec2(((float)width / 3) / 3 - 25, 15));
@@ -695,12 +788,16 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 			ImGui::SetCursorPos(ImVec2(((float)width / 3) / 3, 115));
 			if (ImGui::Button("Resume", ImVec2(200, 75)))
 			{
+				if (m_soundEngine)
+					m_soundEngine->play2D(m_menuSounds[1], false);
 				m_menu = ActiveMenu::playerHud;
 			}
 			ImGui::SetCursorPos(ImVec2(((float)width / 3) / 3 - 100, 215));
 			if (ImGui::Button("Main Menu", ImVec2(400, 75)))
 			{
 				// resettar banan m.m. och laddar start menyn
+				if (m_soundEngine)
+					m_soundEngine->play2D(m_menuSounds[1], false);
 				m_menu = ActiveMenu::start;
 				m_reset = true;
 				m_p3Joined = false;
@@ -725,6 +822,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 			ImGui::SetCursorPos(ImVec2(((float)width / 3) / 3, 315));
 			if (ImGui::Button("Exit", ImVec2(200, 75)))
 			{
+				if (m_soundEngine)
+					m_soundEngine->play2D(m_menuSounds[2], false);
 				glfwSetWindowShouldClose(m_scene->GetWindow(), 1);
 			}
 			ImGui::PopStyleVar(1); // pop all the styles
@@ -738,6 +837,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 15);
 		ImGui::SetNextWindowPos(ImVec2((float)width / 3 - (pauseMenuWidth / 2), height / 4 - (pauseMenuHeight / 2)));
 		ImGui::SetNextWindowSize(ImVec2((float)width / 3 + pauseMenuWidth, height / 4 + 150 + pauseMenuHeight));
+		ImGui::SetNextWindowBgAlpha(0.9);
 		if (ImGui::Begin("##RestartMenu", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiNavInput_Activate))
 		{
 
@@ -748,6 +848,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 			ImGui::SetCursorPos(ImVec2(((float)width / 3) / 3 - 25, 115));
 			if (ImGui::Button("Restart", ImVec2(250, 75)))
 			{
+				if (m_soundEngine)
+					m_soundEngine->play2D(m_menuSounds[1], false);
 				m_menu = ActiveMenu::playerHud;
 
 				m_reset = true;
@@ -780,6 +882,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 			if (ImGui::Button("Main Menu", ImVec2(400, 75)))
 			{
 				// resettar banan m.m. och laddar start menyn
+				if (m_soundEngine)
+					m_soundEngine->play2D(m_menuSounds[1], false);
 				m_menu = ActiveMenu::start;
 				m_reset = true;
 				m_p3Joined = false;
@@ -804,6 +908,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 			ImGui::SetCursorPos(ImVec2(((float)width / 3) / 3, 315));
 			if (ImGui::Button("Exit", ImVec2(200, 75)))
 			{
+				if (m_soundEngine)
+					m_soundEngine->play2D(m_menuSounds[2], false);
 				glfwSetWindowShouldClose(m_scene->GetWindow(), 1);
 			}
 			ImGui::PopStyleVar(1); // pop all the styles
@@ -1213,12 +1319,18 @@ bool Menu::RestartMenuActive()
 
 bool Menu::WinMenuActive()
 {
-	bool temp = false;
 	if (m_menu == ActiveMenu::win)
-	{
-		temp = true;
-	}
-	return temp;
+		return true;
+	else
+		return false;
+}
+
+bool Menu::StatsMenuActive()
+{
+	if (m_menu == ActiveMenu::stats)
+		return true;
+	else
+		return false;
 }
 
 int Menu::GetMaxTime()
