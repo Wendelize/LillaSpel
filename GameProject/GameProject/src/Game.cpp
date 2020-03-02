@@ -84,8 +84,6 @@ void Game::Update(float dt)
 {
 	DynamicCamera(dt);
 
-	m_scene->CheckCollision(m_objectHandler->GetWorld());
-
 	if (m_objectHandler->GetExplosion())
 	{
 		vec3 pos = m_objectHandler->GetExplosionPosition();
@@ -227,6 +225,12 @@ void Game::Update(float dt)
 		if (m_objectHandler->GetCollisionHappened())
 		{
 			m_menu->CollisionTracking();
+			int aId = m_objectHandler->GetACollisionId();
+			int bId = m_objectHandler->GetBCollisionId();
+			vec3 pos = m_objectHandler->GetPlayerPos(aId);
+			pos += m_objectHandler->GetPlayerPos(bId);
+
+			m_scene ->AddParticleEffect(pos / 2.f, vec3(1, 0, 0), vec3(0, 1, 0), 1, 6, vec3(0, 1, 0), 200, 0.5, 0.15);
 		}
 
 		if (m_objectHandler->GetDeath())

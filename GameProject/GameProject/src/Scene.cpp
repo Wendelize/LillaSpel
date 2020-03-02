@@ -346,52 +346,6 @@ void Scene::RenderImGui(btDiscreteDynamicsWorld* world)
 	}
 }
 
-void Scene::CheckCollision(btDiscreteDynamicsWorld* world)
-{
-	// Browse all collision pairs 
-	int numManifolds = world->getDispatcher()->getNumManifolds();
-	for (int i = 0; i < numManifolds; ++i)
-	{
-		btPersistentManifold* contactManifold = world->getDispatcher()->getManifoldByIndexInternal(i);
-		btCollisionObject* obA = const_cast<btCollisionObject*>(contactManifold->getBody0());
-		btCollisionObject* obB = const_cast<btCollisionObject*>(contactManifold->getBody1());
-
-		btCollisionShape* shapeA = obA->getCollisionShape();
-		btCollisionShape* shapeB = obB->getCollisionShape();
-
-		//Collision between spheres(cars)
-		if (shapeA->getShapeType() == 8 && shapeB->getShapeType() == 8)
-		{
-			vec3 particlePos;
-			btTransform mat = obA->getWorldTransform();
-			btVector3 vec = mat.getOrigin();
-			particlePos = vec3(vec.x(), vec.y(), vec.z());
-			btVector3 spread = obA->getInterpolationLinearVelocity();
-			float fspread = (spread.x() + spread.y() + spread.z()) / 3.f;
-
-			/*if (fspread < 1.f)
-			{
-				fspread = 6.f;
-			}
-
-			AddParticleEffect(particlePos, vec3(1, 0, 0), vec3(0, 1, 0), 1, 6, vec3(1, 0, 0), 50, 0.5, 0.4);*/
-
-			mat = obB->getWorldTransform();
-			vec = mat.getOrigin();
-			particlePos += vec3(vec.x(), vec.y(), vec.z());
-			spread = obB->getInterpolationLinearVelocity();
-			fspread = (spread.x() + spread.y() + spread.z()) / 3.f;
-
-			if (fspread < 1.f)
-			{
-				fspread = 6.f;
-			}
-
-			AddParticleEffect(particlePos / 2.f, vec3(1, 0, 0), vec3(0, 1, 0), 1, 6, vec3(0, 1, 0), 50, 0.5, 0.15);
-		}
-	}
-}
-
 void Scene::RenderParticles(float dt)
 {
 	int k = 0;

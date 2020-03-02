@@ -55,10 +55,7 @@ public:
 	void RenderLights(vector<Light*> light);
 	void RenderShadows(vector<ObjectInfo*> objects);
 	void RenderImGui(btDiscreteDynamicsWorld* world);
-	void CheckCollision(btDiscreteDynamicsWorld* world);
 	void RenderParticles(float dt);
-	void RenderParticlesVictory(ObjectInfo* object, float dt);
-	void RenderExhaust(vector<ObjectInfo*> objects);
 	void SwapBuffer();
 	void ZoomIn(float dt);
 	void ZoomOut(float dt);
