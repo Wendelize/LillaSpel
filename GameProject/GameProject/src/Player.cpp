@@ -184,13 +184,6 @@ void Player::Update(float dt)
 		{
 			m_honkEngine->play2D(m_honk->getSoundSource(), false, false, true);
 		}
-
-		if (m_controller->ButtonOptionsIsPressed(m_controllerID))
-		{
-			//Temporary
-			m_body->setLinearVelocity(btVector3(0, 0, 0));
-		}
-
 		if (m_controller->ButtonAIsPressed(m_controllerID))
 		{
 			//Acceleration

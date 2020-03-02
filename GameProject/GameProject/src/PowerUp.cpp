@@ -8,7 +8,7 @@ PowerUp::PowerUp(int spawn, btVector3 pos, int type,float duration)
 	m_transform = new Transform;
 	m_model = 0;
 	float scale = 1.f;
-	switch (type) {
+	switch (m_type) {
 		case 0: //Player sizeUp
 			m_model = 6;
 			m_color = vec3(0, 1, 0);
@@ -149,6 +149,9 @@ bool PowerUp::update(float dt)
 		m_transform->Rotate(0.f, 2.0f * dt, 0.f);
 		destroy = false;
 	}
+	else if (m_bombBlown) {
+		destroy = false;
+	}
 	//m_body->setLinearVelocity(btVector3(0,-1,0));
 	btVector3 moveVector = m_body->getWorldTransform().getOrigin() - m_currentPos;
 	m_transform->Translate(vec3(moveVector.x(), moveVector.y(), moveVector.z()));
@@ -160,5 +163,22 @@ bool PowerUp::update(float dt)
 int PowerUp::GetSpawn()
 {
 	return m_spawn;
+}
+
+void PowerUp::StartParticles()
+{	
+	vec3 temp = vec3(m_currentPos.x(), m_currentPos.y(), m_currentPos.z());
+	m_particlesActive = true;
+	//m_particles->GenerateParticles(0.1f, temp, 5);
+}
+
+void PowerUp::BombBlown()
+{
+	m_bombBlown = true;
+}
+
+bool PowerUp::IsBombBlown()
+{
+	return m_bombBlown;
 }
 

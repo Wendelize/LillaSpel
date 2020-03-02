@@ -23,6 +23,16 @@ private:
 	vector<ObjectInfo*> m_structs;
 	vector<Light*> m_carLights;
 	vector<vec3> m_bombZone;
+	// used to track collisions for statsMenu
+	bool m_collisionHappened = false;
+	bool m_death = false;
+	int m_aCollisionPlayerId = -1;
+	int m_bCollisionPlayerId = -1;
+	int m_dead = -1;
+	float m_collidTimer = 0;
+	// uses controller id
+	vector <int> m_deathOrder;
+
 	ISoundEngine* m_soundEngine;
 
 	const char* m_soundFiles[NRDEATHSOUNDS];
@@ -67,11 +77,25 @@ public:
 	void SetPlayerColor(int index, vec3 color);
 	vec3 GetPlayerScale(int index);
 	void SetPlayerScale(int index, vec3 scale);
+	int GetACollisionId();
+	int GetBCollisionId();
+	bool GetCollisionHappened();
+	void SetCollisionHappened(bool setFalse = false);
+	bool GetDeath();
+	void SetDeath(bool setFalse = false);
+	// also sets dead to -1;
+	int GetDeadId();
+	// also clears the vector
+	vector<int> GetDeathOrder();
+	// TEMP!! TODO: REMOVE!!!!
+	int GetPlayerControllerIDBloo(int index, int bloo);
+
 	void StopAllSound();
 	vector<ObjectInfo*> GetObjects();
 	vector<Light*> GetLights();
 	btDiscreteDynamicsWorld* GetWorld();
 	DebugDrawer* GetDebugDrawer();
+	int GetWinnerID();
 	void AddDynamicPlatformMesh(MarchingCubes* cube);
 	void RemoveDynamicPlatformMesh(MarchingCubes* cube);
 	vector<vec3> GetBomb();

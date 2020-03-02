@@ -13,9 +13,9 @@ Game::Game()
 	m_menu = new Menu(m_scene, m_objectHandler);
 	// noMenu, start, select, pause, stats, restart, playerHud; // stats finns inte än
 	// väl playerHud om ni vill spela utan start menu
-	// välj noMenu om ni vill spela utan HUD och ingen restart, 
+	// välj noMenu om ni vill spela utan HUD 
 	//	Pause meny bör fortfarande fungera med noMenu
-	m_menu->SetActiveMenu(Menu::ActiveMenu::playerHud);
+	m_menu->SetActiveMenu(Menu::ActiveMenu::start);
 	m_menu->LoadMenuPic();
 
 	m_maxTime = 60.f;
@@ -28,9 +28,10 @@ Game::Game()
 
 	m_timeSinceSpawn = 0;
 
-	m_objectHandler->AddPlayer(vec3(-10, 4, 3), 0, 0, vec3(0.5, 1, 9), m_cars[0]); // Passa modell
-	m_objectHandler->AddPlayer(vec3(10, 4, 3), 1, 0, vec3(0, 2, 0), m_cars[2]); // Passa modell
-	m_objectHandler->AddPlayer(vec3(-4, 7, -4), 3, rand() % 4, vec3(1, 1, 0), m_cars[3]); // Passa modell
+	m_objectHandler->AddPlayer(vec3(-10, 6, 3), 0, 0, vec3(0.5, 1, 9), m_cars[0]); // Passa modell
+	m_objectHandler->AddPlayer(vec3(10, 6, 3), 1, 0, vec3(0, 2, 0), m_cars[2]); // Passa modell
+	//m_objectHandler->AddPlayer(vec3(-4, 7, -4), 3, rand() % 4, vec3(1, 1, 0), m_cars[3]); // Passa modell
+	
 	m_scene->SetCameraPos(CAMERAPOS_GAME);
 
 
@@ -121,11 +122,12 @@ void Game::Update(float dt)
 	}
 	if ((!m_menu->Pause() && !m_wasSelect)) // Vet inte om det kan göras snyggare?
 	{
+
 		m_time += dt;
 		m_timeSinceSpawn += dt;
 		m_timeSwapTrack += dt;
 
-		if (m_timeSwapTrack > 1.f && m_updateMap.load() == false && m_mapUpdateReady.load() == false)
+		if (m_timeSwapTrack > 2.f && m_updateMap.load() == false && m_mapUpdateReady.load() == false)
 		{
 			m_updateMap.store(true);
 		}
@@ -150,6 +152,8 @@ void Game::Update(float dt)
 		if (m_objectHandler->GetNumPlayers() == 1 && !m_gameOver)
 		{
 			m_winner = 0;
+			m_menu->RankPlayers();
+			m_menu->SetActiveMenu(Menu::ActiveMenu::win);
 			m_gameOver = true;
 
 			if (m_soundEngine)
@@ -170,7 +174,10 @@ void Game::Update(float dt)
 		}
 		if (m_time > m_maxTime && !m_gameOver)
 		{
-			m_winner = m_objectHandler->GetWinnerIndex();
+			m_winner = m_objectHandler->GetWinnerID();
+			m_menu->RankPlayers();
+			m_menu->SetWinner(m_winner);
+			m_menu->SetActiveMenu(Menu::ActiveMenu::win);
 			m_gameOver = true;
 			if (m_soundEngine)
 			{
@@ -207,6 +214,16 @@ void Game::Update(float dt)
 		else
 		{
 			m_toggle = false;
+		}
+
+		if (m_objectHandler->GetCollisionHappened())
+		{
+			m_menu->CollisionTracking();
+		}
+
+		if (m_objectHandler->GetDeath())
+		{
+			m_menu->KillCount();
 		}
 	}
 }
@@ -363,7 +380,7 @@ void Game::Reset()
 	m_objectHandler->SetLightsOut(false);
 	//m_maxTime = 240.f;
 	m_timeSinceSpawn = 0;
-	// delete remeaning players so we can spawn them back att spawn positions
+	// delete remaning players so we can spawn them back att spawn positions
 	for (int i = 0; i < 4; i++)
 	{
 		
@@ -390,18 +407,9 @@ GLFWwindow* Game::GetWindow()
 
 void Game::MutliThread(GLFWwindow* window)
 {
-	bool shrink = true;
 	while (!glfwWindowShouldClose(window)) {
 		if (m_updateMap.load()) {
-			if (shrink)
-			{
-				shrink = false;
-
-			}
-			else {
-				shrink = true;
-			}
-			m_cube->Update(window, m_objectHandler->GetBomb(),shrink);
+			m_cube->Update(window, m_objectHandler->GetBomb());
 			m_updateMap.store(false);// = false;
 			m_mapUpdateReady.store(true);
 		}

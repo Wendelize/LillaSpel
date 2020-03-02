@@ -354,22 +354,20 @@ void MarchingCubes::Init()
 {
 }
 
-void MarchingCubes::Update(GLFWwindow* window, vector<vec3> bombPos, bool shrink)
+void MarchingCubes::Update(GLFWwindow* window, vector<vec3> bombPos)
 {
 	//Multithread PART
 	ClearMeshData();
-	if (shrink) {
-		if (m_way == true)
-		{
-			m_shrink++;
-			if (m_shrink > 9)
-				m_way = false;
-		}
-		else if (m_way == false) {
-			m_shrink--;
-			if (m_shrink == 0)
-				m_way = true;
-		}
+	if (m_way == true)
+	{
+		m_shrink++;
+		if (m_shrink > 9)
+			m_way = false;
+	}
+	else if (m_way == false) {
+		m_shrink--;
+		if (m_shrink == 0)
+			m_way = true;
 	}
 	PopulateTerrainMap(m_currentLvl);
 
@@ -503,8 +501,8 @@ void MarchingCubes::PopulateTerrainMap(int level)
 					}
 					else
 					{
-						float thisHeight = (float)m_height * ((float)rand() / (RAND_MAX)) / 16.0f * 1.5f + 0.001f;
-						m_terrainMap[x][y][z] = (float)y - thisHeight;
+						// float thisHeight = (float)m_height * ((float)rand() / (RAND_MAX)) / 16.0f * 1.5f + 0.001f;
+						m_terrainMap[x][y][z] = (float)y - 1.0;
 
 					}
 
