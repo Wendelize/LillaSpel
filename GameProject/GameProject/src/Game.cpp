@@ -86,6 +86,14 @@ void Game::Update(float dt)
 
 	m_scene->CheckCollision(m_objectHandler->GetWorld());
 
+	if (m_objectHandler->GetExplosion())
+	{
+		vec3 pos = m_objectHandler->GetExplosionPosition();
+		m_scene->ShakeCamera(0.4f, 1);
+		m_scene->AddParticleEffect(pos, vec3(0.01, 0, 0), vec3(1, 0, 0), 1, 6, vec3(0, 1, 0), 50, 1.2, 0.5);
+		m_objectHandler->SetExplosion(false);
+	}
+
 	SHORT key = GetAsyncKeyState(VK_LSHIFT);
 	const int KEY_UP = 0x1;
 	if ((key & KEY_UP) == KEY_UP)
@@ -242,7 +250,7 @@ void Game::DynamicCamera(float dt)
 	vec3 offset = vec3(0, -6, 0);
 	int numPlayers = m_objectHandler->GetNumPlayers();
 
-	if (m_menu->RestartMenuActive())
+	if (m_menu->WinMenuActive() || m_menu->RestartMenuActive() || m_menu->StatsMenuActive())
 	{
 		focusPoint = m_objectHandler->GetPlayerPos(m_winner) + vec3(0, 0.5, 0);
 	}

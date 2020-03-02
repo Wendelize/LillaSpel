@@ -423,6 +423,21 @@ int ObjectHandler::GetPlayerControllerIDBloo(int index, int bloo)
 	return m_players[index]->GetControllerID();
 }
 
+bool ObjectHandler::GetExplosion()
+{
+	return m_cube->GetExplosion();
+}
+
+void ObjectHandler::SetExplosion(bool b)
+{
+	m_cube->SetExplosion(b);
+}
+
+vec3 ObjectHandler::GetExplosionPosition()
+{
+	return m_cube->GetExplosionPosition();
+}
+
 void ObjectHandler::SetPlayerControllerID(int index, int id)
 {
 	m_players[index]->SetControllerID(id);
