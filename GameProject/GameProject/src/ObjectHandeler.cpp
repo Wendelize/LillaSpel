@@ -197,22 +197,20 @@ void ObjectHandler::Update(float dt)
 					m_players[isPlayer]->StopEngineSounds();
 
 				}
-			}
-			if (m_players[isPlayer]->GetCurrentPos().y() < -20.f && m_players[isPlayer]->GetLives() > 0)
-			{
-				bool spawnFound = false;
-				vec3 spawn = vec3(0);// = vec3((rand() % 30) - 15, 7, (rand() % 20 - 15)));
-				while (!spawnFound) {
-					spawn = vec3((rand() % 15) - 7, 7, (rand() % 15 - 7));
-					if (m_cube->IsNotHole(spawn)) {
-						spawnFound = true;
-					}
-				}
-				m_players[isPlayer]->SetPos(spawn);
-				m_players[isPlayer]->ReduceLife();
-				m_players[isPlayer]->SetBoolLights(true);
-				if (m_soundEngine)
+
+				if (m_players[isPlayer]->GetCurrentPos().y() < -20.f && m_players[isPlayer]->GetLives() > 0)
 				{
+					bool spawnFound = false;
+					vec3 spawn = vec3(0);// = vec3((rand() % 30) - 15, 7, (rand() % 20 - 15)));
+					while (!spawnFound) {
+						spawn = vec3((rand() % 15) - 7, 7, (rand() % 15 - 7));
+						if (m_cube->IsNotHole(spawn)) {
+							spawnFound = true;
+						}
+					}
+					m_players[isPlayer]->SetPos(spawn);
+					m_players[isPlayer]->ReduceLife();
+					m_players[isPlayer]->SetBoolLights(true);
 					m_players[isPlayer]->SetNotFallen();
 					m_soundEngine->setSoundVolume(1.4f);
 					m_soundEngine->play2D("src/Audio/Powerup - Spawn.mp3", false);
@@ -222,24 +220,30 @@ void ObjectHandler::Update(float dt)
 					m_death = true;
 					m_dead = m_players[isPlayer]->GetControllerID();
 				}
-				else {
-					if (m_players[isPlayer]->GetLives() == 0) 
-					{
-						// used for statsMenu
-						m_deathOrder.push_back(m_players[isPlayer]->GetControllerID());
+				else if (m_players[isPlayer]->GetLives() == 0)
+				{
+					// used for statsMenu
+					m_deathOrder.push_back(m_players[isPlayer]->GetControllerID());
 
-						RemovePlayer(isPlayer);
-						isPlayer--;
-					}
+					RemovePlayer(isPlayer);
+					isPlayer--;
 				}
-			
 			}
 			else
 			{
 				if (m_players[isPlayer]->GetCurrentPos().y() < -20.f && m_players[isPlayer]->GetLives() > 0)
 				{
-					m_players[isPlayer]->SetPos(vec3(rand() % 10 - 10, 7, rand() % 10 - 10));
-					m_players[isPlayer]->ReduceLife(); 
+					bool spawnFound = false;
+					vec3 spawn = vec3(0);// = vec3((rand() % 30) - 15, 7, (rand() % 20 - 15)));
+					while (!spawnFound) {
+						spawn = vec3((rand() % 15) - 7, 7, (rand() % 15 - 7));
+						if (m_cube->IsNotHole(spawn)) {
+							spawnFound = true;
+						}
+					}
+					m_players[isPlayer]->SetPos(spawn);
+					m_players[isPlayer]->ReduceLife();
+					m_players[isPlayer]->SetBoolLights(true);
 					// used for statsMenu
 					m_death = true;
 					m_dead = m_players[isPlayer]->GetControllerID();

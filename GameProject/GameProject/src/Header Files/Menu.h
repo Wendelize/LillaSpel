@@ -13,12 +13,12 @@ public:
 		start = 1,
 		select = 2,
 		selectLives = 3,
-		selectLives = 4,
-		pause = 4,
+		selectLevel = 4,
+		pause = 5,
 		stats = 6,
-		win = 5,
-		restart = 7,
-		playerHud = 8
+		win = 7,
+		restart = 8,
+		playerHud = 9
 	};
 
 	void RenderMenu(bool gameOver, float time, Model* model);
