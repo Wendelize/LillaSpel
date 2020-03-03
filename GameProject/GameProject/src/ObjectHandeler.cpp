@@ -142,7 +142,7 @@ void ObjectHandler::Update(float dt)
 	
 	m_scaleTimer += dt;
 
-	if (m_scaleTimer > 0.3f) {
+	if (m_scaleTimer > 0.3f && m_objects.size() != 0) {
 		m_objects.at(0)->SetScale(m_objects.at(0)->GetScale() + 0.01f);
 		m_objects.at(0)->SetRotation((3.14 * 2)/360);
 		m_scaleTimer = 0;
