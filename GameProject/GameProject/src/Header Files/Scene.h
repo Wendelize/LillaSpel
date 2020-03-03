@@ -26,7 +26,7 @@ private:
 		m_viewMatrix,
 		m_modelMatrix;
 
-	vector<Model*> m_vehicles, m_platform, m_power;
+	vector<Model*> m_vehicles, m_platform, m_power,m_objects;
 	
 	vector <Light*> m_lights;
 	vector <Light*> m_carLights;
@@ -55,9 +55,7 @@ public:
 	void RenderLights(vector<Light*> light);
 	void RenderShadows(vector<ObjectInfo*> objects);
 	void RenderImGui(btDiscreteDynamicsWorld* world);
-	void RenderParticlesCollision(float dt, btDiscreteDynamicsWorld* world);
-	void RenderParticlesVictory(ObjectInfo* object, float dt);
-	void RenderExhaust(vector<ObjectInfo*> objects);
+	void RenderParticles(float dt);
 	void SwapBuffer();
 	void ZoomIn(float dt);
 	void ZoomOut(float dt);
@@ -66,6 +64,8 @@ public:
 	void TranslateCameraPos(vec3 pos);
 	void SetCameraFocus(vec3 pos);
 	void ShakeCamera(float intensity, float duration);
+
+	void AddParticleEffect(vec3 pos, vec3 color1, vec3 color2, float speed, float spread, vec3 dir, int nr, float duration, float size);
 
 	void SetWindowSize(int width, int height);
 	GLFWwindow* GetWindow();

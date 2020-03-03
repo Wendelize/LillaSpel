@@ -72,6 +72,10 @@ ObjectHandler::~ObjectHandler()
 	{
 		delete m_platforms.at(i);
 	}
+	for (uint i = 0; i < m_objects.size(); i++)
+	{
+		delete m_objects.at(i);
+	}
 	int temp = m_powerUps.size();
 	for (uint i = 0; i < temp; i++) {
 		RemovePowerUp(0);
@@ -141,6 +145,14 @@ void ObjectHandler::Update(float dt)
 	int randomNumber = rand() % NRDEATHSOUNDS;
 
 	m_dynamicsWorld->stepSimulation(dt, 10);
+	
+	m_scaleTimer += dt;
+
+	if (m_scaleTimer > 0.3f) {
+		m_objects.at(0)->SetScale(m_objects.at(0)->GetScale() + 0.01f);
+		m_objects.at(0)->SetRotation((3.14 * 2)/360);
+		m_scaleTimer = 0;
+	}
 
 	CheckPowerUpCollision();
 	CheckCollisionCars(dt);
@@ -176,9 +188,13 @@ void ObjectHandler::Update(float dt)
 			trans = obj->getWorldTransform();
 		}
 		int nrOfPlatforms = 1;
-		int isPlayer = i - nrOfPlatforms - m_powerUps.size();
-		int isPowerUp = i - nrOfPlatforms - m_players.size();
-
+		int isPlayer = i - nrOfPlatforms - m_objects.size() - m_powerUps.size();
+		int isPowerUp = i - nrOfPlatforms - m_objects.size() - m_players.size();
+		int isObject = i - nrOfPlatforms - m_powerUps.size() - m_players.size();
+		
+		if (isObject >= 0) {
+			m_objects.at(isObject)->Update();
+		}
 		if (i < m_ghosts.size()) {
 			m_ghosts.at(i)->UpdateGhost(dt);
 		}
@@ -204,36 +220,68 @@ void ObjectHandler::Update(float dt)
 					m_soundEngine->play2D(filename, false);
 					m_players[isPlayer]->SetFallen();
 					m_players[isPlayer]->StopEngineSounds();
+
 				}
-			}
-			if (m_players[isPlayer]->GetCurrentPos().y() < -20.f && m_players[isPlayer]->GetLives() > 0)
-			{
-				bool spawnFound = false;
-				vec3 spawn = vec3(0);// = vec3((rand() % 30) - 15, 7, (rand() % 20 - 15)));
-				while (!spawnFound) {
-					spawn = vec3((rand() % 15) - 7, 7, (rand() % 15 - 7));
-					if (m_cube->IsNotHole(spawn)) {
-						spawnFound = true;
-					}
-				}
-				m_players[isPlayer]->SetPos(spawn);
-				m_players[isPlayer]->ReduceLife();
-				m_players[isPlayer]->SetBoolLights(true);
-				if (m_soundEngine)
+
+				if (m_players[isPlayer]->GetCurrentPos().y() < -20.f && m_players[isPlayer]->GetLives() > 0)
 				{
+					bool spawnFound = false;
+					vec3 spawn = vec3(0);// = vec3((rand() % 30) - 15, 7, (rand() % 20 - 15)));
+					while (!spawnFound) {
+						spawn = vec3((rand() % 15) - 7, 7, (rand() % 15 - 7));
+						if (m_cube->IsNotHole(spawn)) {
+							spawnFound = true;
+						}
+					}
+					m_players[isPlayer]->SetPos(spawn);
+					m_players[isPlayer]->ReduceLife();
+					m_players[isPlayer]->SetBoolLights(true);
 					m_players[isPlayer]->SetNotFallen();
 					m_soundEngine->setSoundVolume(1.4f);
 					m_soundEngine->play2D("src/Audio/Powerup - Spawn.mp3", false);
 					m_soundEngine->setSoundVolume(0.6f);
 					m_players[isPlayer]->StartEngineSounds();
+					// used for statsMenu
+					m_death = true;
+					m_dead = m_players[isPlayer]->GetControllerID();
 				}
-			}
-			else {
-				if (m_players[isPlayer]->GetLives() == 0) {
+				else if (m_players[isPlayer]->GetLives() == 0)
+				{
 					AddGhost(m_players[isPlayer]->GetControllerID());
+					m_deathOrder.push_back(m_players[isPlayer]->GetControllerID());
 					RemovePlayer(isPlayer);
 					isPlayer--;
+				}
+			}
+			else
+			{
+				if (m_players[isPlayer]->GetCurrentPos().y() < -20.f && m_players[isPlayer]->GetLives() > 0)
+				{
+					bool spawnFound = false;
+					vec3 spawn = vec3(0);// = vec3((rand() % 30) - 15, 7, (rand() % 20 - 15)));
+					while (!spawnFound) {
+						spawn = vec3((rand() % 15) - 7, 7, (rand() % 15 - 7));
+						if (m_cube->IsNotHole(spawn)) {
+							spawnFound = true;
+						}
+					}
+					m_players[isPlayer]->SetPos(spawn);
+					m_players[isPlayer]->ReduceLife();
+					m_players[isPlayer]->SetBoolLights(true);
+					// used for statsMenu
+					m_death = true;
+					m_dead = m_players[isPlayer]->GetControllerID();
+				}
+				else 
+				{
+					if (m_players[isPlayer]->GetLives() == 0) 
+					{
+						// used for statsMenu
+						m_deathOrder.push_back(m_players[isPlayer]->GetControllerID());
 
+						RemovePlayer(isPlayer);
+						isPlayer--;
+					}
 				}
 			}			
 		}
@@ -254,6 +302,26 @@ void ObjectHandler::AddPlayer(vec3 pos, int controllerID, int modelId, vec3 colo
 
 	if (m_soundEngine)
 		m_players.back()->StartEngineSounds();
+}
+
+void ObjectHandler::AddObject(vec3 pos, int modelId, Model* model)
+{
+	m_objects.push_back(new Object(btVector3(pos.x, pos.y, pos.z), modelId, model));
+	m_dynamicsWorld->addRigidBody(m_objects.back()->GetObject());
+
+}
+
+void ObjectHandler::RemoveObject(int index)
+{
+	m_dynamicsWorld->removeCollisionObject(m_objects.at(index)->GetObject());
+	btRigidBody* body = m_objects.at(index)->GetObject();
+	delete m_objects.at(index);
+	m_objects.erase(m_objects.begin() + index);
+	if (body && body->getMotionState())
+	{
+		delete body->getMotionState();
+	}
+	delete body;
 }
 
 void ObjectHandler::SetScale(int id, vec3 scale)
@@ -309,7 +377,7 @@ void ObjectHandler::AddPowerUp()
 		}
 	}
 
-	btVector3 spawnPoint = btVector3(spawn.x, m_cube->GetHeight(spawn) + 6.5, spawn.z);
+	btVector3 spawnPoint = btVector3(spawn.x, m_cube->GetHeight(spawn) + 10.f, spawn.z);
 	m_powerUps.push_back(new PowerUp(0, spawnPoint, type));
 	m_dynamicsWorld->addRigidBody(m_powerUps.back()->getObject());
 
@@ -335,12 +403,12 @@ void ObjectHandler::RemovePowerUp(int index)
 	for (int i = 0; i < m_structs.size(); i++) {
 		if (m_structs.at(i)->modelMatrix == temp->modelMatrix && m_structs.at(i)->typeId == temp->typeId) {
 			delete m_structs.at(i);
-			m_structs.at(i) = new ObjectInfo(mat4(0),1,1,vec3(0), false);
+			m_structs.at(i) = new ObjectInfo(mat4(0), 1, 1, vec3(0), false);
 		}
 	}
+
 	delete temp;
 
-	m_dynamicsWorld->removeCollisionObject(m_powerUps.at(index)->getObject());
 	delete m_powerUps.at(index)->getObject()->getMotionState();
 	delete m_powerUps.at(index)->getObject();
 	delete m_powerUps.at(index)->GetObjectInfo();
@@ -385,7 +453,39 @@ vec3 ObjectHandler::GetPlayerDirection(int index)
 
 int ObjectHandler::GetPlayerControllerID(int index)
 {
+	// TODO: ta bort denna ifsats när spelet är klart?
+	if (index == -1 || this->GetNumPlayers() -1 < index)
+	{
+			// otillåtna värden som index
+			cout << "invalid index send to getPlayerControlerID! index : " << index << endl;
+	}
 	return m_players[index]->GetControllerID();
+}
+
+int ObjectHandler::GetPlayerControllerIDBloo(int index, int bloo)
+{
+	// TODO: ta bort denna ifsats när spelet är klart?
+	if (index == -1 || this->GetNumPlayers() - 1 < index)
+	{
+		// otillåtna värden som index
+		cout << "invalid index send to getPlayerControlerID! index : " << index << " from int : " << bloo << endl;
+	}
+	return m_players[index]->GetControllerID();
+}
+
+bool ObjectHandler::GetExplosion()
+{
+	return m_cube->GetExplosion();
+}
+
+void ObjectHandler::SetExplosion(bool b)
+{
+	m_cube->SetExplosion(b);
+}
+
+vec3 ObjectHandler::GetExplosionPosition()
+{
+	return m_cube->GetExplosionPosition();
 }
 
 void ObjectHandler::SetPlayerControllerID(int index, int id)
@@ -423,6 +523,50 @@ void ObjectHandler::SetPlayerScale(int index, vec3 scale)
 	m_players[index]->SetScale(scale);
 }
 
+int ObjectHandler::GetACollisionId()
+{
+	return m_aCollisionPlayerId;
+}
+
+int ObjectHandler::GetBCollisionId()
+{
+	return m_bCollisionPlayerId;
+}
+
+bool ObjectHandler::GetCollisionHappened()
+{
+	return m_collisionHappened;
+}
+
+void ObjectHandler::SetCollisionHappened(bool setfalse)
+{
+	m_collisionHappened = setfalse;
+}
+
+bool ObjectHandler::GetDeath()
+{
+	return m_death;
+}
+
+void ObjectHandler::SetDeath(bool setFalse)
+{
+	m_death = setFalse;
+}
+
+int ObjectHandler::GetDeadId()
+{
+	int temp = m_dead;
+	m_dead = -1;
+	return temp;
+}
+
+vector<int> ObjectHandler::GetDeathOrder()
+{
+	vector<int> temp = m_deathOrder;
+	m_deathOrder.clear();
+	return temp;
+}
+
 void ObjectHandler::StopAllSound()
 {
 	m_soundEngine->stopAllSounds();
@@ -451,6 +595,10 @@ vector<ObjectInfo*> ObjectHandler::GetObjects()
 	for (int i = 0; i < m_powerUps.size(); i++)
 	{
 		m_structs.push_back(m_powerUps[i]->GetObjectInfo());
+	}
+	for (int i = 0; i < m_objects.size(); i++)
+	{
+		m_structs.push_back(m_objects[i]->GetObjectInfo());
 	}
 	return m_structs;
 }
@@ -508,19 +656,19 @@ void ObjectHandler::ClearBombs()
 	m_bombZone.clear();
 }
 
-int ObjectHandler::GetWinnerIndex()
+int ObjectHandler::GetWinnerID()
 {
-	int winnerIndex = 0;
+	int winnerID = 0;
 	int winnerLife = 0;
 	for (auto w : m_players)
 	{
 		if (w->GetLives() > winnerLife)
 		{
 			winnerLife = w->GetLives();
-			winnerIndex = w->GetControllerID();
+			winnerID = w->GetControllerID();
 		}
 	}
-	return winnerIndex;
+	return winnerID;
 }
 
 void ObjectHandler::UpdateVibration(float dt)
@@ -538,18 +686,34 @@ void ObjectHandler::UpdateVibration(float dt)
 		//Collision between spheres(cars)
 		if (shapeA->getShapeType() == 8 && shapeB->getShapeType() == 8)
 		{
+			// used for statsMenu
+			int oldAIndex = m_aCollisionPlayerId;
+			int oldBIndex = m_bCollisionPlayerId;
+			double time = glfwGetTime();
 
 			for (int f = 0; f < m_players.size(); f++)
 			{
 				if (m_players.at(f)->GetBody() == obA)
 				{
-					m_players.at(f)->GetController()->Vibrate(f, 6553, 65535);
+					m_players.at(f)->GetController()->Vibrate(m_players.at(f)->GetControllerID(), 6553, 65535);
+					// used for statsMenu
+					m_aCollisionPlayerId = m_players.at(f)->GetControllerID();
 				}
 				if (m_players.at(f)->GetBody() == obB)
 				{
-					m_players.at(f)->GetController()->Vibrate(f, 6553, 65535);
+					m_players.at(f)->GetController()->Vibrate(m_players.at(f)->GetControllerID(), 6553, 65535);
+					// used for statsMenu
+					m_bCollisionPlayerId = m_players.at(f)->GetControllerID();
 				}
 			}
+			// used for statsMenu
+			if (!(time - m_collidTimer <= 0.5 && ((oldAIndex == m_aCollisionPlayerId && oldBIndex == m_bCollisionPlayerId) || (oldBIndex == m_aCollisionPlayerId && oldAIndex == m_bCollisionPlayerId) )))
+			{
+				// TODO: kanske om det fuckar för mycket när fera krockar samtidigt så fixa bättre lösning
+				m_collisionHappened = true;
+				m_collidTimer = time;
+			}
+
 		}
 	}
 
@@ -561,7 +725,7 @@ void ObjectHandler::UpdateVibration(float dt)
 		}
 		else
 		{
-			m_players.at(f)->GetController()->Vibrate(f, 0, 0);
+			m_players.at(f)->GetController()->Vibrate(m_players.at(f)->GetControllerID(), 0, 0);
 		}
 	}
 }
@@ -732,3 +896,11 @@ void ObjectHandler::SetLightsOut(bool state)
 {
 	m_lightsOut = state;
 }
+
+void ObjectHandler::RenderParticles()
+{
+	for (int i = 0; i < m_particles.size(); i++) {
+		m_particles.at(i)->Draw();
+	}
+}
+

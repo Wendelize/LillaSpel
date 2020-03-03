@@ -11,7 +11,7 @@ private:
 	int m_modelId;
 	bool m_powerActive;
 	int m_powerType;
-	int m_powerDuration;
+	float m_powerDuration;
 	float m_weight;
 	float m_speed;
 	float m_powerMultiplier;

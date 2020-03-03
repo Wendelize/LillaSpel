@@ -184,13 +184,6 @@ void Player::Update(float dt)
 		{
 			m_honkEngine->play2D(m_honk->getSoundSource(), false, false, true);
 		}
-
-		if (m_controller->ButtonOptionsIsPressed(m_controllerID))
-		{
-			//Temporary
-			m_body->setLinearVelocity(btVector3(0, 0, 0));
-		}
-
 		if (m_controller->ButtonAIsPressed(m_controllerID))
 		{
 			//Acceleration
@@ -282,7 +275,7 @@ void Player::Update(float dt)
 
 	if (m_soundEngine && m_body->getLinearVelocity().y() < 0.3f && m_body->getLinearVelocity().y() > -0.3f)
 	{
-		m_soundEngine->setSoundVolume(m_body->getLinearVelocity().length() / 40 + 0.3f);
+		m_soundEngine->setSoundVolume(m_body->getLinearVelocity().length() / 25 + 0.3f);
 		m_sound->setPlaybackSpeed(m_body->getLinearVelocity().length() / 15 + 1.0f);
 	}
 	m_body->applyDamping(dt);
@@ -457,7 +450,7 @@ void Player::GivePower(int type)
 		removePower(m_powerType);
 	}
 	m_powerType = type;
-	m_powerDuration = 300.f;
+	m_powerDuration = 10.f;
 	m_powerActive = true;
 
 	float mass;

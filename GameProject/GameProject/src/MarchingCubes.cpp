@@ -339,6 +339,16 @@ MarchingCubes::MarchingCubes()
 	BuildMesh();
 
 	CreatePhysics();
+
+	m_bombEngine = createIrrKlangDevice();
+
+	if (m_bombEngine)
+	{
+		m_bombSounds.push_back(m_bombEngine->addSoundSourceFromFile("src/Audio/Player - Crash Small.mp3"));
+		m_bombSounds.push_back(m_bombEngine->addSoundSourceFromFile("src/Audio/Player - Crash Medium.mp3"));
+		m_bombSounds.push_back(m_bombEngine->addSoundSourceFromFile("src/Audio/Player - Crash Biggest.mp3"));
+		m_bombEngine->setSoundVolume(0.7f);
+	}
 }
 
 MarchingCubes::~MarchingCubes()
@@ -348,28 +358,35 @@ MarchingCubes::~MarchingCubes()
 	delete m_newPlatformShape;
 	delete m_transform;
 	delete m_btTransform;
+
+	if (m_bombEngine)
+	{
+		for (uint i = 0; i < m_bombSounds.size(); i++)
+		{
+			m_bombSounds[i]->drop();
+		}
+		m_bombSounds.clear();
+	}
 }
 
 void MarchingCubes::Init()
 {
 }
 
-void MarchingCubes::Update(GLFWwindow* window, vector<vec3> bombPos, bool shrink)
+void MarchingCubes::Update(GLFWwindow* window, vector<vec3> bombPos)
 {
 	//Multithread PART
 	ClearMeshData();
-	if (shrink) {
-		if (m_way == true)
-		{
-			m_shrink++;
-			if (m_shrink > 9)
-				m_way = false;
-		}
-		else if (m_way == false) {
-			m_shrink--;
-			if (m_shrink == 0)
-				m_way = true;
-		}
+	if (m_way == true)
+	{
+		m_shrink++;
+		if (m_shrink > 9)
+			m_way = false;
+	}
+	else if (m_way == false) {
+		m_shrink--;
+		if (m_shrink == 0)
+			m_way = true;
 	}
 	PopulateTerrainMap(m_currentLvl);
 
@@ -503,8 +520,8 @@ void MarchingCubes::PopulateTerrainMap(int level)
 					}
 					else
 					{
-						float thisHeight = (float)m_height * ((float)rand() / (RAND_MAX)) / 16.0f * 1.5f + 0.001f;
-						m_terrainMap[x][y][z] = (float)y - thisHeight;
+						// float thisHeight = (float)m_height * ((float)rand() / (RAND_MAX)) / 16.0f * 1.5f + 0.001f;
+						m_terrainMap[x][y][z] = (float)y - 1.0;
 
 					}
 
@@ -756,6 +773,21 @@ void MarchingCubes::MapUpdate()
 	m_body = new btRigidBody(rbInfo);
 }
 
+bool MarchingCubes::GetExplosion()
+{
+	return m_explosion;
+}
+
+void MarchingCubes::SetExplosion(bool b)
+{
+	m_explosion = b;
+}
+
+vec3 MarchingCubes::GetExplosionPosition()
+{
+	return m_explosionPosition;
+}
+
 vector<VertexData> MarchingCubes::GetVertices()
 {
 	return m_vertices;
@@ -834,6 +866,14 @@ void MarchingCubes::MakeHole(vec3 position)
 			}
 		}
 	}
+
+	int randomNumber = rand() % 3;
+	if (m_bombEngine)
+	{
+		m_bombEngine->play2D(m_bombSounds[randomNumber], false);
+	}
+	m_explosion = true;
+	m_explosionPosition = position;
 }
 
 void MarchingCubes::UpdateHoles()

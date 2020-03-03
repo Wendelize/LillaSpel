@@ -15,6 +15,8 @@ private:
 	vector<Light*> m_carLight;
 	vector<Model*> m_platforms;
 	vector<Model*> m_cars;
+	vector<Model*> m_objectModels;
+
 	ISoundEngine* m_soundEngine;
 	ISound* m_music;
 	vector<ISoundSource*> m_songs;
@@ -34,6 +36,7 @@ private:
 	std::atomic<bool> m_mapUpdateReady;
 	std::atomic<bool> m_updateMap;
 
+	float m_fireworkCooldown = 0;
 	int m_winner = 0;
 	bool m_wasSelect = false; // used to see if we were in select-menu last time or not
 	void Debug();
@@ -42,6 +45,7 @@ public:
 	Game();
 	~Game();
 	void Update(float dt);
+	void UpdateParticles(float dt);
 	void DynamicCamera(float dt);
 	void PlayWithLights(float dt);
 	void Render(float dt);

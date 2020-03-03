@@ -13,7 +13,7 @@ Game::Game()
 	m_menu = new Menu(m_scene, m_objectHandler);
 	// noMenu, start, select, pause, stats, restart, playerHud; // stats finns inte än
 	// väl playerHud om ni vill spela utan start menu
-	// välj noMenu om ni vill spela utan HUD och ingen restart, 
+	// välj noMenu om ni vill spela utan HUD 
 	//	Pause meny bör fortfarande fungera med noMenu
 	m_menu->SetActiveMenu(Menu::ActiveMenu::playerHud);
 	m_menu->LoadMenuPic();
@@ -23,6 +23,7 @@ Game::Game()
 	m_toggle = false;
 	m_platforms = m_scene->GetModels(0);
 	m_cars = m_scene->GetModels(1);
+	m_objectModels = m_scene->GetModels(3);
 	m_cube = new MarchingCubes();
 	m_objectHandler->AddDynamicPlatformMesh(m_cube);
 
@@ -84,6 +85,14 @@ void Game::Update(float dt)
 {
 	DynamicCamera(dt);
 
+	if (m_objectHandler->GetExplosion())
+	{
+		vec3 pos = m_objectHandler->GetExplosionPosition();
+		m_scene->ShakeCamera(0.4f, 1);
+		m_scene->AddParticleEffect(pos, vec3(0.01, 0, 0), vec3(1, 0, 0), 1, 6, vec3(0, 1, 0), 50, 1.2, 0.5);
+		m_objectHandler->SetExplosion(false);
+	}
+
 	SHORT key = GetAsyncKeyState(VK_LSHIFT);
 	const int KEY_UP = 0x1;
 	if ((key & KEY_UP) == KEY_UP)
@@ -98,7 +107,10 @@ void Game::Update(float dt)
 		m_objectHandler->ClearHoles();
 		m_updateMap.store(true);
 		m_timeSwapTrack = 0;
+		m_menu->SetMapUpdate(false);
 	}
+
+
 	// är select menyn aktiverad? ändra kameran till inzoomad
 	if (m_menu->SelectMenuActive())
 	{
@@ -117,14 +129,27 @@ void Game::Update(float dt)
 	if (m_menu->Pause())
 	{
 		dt = 0;
+		if (m_menu->GetMapUpdate()) {
+			m_updateMap.store(true);
+			m_menu->SetMapUpdate(false);
+		}
+		if (m_mapUpdateReady.load() == true && m_updateMap.load() == false)
+		{
+			m_objectHandler->RemoveDynamicPlatformMesh(m_cube);
+			m_cube->MapUpdate();
+			m_objectHandler->AddDynamicPlatformMesh(m_cube);
+			m_timeSwapTrack = 0.f;
+			m_mapUpdateReady.store(false);
+			m_objectHandler->ClearBombs();
+		}
 	}
 	if ((!m_menu->Pause() && !m_wasSelect)) // Vet inte om det kan göras snyggare?
 	{
+
 		m_time += dt;
 		m_timeSinceSpawn += dt;
 		m_timeSwapTrack += dt;
-
-		if (m_timeSwapTrack > 1.f && m_updateMap.load() == false && m_mapUpdateReady.load() == false)
+		if ((m_timeSwapTrack > 2.f && m_updateMap.load() == false && m_mapUpdateReady.load() == false) || m_menu->GetMapUpdate())
 		{
 			m_updateMap.store(true);
 		}
@@ -149,6 +174,8 @@ void Game::Update(float dt)
 		if (m_objectHandler->GetNumPlayers() == 1 && !m_gameOver)
 		{
 			m_winner = 0;
+			m_menu->RankPlayers();
+			m_menu->SetActiveMenu(Menu::ActiveMenu::win);
 			m_gameOver = true;
 
 			if (m_soundEngine)
@@ -162,14 +189,17 @@ void Game::Update(float dt)
 		{
 			if (m_soundEngine)
 			{
-				m_music->setPlaybackSpeed(1.4);
+				m_music->setPlaybackSpeed(1.2);
 				m_fastMusic = true;
 			}
 
 		}
 		if (m_time > m_maxTime && !m_gameOver)
 		{
-			m_winner = m_objectHandler->GetWinnerIndex();
+			m_menu->RankPlayers();
+			m_winner = m_menu->GetWinner();//m_objectHandler->GetWinnerID();
+			//m_menu->SetWinner(m_winner);
+			m_menu->SetActiveMenu(Menu::ActiveMenu::win);
 			m_gameOver = true;
 			if (m_soundEngine)
 			{
@@ -207,6 +237,30 @@ void Game::Update(float dt)
 		{
 			m_toggle = false;
 		}
+
+		if (m_objectHandler->GetCollisionHappened())
+		{
+			m_menu->CollisionTracking();
+			int aId = m_objectHandler->GetACollisionId();
+			int bId = m_objectHandler->GetBCollisionId();
+			vec3 pos = m_objectHandler->GetPlayerPos(aId);
+			pos += m_objectHandler->GetPlayerPos(bId);
+
+			m_scene ->AddParticleEffect(pos / 2.f, vec3(1, 0, 0), vec3(0, 1, 0), 1, 6, vec3(0, 1, 0), 200, 0.5, 0.15);
+		}
+
+		if (m_objectHandler->GetDeath())
+		{
+			m_menu->KillCount();
+		}
+	}
+}
+
+void Game::UpdateParticles(float dt)
+{
+	if (m_gameOver)
+	{
+		m_scene->AddParticleEffect(m_objectHandler->GetPlayerPos(m_winner), vec3(NULL), vec3(NULL), 5, 10, vec3(0, 5, 0), 10, 1, 0.2);
 	}
 }
 
@@ -216,7 +270,7 @@ void Game::DynamicCamera(float dt)
 	vec3 offset = vec3(0, -6, 0);
 	int numPlayers = m_objectHandler->GetNumPlayers();
 
-	if (m_menu->RestartMenuActive())
+	if (m_menu->WinMenuActive() || m_menu->RestartMenuActive() || m_menu->StatsMenuActive())
 	{
 		focusPoint = m_objectHandler->GetPlayerPos(m_winner) + vec3(0, 0.5, 0);
 	}
@@ -235,11 +289,45 @@ void Game::DynamicCamera(float dt)
 	if (dt < 1.f)
 		m_scene->SetCameraFocus(focusPoint);
 
-	if (m_menu->RestartMenuActive())
+	if (m_menu->WinMenuActive() || m_menu->RestartMenuActive() || m_menu->StatsMenuActive())
 	{
-		vec3 vec = normalize(m_objectHandler->GetPlayerPos(m_winner) - (m_objectHandler->GetPlayerPos(m_winner) - m_objectHandler->GetPlayerDirection(m_winner)));
-		vec3 right = cross(vec, vec3(0, 1, 0));
-		m_scene->TranslateCameraPos(m_objectHandler->GetPlayerPos(m_winner) + -vec * 3.f + right * 3.f + vec3(0, -0.6, 0));
+		vec3 infront = normalize(m_objectHandler->GetPlayerPos(m_winner) - (m_objectHandler->GetPlayerPos(m_winner) - m_objectHandler->GetPlayerDirection(m_winner)));
+		vec3 right = cross(infront, vec3(0, 1, 0));
+
+		vec3 vec = m_objectHandler->GetPlayerPos(m_winner) + -infront * 3.f + right * 3.f + vec3(0, -0.6, 0);
+
+		m_scene->TranslateCameraPos(vec);
+
+		right = cross(normalize(m_objectHandler->GetPlayerPos(m_winner) - vec), vec3(0, 1, 0));
+
+		vec3 in = m_objectHandler->GetPlayerPos(m_winner) - (m_objectHandler->GetPlayerPos(m_winner) + right * 2.0f);
+
+
+		m_scene->AddParticleEffect(m_objectHandler->GetPlayerPos(m_winner) + right * 2.0f + vec3(0, -1, 0), vec3(NULL), vec3(NULL), 1, 0.9, vec3(0, 7, 0) + in + vec3(0, -1, 0), 10, 0.9, 0.04);
+		m_scene->AddParticleEffect(m_objectHandler->GetPlayerPos(m_winner) - right * 2.0f + vec3(0, -1, 0), vec3(NULL), vec3(NULL), 1, 0.9, vec3(0, 7, 0) - in + vec3(0, -1, 0), 10, 0.9, 0.04);
+
+		m_fireworkCooldown += dt;
+
+		if (m_fireworkCooldown >= 0.3)
+		{
+			vec3 behind = m_objectHandler->GetPlayerPos(m_winner) + (m_objectHandler->GetPlayerPos(m_winner) - vec) * 13.f + vec3(0, 26, 0);
+
+			vec3 x = normalize(in) * (static_cast <float> (rand()) / static_cast <float> (RAND_MAX)) * 60.f;
+			x = x * 2.f - normalize(in) * 60.f;
+
+			vec3 y = vec3(0, 1, 0) * (static_cast <float> (rand()) / static_cast <float> (RAND_MAX)) * 13.f;
+			y = y * 2.f - vec3(0, 1, 0) * 13.f;
+
+			vec3 randPos = x + y;
+
+			vec3 randCol;
+			randCol.x = (static_cast <float> (rand()) / static_cast <float> (RAND_MAX));
+			randCol.y = (static_cast <float> (rand()) / static_cast <float> (RAND_MAX));
+			randCol.z = (static_cast <float> (rand()) / static_cast <float> (RAND_MAX));
+
+			m_scene->AddParticleEffect(behind + randPos, randCol, vec3(0, 0, 0), 2, 6, vec3(1, 0, 0), 50, 0.8, 0.4);
+			m_fireworkCooldown = 0;
+		}
 	}
 	else
 	{
@@ -292,6 +380,7 @@ void Game::Render(float dt)
 	
 	m_objects = m_objectHandler->GetObjects();
 	m_carLight = m_objectHandler->GetLights();
+	m_objectHandler->RenderParticles();
 	m_scene->RenderLights(m_carLight);
 	m_scene->Render(m_objects, m_objectHandler->GetWorld(), m_cube, m_gameOver, m_winner, dt, m_objectHandler->GetLightsOut());
 //
@@ -320,7 +409,7 @@ void Game::Reset()
 	m_objectHandler->SetLightsOut(false);
 	//m_maxTime = 240.f;
 	m_timeSinceSpawn = 0;
-	// delete remeaning players so we can spawn them back att spawn positions
+	// delete remaning players so we can spawn them back att spawn positions
 	for (int i = 0; i < 4; i++)
 	{
 		
@@ -347,18 +436,9 @@ GLFWwindow* Game::GetWindow()
 
 void Game::MutliThread(GLFWwindow* window)
 {
-	bool shrink = true;
 	while (!glfwWindowShouldClose(window)) {
 		if (m_updateMap.load()) {
-			if (shrink)
-			{
-				shrink = false;
-
-			}
-			else {
-				shrink = true;
-			}
-			m_cube->Update(window, m_objectHandler->GetBomb(),shrink);
+			m_cube->Update(window, m_objectHandler->GetBomb());
 			m_updateMap.store(false);// = false;
 			m_mapUpdateReady.store(true);
 		}

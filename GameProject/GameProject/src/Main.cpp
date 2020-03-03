@@ -26,7 +26,7 @@ int main(void)
 		GAME->Update(_deltaTime);
 		GAME->Render(_deltaTime);
 	}
-	
+
 	t.join();
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
@@ -38,7 +38,7 @@ int main(void)
 
 	exit(0); //Used to be called in window destructor -> caused memory leaks. This fixes it.
 
-	_CrtDumpMemoryLeaks();
+	//_CrtDumpMemoryLeaks();
 	
 	return 0;
 }
