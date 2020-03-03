@@ -275,7 +275,7 @@ void Player::Update(float dt)
 
 	if (m_soundEngine && m_body->getLinearVelocity().y() < 0.3f && m_body->getLinearVelocity().y() > -0.3f)
 	{
-		m_soundEngine->setSoundVolume(m_body->getLinearVelocity().length() / 40 + 0.3f);
+		m_soundEngine->setSoundVolume(m_body->getLinearVelocity().length() / 25 + 0.3f);
 		m_sound->setPlaybackSpeed(m_body->getLinearVelocity().length() / 15 + 1.0f);
 	}
 	m_body->applyDamping(dt);
@@ -450,7 +450,7 @@ void Player::GivePower(int type)
 		removePower(m_powerType);
 	}
 	m_powerType = type;
-	m_powerDuration = 300.f;
+	m_powerDuration = 10.f;
 	m_powerActive = true;
 
 	float mass;

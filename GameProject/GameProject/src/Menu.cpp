@@ -1,7 +1,6 @@
 #include "Header Files/Menu.h"
 #include "Header Files/stb_image.h"
 
-
 Menu::Menu(Scene* scene, ObjectHandler* objHand)
 {
 	m_scene = scene;
@@ -11,6 +10,20 @@ Menu::Menu(Scene* scene, ObjectHandler* objHand)
 	m_kills.push_back(temp);
 	m_kills.push_back(temp);
 	m_kills.push_back(temp);
+
+	m_soundEngine = createIrrKlangDevice();
+
+	if (m_soundEngine)
+	{
+		m_soundEngine->setListenerPosition(vec3df(0, 18, 33), vec3df(0, -4, 3)); // Listener position, view direction
+		m_soundEngine->setDefault3DSoundMinDistance(1.0f);
+
+		m_menuSounds.push_back(m_soundEngine->addSoundSourceFromFile("src/Audio/UI - Toggle.mp3"));
+		m_menuSounds.push_back(m_soundEngine->addSoundSourceFromFile("src/Audio/UI - Select.mp3"));
+		m_menuSounds.push_back(m_soundEngine->addSoundSourceFromFile("src/Audio/UI - Back.mp3"));
+
+		m_soundEngine->setSoundVolume(0.65f);
+	}
 	
 	m_killers.push_back(temp);
 	m_killers.push_back(temp);
@@ -20,12 +33,21 @@ Menu::Menu(Scene* scene, ObjectHandler* objHand)
 
 Menu::~Menu()
 {
+	if (m_soundEngine)
+	{
+		for (uint i = 0; i < m_menuSounds.size(); i++)
+		{
+			m_menuSounds[i]->drop();
+		}
+		m_menuSounds.clear();
+	}
 }
 
 
 void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 {
 	GLFWgamepadstate state;
+
 	Window* w = m_scene->GetOurWindow();
 	//if (gameOver)
 	//{
@@ -36,6 +58,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		// TODO: maybe one should be able to access the pause menu from more places?
 		if (state.buttons[GLFW_GAMEPAD_BUTTON_START])
 		{
+			if (m_soundEngine)
+				m_soundEngine->play2D(m_menuSounds[1], false);
 			m_menu = ActiveMenu::pause;
 		}
 	}
@@ -83,6 +107,16 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		ImGui::SetNextWindowSize(ImVec2((float)width + 4, height + 4));
 		if (ImGui::Begin("##MainMenu", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_AlwaysAutoResize | ImGuiNavInput_Activate))
 		{
+			if (time - m_inputSeconds >= 0.3 && glfwGetGamepadState(0, &state))
+			{
+				if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_DOWN] || state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_UP])
+				{
+					if (m_soundEngine)
+						m_soundEngine->play2D(m_menuSounds[0], false);
+					m_inputSeconds = time;
+				}
+			}
+
 			float middle = (float)width * 0.5f;
 			ImGui::PushFont(m_scene->GetOurWindow()->m_fonts[1]);
 
@@ -94,6 +128,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 			ImGui::SetCursorPos(ImVec2(middle - 75, 500 - mainMenuButonHeight));
 			if (ImGui::Button("Start", ImVec2(200, 75)))
 			{
+				if (m_soundEngine)
+					m_soundEngine->play2D(m_menuSounds[1], false);
 				m_menu = ActiveMenu::select;
 				m_p1Seconds = time;
 				m_p2Seconds = time;
@@ -103,6 +139,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 			ImGui::SetCursorPos(ImVec2(middle - 75, 600 - mainMenuButonHeight));
 			if (ImGui::Button("Exit", ImVec2(200, 75)))
 			{
+				if (m_soundEngine)
+					m_soundEngine->play2D(m_menuSounds[2], false);
 				glfwSetWindowShouldClose(m_scene->GetWindow(), 1);
 			}
 			//ImGui::PopStyleVar(1); // pop all the styles
@@ -145,6 +183,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 			{
 				if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_RIGHT] && m_selected[0] == 0)
 				{
+					if (m_soundEngine)
+						m_soundEngine->play2D(m_menuSounds[0], false);
 					if ((m_p1ModelId + 1) <= m_scene->GetNumPlayerModels() - 1)
 					{
 						m_p1ModelId += 1;
@@ -161,7 +201,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				}
 				else if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_LEFT] && m_selected[0] == 0)
 				{
-
+					if (m_soundEngine)
+						m_soundEngine->play2D(m_menuSounds[0], false);
 					if ((m_p1ModelId - 1) >= 0)
 					{
 						m_p1ModelId -= 1;
@@ -178,11 +219,15 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				}
 				else if (state.buttons[GLFW_GAMEPAD_BUTTON_A])
 				{
+					if (m_soundEngine)
+						m_soundEngine->play2D(m_menuSounds[1], false);
 					m_selected[0] = 1;
 					m_p1Seconds = time;
 				}
 				else if (m_selected[0] == 1 && state.buttons[GLFW_GAMEPAD_BUTTON_B])
 				{
+					if (m_soundEngine)
+						m_soundEngine->play2D(m_menuSounds[2], false);
 					m_selected[0] = 0;
 				}
 
@@ -223,6 +268,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				{
 					if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_RIGHT] && m_selected[1] == 0)
 					{
+						if (m_soundEngine)
+							m_soundEngine->play2D(m_menuSounds[0], false);
 						if ((m_p2ModelId + 1) <= m_scene->GetNumPlayerModels() - 1)
 						{
 							m_p2ModelId += 1;
@@ -237,7 +284,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 					}
 					else if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_LEFT] && m_selected[1] == 0)
 					{
-
+						if (m_soundEngine)
+							m_soundEngine->play2D(m_menuSounds[0], false);
 						if ((m_p2ModelId - 1) >= 0)
 						{
 							m_p2ModelId -= 1;
@@ -253,10 +301,14 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 					}
 					else if (state.buttons[GLFW_GAMEPAD_BUTTON_A])
 					{
+						if (m_soundEngine)
+							m_soundEngine->play2D(m_menuSounds[1], false);
 						m_selected[1] = 1;
 					}
 					else if (m_selected[1] == 1 && state.buttons[GLFW_GAMEPAD_BUTTON_B])
 					{
+						if (m_soundEngine)
+							m_soundEngine->play2D(m_menuSounds[2], false);
 						m_selected[1] = 0;
 					}
 
@@ -282,6 +334,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 						ImGui::Text(" Join? Press \"A\"!");
 						if (state.buttons[GLFW_GAMEPAD_BUTTON_A])
 						{
+							if (m_soundEngine)
+								m_soundEngine->play2D(m_menuSounds[1], false);
 							m_p3Joined = true;
 							m_objHand->AddPlayer(vec3(-7, 6, 15), 2, 0, vec3(3, 0, 0), model);
 							m_p3Seconds = time;
@@ -315,6 +369,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 					{
 						if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_RIGHT] && m_selected[2] == 0)
 						{
+							if (m_soundEngine)
+								m_soundEngine->play2D(m_menuSounds[0], false);
 							if ((m_p3ModelId + 1) <= m_scene->GetNumPlayerModels() - 1)
 							{
 								m_p3ModelId += 1;
@@ -330,7 +386,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 						}
 						else if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_LEFT] && m_selected[2] == 0)
 						{
-
+							if (m_soundEngine)
+								m_soundEngine->play2D(m_menuSounds[0], false);
 							if ((m_p3ModelId - 1) >= 0)
 							{
 								m_p3ModelId -= 1;
@@ -346,10 +403,14 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 						}
 						else if (state.buttons[GLFW_GAMEPAD_BUTTON_A])
 						{
+							if (m_soundEngine)
+								m_soundEngine->play2D(m_menuSounds[1], false);
 							m_selected[2] = 1;
 						}
 						else if (m_selected[2] == 1 && state.buttons[GLFW_GAMEPAD_BUTTON_B])
 						{
+							if (m_soundEngine)
+								m_soundEngine->play2D(m_menuSounds[2], false);
 							m_selected[2] = 0;
 						}
 
@@ -377,6 +438,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 						ImGui::Text(" Join? Press \"A\"! ");
 						if (state.buttons[GLFW_GAMEPAD_BUTTON_A])
 						{
+							if (m_soundEngine)
+								m_soundEngine->play2D(m_menuSounds[1], false);
 							m_p4Joined = true;
 							m_objHand->AddPlayer(vec3(7, 6, 15), 3, 0, vec3(1, 1, 0), model);
 							m_p4Seconds = time;
@@ -411,6 +474,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 					{
 						if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_RIGHT] && m_selected[3] == 0)
 						{
+							if (m_soundEngine)
+								m_soundEngine->play2D(m_menuSounds[0], false);
 							if ((m_p4ModelId + 1) <= m_scene->GetNumPlayerModels() - 1)
 							{
 								m_p4ModelId += 1;
@@ -426,7 +491,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 						}
 						else if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_LEFT] && m_selected[3] == 0)
 						{
-
+							if (m_soundEngine)
+								m_soundEngine->play2D(m_menuSounds[0], false);
 							if ((m_p4ModelId - 1) >= 0)
 							{
 								m_p4ModelId -= 1;
@@ -442,10 +508,14 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 						}
 						else if (state.buttons[GLFW_GAMEPAD_BUTTON_A])
 						{
+							if (m_soundEngine)
+								m_soundEngine->play2D(m_menuSounds[1], false);
 							m_selected[3] = 1;
 						}
 						else if (m_selected[3] == 1 && state.buttons[GLFW_GAMEPAD_BUTTON_B])
 						{
+							if (m_soundEngine)
+								m_soundEngine->play2D(m_menuSounds[2], false);
 							m_selected[3] = 0;
 						}
 
@@ -485,8 +555,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		{
 			if (m_selected[0] == 0)
 			{
-				ImGui::Text("\t\t\t <  Which level do you want to play? : %d  > ", m_mapID);
-				ImGui::Text("\t\t\t\t Press \"B\" to Select Vehicles Again.. ");
+				ImGui::Text("\t\t\t\t\t\t\t\t\t\t\t\t\t\t  <  Level : %d  > ", m_mapID);
+				ImGui::Text("\t\t\t\t\t\t\t Press \"B\" to Select Vehicles Again ");
 			}
 			else if (m_selected[0] == 1)
 			{
@@ -500,10 +570,12 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				m_selected[0] = 0;
 			}
 
-			if (time - m_p1Seconds >= 0.7 && (glfwGetGamepadState(0, &state)))
+			if (time - m_p1Seconds >= 0.3 && (glfwGetGamepadState(0, &state)))
 			{
 				if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_RIGHT])
 				{
+					if (m_soundEngine)
+						m_soundEngine->play2D(m_menuSounds[0], false);
 					if (m_selected[0] == 0)
 					{
 						if (m_mapID < 6)
@@ -527,7 +599,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				}
 				else if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_LEFT])
 				{
-
+					if (m_soundEngine)
+						m_soundEngine->play2D(m_menuSounds[0], false);
 					if (m_selected[0] == 0)
 					{
 						if (m_mapID <= 6 && m_mapID > 0)
@@ -549,6 +622,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				}
 				else if (state.buttons[GLFW_GAMEPAD_BUTTON_A] && m_selected[0] <= 2)
 				{
+					if (m_soundEngine)
+						m_soundEngine->play2D(m_menuSounds[1], false);
 					m_selected[0] += 1;
 					m_objHand->GetCube()->SetCurrentLevel(m_mapID);
 					m_updateMap = true;
@@ -557,6 +632,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				}
 				else if (state.buttons[GLFW_GAMEPAD_BUTTON_B] && m_selected[0] > -1)
 				{
+					if (m_soundEngine)
+						m_soundEngine->play2D(m_menuSounds[2], false);
 					m_selected[0] -= 1;
 					m_p1Seconds = time;
 
@@ -582,15 +659,15 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		{
 			if (m_selected[0] == 0)
 			{
-				ImGui::Text("\t\t\t <  How Many Lives Should Players Have? : %d  > ", m_maxLives);
-				ImGui::Text("\t\t\t\t Press \"B\" to Select Level Again.. ");
+				ImGui::Text("\t\t\t\t\t\t\t\t\t\t\t\t\t\t <  Lives : %d  > ", m_maxLives);
+				ImGui::Text("\t\t\t\t\t\t\t Press \"B\" to Select Level Again ");
 			}
 			else if (m_selected[0] == 1)
 			{
 				int minutes = m_maxTime / 60;
 				int seconds = m_maxTime % 60;
-				ImGui::Text("\t\t\t <  How Long should the Match be? : %dm : %ds > ", minutes, seconds);
-				ImGui::Text("\t\t\t\t Press \"B\" to Select Lives Again.. ");
+				ImGui::Text("\t\t\t\t\t\t\t\t\t\t\t\t\t <  Time : %dm : %ds > ", minutes, seconds);
+				ImGui::Text("\t\t\t\t\t\t\t Press \"B\" to Select Lives Again ");
 			}
 			else if (m_selected[0] == 2)
 			{
@@ -608,6 +685,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 			{
 				if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_RIGHT])
 				{
+					if (m_soundEngine)
+						m_soundEngine->play2D(m_menuSounds[0], false);
 					if (m_selected[0] == 0)
 					{
 						if (m_maxLives < 10)
@@ -639,7 +718,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				}
 				else if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_LEFT])
 				{
-
+					if (m_soundEngine)
+						m_soundEngine->play2D(m_menuSounds[0], false);
 					if (m_selected[0] == 0)
 					{
 						if (m_maxLives <= 10 && m_maxLives > 1)
@@ -671,11 +751,15 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				}
 				else if (state.buttons[GLFW_GAMEPAD_BUTTON_A] && m_selected[0] <=2)
 				{
+					if (m_soundEngine)
+						m_soundEngine->play2D(m_menuSounds[1], false);
 					m_selected[0] += 1;
 					m_p1Seconds = time;
 				}
 				else if (state.buttons[GLFW_GAMEPAD_BUTTON_B] && m_selected[0] > -1)
 				{
+					if (m_soundEngine)
+						m_soundEngine->play2D(m_menuSounds[2], false);
 					m_selected[0] -= 1;
 					m_p1Seconds = time;
 				}
@@ -692,6 +776,15 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		ImGui::SetNextWindowSize(ImVec2((float)width / 3 + pauseMenuWidth, height / 4 + 150 + pauseMenuHeight));
 		if (ImGui::Begin("##PauseMenu", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiNavInput_Activate))
 		{
+			if (time - m_inputSeconds >= 0.3 && glfwGetGamepadState(0, &state))
+			{
+				if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_DOWN] || state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_UP])
+				{
+					if (m_soundEngine)
+						m_soundEngine->play2D(m_menuSounds[0], false);
+					m_inputSeconds = time;
+				}
+			}
 
 			float middle = (float)width * 0.5f;
 			ImGui::SetCursorPos(ImVec2(((float)width / 3) / 3 - 25, 15));
@@ -700,12 +793,16 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 			ImGui::SetCursorPos(ImVec2(((float)width / 3) / 3, 115));
 			if (ImGui::Button("Resume", ImVec2(200, 75)))
 			{
+				if (m_soundEngine)
+					m_soundEngine->play2D(m_menuSounds[1], false);
 				m_menu = ActiveMenu::playerHud;
 			}
 			ImGui::SetCursorPos(ImVec2(((float)width / 3) / 3 - 100, 215));
 			if (ImGui::Button("Main Menu", ImVec2(400, 75)))
 			{
 				// resettar banan m.m. och laddar start menyn
+				if (m_soundEngine)
+					m_soundEngine->play2D(m_menuSounds[1], false);
 				m_menu = ActiveMenu::start;
 				m_reset = true;
 				m_p3Joined = false;
@@ -730,6 +827,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 			ImGui::SetCursorPos(ImVec2(((float)width / 3) / 3, 315));
 			if (ImGui::Button("Exit", ImVec2(200, 75)))
 			{
+				if (m_soundEngine)
+					m_soundEngine->play2D(m_menuSounds[2], false);
 				glfwSetWindowShouldClose(m_scene->GetWindow(), 1);
 			}
 			ImGui::PopStyleVar(1); // pop all the styles
@@ -743,6 +842,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 15);
 		ImGui::SetNextWindowPos(ImVec2((float)width / 3 - (pauseMenuWidth / 2), height / 4 - (pauseMenuHeight / 2)));
 		ImGui::SetNextWindowSize(ImVec2((float)width / 3 + pauseMenuWidth, height / 4 + 150 + pauseMenuHeight));
+		ImGui::SetNextWindowBgAlpha(0.9);
 		if (ImGui::Begin("##RestartMenu", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiNavInput_Activate))
 		{
 
@@ -753,6 +853,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 			ImGui::SetCursorPos(ImVec2(((float)width / 3) / 3 - 25, 115));
 			if (ImGui::Button("Restart", ImVec2(250, 75)))
 			{
+				if (m_soundEngine)
+					m_soundEngine->play2D(m_menuSounds[1], false);
 				m_menu = ActiveMenu::playerHud;
 
 				m_reset = true;
@@ -785,6 +887,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 			if (ImGui::Button("Main Menu", ImVec2(400, 75)))
 			{
 				// resettar banan m.m. och laddar start menyn
+				if (m_soundEngine)
+					m_soundEngine->play2D(m_menuSounds[1], false);
 				m_menu = ActiveMenu::start;
 				m_reset = true;
 				m_p3Joined = false;
@@ -809,6 +913,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 			ImGui::SetCursorPos(ImVec2(((float)width / 3) / 3, 315));
 			if (ImGui::Button("Exit", ImVec2(200, 75)))
 			{
+				if (m_soundEngine)
+					m_soundEngine->play2D(m_menuSounds[2], false);
 				glfwSetWindowShouldClose(m_scene->GetWindow(), 1);
 			}
 			ImGui::PopStyleVar(1); // pop all the styles
@@ -946,7 +1052,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				{
 					ImGui::SameLine();
 				}
-				ImGui::Text("\tP%d, ", (m_killers[m_winOrder[1]]).at(i) + 1);
+				ImGui::Text("\tP%d ", (m_killers[m_winOrder[1]]).at(i) + 1);
 			}
 			ImGui::Separator();
 			ImGui::Text("Collisions: \t%d ", m_timesCollided[m_winOrder[1]]);
@@ -992,7 +1098,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 					{
 						ImGui::SameLine();
 					}
-					ImGui::Text("\tP%d, ", (m_killers[m_winOrder[2]]).at(i) + 1);
+					ImGui::Text("\tP%d ", (m_killers[m_winOrder[2]]).at(i) + 1);
 				}
 				ImGui::Separator();
 				ImGui::Text("Collisions: \t%d ", m_timesCollided[m_winOrder[2]]);
@@ -1039,7 +1145,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 					{
 						ImGui::SameLine();
 					}
-					ImGui::Text("\tP%d, ", (m_killers[m_winOrder[3]]).at(i) + 1);
+					ImGui::Text("\tP%d ", (m_killers[m_winOrder[3]]).at(i) + 1);
 				}
 				ImGui::Separator();
 				ImGui::Text("Collisions: \t%d ", m_timesCollided[m_winOrder[3]]);
@@ -1216,6 +1322,22 @@ bool Menu::RestartMenuActive()
 		return false;
 }
 
+bool Menu::WinMenuActive()
+{
+	if (m_menu == ActiveMenu::win)
+		return true;
+	else
+		return false;
+}
+
+bool Menu::StatsMenuActive()
+{
+	if (m_menu == ActiveMenu::stats)
+		return true;
+	else
+		return false;
+}
+
 int Menu::GetMaxTime()
 {
 	return m_maxTime;
@@ -1280,6 +1402,7 @@ void Menu::ResetReset()
 
 		m_lastCollied[i] = -1;
 		m_timesCollided[i] = 0;
+		m_points[i] = -1;
 	}
 
 	m_deathOrderID.clear();
@@ -1368,9 +1491,39 @@ void Menu::RankPlayers()
 		}
 	}
 
+	// give points for kills and lives left
+	for (int i = 0; i < m_objHand->GetNumPlayers(); i++)
+	{
+		m_points[m_objHand->GetPlayerControllerID(i)] += m_kills[m_objHand->GetPlayerControllerID(i)].size() * 2;
+		m_points[m_objHand->GetPlayerControllerID(i)] += m_objHand->GetPlayerLives(i);
+		cout << "points for Player" << m_objHand->GetPlayerControllerID(i) + 1 << " : " << m_points[m_objHand->GetPlayerControllerID(i)] << endl;
+	}
 
+	
 	int livesForPlayerWithIndex[4] = { -1, -1 , -1, -1 };
 	int newLifeId[4] = { -1, -1 , -1, -1 };
+	int tempLives = -1;
+	int newI = -1;
+
+	for (int j = 0; j < m_objHand->GetNumPlayers(); j++)
+	{
+		int tempLives = -1;
+		for (int i = 0; i < m_objHand->GetNumPlayers(); i++)
+		{
+			if (tempLives < m_points[m_objHand->GetPlayerControllerID(i)] && i != livesForPlayerWithIndex[0] && i != livesForPlayerWithIndex[1] && i != livesForPlayerWithIndex[2] && i != livesForPlayerWithIndex[3])
+			{
+				tempLives = m_points[m_objHand->GetPlayerControllerID(i)];
+				newI = i;
+				livesForPlayerWithIndex[j] = i;
+			}
+		}
+		newLifeId[j] = m_objHand->GetPlayerControllerID(newI);
+	}
+
+
+	/*
+
+
 	// getting the amount of lives the remaining players have
 	if (m_deathOrderID.size() == 0)
 	{
@@ -1388,10 +1541,23 @@ void Menu::RankPlayers()
 
 			for (int i = 0; i < 4; i++)
 			{
-				if (tempLives < livesForPlayerWithIndex[i] && i != newI[0] && i != newI[1] && i != newI[2] && i != newI[3])
+				if (tempLives <= livesForPlayerWithIndex[i] && i != newI[0] && i != newI[1] && i != newI[2] && i != newI[3])
 				{
-					tempLives = livesForPlayerWithIndex[i];
-					newI[j] = i;
+					// if same amount of lives then check how many kills they've got
+					if (tempLives == livesForPlayerWithIndex[i])
+					{
+						// should not give a out of bounds error since the first time it can never have the same amount of lives as -1
+						if (m_kills[m_objHand->GetPlayerControllerID(newI[j])] < m_kills[m_objHand->GetPlayerControllerID(i)])
+						{
+							newI[j] = i;
+						}
+						// no need to change tempLives since they have the same amount of lives
+					}
+					else
+					{
+						tempLives = livesForPlayerWithIndex[i];
+						newI[j] = i;
+					}
 				}
 			}
 			newLifeId[j] = m_objHand->GetPlayerControllerIDBloo(newI[j], 1);
@@ -1416,10 +1582,23 @@ void Menu::RankPlayers()
 
 			for (int i = 0; i < 3; i++)
 			{
-				if (tempLives < livesForPlayerWithIndex[i] && i != newI[0] && i != newI[1] && i != newI[2] && i != newI[3])
+				if (tempLives <= livesForPlayerWithIndex[i] && i != newI[0] && i != newI[1] && i != newI[2] && i != newI[3])
 				{
-					tempLives = livesForPlayerWithIndex[i];
-					newI[j] = i;
+					// if same amount of lives then check how many kills they've got
+					if (tempLives == livesForPlayerWithIndex[i])
+					{
+						// should not give a out of bounds error since the first time it can never have the same amount of lives as -1
+						if (m_kills[m_objHand->GetPlayerControllerID(newI[j])] < m_kills[m_objHand->GetPlayerControllerID(i)])
+						{
+							newI[j] = i;
+						}
+						// no need to change tempLives since they have the same amount of lives
+					}
+					else
+					{
+						tempLives = livesForPlayerWithIndex[i];
+						newI[j] = i;
+					}
 				}
 			}
 			newLifeId[j] = m_objHand->GetPlayerControllerIDBloo(newI[j], 3);
@@ -1443,25 +1622,39 @@ void Menu::RankPlayers()
 
 			for (int i = 0; i < 2; i++)
 			{
-				if (tempLives < livesForPlayerWithIndex[i] && i != newI[0] && i != newI[1] && i != newI[2] && i != newI[3])
+				if (tempLives <= livesForPlayerWithIndex[i] && i != newI[0] && i != newI[1] && i != newI[2] && i != newI[3])
 				{
-					tempLives = livesForPlayerWithIndex[i];
-					newI[j] = i;
+					// if same amount of lives then check how many kills they've got
+					if (tempLives == livesForPlayerWithIndex[i])
+					{
+						// should not give a out of bounds error since the first time it can never have the same amount of lives as -1
+						if (m_kills[m_objHand->GetPlayerControllerID(newI[j])] < m_kills[m_objHand->GetPlayerControllerID(i)])
+						{
+							newI[j] = i;
+						}
+						// no need to change tempLives since they have the same amount of lives
+					}
+					else
+					{
+						tempLives = livesForPlayerWithIndex[i];
+						newI[j] = i;
+					}
 				}
 			}
 			newLifeId[j] = m_objHand->GetPlayerControllerIDBloo(newI[j], 6);
 		}
-	}
+	}// if deathOrder.size() == 3 then thers only one left alive so choose it
 	else if (m_deathOrderID.size() == 3)
 	{
 			newLifeId[0] = m_objHand->GetPlayerControllerIDBloo(0, 10);
 	}
-
+	*/
 	//	adding the deathOrder and remaning lives to the same list in order to get the final rankings
 	for (int i = 0; i < 4; i++)
 	{
 		if (newLifeId[i] != -1)
 		{
+			cout << "# " << i << " : " << newLifeId[i] << endl;
 			m_winOrder.push_back(newLifeId[i]);
 		}
 	}

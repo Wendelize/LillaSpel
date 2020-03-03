@@ -384,6 +384,7 @@ void ObjectHandler::RemovePowerUp(int index)
 			m_structs.at(i) = new ObjectInfo(mat4(0), 1, 1, vec3(0), false);
 		}
 	}
+
 	delete temp;
 
 	delete m_powerUps.at(index)->getObject()->getMotionState();
@@ -448,6 +449,21 @@ int ObjectHandler::GetPlayerControllerIDBloo(int index, int bloo)
 		cout << "invalid index send to getPlayerControlerID! index : " << index << " from int : " << bloo << endl;
 	}
 	return m_players[index]->GetControllerID();
+}
+
+bool ObjectHandler::GetExplosion()
+{
+	return m_cube->GetExplosion();
+}
+
+void ObjectHandler::SetExplosion(bool b)
+{
+	m_cube->SetExplosion(b);
+}
+
+vec3 ObjectHandler::GetExplosionPosition()
+{
+	return m_cube->GetExplosionPosition();
 }
 
 void ObjectHandler::SetPlayerControllerID(int index, int id)

@@ -339,6 +339,16 @@ MarchingCubes::MarchingCubes()
 	BuildMesh();
 
 	CreatePhysics();
+
+	m_bombEngine = createIrrKlangDevice();
+
+	if (m_bombEngine)
+	{
+		m_bombSounds.push_back(m_bombEngine->addSoundSourceFromFile("src/Audio/Player - Crash Small.mp3"));
+		m_bombSounds.push_back(m_bombEngine->addSoundSourceFromFile("src/Audio/Player - Crash Medium.mp3"));
+		m_bombSounds.push_back(m_bombEngine->addSoundSourceFromFile("src/Audio/Player - Crash Biggest.mp3"));
+		m_bombEngine->setSoundVolume(0.7f);
+	}
 }
 
 MarchingCubes::~MarchingCubes()
@@ -348,6 +358,15 @@ MarchingCubes::~MarchingCubes()
 	delete m_newPlatformShape;
 	delete m_transform;
 	delete m_btTransform;
+
+	if (m_bombEngine)
+	{
+		for (uint i = 0; i < m_bombSounds.size(); i++)
+		{
+			m_bombSounds[i]->drop();
+		}
+		m_bombSounds.clear();
+	}
 }
 
 void MarchingCubes::Init()
@@ -754,6 +773,21 @@ void MarchingCubes::MapUpdate()
 	m_body = new btRigidBody(rbInfo);
 }
 
+bool MarchingCubes::GetExplosion()
+{
+	return m_explosion;
+}
+
+void MarchingCubes::SetExplosion(bool b)
+{
+	m_explosion = b;
+}
+
+vec3 MarchingCubes::GetExplosionPosition()
+{
+	return m_explosionPosition;
+}
+
 vector<VertexData> MarchingCubes::GetVertices()
 {
 	return m_vertices;
@@ -832,6 +866,14 @@ void MarchingCubes::MakeHole(vec3 position)
 			}
 		}
 	}
+
+	int randomNumber = rand() % 3;
+	if (m_bombEngine)
+	{
+		m_bombEngine->play2D(m_bombSounds[randomNumber], false);
+	}
+	m_explosion = true;
+	m_explosionPosition = position;
 }
 
 void MarchingCubes::UpdateHoles()

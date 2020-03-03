@@ -85,6 +85,14 @@ void Game::Update(float dt)
 {
 	DynamicCamera(dt);
 
+	if (m_objectHandler->GetExplosion())
+	{
+		vec3 pos = m_objectHandler->GetExplosionPosition();
+		m_scene->ShakeCamera(0.4f, 1);
+		m_scene->AddParticleEffect(pos, vec3(0.01, 0, 0), vec3(1, 0, 0), 1, 6, vec3(0, 1, 0), 50, 1.2, 0.5);
+		m_objectHandler->SetExplosion(false);
+	}
+
 	SHORT key = GetAsyncKeyState(VK_LSHIFT);
 	const int KEY_UP = 0x1;
 	if ((key & KEY_UP) == KEY_UP)
@@ -181,7 +189,7 @@ void Game::Update(float dt)
 		{
 			if (m_soundEngine)
 			{
-				m_music->setPlaybackSpeed(1.4);
+				m_music->setPlaybackSpeed(1.2);
 				m_fastMusic = true;
 			}
 
@@ -233,6 +241,12 @@ void Game::Update(float dt)
 		if (m_objectHandler->GetCollisionHappened())
 		{
 			m_menu->CollisionTracking();
+			int aId = m_objectHandler->GetACollisionId();
+			int bId = m_objectHandler->GetBCollisionId();
+			vec3 pos = m_objectHandler->GetPlayerPos(aId);
+			pos += m_objectHandler->GetPlayerPos(bId);
+
+			m_scene ->AddParticleEffect(pos / 2.f, vec3(1, 0, 0), vec3(0, 1, 0), 1, 6, vec3(0, 1, 0), 200, 0.5, 0.15);
 		}
 
 		if (m_objectHandler->GetDeath())
@@ -242,13 +256,21 @@ void Game::Update(float dt)
 	}
 }
 
+void Game::UpdateParticles(float dt)
+{
+	if (m_gameOver)
+	{
+		m_scene->AddParticleEffect(m_objectHandler->GetPlayerPos(m_winner), vec3(NULL), vec3(NULL), 5, 10, vec3(0, 5, 0), 10, 1, 0.2);
+	}
+}
+
 void Game::DynamicCamera(float dt)
 {
 	vec3 focusPoint = vec3(0);
 	vec3 offset = vec3(0, -6, 0);
 	int numPlayers = m_objectHandler->GetNumPlayers();
 
-	if (m_menu->RestartMenuActive())
+	if (m_menu->WinMenuActive() || m_menu->RestartMenuActive() || m_menu->StatsMenuActive())
 	{
 		focusPoint = m_objectHandler->GetPlayerPos(m_winner) + vec3(0, 0.5, 0);
 	}
@@ -267,11 +289,45 @@ void Game::DynamicCamera(float dt)
 	if (dt < 1.f)
 		m_scene->SetCameraFocus(focusPoint);
 
-	if (m_menu->RestartMenuActive())
+	if (m_menu->WinMenuActive() || m_menu->RestartMenuActive() || m_menu->StatsMenuActive())
 	{
-		vec3 vec = normalize(m_objectHandler->GetPlayerPos(m_winner) - (m_objectHandler->GetPlayerPos(m_winner) - m_objectHandler->GetPlayerDirection(m_winner)));
-		vec3 right = cross(vec, vec3(0, 1, 0));
-		m_scene->TranslateCameraPos(m_objectHandler->GetPlayerPos(m_winner) + -vec * 3.f + right * 3.f + vec3(0, -0.6, 0));
+		vec3 infront = normalize(m_objectHandler->GetPlayerPos(m_winner) - (m_objectHandler->GetPlayerPos(m_winner) - m_objectHandler->GetPlayerDirection(m_winner)));
+		vec3 right = cross(infront, vec3(0, 1, 0));
+
+		vec3 vec = m_objectHandler->GetPlayerPos(m_winner) + -infront * 3.f + right * 3.f + vec3(0, -0.6, 0);
+
+		m_scene->TranslateCameraPos(vec);
+
+		right = cross(normalize(m_objectHandler->GetPlayerPos(m_winner) - vec), vec3(0, 1, 0));
+
+		vec3 in = m_objectHandler->GetPlayerPos(m_winner) - (m_objectHandler->GetPlayerPos(m_winner) + right * 2.0f);
+
+
+		m_scene->AddParticleEffect(m_objectHandler->GetPlayerPos(m_winner) + right * 2.0f + vec3(0, -1, 0), vec3(NULL), vec3(NULL), 1, 0.9, vec3(0, 7, 0) + in + vec3(0, -1, 0), 10, 0.9, 0.04);
+		m_scene->AddParticleEffect(m_objectHandler->GetPlayerPos(m_winner) - right * 2.0f + vec3(0, -1, 0), vec3(NULL), vec3(NULL), 1, 0.9, vec3(0, 7, 0) - in + vec3(0, -1, 0), 10, 0.9, 0.04);
+
+		m_fireworkCooldown += dt;
+
+		if (m_fireworkCooldown >= 0.3)
+		{
+			vec3 behind = m_objectHandler->GetPlayerPos(m_winner) + (m_objectHandler->GetPlayerPos(m_winner) - vec) * 13.f + vec3(0, 26, 0);
+
+			vec3 x = normalize(in) * (static_cast <float> (rand()) / static_cast <float> (RAND_MAX)) * 60.f;
+			x = x * 2.f - normalize(in) * 60.f;
+
+			vec3 y = vec3(0, 1, 0) * (static_cast <float> (rand()) / static_cast <float> (RAND_MAX)) * 13.f;
+			y = y * 2.f - vec3(0, 1, 0) * 13.f;
+
+			vec3 randPos = x + y;
+
+			vec3 randCol;
+			randCol.x = (static_cast <float> (rand()) / static_cast <float> (RAND_MAX));
+			randCol.y = (static_cast <float> (rand()) / static_cast <float> (RAND_MAX));
+			randCol.z = (static_cast <float> (rand()) / static_cast <float> (RAND_MAX));
+
+			m_scene->AddParticleEffect(behind + randPos, randCol, vec3(0, 0, 0), 2, 6, vec3(1, 0, 0), 50, 0.8, 0.4);
+			m_fireworkCooldown = 0;
+		}
 	}
 	else
 	{

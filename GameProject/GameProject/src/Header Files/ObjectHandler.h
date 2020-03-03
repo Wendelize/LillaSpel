@@ -97,6 +97,10 @@ public:
 	// TEMP!! TODO: REMOVE!!!!
 	int GetPlayerControllerIDBloo(int index, int bloo);
 
+	bool GetExplosion();
+	void SetExplosion(bool b);
+	vec3 GetExplosionPosition();
+
 	void StopAllSound();
 	vector<ObjectInfo*> GetObjects();
 	vector<Light*> GetLights();

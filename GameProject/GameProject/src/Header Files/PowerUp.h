@@ -21,7 +21,6 @@ private:
 	btVector3 m_pos;
 	btDefaultMotionState* m_motionState;
 
-
 public:
 	PowerUp(int spawn, btVector3 pos = btVector3(0, 1, 0), int type = 0, float duration = 10.f);
 	~PowerUp();

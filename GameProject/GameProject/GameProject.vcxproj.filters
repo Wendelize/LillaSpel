@@ -204,52 +204,52 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Shaders\ShadowFS.glsl">
-      <Filter>Shader</Filter>
+      <Filter>Src\Shader</Filter>
     </None>
     <None Include="src\Shaders\ShadowVS.glsl">
-      <Filter>Shader</Filter>
+      <Filter>Src\Shader</Filter>
     </None>
     <None Include="src\Shaders\GaussianBlurFS.glsl">
-      <Filter>Shader</Filter>
+      <Filter>Src\Shader</Filter>
     </None>
     <None Include="src\Shaders\GaussianBlurVS.glsl">
-      <Filter>Shader</Filter>
+      <Filter>Src\Shader</Filter>
     </None>
     <None Include="src\Shaders\BloomFS.glsl">
-      <Filter>Shader</Filter>
+      <Filter>Src\Shader</Filter>
     </None>
     <None Include="src\Shaders\BloomVS.glsl">
-      <Filter>Shader</Filter>
+      <Filter>Src\Shader</Filter>
     </None>
     <None Include="src\Shaders\SceneFS.glsl">
-      <Filter>Shader</Filter>
+      <Filter>Src\Shader</Filter>
     </None>
     <None Include="src\Shaders\SceneVS.glsl">
-      <Filter>Shader</Filter>
+      <Filter>Src\Shader</Filter>
     </None>
     <None Include="src\Shaders\SkyboxFS.glsl">
-      <Filter>Shader</Filter>
+      <Filter>Src\Shader</Filter>
     </None>
     <None Include="src\Shaders\SkyboxVS.glsl">
-      <Filter>Shader</Filter>
+      <Filter>Src\Shader</Filter>
     </None>
     <None Include="src\Shaders\ParticleFS.glsl">
-      <Filter>Shader</Filter>
+      <Filter>Src\Shader</Filter>
     </None>
     <None Include="src\Shaders\ParticleVS.glsl">
-      <Filter>Shader</Filter>
+      <Filter>Src\Shader</Filter>
     </None>
     <None Include="src\Shaders\SkyDomeFS.glsl">
-      <Filter>Shader</Filter>
+      <Filter>Src\Shader</Filter>
     </None>
     <None Include="src\Shaders\SkyDomeVS.glsl">
-      <Filter>Shader</Filter>
+      <Filter>Src\Shader</Filter>
     </None>
     <None Include="src\Shaders\SkyPlaneFS.glsl">
-      <Filter>Shader</Filter>
+      <Filter>Src\Shader</Filter>
     </None>
     <None Include="src\Shaders\SkyPlaneVS.glsl">
-      <Filter>Shader</Filter>
+      <Filter>Src\Shader</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -259,11 +259,11 @@
     <Filter Include="Src">
       <UniqueIdentifier>{dac914e8-e606-4861-9c55-91326296e66d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Shader">
-      <UniqueIdentifier>{7a8efa00-ef33-410f-9022-e3aef01fe013}</UniqueIdentifier>
-    </Filter>
     <Filter Include="IMGUI">
       <UniqueIdentifier>{4f5c5f64-7647-40a7-8821-ed53f58d2dbb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Shader">
+      <UniqueIdentifier>{7a8efa00-ef33-410f-9022-e3aef01fe013}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

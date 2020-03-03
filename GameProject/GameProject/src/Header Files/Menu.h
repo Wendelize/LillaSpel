@@ -26,12 +26,16 @@ public:
 	void SetWinner(int playerNum);
 	bool SelectMenuActive();
 	bool RestartMenuActive();
+	bool WinMenuActive();
+	bool StatsMenuActive();
 	int GetMaxTime();
 	void LoadMenuPic();
 	bool Pause();
 	bool Reset();
 	void ResetReset();
 	void SetMapUpdate(bool map);
+	ISoundEngine* m_soundEngine;
+	vector<ISoundSource*> m_menuSounds;
 	// for statsMenu 
 	void CollisionTracking();
 	void KillCount();
@@ -57,6 +61,7 @@ private:
 	vector<vector<int>> m_killers;	// who killed you
 	vector<int> m_deathOrderID;		// ID for order players died in 
 	vector<int> m_winOrder;			// ID for the final ranking
+	int m_points[4] = { 0, 0, 0, 0 };
 
 	int m_selected[4] = { 0, 0, 0, 0 };
 	int m_continue = 0;
@@ -76,11 +81,12 @@ private:
 	bool m_p3Joined = false;
 	vec3 m_p3Col = vec3(3, 0, 0);
 
-
 	int m_p4ModelId = -1;
 	double m_p4Seconds = 1;
 	bool m_p4Joined = false;
 	vec3 m_p4Col = vec3(1, 1, 0);
+
+	double m_inputSeconds = 1;
 	
 	ActiveMenu m_menu = ActiveMenu::start;
 
