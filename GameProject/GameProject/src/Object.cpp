@@ -8,9 +8,9 @@ Object::Object(btVector3 pos, int type, Model* model)
 	m_btTransform->setIdentity();
 	m_btTransform->setOrigin(pos);
 	m_transform->SetScale(1, 1, 1);
-
+	m_scale = 1.0f;
 	btVector3 localInertia(0, 0, 0);
-	float mass = 1000.f;
+	float mass = 0.0f;
 	//m_shape = new btBoxShape(btVector3(1.f, 1.f, 1.f));
 	m_motionState = new btDefaultMotionState(*m_btTransform);
 	vector<btVector3> points;
@@ -57,19 +57,44 @@ ObjectInfo* Object::GetObjectInfo()
 		tempScalar[4], tempScalar[5], tempScalar[6], tempScalar[7]
 	, tempScalar[8], tempScalar[9], tempScalar[10], tempScalar[11]
 	, tempScalar[12], tempScalar[13], tempScalar[14], tempScalar[15]);
-	m_info = new ObjectInfo(temp, m_model, 3, m_color, true);
+	m_info = new ObjectInfo(scale(temp, vec3(m_scale)), m_model, 3, m_color, true);
 	return m_info;
 }
 
-btRigidBody* Object::getObject()
+btRigidBody* Object::GetObject()
 {
 	return m_body;
 }
 
-void Object::update()
+void Object::Update()
 {
 	btVector3 moveVector = m_body->getWorldTransform().getOrigin() - m_currentPos;
 	m_transform->Translate(vec3(moveVector.x(), moveVector.y(), moveVector.z()));
 	m_currentPos = m_body->getWorldTransform().getOrigin();
 
 }
+
+void Object::SetScale(float scale)
+{
+	m_physicsMesh->setLocalScaling(btVector3(scale,scale,scale));
+	m_scale = scale;
+}
+
+float Object::GetScale()
+{
+	return m_physicsMesh->getLocalScaling().x();
+}
+
+void Object::SetRotation(float degrees)
+{
+	btQuaternion quat = m_body->getWorldTransform().getRotation();
+	btTransform trans = m_body->getWorldTransform();
+	quat.setRotation(btVector3(0,1,0), quat.getAngle() + degrees);
+	
+	trans.setRotation(quat);
+
+	m_body->setCenterOfMassTransform(trans);
+
+}
+
+

@@ -139,6 +139,14 @@ void ObjectHandler::Update(float dt)
 	int randomNumber = rand() % NRDEATHSOUNDS;
 
 	m_dynamicsWorld->stepSimulation(dt, 10);
+	
+	m_scaleTimer += dt;
+
+	if (m_scaleTimer > 0.3f) {
+		m_objects.at(0)->SetScale(m_objects.at(0)->GetScale() + 0.01f);
+		m_objects.at(0)->SetRotation((3.14 * 2)/360);
+		m_scaleTimer = 0;
+	}
 
 	CheckPowerUpCollision();
 	CheckCollisionCars(dt);
@@ -179,7 +187,7 @@ void ObjectHandler::Update(float dt)
 		int isObject = i - nrOfPlatforms - m_powerUps.size() - m_players.size();
 		
 		if (isObject >= 0) {
-			m_objects.at(isObject)->update();
+			m_objects.at(isObject)->Update();
 		}
 		if (isPowerUp >= 0) {
 			if (m_powerUps[isPowerUp]->update(dt)) {
@@ -291,14 +299,14 @@ void ObjectHandler::AddPlayer(vec3 pos, int controllerID, int modelId, vec3 colo
 void ObjectHandler::AddObject(vec3 pos, int modelId, Model* model)
 {
 	m_objects.push_back(new Object(btVector3(pos.x, pos.y, pos.z), modelId, model));
-	m_dynamicsWorld->addRigidBody(m_objects.back()->getObject());
+	m_dynamicsWorld->addRigidBody(m_objects.back()->GetObject());
 
 }
 
 void ObjectHandler::RemoveObject(int index)
 {
-	m_dynamicsWorld->removeCollisionObject(m_objects.at(index)->getObject());
-	btRigidBody* body = m_objects.at(index)->getObject();
+	m_dynamicsWorld->removeCollisionObject(m_objects.at(index)->GetObject());
+	btRigidBody* body = m_objects.at(index)->GetObject();
 	delete m_objects.at(index);
 	m_objects.erase(m_objects.begin() + index);
 	if (body && body->getMotionState())

@@ -35,6 +35,7 @@ private:
 	int m_dead = -1;
 	int m_activeBombs = 0;
 	float m_collidTimer = 0;
+	float m_scaleTimer = 0;
 	// uses controller id
 	vector <int> m_deathOrder;
 
