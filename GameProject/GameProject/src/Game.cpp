@@ -15,7 +15,7 @@ Game::Game()
 	// väl playerHud om ni vill spela utan start menu
 	// välj noMenu om ni vill spela utan HUD 
 	//	Pause meny bör fortfarande fungera med noMenu
-	m_menu->SetActiveMenu(Menu::ActiveMenu::start);
+	m_menu->SetActiveMenu(Menu::ActiveMenu::playerHud);
 	m_menu->LoadMenuPic();
 
 	m_maxTime = 60.f;
@@ -180,9 +180,9 @@ void Game::Update(float dt)
 		}
 		if (m_time > m_maxTime && !m_gameOver)
 		{
-			m_winner = m_objectHandler->GetWinnerID();
 			m_menu->RankPlayers();
-			m_menu->SetWinner(m_winner);
+			m_winner = m_menu->GetWinner();//m_objectHandler->GetWinnerID();
+			//m_menu->SetWinner(m_winner);
 			m_menu->SetActiveMenu(Menu::ActiveMenu::win);
 			m_gameOver = true;
 			if (m_soundEngine)

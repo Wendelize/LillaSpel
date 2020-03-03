@@ -23,7 +23,7 @@ public:
 
 	void RenderMenu(bool gameOver, float time, Model* model);
 	void SetActiveMenu(ActiveMenu activeMenu);
-	void SetWinner(int playerNum);
+	void SetWinner(int playerNum); // old might not be needed anymore
 	bool SelectMenuActive();
 	bool RestartMenuActive();
 	bool WinMenuActive();
@@ -39,6 +39,7 @@ public:
 	void CollisionTracking();
 	void KillCount();
 	void RankPlayers();
+	int GetWinner();
 
 private:
 	Scene* m_scene;
@@ -58,7 +59,8 @@ private:
 	vector<vector<int>> m_killers;	// who killed you
 	vector<int> m_deathOrderID;		// ID for order players died in 
 	vector<int> m_winOrder;			// ID for the final ranking
-	int m_points[4] = { 0, 0, 0, 0 };
+	int m_points[4] = { 0, 0, 0, 0 }; // points 2 per kill and 1 per life left
+	vector<vec3> m_playerColor;
 
 	int m_selected[4] = { 0, 0, 0, 0 };
 	int m_continue = 0;
