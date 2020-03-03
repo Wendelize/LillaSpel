@@ -36,7 +36,7 @@ Ghost::~Ghost()
 	delete m_controller;
 
 
-	if (m_honkEngine && m_tauntEngine)
+	if (m_honkEngine )
 	{
 		for (uint i = 0; i < m_sounds.size(); i++)
 		{
@@ -46,7 +46,6 @@ Ghost::~Ghost()
 
 		m_honk->drop();
 		m_taunt->drop();
-		m_honkEngine->drop();
 		m_tauntEngine->drop();
 	}
 }
