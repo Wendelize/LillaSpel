@@ -18,8 +18,8 @@ private:
 
 	float m_timeOut;
 
-	int m_nrOfLightOff, m_nrOfReverseController, m_nrOfBombs;
-	bool m_light, m_bomb, m_controllers;
+	int m_nrOfLightSwitch, m_nrOfCtrlSwitch, m_nrOfBombSwitch;
+	bool m_lightSwitch, m_bombSwitch, m_ctrlSwitch;
 
 public:
 	Ghost();

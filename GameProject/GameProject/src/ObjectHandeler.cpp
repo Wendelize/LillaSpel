@@ -195,9 +195,11 @@ void ObjectHandler::Update(float dt)
 		if (isObject >= 0) {
 			m_objects.at(isObject)->Update();
 		}
+
 		if (i < m_ghosts.size()) {
 			m_ghosts.at(i)->UpdateGhost(dt);
 		}
+
 		if (isPowerUp >= 0) {
 			if (m_powerUps[isPowerUp]->update(dt)) {
 				RemovePowerUp(isPowerUp);
@@ -277,8 +279,8 @@ void ObjectHandler::Update(float dt)
 					if (m_players[isPlayer]->GetLives() == 0) 
 					{
 						// used for statsMenu
+						AddGhost(m_players[isPlayer]->GetControllerID());
 						m_deathOrder.push_back(m_players[isPlayer]->GetControllerID());
-
 						RemovePlayer(isPlayer);
 						isPlayer--;
 					}
