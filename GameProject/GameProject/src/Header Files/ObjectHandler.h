@@ -12,7 +12,6 @@ class ObjectHandler
 private:
 	bool m_usedSpawns[20];
 	bool m_collision;
-	bool m_dead;
 	btVector3 m_spawnpoints[20] = 
 	{
 	btVector3(2,3,2), btVector3(5,3,5),btVector3(-5,3,5), btVector3(9,3,9), btVector3(-9,3,9),
