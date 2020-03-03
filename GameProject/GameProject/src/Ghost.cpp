@@ -43,7 +43,7 @@ Ghost::~Ghost()
 		m_honk->drop();
 		m_taunt->drop();
 		m_honkEngine->drop();
-		m_tauntEngine->drop();
+		m_tauntEngine->drop(); // TODO: FIX THIS BUG, happens when trying to exit when game over or exit if game was reset
 	}
 }
 
