@@ -19,6 +19,7 @@ private:
 	float m_timeOut;
 
 	int m_nrOfLightOff, m_nrOfReverseController, m_nrOfBombs;
+	bool m_light, m_bomb, m_controllers;
 
 public:
 	Ghost();
@@ -27,8 +28,13 @@ public:
 	void UpdateGhost(float dt);
 
 	int GetControllerID();
+	bool GetBombSwitch();
+	bool GetCtrlSwitch();
+	bool GetLightSwitch();
 
 	void SetControllerID(int index);
-
+	void SetBombSwitch(bool state);
+	void SetCtrlSwitch(bool state);
+	void SetLightSwitch(bool state);
 
 };
