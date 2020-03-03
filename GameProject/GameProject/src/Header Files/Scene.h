@@ -26,7 +26,7 @@ private:
 		m_viewMatrix,
 		m_modelMatrix;
 
-	vector<Model*> m_vehicles, m_platform, m_power;
+	vector<Model*> m_vehicles, m_platform, m_power,m_objects;
 	
 	vector <Light*> m_lights;
 	vector <Light*> m_carLights;

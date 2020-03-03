@@ -15,7 +15,7 @@ Game::Game()
 	// väl playerHud om ni vill spela utan start menu
 	// välj noMenu om ni vill spela utan HUD 
 	//	Pause meny bör fortfarande fungera med noMenu
-	m_menu->SetActiveMenu(Menu::ActiveMenu::start);
+	m_menu->SetActiveMenu(Menu::ActiveMenu::playerHud);
 	m_menu->LoadMenuPic();
 
 	m_maxTime = 60.f;
@@ -23,6 +23,7 @@ Game::Game()
 	m_toggle = false;
 	m_platforms = m_scene->GetModels(0);
 	m_cars = m_scene->GetModels(1);
+	m_objectModels = m_scene->GetModels(3);
 	m_cube = new MarchingCubes();
 	m_objectHandler->AddDynamicPlatformMesh(m_cube);
 
@@ -31,7 +32,7 @@ Game::Game()
 	m_objectHandler->AddPlayer(vec3(-10, 6, 3), 0, 0, vec3(0.5, 1, 9), m_cars[0]); // Passa modell
 	m_objectHandler->AddPlayer(vec3(10, 6, 3), 1, 0, vec3(0, 2, 0), m_cars[2]); // Passa modell
 	//m_objectHandler->AddPlayer(vec3(-4, 7, -4), 3, rand() % 4, vec3(1, 1, 0), m_cars[3]); // Passa modell
-	
+	m_objectHandler->AddObject(vec3(0, 2, 0), 0, m_objectModels[0]);
 	m_scene->SetCameraPos(CAMERAPOS_GAME);
 
 
@@ -121,7 +122,6 @@ void Game::Update(float dt)
 	{
 		dt = 0;
 		if (m_menu->GetMapUpdate()) {
-			cout << "hmm" << endl;
 			m_updateMap.store(true);
 			m_menu->SetMapUpdate(false);
 		}
@@ -324,6 +324,7 @@ void Game::Render(float dt)
 	
 	m_objects = m_objectHandler->GetObjects();
 	m_carLight = m_objectHandler->GetLights();
+	m_objectHandler->RenderParticles();
 	m_scene->RenderLights(m_carLight);
 	m_scene->Render(m_objects, m_objectHandler->GetWorld(), m_cube, m_gameOver, m_winner, dt, m_objectHandler->GetLightsOut());
 //
@@ -381,7 +382,6 @@ void Game::MutliThread(GLFWwindow* window)
 {
 	while (!glfwWindowShouldClose(window)) {
 		if (m_updateMap.load()) {
-			cout << "testmulti" << endl;
 			m_cube->Update(window, m_objectHandler->GetBomb());
 			m_updateMap.store(false);// = false;
 			m_mapUpdateReady.store(true);

@@ -72,6 +72,10 @@ ObjectHandler::~ObjectHandler()
 	{
 		delete m_platforms.at(i);
 	}
+	for (uint i = 0; i < m_objects.size(); i++)
+	{
+		delete m_objects.at(i);
+	}
 	int temp = m_powerUps.size();
 	for (uint i = 0; i < temp; i++) {
 		RemovePowerUp(0);
@@ -170,9 +174,13 @@ void ObjectHandler::Update(float dt)
 			trans = obj->getWorldTransform();
 		}
 		int nrOfPlatforms = 1;
-		int isPlayer = i - nrOfPlatforms - m_powerUps.size();
-		int isPowerUp = i - nrOfPlatforms - m_players.size();
-
+		int isPlayer = i - nrOfPlatforms - m_objects.size() - m_powerUps.size();
+		int isPowerUp = i - nrOfPlatforms - m_objects.size() - m_players.size();
+		int isObject = i - nrOfPlatforms - m_powerUps.size() - m_players.size();
+		
+		if (isObject >= 0) {
+			m_objects.at(isObject)->update();
+		}
 		if (isPowerUp >= 0) {
 			if (m_powerUps[isPowerUp]->update(dt)) {
 				RemovePowerUp(isPowerUp);
@@ -278,6 +286,26 @@ void ObjectHandler::AddPlayer(vec3 pos, int controllerID, int modelId, vec3 colo
 
 	if (m_soundEngine)
 		m_players.back()->StartEngineSounds();
+}
+
+void ObjectHandler::AddObject(vec3 pos, int modelId, Model* model)
+{
+	m_objects.push_back(new Object(btVector3(pos.x, pos.y, pos.z), modelId, model));
+	m_dynamicsWorld->addRigidBody(m_objects.back()->getObject());
+
+}
+
+void ObjectHandler::RemoveObject(int index)
+{
+	m_dynamicsWorld->removeCollisionObject(m_objects.at(index)->getObject());
+	btRigidBody* body = m_objects.at(index)->getObject();
+	delete m_objects.at(index);
+	m_objects.erase(m_objects.begin() + index);
+	if (body && body->getMotionState())
+	{
+		delete body->getMotionState();
+	}
+	delete body;
 }
 
 void ObjectHandler::SetScale(int id, vec3 scale)
@@ -529,6 +557,10 @@ vector<ObjectInfo*> ObjectHandler::GetObjects()
 	for (int i = 0; i < m_powerUps.size(); i++)
 	{
 		m_structs.push_back(m_powerUps[i]->GetObjectInfo());
+	}
+	for (int i = 0; i < m_objects.size(); i++)
+	{
+		m_structs.push_back(m_objects[i]->GetObjectInfo());
 	}
 	return m_structs;
 }
@@ -825,5 +857,12 @@ bool ObjectHandler::GetLightsOut()
 void ObjectHandler::SetLightsOut(bool state)
 {
 	m_lightsOut = state;
+}
+
+void ObjectHandler::RenderParticles()
+{
+	for (int i = 0; i < m_particles.size(); i++) {
+		m_particles.at(i)->Draw();
+	}
 }
 

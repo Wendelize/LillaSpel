@@ -42,6 +42,11 @@ Scene::~Scene()
 	}
 	m_platform.clear();
 
+	for (uint i = 0; i < m_objects.size(); i++)
+	{
+		delete m_objects.at(i);
+	}
+	m_objects.clear();
 	for (uint i = 0; i < m_power.size(); i++)
 	{
 		delete m_power.at(i);
@@ -116,6 +121,7 @@ void Scene::Init()
 	m_power.push_back(new Model("src/Models/Bulb.obj"));				//7
 	m_power.push_back(new Model("src/Models/Love.obj"));				//8
 
+	m_objects.push_back(new Model("src/Models/LowPolyController.obj"));
 	//m_power.push_back(new Model("src/Models/PowerUp.obj"));
 
 	// Lights
@@ -272,7 +278,8 @@ void Scene::RenderSceneInfo(Shader* shader, vector<ObjectInfo*> objects)
 		case 2:
 			m_power.at(objects[i]->modelId)->Draw(shader);
 			break;
-
+		case 3:
+			m_objects.at(objects[i]->modelId)->Draw(shader);
 		default:
 			break;
 		}
@@ -560,6 +567,8 @@ vector<Model*> Scene::GetModels(int index)
 		return m_vehicles;
 	else if (index == 2)
 		return m_power;
+	else if (index == 3)
+		return m_objects;
 }
 
 vector<Light*> Scene::GetLight()

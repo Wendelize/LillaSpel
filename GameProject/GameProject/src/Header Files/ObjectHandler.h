@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "PowerUp.h"
 #include "MarchingCubes.h"
+#include "Object.h"
 
 class ObjectHandler
 {
@@ -20,15 +21,19 @@ private:
 	vector<Player*> m_players;
 	vector<Platform*> m_platforms;
 	vector<PowerUp*> m_powerUps;
+	vector<Object*> m_objects;
+
 	vector<ObjectInfo*> m_structs;
 	vector<Light*> m_carLights;
 	vector<vec3> m_bombZone;
+	vector<ParticleSystem*> m_particles;
 	// used to track collisions for statsMenu
 	bool m_collisionHappened = false;
 	bool m_death = false;
 	int m_aCollisionPlayerId = -1;
 	int m_bCollisionPlayerId = -1;
 	int m_dead = -1;
+	int m_activeBombs = 0;
 	float m_collidTimer = 0;
 	// uses controller id
 	vector <int> m_deathOrder;
@@ -56,6 +61,8 @@ public:
 
 	void Update(float dt);
 	void AddPlayer(vec3 pos, int controllerID, int modelId, vec3 color, Model* model);
+	void AddObject(vec3 pos, int modelId, Model* model);
+	void RemoveObject(int index);
 	void AddPlatform(int modelId, Model* model);
 	void SetScale(int id, vec3 scale);
 	void RemovePlayer(int index);
@@ -93,6 +100,7 @@ public:
 	void StopAllSound();
 	vector<ObjectInfo*> GetObjects();
 	vector<Light*> GetLights();
+	vector<ParticleSystem*> particles();
 	btDiscreteDynamicsWorld* GetWorld();
 	DebugDrawer* GetDebugDrawer();
 	int GetWinnerID();
@@ -108,4 +116,5 @@ public:
 	bool CheckCollisionCars(float dt);
 	bool GetLightsOut();
 	void SetLightsOut(bool state);
+	void RenderParticles();
 };

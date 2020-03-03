@@ -36,6 +36,7 @@ public:
 	void CollisionTracking();
 	void KillCount();
 	void RankPlayers();
+	bool GetMapUpdate();
 
 private:
 	Scene* m_scene;

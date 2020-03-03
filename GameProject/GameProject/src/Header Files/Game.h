@@ -15,6 +15,8 @@ private:
 	vector<Light*> m_carLight;
 	vector<Model*> m_platforms;
 	vector<Model*> m_cars;
+	vector<Model*> m_objectModels;
+
 	ISoundEngine* m_soundEngine;
 	ISound* m_music;
 	vector<ISoundSource*> m_songs;
