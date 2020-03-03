@@ -591,12 +591,14 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 						{
 							m_mapID += 1;
 							m_objHand->GetCube()->SetCurrentLevel(m_mapID);
+							m_updateMap = true;
 
 						}
 						else
 						{
 							m_mapID = 0;
 							m_objHand->GetCube()->SetCurrentLevel(m_mapID);
+							m_updateMap = true;
 
 						}
 
@@ -614,12 +616,14 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 						{
 							m_mapID -= 1;
 							m_objHand->GetCube()->SetCurrentLevel(m_mapID);
+							m_updateMap = true;
 
 						}
 						else
 						{
 							m_mapID = 6;
 							m_objHand->GetCube()->SetCurrentLevel(m_mapID);
+							m_updateMap = true;
 
 						}
 					}
@@ -631,6 +635,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 						m_soundEngine->play2D(m_menuSounds[1], false);
 					m_selected[0] += 1;
 					m_objHand->GetCube()->SetCurrentLevel(m_mapID);
+					m_updateMap = true;
 					m_p1Seconds = time;
 
 				}
@@ -1735,7 +1740,15 @@ int Menu::GetWinner()
 {
 	return m_winOrder[0];
 }
+bool Menu::GetMapUpdate()
+{
+	return m_updateMap;
+}
 
+void Menu::SetMapUpdate(bool map)
+{
+	m_updateMap = map;
+}
 
 
 

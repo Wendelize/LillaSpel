@@ -23,6 +23,7 @@ Game::Game()
 	m_toggle = false;
 	m_platforms = m_scene->GetModels(0);
 	m_cars = m_scene->GetModels(1);
+	m_objectModels = m_scene->GetModels(3);
 	m_cube = new MarchingCubes();
 	m_objectHandler->AddDynamicPlatformMesh(m_cube);
 
@@ -31,7 +32,7 @@ Game::Game()
 	m_objectHandler->AddPlayer(vec3(-10, 6, 3), 0, 0, vec3(0.5, 1, 9), m_cars[0]); // Passa modell
 	m_objectHandler->AddPlayer(vec3(10, 6, 3), 1, 0, vec3(0, 2, 0), m_cars[2]); // Passa modell
 	//m_objectHandler->AddPlayer(vec3(-4, 7, -4), 3, rand() % 4, vec3(1, 1, 0), m_cars[3]); // Passa modell
-	
+	//m_objectHandler->AddObject(vec3(0, 2, 0), 0, m_objectModels[0]);
 	m_scene->SetCameraPos(CAMERAPOS_GAME);
 
 
@@ -106,7 +107,10 @@ void Game::Update(float dt)
 		m_objectHandler->ClearHoles();
 		m_updateMap.store(true);
 		m_timeSwapTrack = 0;
+		m_menu->SetMapUpdate(false);
 	}
+
+
 	// är select menyn aktiverad? ändra kameran till inzoomad
 	if (m_menu->SelectMenuActive())
 	{
@@ -125,6 +129,19 @@ void Game::Update(float dt)
 	if (m_menu->Pause())
 	{
 		dt = 0;
+		if (m_menu->GetMapUpdate()) {
+			m_updateMap.store(true);
+			m_menu->SetMapUpdate(false);
+		}
+		if (m_mapUpdateReady.load() == true && m_updateMap.load() == false)
+		{
+			m_objectHandler->RemoveDynamicPlatformMesh(m_cube);
+			m_cube->MapUpdate();
+			m_objectHandler->AddDynamicPlatformMesh(m_cube);
+			m_timeSwapTrack = 0.f;
+			m_mapUpdateReady.store(false);
+			m_objectHandler->ClearBombs();
+		}
 	}
 	if ((!m_menu->Pause() && !m_wasSelect)) // Vet inte om det kan göras snyggare?
 	{
@@ -132,8 +149,7 @@ void Game::Update(float dt)
 		m_time += dt;
 		m_timeSinceSpawn += dt;
 		m_timeSwapTrack += dt;
-
-		if (m_timeSwapTrack > 2.f && m_updateMap.load() == false && m_mapUpdateReady.load() == false)
+		if ((m_timeSwapTrack > 2.f && m_updateMap.load() == false && m_mapUpdateReady.load() == false) || m_menu->GetMapUpdate())
 		{
 			m_updateMap.store(true);
 		}
@@ -364,6 +380,7 @@ void Game::Render(float dt)
 	
 	m_objects = m_objectHandler->GetObjects();
 	m_carLight = m_objectHandler->GetLights();
+	m_objectHandler->RenderParticles();
 	m_scene->RenderLights(m_carLight);
 	m_scene->Render(m_objects, m_objectHandler->GetWorld(), m_cube, m_gameOver, m_winner, dt, m_objectHandler->GetLightsOut());
 //

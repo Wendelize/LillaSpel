@@ -33,6 +33,7 @@ public:
 	bool Pause();
 	bool Reset();
 	void ResetReset();
+	void SetMapUpdate(bool map);
 	ISoundEngine* m_soundEngine;
 	vector<ISoundSource*> m_menuSounds;
 	// for statsMenu 
@@ -40,6 +41,7 @@ public:
 	void KillCount();
 	void RankPlayers();
 	int GetWinner();
+	bool GetMapUpdate();
 
 private:
 	Scene* m_scene;
@@ -47,6 +49,7 @@ private:
 	GLuint m_mainMenuPic;
 	int m_menuPicWidth, m_menuPicHeight;
 	bool m_reset = false;
+	bool m_updateMap = false;
 	int m_maxLives = 3;
 	int m_maxTime = 60.0f;
 	int m_winnerID = 0;
