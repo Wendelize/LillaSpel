@@ -3,6 +3,7 @@
 #include "Platform.h"
 #include "Player.h"
 #include "PowerUp.h"
+#include "Ghost.h"
 #include "MarchingCubes.h"
 
 class ObjectHandler
@@ -10,6 +11,7 @@ class ObjectHandler
 private:
 	bool m_usedSpawns[20];
 	bool m_collision;
+	bool m_dead;
 	btVector3 m_spawnpoints[20] = 
 	{
 	btVector3(2,3,2), btVector3(5,3,5),btVector3(-5,3,5), btVector3(9,3,9), btVector3(-9,3,9),
@@ -20,6 +22,7 @@ private:
 	vector<Player*> m_players;
 	vector<Platform*> m_platforms;
 	vector<PowerUp*> m_powerUps;
+	vector<Ghost*> m_ghosts;
 	vector<ObjectInfo*> m_structs;
 	vector<Light*> m_carLights;
 	vector<vec3> m_bombZone;
@@ -47,6 +50,7 @@ public:
 	void Update(float dt);
 	void AddPlayer(vec3 pos, int controllerID, int modelId, vec3 color, Model* model);
 	void AddPlatform(int modelId, Model* model);
+	void AddGhost(int index);
 	void SetScale(int id, vec3 scale);
 	void RemovePlayer(int index);
 	void RemovePlatform();

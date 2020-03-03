@@ -147,6 +147,7 @@
     <ClCompile Include="src\Controller.cpp" />
     <ClCompile Include="src\DebugDrawer.cpp" />
     <ClCompile Include="src\Game.cpp" />
+    <ClCompile Include="src\Header Files\Ghost.cpp" />
     <ClCompile Include="src\IMGUI\imgui.cpp" />
     <ClCompile Include="src\IMGUI\imgui_demo.cpp" />
     <ClCompile Include="src\IMGUI\imgui_draw.cpp" />
@@ -179,6 +180,7 @@
     <ClInclude Include="src\Header Files\Controller.h" />
     <ClInclude Include="src\Header Files\DebugDrawer.h" />
     <ClInclude Include="src\Header Files\Game.h" />
+    <ClInclude Include="src\Header Files\Ghost.h" />
     <ClInclude Include="src\Header Files\Include.h" />
     <ClInclude Include="src\Header Files\Light.h" />
     <ClInclude Include="src\Header Files\MarchingCubes.h" />

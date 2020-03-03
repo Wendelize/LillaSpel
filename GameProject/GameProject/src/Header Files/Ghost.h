@@ -1,37 +1,34 @@
 #pragma once
 #include "Include.h"
+#include <stdlib.h>
 
-class Bloom
+class Ghost
 {
 private:
-	Shader* m_blur, * m_bloom;
-	unsigned int m_FBO1, m_pingPongFBO[2];
-	unsigned int m_colorBuffers[2], m_depth, m_pingPongColorBuffer[2];
-	unsigned int m_quadVAO = 0;
-	unsigned int m_quadVBO;
+	Controller* m_controller;
+	int m_controllerID;
 
-	bool m_horizontal = true, m_firstIteration = true, m_bool = true;
-	float m_exposure = 1.0f;
+	const char* m_soundFiles[10];
 
-	int m_width;
-	int m_height;
-	float m_resolutionScale;
+	ISoundEngine* m_honkEngine;
+	ISoundEngine* m_tauntEngine;
+	ISound* m_honk;
+	ISound* m_taunt;
+	vector<ISoundSource*> m_sounds;
+
+	float m_timeOut;
+
+	int m_nrOfLightOff, m_nrOfReverseController, m_nrOfBombs;
 
 public:
-	Bloom(int width, int height, float m_resolutionScale);
-	~Bloom();
+	Ghost();
+	~Ghost();
 
-	void Init();
-	void InitPingPong();
-	void PingPongRender(int nrOfSteps);
-	void RenderBloom(GLFWwindow* w);
-	void RenderQuad();
+	void UpdateGhost(float dt);
 
+	int GetControllerID();
 
-	Shader* GetBlurShader();
-	Shader* GetBloomShader();
-
-	unsigned int getFBO();
+	void SetControllerID(int index);
 
 
 };

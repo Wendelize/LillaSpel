@@ -79,6 +79,12 @@ ObjectHandler::~ObjectHandler()
 	m_powerUps.clear();
 	m_platforms.clear();
 
+	for (uint i = 0; i < m_ghosts.size(); i++)
+	{
+		delete m_ghosts.at(i);
+	}
+	m_ghosts.clear();
+
 	for (size_t i = 0; i < m_structs.size(); i++)
 	{
 		delete m_structs.at(i);
@@ -173,6 +179,9 @@ void ObjectHandler::Update(float dt)
 		int isPlayer = i - nrOfPlatforms - m_powerUps.size();
 		int isPowerUp = i - nrOfPlatforms - m_players.size();
 
+		if (i < m_ghosts.size()) {
+			m_ghosts.at(i)->UpdateGhost(dt);
+		}
 		if (isPowerUp >= 0) {
 			if (m_powerUps[isPowerUp]->update(dt)) {
 				RemovePowerUp(isPowerUp);
@@ -221,6 +230,7 @@ void ObjectHandler::Update(float dt)
 			}
 			else {
 				if (m_players[isPlayer]->GetLives() == 0) {
+					AddGhost(m_players[isPlayer]->GetControllerID());
 					RemovePlayer(isPlayer);
 					isPlayer--;
 
@@ -273,6 +283,12 @@ void ObjectHandler::AddPlatform(int modelId, Model* model)
 	m_platforms.back()->SetModelId(modelId);
 
 	m_dynamicsWorld->addRigidBody(m_platforms.back()->getBody(), 1, -1);
+}
+
+void ObjectHandler::AddGhost(int index)
+{
+	m_ghosts.push_back(new Ghost());
+	m_ghosts.back()->SetControllerID(index);
 }
 
 void ObjectHandler::RemovePlatform()
