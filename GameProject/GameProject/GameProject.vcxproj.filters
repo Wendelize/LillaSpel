@@ -97,7 +97,9 @@
     <ClCompile Include="src\Object.cpp">
       <Filter>Src</Filter>
     </ClCompile>
-    <ClCompile Include="src\Header Files\Ghost.cpp" />
+    <ClCompile Include="src\Ghost.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Header Files\Camera.h">

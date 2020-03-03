@@ -147,7 +147,7 @@
     <ClCompile Include="src\Controller.cpp" />
     <ClCompile Include="src\DebugDrawer.cpp" />
     <ClCompile Include="src\Game.cpp" />
-    <ClCompile Include="src\Header Files\Ghost.cpp" />
+    <ClCompile Include="src\Ghost.cpp" />
     <ClCompile Include="src\IMGUI\imgui.cpp" />
     <ClCompile Include="src\IMGUI\imgui_demo.cpp" />
     <ClCompile Include="src\IMGUI\imgui_draw.cpp" />
