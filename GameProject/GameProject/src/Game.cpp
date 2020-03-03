@@ -15,7 +15,7 @@ Game::Game()
 	// väl playerHud om ni vill spela utan start menu
 	// välj noMenu om ni vill spela utan HUD 
 	//	Pause meny bör fortfarande fungera med noMenu
-	m_menu->SetActiveMenu(Menu::ActiveMenu::playerHud);
+	m_menu->SetActiveMenu(Menu::ActiveMenu::start);
 	m_menu->LoadMenuPic();
 
 	m_maxTime = 60.f;
@@ -83,7 +83,29 @@ Game::~Game()
 
 void Game::Update(float dt)
 {
+	if (m_slowmoCooldown > 0)
+	{
+		m_slowmoCooldown -= dt;
+		dt /= (m_slowmoCooldown * 1.5) + 1;
+	}
+
 	DynamicCamera(dt);
+
+	for (int i = 0; i < m_objectHandler->GetNumPlayers(); i++)
+	{
+		float speed = m_objectHandler->GetPlayerSpeed(i);
+		if (speed > 10)
+		{
+			vec3 dir = m_objectHandler->GetPlayerDirection(i);
+			vec3 pos = m_objectHandler->GetPlayerPos(i) + dir * 1.f + vec3(0, -0.45, 0);
+			vec3 right = cross(dir, vec3(0, 1, 0)) * 0.7f;
+
+			m_scene->AddParticleEffect(pos + right, vec3(0.8, 0.8, 0.8), vec3(0), 8, 0.2, dir + vec3(0, 0.3, 0), 10, 0.25, 0.1);
+			m_scene->AddParticleEffect(pos + right, vec3(0, 0, 1), vec3(0), 8, 0.2, dir + vec3(0, 0.3, 0), 10, 0.25, 0.1);
+			m_scene->AddParticleEffect(pos - right, vec3(0.8, 0.8, 0.8), vec3(0), 8, 0.2, dir + vec3(0, 0.3, 0), 10, 0.25, 0.1);
+			m_scene->AddParticleEffect(pos - right, vec3(0, 0, 1), vec3(0), 8, 0.2, dir + vec3(0, 0.3, 0), 10, 0.25, 0.1);
+		}
+	}
 
 	if (m_objectHandler->GetExplosion())
 	{
@@ -93,17 +115,16 @@ void Game::Update(float dt)
 		m_objectHandler->SetExplosion(false);
 	}
 
-	SHORT key = GetAsyncKeyState(VK_LSHIFT);
-	const int KEY_UP = 0x1;
-	if ((key & KEY_UP) == KEY_UP)
-	{
-		m_scene->ShakeCamera(0.4f, 1);
-	}
+	m_scene->UpdateCamera(dt);
+	m_scene->UpdateSky(dt);
+	m_scene->UpdateParticles(dt);
+
+	
 	// ska banan resettas?
 	if (m_menu->Reset())
 	{
 		Reset();
-		m_scene->TranslateCameraPos(vec3(CAMERAPOS_GAME));
+		m_scene->TranslateCameraPos(vec3(CAMERAPOS_GAME), 1.f);
 		m_objectHandler->ClearHoles();
 		m_updateMap.store(true);
 		m_timeSwapTrack = 0;
@@ -115,7 +136,7 @@ void Game::Update(float dt)
 	if (m_menu->SelectMenuActive())
 	{
 		SelectionMenu();
-		m_scene->TranslateCameraPos(vec3(CAMERAPOS_SELECT));
+		m_scene->TranslateCameraPos(vec3(CAMERAPOS_SELECT), 1.f);
 		m_maxTime = m_menu->GetMaxTime();
 	}
 	else if (m_menu->SelectMenuActive() == false && m_wasSelect == true)
@@ -123,7 +144,7 @@ void Game::Update(float dt)
 		m_wasSelect = false;
 		// TODO: fixa snyggare kamera transition?
 		//m_scene->SetCameraPos(CAMERAPOS_GAME);
-		m_scene->TranslateCameraPos(CAMERAPOS_GAME);
+		m_scene->TranslateCameraPos(CAMERAPOS_GAME, 1.f);
 	}
 	// är vi på en meny som ska pausa spelet? sluta då updatera deltaTime
 	if (m_menu->Pause())
@@ -243,10 +264,19 @@ void Game::Update(float dt)
 			m_menu->CollisionTracking();
 			int aId = m_objectHandler->GetACollisionId();
 			int bId = m_objectHandler->GetBCollisionId();
-			vec3 pos = m_objectHandler->GetPlayerPos(aId);
-			pos += m_objectHandler->GetPlayerPos(bId);
+			vec3 pos = m_objectHandler->GetPlayerPos(m_objectHandler->GetIndexByControllerId(aId));
+			pos += m_objectHandler->GetPlayerPos(m_objectHandler->GetIndexByControllerId(bId));
 
 			m_scene ->AddParticleEffect(pos / 2.f, vec3(1, 0, 0), vec3(0, 1, 0), 1, 6, vec3(0, 1, 0), 200, 0.5, 0.15);
+
+			if (m_objectHandler->GetNumPlayers() == 2)
+			{
+				if (m_objectHandler->GetPlayerLives(0) == 1 || m_objectHandler->GetPlayerLives(1) == 1)
+				{
+					m_slowmoCooldown = 1.f;
+				}
+			}
+
 		}
 
 		if (m_objectHandler->GetDeath())
@@ -296,7 +326,7 @@ void Game::DynamicCamera(float dt)
 
 		vec3 vec = m_objectHandler->GetPlayerPos(m_winner) + -infront * 3.f + right * 3.f + vec3(0, -0.6, 0);
 
-		m_scene->TranslateCameraPos(vec);
+		m_scene->TranslateCameraPos(vec, 1.f);
 
 		right = cross(normalize(m_objectHandler->GetPlayerPos(m_winner) - vec), vec3(0, 1, 0));
 
@@ -368,7 +398,7 @@ void Game::DynamicCamera(float dt)
 	}
 }
 
-void Game::Render(float dt)
+void Game::Render()
 {
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
@@ -382,7 +412,7 @@ void Game::Render(float dt)
 	m_carLight = m_objectHandler->GetLights();
 	m_objectHandler->RenderParticles();
 	m_scene->RenderLights(m_carLight);
-	m_scene->Render(m_objects, m_objectHandler->GetWorld(), m_cube, m_gameOver, m_winner, dt, m_objectHandler->GetLightsOut());
+	m_scene->Render(m_objects, m_objectHandler->GetWorld(), m_cube, m_gameOver, m_winner, m_objectHandler->GetLightsOut());
 //
 //	m_scene->Render(m_objects, m_objectHandler->GetWorld(), m_cube);
 

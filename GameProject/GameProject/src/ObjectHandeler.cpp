@@ -135,6 +135,8 @@ ObjectHandler::~ObjectHandler()
 
 void ObjectHandler::Update(float dt)
 {
+	cout << m_players[0]->GetSpeed() << endl;
+
 	const char* filename;
 	int randomNumber = rand() % NRDEATHSOUNDS;
 
@@ -471,6 +473,19 @@ void ObjectHandler::SetPlayerControllerID(int index, int id)
 	m_players[index]->SetControllerID(id);
 }
 
+int ObjectHandler::GetIndexByControllerId(int controllerId)
+{
+	for (int i = 0; i < m_players.size(); i++)
+	{
+		if (m_players[i]->GetControllerID() == controllerId)
+		{
+			return i;
+		}
+	}
+
+	return -1;
+}
+
 int ObjectHandler::GetPlayerModelID(int index)
 {
 	return m_players[index]->GetModelId();
@@ -479,6 +494,11 @@ int ObjectHandler::GetPlayerModelID(int index)
 void ObjectHandler::SetPlayerModelID(int index, int id)
 {
 	m_players[index]->SetModelId(id);
+}
+
+float ObjectHandler::GetPlayerSpeed(int index)
+{
+	return m_players[index]->GetSpeed();
 }
 
 vec3 ObjectHandler::GetPlayerColor(int index)

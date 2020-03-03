@@ -126,7 +126,7 @@ Shader* ParticleSystem::GetShader()
 	return m_particleShader;
 }
 
-void ParticleSystem::GenerateParticles( vec3 emitterPos, float speed ,float spread, float life, vec3 color1, vec3 color2, float size, vec3 dir)
+void ParticleSystem::GenerateParticles(vec3 emitterPos, float speed ,float spread, float life, vec3 color1, vec3 color2, float size, vec3 dir)
 {
 	for (int i = 0; i < m_nrOfParticle; i++)
 	{

@@ -48,20 +48,23 @@ public:
 	void Init();
 	void LightToShader(bool lightsOut);
 	//void Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, MarchingCubes* cube);
-	void Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, MarchingCubes* cube, bool gameOver, int winner, float dt, bool lightsOut);
+	void Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, MarchingCubes* cube, bool gameOver, int winner, bool lightsOut);
 	void RenderSceneInfo(Shader * shader, vector<ObjectInfo*> objects);
 	void RenderSkybox();
 	void RenderSky();
 	void RenderLights(vector<Light*> light);
 	void RenderShadows(vector<ObjectInfo*> objects);
 	void RenderImGui(btDiscreteDynamicsWorld* world);
-	void RenderParticles(float dt);
+	void RenderParticles();
+	void UpdateParticles(float dt);
+	void UpdateCamera(float dt);
+	void UpdateSky(float dt);
 	void SwapBuffer();
 	void ZoomIn(float dt);
 	void ZoomOut(float dt);
 
 	void SetCameraPos(vec3 pos);
-	void TranslateCameraPos(vec3 pos);
+	void TranslateCameraPos(vec3 pos, float speed);
 	void SetCameraFocus(vec3 pos);
 	void ShakeCamera(float intensity, float duration);
 
