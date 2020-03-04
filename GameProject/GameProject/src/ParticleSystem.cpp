@@ -126,7 +126,7 @@ Shader* ParticleSystem::GetShader()
 	return m_particleShader;
 }
 
-void ParticleSystem::GenerateParticles(vec3 emitterPos, float speed ,float spread, float life, vec3 color1, vec3 color2, float size, vec3 dir)
+void ParticleSystem::GenerateParticles(vec3 emitterPos, float speed ,float spread, float life, vec3 color1, vec3 color2, float size, vec3 dir, float gravity)
 {
 	for (int i = 0; i < m_nrOfParticle; i++)
 	{
@@ -167,6 +167,7 @@ void ParticleSystem::GenerateParticles(vec3 emitterPos, float speed ,float sprea
 		
 		m_particles[i].size = size;
 		m_startSize = size;
+		m_gravity = gravity;
 	}
 }
 
@@ -182,7 +183,7 @@ void ParticleSystem::Simulate(float dt)
 			p.life -= dt;
 
 			// Simulate simple physics : gravity only, no collisions
-			p.velocity += glm::vec3(0.0f, -9.82, 0.0f) * (float)dt;
+			p.velocity += glm::vec3(0.0f, m_gravity, 0.0f) * (float)dt;
 			p.position += p.velocity * (float)dt;
 			p.cameraDist = length(p.position - vec3(0, 3, 33));
 			p.size = m_startSize * (p.life) / m_startLife;

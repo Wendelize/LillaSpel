@@ -83,43 +83,37 @@ Game::~Game()
 
 void Game::Update(float dt)
 {
+	float dtUnchanged = dt;
+
 	if (m_slowmoCooldown > 0)
 	{
 		m_slowmoCooldown -= dt;
 		dt /= (m_slowmoCooldown * 1.5) + 1;
 	}
 
-	DynamicCamera(dt);
-
+	//Exhaust particles
 	for (int i = 0; i < m_objectHandler->GetNumPlayers(); i++)
 	{
 		float speed = m_objectHandler->GetPlayerSpeed(i);
-		if (speed > 10)
+		if (speed > 15)
 		{
 			vec3 dir = m_objectHandler->GetPlayerDirection(i);
 			vec3 pos = m_objectHandler->GetPlayerPos(i) + dir * 1.f + vec3(0, -0.45, 0);
-			vec3 right = cross(dir, vec3(0, 1, 0)) * 0.7f;
+			vec3 right = cross(dir, vec3(0, 1, 0)) * 0.5f;
 
-			m_scene->AddParticleEffect(pos + right, vec3(0.8, 0.8, 0.8), vec3(0), 8, 0.2, dir + vec3(0, 0.3, 0), 10, 0.25, 0.1);
-			m_scene->AddParticleEffect(pos + right, vec3(0, 0, 1), vec3(0), 8, 0.2, dir + vec3(0, 0.3, 0), 10, 0.25, 0.1);
-			m_scene->AddParticleEffect(pos - right, vec3(0.8, 0.8, 0.8), vec3(0), 8, 0.2, dir + vec3(0, 0.3, 0), 10, 0.25, 0.1);
-			m_scene->AddParticleEffect(pos - right, vec3(0, 0, 1), vec3(0), 8, 0.2, dir + vec3(0, 0.3, 0), 10, 0.25, 0.1);
+			m_scene->AddParticleEffect(pos, vec3(0.6, 0.6, 0.6), vec3(0), 5, 0.005, dir, 4, 0.3, 0.3, 1);
 		}
 	}
 
+	//Explosion particles and screen shake
 	if (m_objectHandler->GetExplosion())
 	{
 		vec3 pos = m_objectHandler->GetExplosionPosition();
 		m_scene->ShakeCamera(0.4f, 1);
-		m_scene->AddParticleEffect(pos, vec3(0.01, 0, 0), vec3(1, 0, 0), 1, 6, vec3(0, 1, 0), 50, 1.2, 0.5);
+		m_scene->AddParticleEffect(pos, vec3(0.01, 0, 0), vec3(1, 0, 0), 1, 6, vec3(0, 1, 0), 50, 1.2, 0.5, -9.82);
 		m_objectHandler->SetExplosion(false);
 	}
 
-	m_scene->UpdateCamera(dt);
-	m_scene->UpdateSky(dt);
-	m_scene->UpdateParticles(dt);
-
-	
 	// ska banan resettas?
 	if (m_menu->Reset())
 	{
@@ -267,7 +261,7 @@ void Game::Update(float dt)
 			vec3 pos = m_objectHandler->GetPlayerPos(m_objectHandler->GetIndexByControllerId(aId));
 			pos += m_objectHandler->GetPlayerPos(m_objectHandler->GetIndexByControllerId(bId));
 
-			m_scene ->AddParticleEffect(pos / 2.f, vec3(1, 0, 0), vec3(0, 1, 0), 1, 6, vec3(0, 1, 0), 200, 0.5, 0.15);
+			m_scene ->AddParticleEffect(pos / 2.f, vec3(1, 0, 0), vec3(0, 1, 0), 1, 6, vec3(0, 1, 0), 200, 0.5, 0.15, -9.82);
 
 			if (m_objectHandler->GetNumPlayers() == 2)
 			{
@@ -284,14 +278,11 @@ void Game::Update(float dt)
 			m_menu->KillCount();
 		}
 	}
-}
 
-void Game::UpdateParticles(float dt)
-{
-	if (m_gameOver)
-	{
-		m_scene->AddParticleEffect(m_objectHandler->GetPlayerPos(m_winner), vec3(NULL), vec3(NULL), 5, 10, vec3(0, 5, 0), 10, 1, 0.2);
-	}
+	DynamicCamera(dtUnchanged);
+	m_scene->UpdateCamera(dtUnchanged);
+	m_scene->UpdateSky(dtUnchanged);
+	m_scene->UpdateParticles(dtUnchanged);
 }
 
 void Game::DynamicCamera(float dt)
@@ -333,8 +324,8 @@ void Game::DynamicCamera(float dt)
 		vec3 in = m_objectHandler->GetPlayerPos(m_winner) - (m_objectHandler->GetPlayerPos(m_winner) + right * 2.0f);
 
 
-		m_scene->AddParticleEffect(m_objectHandler->GetPlayerPos(m_winner) + right * 2.0f + vec3(0, -1, 0), vec3(NULL), vec3(NULL), 1, 0.9, vec3(0, 7, 0) + in + vec3(0, -1, 0), 10, 0.9, 0.04);
-		m_scene->AddParticleEffect(m_objectHandler->GetPlayerPos(m_winner) - right * 2.0f + vec3(0, -1, 0), vec3(NULL), vec3(NULL), 1, 0.9, vec3(0, 7, 0) - in + vec3(0, -1, 0), 10, 0.9, 0.04);
+		m_scene->AddParticleEffect(m_objectHandler->GetPlayerPos(m_winner) + right * 2.0f + vec3(0, -1, 0), vec3(NULL), vec3(NULL), 1, 0.9, vec3(0, 7, 0) + in + vec3(0, -1, 0), 10, 0.9, 0.04, -9.82);
+		m_scene->AddParticleEffect(m_objectHandler->GetPlayerPos(m_winner) - right * 2.0f + vec3(0, -1, 0), vec3(NULL), vec3(NULL), 1, 0.9, vec3(0, 7, 0) - in + vec3(0, -1, 0), 10, 0.9, 0.04, -9.82);
 
 		m_fireworkCooldown += dt;
 
@@ -355,7 +346,7 @@ void Game::DynamicCamera(float dt)
 			randCol.y = (static_cast <float> (rand()) / static_cast <float> (RAND_MAX));
 			randCol.z = (static_cast <float> (rand()) / static_cast <float> (RAND_MAX));
 
-			m_scene->AddParticleEffect(behind + randPos, randCol, vec3(0, 0, 0), 2, 6, vec3(1, 0, 0), 50, 0.8, 0.4);
+			m_scene->AddParticleEffect(behind + randPos, randCol, vec3(0, 0, 0), 2, 6, vec3(1, 0, 0), 50, 0.8, 0.4, -9.82);
 			m_fireworkCooldown = 0;
 		}
 	}

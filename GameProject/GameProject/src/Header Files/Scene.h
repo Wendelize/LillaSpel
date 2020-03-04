@@ -68,7 +68,7 @@ public:
 	void SetCameraFocus(vec3 pos);
 	void ShakeCamera(float intensity, float duration);
 
-	void AddParticleEffect(vec3 pos, vec3 color1, vec3 color2, float speed, float spread, vec3 dir, int nr, float duration, float size);
+	void AddParticleEffect(vec3 pos, vec3 color1, vec3 color2, float speed, float spread, vec3 dir, int nr, float duration, float size, float gravity);
 
 	void SetWindowSize(int width, int height);
 	GLFWwindow* GetWindow();

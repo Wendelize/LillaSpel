@@ -11,7 +11,7 @@ private:
 	float m_shakeCounter;
 	float m_shakeIntensity;
 	float m_shakeFade;
-	float m_speed;
+	float m_speed = 1.f;
 	int k; // används för att sänka m_shakefade varannan iteration.
 
 public:

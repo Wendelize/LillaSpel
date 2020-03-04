@@ -192,7 +192,6 @@ void Scene::LightToShader(bool lightsOut)
 void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, MarchingCubes* cube, bool gameOver, int winner, bool lightsOut)
 {
 	m_viewMatrix = m_camera->GetView();
-
 	/* Render here */
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -206,6 +205,7 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, 
 
 	// Render sky dome and clouds
 	RenderSky();
+	
 	
 	// Matrix uniforms
 	m_modelShader->UseShader();
@@ -351,6 +351,7 @@ void Scene::RenderImGui(btDiscreteDynamicsWorld* world)
 
 void Scene::RenderParticles()
 {
+	m_viewMatrix = m_camera->GetView();
 	for (int i = 0; i < m_particles.size(); i++)
 	{
 		m_particles[i]->GetShader()->UseShader();
@@ -362,6 +363,11 @@ void Scene::RenderParticles()
 
 void Scene::UpdateParticles(float dt)
 {
+	for (int i = 0; i < m_particles.size(); i++)
+	{
+		m_particles[i]->Simulate(dt);
+	}
+
 	int k = 0;
 	for (int i = 0; i < m_particles.size(); i++)
 	{
@@ -374,11 +380,6 @@ void Scene::UpdateParticles(float dt)
 		{
 			k++;
 		}
-	}
-
-	for (int i = 0; i < m_particles.size(); i++)
-	{
-		m_particles[i]->Simulate(dt);
 	}
 }
 
@@ -437,11 +438,11 @@ void Scene::ShakeCamera(float intensity, float duration)
 	m_camera->Shake(intensity, duration);
 }
 
-void Scene::AddParticleEffect(vec3 pos, vec3 color1, vec3 color2, float speed, float spread, vec3 dir, int nr, float duration, float size)
+void Scene::AddParticleEffect(vec3 pos, vec3 color1, vec3 color2, float speed, float spread, vec3 dir, int nr, float duration, float size, float gravity)
 {
 	m_particles.push_back(new ParticleSystem(nr));
 	m_particles.back()->SetActive();
-	m_particles.back()->GenerateParticles(pos, speed, spread, duration, color1, color2, size, dir);
+	m_particles.back()->GenerateParticles(pos, speed, spread, duration, color1, color2, size, dir, gravity);
 }
 
 
