@@ -82,28 +82,42 @@ Game::~Game()
 
 void Game::Update(float dt)
 {
-	DynamicCamera(dt);
+	float dtUnchanged = dt;
 
+	if (m_slowmoCooldown > 0)
+	{
+		m_slowmoCooldown -= dt;
+		dt /= (m_slowmoCooldown * 1.5) + 1;
+	}
 
+	//Exhaust particles
+	for (int i = 0; i < m_objectHandler->GetNumPlayers(); i++)
+	{
+		float speed = m_objectHandler->GetPlayerSpeed(i);
+		if (speed > 15)
+		{
+			vec3 dir = m_objectHandler->GetPlayerDirection(i);
+			vec3 pos = m_objectHandler->GetPlayerPos(i) + dir * 1.f + vec3(0, -0.45, 0);
+			vec3 right = cross(dir, vec3(0, 1, 0)) * 0.5f;
+
+			m_scene->AddParticleEffect(pos, vec3(0.6, 0.6, 0.6), vec3(0), 5, 0.005, dir, 4, 0.3, 0.3, 1);
+		}
+	}
+
+	//Explosion particles and screen shake
 	if (m_objectHandler->GetExplosion())
 	{
 		vec3 pos = m_objectHandler->GetExplosionPosition();
 		m_scene->ShakeCamera(0.4f, 1);
-		m_scene->AddParticleEffect(pos, vec3(0.01, 0, 0), vec3(1, 0, 0), 1, 6, vec3(0, 1, 0), 50, 1.2, 0.5);
+		m_scene->AddParticleEffect(pos, vec3(0.01, 0, 0), vec3(1, 0, 0), 1, 6, vec3(0, 1, 0), 50, 1.2, 0.5, -9.82);
 		m_objectHandler->SetExplosion(false);
 	}
 
-	SHORT key = GetAsyncKeyState(VK_LSHIFT);
-	const int KEY_UP = 0x1;
-	if ((key & KEY_UP) == KEY_UP)
-	{
-		m_scene->ShakeCamera(0.4f, 1);
-	}
 	// ska banan resettas?
 	if (m_menu->Reset())
 	{
 		Reset();
-		m_scene->TranslateCameraPos(vec3(CAMERAPOS_GAME));
+		m_scene->TranslateCameraPos(vec3(CAMERAPOS_GAME), 1.f);
 		m_objectHandler->ClearHoles();
 		m_updateMap.store(true);
 		m_timeSwapTrack = 0;
@@ -115,7 +129,7 @@ void Game::Update(float dt)
 	if (m_menu->SelectMenuActive())
 	{
 		SelectionMenu();
-		m_scene->TranslateCameraPos(vec3(CAMERAPOS_SELECT));
+		m_scene->TranslateCameraPos(vec3(CAMERAPOS_SELECT), 1.f);
 		m_maxTime = m_menu->GetMaxTime();
 	}
 	else if (m_menu->SelectMenuActive() == false && m_wasSelect == true)
@@ -123,7 +137,7 @@ void Game::Update(float dt)
 		m_wasSelect = false;
 		// TODO: fixa snyggare kamera transition?
 		//m_scene->SetCameraPos(CAMERAPOS_GAME);
-		m_scene->TranslateCameraPos(CAMERAPOS_GAME);
+		m_scene->TranslateCameraPos(CAMERAPOS_GAME, 1.f);
 	}
 	// är vi på en meny som ska pausa spelet? sluta då updatera deltaTime
 	if (m_menu->Pause())
@@ -254,10 +268,19 @@ void Game::Update(float dt)
 			m_menu->CollisionTracking();
 			int aId = m_objectHandler->GetACollisionId();
 			int bId = m_objectHandler->GetBCollisionId();
-			vec3 pos = m_objectHandler->GetPlayerPos(aId);
-			pos += m_objectHandler->GetPlayerPos(bId);
+			vec3 pos = m_objectHandler->GetPlayerPos(m_objectHandler->GetIndexByControllerId(aId));
+			pos += m_objectHandler->GetPlayerPos(m_objectHandler->GetIndexByControllerId(bId));
 
-			m_scene ->AddParticleEffect(pos / 2.f, vec3(1, 0, 0), vec3(0, 1, 0), 1, 6, vec3(0, 1, 0), 200, 0.5, 0.15);
+			m_scene ->AddParticleEffect(pos / 2.f, vec3(1, 0, 0), vec3(0, 1, 0), 1, 6, vec3(0, 1, 0), 200, 0.5, 0.15, -9.82);
+
+			if (m_objectHandler->GetNumPlayers() == 2)
+			{
+				if (m_objectHandler->GetPlayerLives(0) == 1 || m_objectHandler->GetPlayerLives(1) == 1)
+				{
+					m_slowmoCooldown = 1.f;
+				}
+			}
+
 		}
 
 		if (m_objectHandler->GetDeath())
@@ -265,14 +288,11 @@ void Game::Update(float dt)
 			m_menu->KillCount();
 		}
 	}
-}
 
-void Game::UpdateParticles(float dt)
-{
-	if (m_gameOver)
-	{
-		m_scene->AddParticleEffect(m_objectHandler->GetPlayerPos(m_winner), vec3(NULL), vec3(NULL), 5, 10, vec3(0, 5, 0), 10, 1, 0.2);
-	}
+	DynamicCamera(dtUnchanged);
+	m_scene->UpdateCamera(dtUnchanged);
+	m_scene->UpdateSky(dtUnchanged);
+	m_scene->UpdateParticles(dtUnchanged);
 }
 
 void Game::DynamicCamera(float dt)
@@ -307,15 +327,15 @@ void Game::DynamicCamera(float dt)
 
 		vec3 vec = m_objectHandler->GetPlayerPos(m_winner) + -infront * 3.f + right * 3.f + vec3(0, -0.6, 0);
 
-		m_scene->TranslateCameraPos(vec);
+		m_scene->TranslateCameraPos(vec, 1.f);
 
 		right = cross(normalize(m_objectHandler->GetPlayerPos(m_winner) - vec), vec3(0, 1, 0));
 
 		vec3 in = m_objectHandler->GetPlayerPos(m_winner) - (m_objectHandler->GetPlayerPos(m_winner) + right * 2.0f);
 
 
-		m_scene->AddParticleEffect(m_objectHandler->GetPlayerPos(m_winner) + right * 2.0f + vec3(0, -1, 0), vec3(NULL), vec3(NULL), 1, 0.9, vec3(0, 7, 0) + in + vec3(0, -1, 0), 10, 0.9, 0.04);
-		m_scene->AddParticleEffect(m_objectHandler->GetPlayerPos(m_winner) - right * 2.0f + vec3(0, -1, 0), vec3(NULL), vec3(NULL), 1, 0.9, vec3(0, 7, 0) - in + vec3(0, -1, 0), 10, 0.9, 0.04);
+		m_scene->AddParticleEffect(m_objectHandler->GetPlayerPos(m_winner) + right * 2.0f + vec3(0, -1, 0), vec3(NULL), vec3(NULL), 1, 0.9, vec3(0, 7, 0) + in + vec3(0, -1, 0), 10, 0.9, 0.04, -9.82);
+		m_scene->AddParticleEffect(m_objectHandler->GetPlayerPos(m_winner) - right * 2.0f + vec3(0, -1, 0), vec3(NULL), vec3(NULL), 1, 0.9, vec3(0, 7, 0) - in + vec3(0, -1, 0), 10, 0.9, 0.04, -9.82);
 
 		m_fireworkCooldown += dt;
 
@@ -336,7 +356,7 @@ void Game::DynamicCamera(float dt)
 			randCol.y = (static_cast <float> (rand()) / static_cast <float> (RAND_MAX));
 			randCol.z = (static_cast <float> (rand()) / static_cast <float> (RAND_MAX));
 
-			m_scene->AddParticleEffect(behind + randPos, randCol, vec3(0, 0, 0), 2, 6, vec3(1, 0, 0), 50, 0.8, 0.4);
+			m_scene->AddParticleEffect(behind + randPos, randCol, vec3(0, 0, 0), 2, 6, vec3(1, 0, 0), 50, 0.8, 0.4, -9.82);
 			m_fireworkCooldown = 0;
 		}
 	}
@@ -379,7 +399,7 @@ void Game::DynamicCamera(float dt)
 	}
 }
 
-void Game::Render(float dt)
+void Game::Render()
 {
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
@@ -393,7 +413,7 @@ void Game::Render(float dt)
 	m_carLight = m_objectHandler->GetLights();
 	m_objectHandler->RenderParticles();
 	m_scene->RenderLights(m_carLight);
-	m_scene->Render(m_objects, m_objectHandler->GetWorld(), m_cube, m_gameOver, m_winner, dt, m_objectHandler->GetLightsOut());
+	m_scene->Render(m_objects, m_objectHandler->GetWorld(), m_cube, m_gameOver, m_winner, m_objectHandler->GetLightsOut());
 //
 //	m_scene->Render(m_objects, m_objectHandler->GetWorld(), m_cube);
 

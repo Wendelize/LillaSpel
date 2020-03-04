@@ -24,7 +24,7 @@ int main(void)
 		_deltaTime = _curTime - _lastTime;
 		_lastTime = _curTime;
 		GAME->Update(_deltaTime);
-		GAME->Render(_deltaTime);
+		GAME->Render();
 	}
 
 	t.join();

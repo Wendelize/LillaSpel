@@ -333,7 +333,7 @@ void Player::SetModelId(int id)
 
 float Player::GetSpeed()
 {
-	return m_speed;
+	return m_body->getLinearVelocity().length();
 }
 
 void Player::SetSpeed(float speed)

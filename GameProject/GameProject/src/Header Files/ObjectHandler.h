@@ -82,8 +82,10 @@ public:
 	vec3 GetPlayerDirection(int index);
 	int GetPlayerControllerID(int index);
 	void SetPlayerControllerID(int index, int id);
+	int GetIndexByControllerId(int controllerId);
 	int GetPlayerModelID(int index);
 	void SetPlayerModelID(int index, int id);
+	float GetPlayerSpeed(int index);
 	vec3 GetPlayerColor(int index);
 	void SetPlayerColor(int index, vec3 color);
 	vec3 GetPlayerScale(int index);

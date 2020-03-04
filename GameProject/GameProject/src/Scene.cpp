@@ -191,13 +191,9 @@ void Scene::LightToShader(bool lightsOut)
 	}
 }
 
-void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, MarchingCubes* cube, bool gameOver, int winner, float dt, bool lightsOut)
+void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, MarchingCubes* cube, bool gameOver, int winner, bool lightsOut)
 {
-	if(dt < 1)
-		m_camera->UpdateMovement(dt, 1);
-
 	m_viewMatrix = m_camera->GetView();
-
 	/* Render here */
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -210,8 +206,8 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// Render sky dome and clouds
-	m_sky->Update(dt);
 	RenderSky();
+	
 	
 	// Matrix uniforms
 	m_modelShader->UseShader();
@@ -238,7 +234,7 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, 
 	RenderImGui(world);
 
 	// Render Particles
-	RenderParticles(dt);
+	RenderParticles();
 	
 	// Render Skybox
 	//RenderSkybox();
@@ -355,8 +351,25 @@ void Scene::RenderImGui(btDiscreteDynamicsWorld* world)
 	}
 }
 
-void Scene::RenderParticles(float dt)
+void Scene::RenderParticles()
 {
+	m_viewMatrix = m_camera->GetView();
+	for (int i = 0; i < m_particles.size(); i++)
+	{
+		m_particles[i]->GetShader()->UseShader();
+		m_particles[i]->GetShader()->SetUniform("u_View", m_viewMatrix);
+		m_particles[i]->GetShader()->SetUniform("u_Proj", m_projMatrix);
+		m_particles[i]->Draw();
+	}
+}
+
+void Scene::UpdateParticles(float dt)
+{
+	for (int i = 0; i < m_particles.size(); i++)
+	{
+		m_particles[i]->Simulate(dt);
+	}
+
 	int k = 0;
 	for (int i = 0; i < m_particles.size(); i++)
 	{
@@ -370,16 +383,17 @@ void Scene::RenderParticles(float dt)
 			k++;
 		}
 	}
+}
 
-	for (int i = 0; i < m_particles.size(); i++)
-	{
-		m_particles[i]->GetShader()->UseShader();
-		m_particles[i]->GetShader()->SetUniform("u_View", m_viewMatrix);
-		m_particles[i]->GetShader()->SetUniform("u_Proj", m_projMatrix);
+void Scene::UpdateCamera(float dt)
+{
+	if (dt < 1)
+		m_camera->UpdateMovement(dt);
+}
 
-		m_particles[i]->Simulate(dt);
-		m_particles[i]->Draw();
-	}
+void Scene::UpdateSky(float dt)
+{
+	m_sky->Update(dt);
 }
 
 void Scene::SwapBuffer()
@@ -410,9 +424,9 @@ void Scene::SetCameraPos(vec3 pos)
 	m_camera->ChangePos(pos);
 }
 
-void Scene::TranslateCameraPos(vec3 pos)
+void Scene::TranslateCameraPos(vec3 pos, float speed)
 {
-	m_camera->TranslatePos(pos);
+	m_camera->TranslatePos(pos, speed);
 }
 
 void Scene::SetCameraFocus(vec3 pos)
@@ -426,11 +440,11 @@ void Scene::ShakeCamera(float intensity, float duration)
 	m_camera->Shake(intensity, duration);
 }
 
-void Scene::AddParticleEffect(vec3 pos, vec3 color1, vec3 color2, float speed, float spread, vec3 dir, int nr, float duration, float size)
+void Scene::AddParticleEffect(vec3 pos, vec3 color1, vec3 color2, float speed, float spread, vec3 dir, int nr, float duration, float size, float gravity)
 {
 	m_particles.push_back(new ParticleSystem(nr));
 	m_particles.back()->SetActive();
-	m_particles.back()->GenerateParticles(pos, speed, spread, duration, color1, color2, size, dir);
+	m_particles.back()->GenerateParticles(pos, speed, spread, duration, color1, color2, size, dir, gravity);
 }
 
 
