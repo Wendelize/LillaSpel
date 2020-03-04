@@ -97,6 +97,9 @@
     <ClCompile Include="src\Object.cpp">
       <Filter>Src</Filter>
     </ClCompile>
+    <ClCompile Include="src\Ghost.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Header Files\Camera.h">
@@ -199,6 +202,9 @@
       <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="src\Header Files\Object.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Header Files\Ghost.h">
       <Filter>Header</Filter>
     </ClInclude>
   </ItemGroup>

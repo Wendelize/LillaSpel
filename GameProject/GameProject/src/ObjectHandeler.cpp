@@ -83,6 +83,12 @@ ObjectHandler::~ObjectHandler()
 	m_powerUps.clear();
 	m_platforms.clear();
 
+	for (uint i = 0; i < m_ghosts.size(); i++)
+	{
+		delete m_ghosts.at(i);
+	}
+	m_ghosts.clear();
+
 	for (size_t i = 0; i < m_structs.size(); i++)
 	{
 		delete m_structs.at(i);
@@ -141,6 +147,14 @@ void ObjectHandler::Update(float dt)
 	int randomNumber = rand() % NRDEATHSOUNDS;
 
 	m_dynamicsWorld->stepSimulation(dt, 10);
+	
+	m_scaleTimer += dt;
+
+	if (m_scaleTimer > 0.3f && m_objects.size() != 0) {
+		m_objects.at(0)->SetScale(m_objects.at(0)->GetScale() + 0.01f);
+		m_objects.at(0)->SetRotation((3.14 * 2)/360);
+		m_scaleTimer = 0;
+	}
 
 	CheckPowerUpCollision();
 	CheckCollisionCars(dt);
@@ -181,8 +195,51 @@ void ObjectHandler::Update(float dt)
 		int isObject = i - nrOfPlatforms - m_powerUps.size() - m_players.size();
 		
 		if (isObject >= 0) {
-			m_objects.at(isObject)->update();
+			m_objects.at(isObject)->Update();
 		}
+
+		// GHOSTS
+		if (i < m_ghosts.size()) {
+			m_ghosts.at(i)->UpdateGhost(dt);
+			for (uint j = 0; j < m_ghosts.size(); j++)
+			{
+				if (m_ghosts.at(j)->GetLightSwitch())
+				{
+					m_lightsOut = true;
+				}
+				if (!m_ghosts.at(j)->GetLightSwitch())
+				{
+					m_lightsOut = false;
+				}
+
+				if (m_ghosts.at(j)->GetBombSwitch())
+				{
+					int width = m_cube->GetCurrentWidth()-10;
+					if (width < 2) {
+						width = 2;
+					}
+					cout << width << endl;
+					for(int i = 0; i < 5 ; i++){
+						vec3 temp = vec3(rand() % width - (width / 2) , 0, rand() % width - (width / 2));
+						float height = m_cube->GetHeight(temp);
+						temp.y = height;
+
+						cout << temp.x << ", " << temp.y << ", " << temp.z << endl;
+						m_bombZone.push_back(temp);
+					}
+					m_ghosts.at(j)->SetBombSwitch(false);
+				}
+
+				if (m_ghosts.at(j)->GetCtrlSwitch())
+				{
+					for (uint j = 0; j < m_players.size(); j++)
+					{
+						m_players.at(j)->GivePower(1);
+					}
+				}
+			}
+		}
+
 		if (isPowerUp >= 0) {
 			if (m_powerUps[isPowerUp]->update(dt)) {
 				RemovePowerUp(isPowerUp);
@@ -232,9 +289,8 @@ void ObjectHandler::Update(float dt)
 				}
 				else if (m_players[isPlayer]->GetLives() == 0)
 				{
-					// used for statsMenu
+					AddGhost(m_players[isPlayer]->GetControllerID());
 					m_deathOrder.push_back(m_players[isPlayer]->GetControllerID());
-
 					RemovePlayer(isPlayer);
 					isPlayer--;
 				}
@@ -263,8 +319,8 @@ void ObjectHandler::Update(float dt)
 					if (m_players[isPlayer]->GetLives() == 0) 
 					{
 						// used for statsMenu
+						AddGhost(m_players[isPlayer]->GetControllerID());
 						m_deathOrder.push_back(m_players[isPlayer]->GetControllerID());
-
 						RemovePlayer(isPlayer);
 						isPlayer--;
 					}
@@ -293,14 +349,14 @@ void ObjectHandler::AddPlayer(vec3 pos, int controllerID, int modelId, vec3 colo
 void ObjectHandler::AddObject(vec3 pos, int modelId, Model* model)
 {
 	m_objects.push_back(new Object(btVector3(pos.x, pos.y, pos.z), modelId, model));
-	m_dynamicsWorld->addRigidBody(m_objects.back()->getObject());
+	m_dynamicsWorld->addRigidBody(m_objects.back()->GetObject());
 
 }
 
 void ObjectHandler::RemoveObject(int index)
 {
-	m_dynamicsWorld->removeCollisionObject(m_objects.at(index)->getObject());
-	btRigidBody* body = m_objects.at(index)->getObject();
+	m_dynamicsWorld->removeCollisionObject(m_objects.at(index)->GetObject());
+	btRigidBody* body = m_objects.at(index)->GetObject();
 	delete m_objects.at(index);
 	m_objects.erase(m_objects.begin() + index);
 	if (body && body->getMotionState())
@@ -337,6 +393,12 @@ void ObjectHandler::AddPlatform(int modelId, Model* model)
 	m_platforms.back()->SetModelId(modelId);
 
 	m_dynamicsWorld->addRigidBody(m_platforms.back()->getBody(), 1, -1);
+}
+
+void ObjectHandler::AddGhost(int index)
+{
+	m_ghosts.push_back(new Ghost());
+	m_ghosts.back()->SetControllerID(index);
 }
 
 void ObjectHandler::RemovePlatform()
@@ -887,6 +949,17 @@ bool ObjectHandler::CheckCollisionCars(float dt)
 
 bool ObjectHandler::GetLightsOut()
 {
+	//for (uint i = 0; i < m_ghosts.size(); i++)
+	//{
+	//	if (m_ghosts.at(i)->GetLightSwitch())
+	//	{
+	//		m_lightsOut = true;
+	//	}
+	//	if (!m_ghosts.at(i)->GetLightSwitch())
+	//	{
+	//		m_lightsOut = false;
+	//	}
+	//}
 	return m_lightsOut;
 }
 

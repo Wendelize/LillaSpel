@@ -1,164 +1,161 @@
-#include "Header Files/Bloom.h"
+#include "Header Files\Ghost.h"
 
-Bloom::Bloom(int width, int height, float resScale)
+Ghost::Ghost()
 {
-	m_width = width;
-	m_height = height;
-	m_resolutionScale = resScale;
+	m_controller = new Controller();
 
-	m_blur = new Shader("src/Shaders/GaussianBlurVS.glsl", "src/Shaders/GaussianBlurFS.glsl");
-	m_bloom = new Shader("src/Shaders/BloomVS.glsl", "src/Shaders/BloomFS.glsl");
-	Init();
-	InitPingPong();
+	m_controllerID = 0;
+	m_nrOfBombSwitch = 10000;
+	m_nrOfLightSwitch = 20;
+	m_nrOfCtrlSwitch = 10;
 
-	m_blur->UseShader();
-	m_blur->Uniform("u_BrightImage", 0);
-	m_bloom->UseShader();
-	m_bloom->Uniform("u_Scene", 0);
-	m_bloom->Uniform("u_BloomBlur", 1);
-}
+	m_bombSwitch = false;
+	m_ctrlSwitch = false;
+	m_lightSwitch = false;
 
-Bloom::~Bloom()
-{
-	delete m_blur;
-	delete m_bloom;
-}
+	m_honkEngine = createIrrKlangDevice();
+	m_tauntEngine = createIrrKlangDevice();
 
-void Bloom::Init()
-{
-	glGenFramebuffers(1, &m_FBO1);
-	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO1);
-
-	glGenTextures(2, m_colorBuffers);
-
-	for (int i = 0; i < 2; i++)
+	// Create sound
+	if (m_honkEngine && m_tauntEngine)
 	{
-		glBindTexture(GL_TEXTURE_2D, m_colorBuffers[i]);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, m_width, m_height, 0, GL_RGB, GL_FLOAT, NULL);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, m_colorBuffers[i], 0);
+		m_sounds.push_back(m_honkEngine->addSoundSourceFromFile("src/Audio/Player - HonkDELUXE.mp3"));
+
+		m_tauntEngine->setSoundVolume(0.3);
+		m_taunt = m_tauntEngine->play2D(m_sounds[0], false, true);
+
+		m_honkEngine->setSoundVolume(0.2f);
+		m_honk = m_honkEngine->play2D(m_sounds[0], false, true);
 	}
 
-	glGenRenderbuffers(1, &m_depth);
-	glBindRenderbuffer(GL_RENDERBUFFER, m_depth);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, m_width, m_height);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_depth);
-
-	unsigned int attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
-	glDrawBuffers(2, attachments);
-
-	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-		std::cout << "Framebuffer not complete!" << std::endl;
-
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	// SpookSounds
 }
 
-void Bloom::InitPingPong()
+Ghost::~Ghost()
 {
-	glGenFramebuffers(2, m_pingPongFBO);
-	glGenTextures(2, m_pingPongColorBuffer);
-	for (unsigned int i = 0; i < 2; i++)
+	delete m_controller;
+
+
+	if (m_honkEngine )
 	{
-		glBindFramebuffer(GL_FRAMEBUFFER, m_pingPongFBO[i]);
-		glBindTexture(GL_TEXTURE_2D, m_pingPongColorBuffer[i]);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, m_width * m_resolutionScale, m_height * m_resolutionScale, 0, GL_RGB, GL_FLOAT, NULL);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); // we clamp to the edge as the blur filter would otherwise sample repeated texture values!
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_pingPongColorBuffer[i], 0);
-		// also check if framebuffers are complete (no need for depth buffer)
-		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-			std::cout << "Framebuffer not complete!" << std::endl;
+		for (uint i = 0; i < m_sounds.size(); i++)
+		{
+			m_sounds[i]->drop();
+		}
+		m_sounds.clear();
+
+		m_honk->drop();
+		m_taunt->drop();
+		m_tauntEngine->drop(); // TODO: FIX THIS BUG, happens when trying to exit when game over or exit if game was reset
 	}
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void Bloom::PingPongRender(int nrOfSteps) //gaussian blur on the bloom texture
+void Ghost::UpdateGhost(float dt)
 {
-	glViewport(0, 0, m_width * m_resolutionScale, m_height * m_resolutionScale);
+	m_timeOut += dt;
+	const char* filename;
+	int randomNumber = rand() % 10;
 
-	m_horizontal = true;
-	m_firstIteration = true;
-
-	m_blur->UseShader();
-	for (unsigned int i = 0; i < nrOfSteps; i++)
+	if (glfwJoystickPresent(m_controllerID))
 	{
-		glBindFramebuffer(GL_FRAMEBUFFER, m_pingPongFBO[m_horizontal]);
-		m_blur->Uniform("u_Horizontal", m_horizontal);
-		glBindTexture(GL_TEXTURE_2D, m_firstIteration ? m_colorBuffers[1] : m_pingPongColorBuffer[!m_horizontal]);  // bind texture of other framebuffer (or scene if first iteration)
-		RenderQuad();
-		m_horizontal = !m_horizontal;
-		if (m_firstIteration)
-			m_firstIteration = false;
+		if (m_honkEngine && m_controller->ButtonRightJoystickIsPressed(m_controllerID))
+		{
+			m_honkEngine->play2D(m_honk->getSoundSource(), false, false, true);
+		}
+
+		if (m_tauntEngine)
+		{
+			if (m_controller->ButtonYIsPressed(m_controllerID))
+			{
+				filename = m_soundFiles[randomNumber];
+				m_tauntEngine->play2D(filename, false);
+				cout << "Pressing Y" << endl;
+			}
+		}
+
+		if (m_nrOfBombSwitch > 0 && m_timeOut > 5.f)
+		{
+			if (m_controller->ButtonBIsPressed(m_controllerID))
+			{
+				// Play "Here comes a bomb"" 
+				m_nrOfBombSwitch--;
+				m_timeOut = 0;
+				m_bombSwitch = true;
+				cout << "Pressing B" << endl;
+			}
+		}
+
+		if (m_nrOfLightSwitch > 0 && m_timeOut > 5.f)
+		{
+			if (m_controller->ButtonAIsPressed(m_controllerID))
+			{
+				// Play "Buuuuh, daaark"
+				m_lightSwitch = true;
+				m_nrOfLightSwitch--;
+				m_timeOut = 0;
+				cout << "Pressing A" << endl;
+			}
+		}
+
+		if (m_nrOfCtrlSwitch > 0 && m_timeOut > 5.f)
+		{
+			if (m_controller->ButtonXIsPressed(m_controllerID))
+			{
+				// Play "HEHEHEHE, TRY DIZ"
+				m_ctrlSwitch = true;
+				m_nrOfCtrlSwitch--;
+				m_timeOut = 0;
+				cout << "Pressing X" << endl;
+			}
+		}
 	}
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-}
-
-void Bloom::RenderBloom(GLFWwindow* w)
-{
-	int width;
-	int height;
-	glfwGetWindowSize(w, &width, &height);
-
-
-	glViewport(0, 0, width, height);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	m_bloom->UseShader();
-
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, m_colorBuffers[0]);
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, m_pingPongColorBuffer[!m_horizontal]);
-
-	m_bloom->Uniform("u_Bloom", m_bool);
-	m_bloom->Uniform("u_Exposure", m_exposure);
-	RenderQuad();
-
-}
-
-void Bloom::RenderQuad()
-{
-	if (m_quadVAO == 0)
+	if (m_timeOut >= 3.f)
 	{
-		float quadVertices[] = {
-			// positions        // texture Coords
-			-1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
-			-1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
-			1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
-			1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
-		};
-		// setup plane VAO
-		glGenVertexArrays(1, &m_quadVAO);
-		glGenBuffers(1, &m_quadVBO);
-		glBindVertexArray(m_quadVAO);
-		glBindBuffer(GL_ARRAY_BUFFER, m_quadVBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+		m_lightSwitch = false;
+		m_ctrlSwitch = false;
+		m_bombSwitch = false;
 	}
-	glBindVertexArray(m_quadVAO);
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-	glBindVertexArray(0);
 }
 
-Shader* Bloom::GetBlurShader()
+int Ghost::GetControllerID()
 {
-	return m_blur;
+	return m_controllerID;
 }
 
-Shader* Bloom::GetBloomShader()
+bool Ghost::GetBombSwitch()
 {
-	return m_bloom;;
+	return m_bombSwitch;
 }
 
-unsigned int Bloom::getFBO()
+bool Ghost::GetCtrlSwitch()
 {
-	return m_FBO1;
+	return m_ctrlSwitch;
 }
+
+bool Ghost::GetLightSwitch()
+{
+	return m_lightSwitch;
+}
+
+void Ghost::SetControllerID(int index)
+{
+	m_controllerID = index;
+}
+
+void Ghost::SetBombSwitch(bool state)
+{
+	m_bombSwitch = state;
+}
+
+void Ghost::SetCtrlSwitch(bool state)
+{
+	m_ctrlSwitch = state;
+}
+
+void Ghost::SetLightSwitch(bool state)
+{
+	m_lightSwitch = state;
+}
+
+

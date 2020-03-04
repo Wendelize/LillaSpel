@@ -3,6 +3,7 @@
 #include "Platform.h"
 #include "Player.h"
 #include "PowerUp.h"
+#include "Ghost.h"
 #include "MarchingCubes.h"
 #include "Object.h"
 
@@ -21,8 +22,8 @@ private:
 	vector<Player*> m_players;
 	vector<Platform*> m_platforms;
 	vector<PowerUp*> m_powerUps;
+	vector<Ghost*> m_ghosts;
 	vector<Object*> m_objects;
-
 	vector<ObjectInfo*> m_structs;
 	vector<Light*> m_carLights;
 	vector<vec3> m_bombZone;
@@ -35,6 +36,7 @@ private:
 	int m_dead = -1;
 	int m_activeBombs = 0;
 	float m_collidTimer = 0;
+	float m_scaleTimer = 0;
 	// uses controller id
 	vector <int> m_deathOrder;
 
@@ -64,6 +66,7 @@ public:
 	void AddObject(vec3 pos, int modelId, Model* model);
 	void RemoveObject(int index);
 	void AddPlatform(int modelId, Model* model);
+	void AddGhost(int index);
 	void SetScale(int id, vec3 scale);
 	void RemovePlayer(int index);
 	void RemovePlatform();

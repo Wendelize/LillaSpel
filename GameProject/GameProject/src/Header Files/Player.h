@@ -30,6 +30,8 @@ private:
 	ISound* m_honk;
 	bool m_fallen;
 	bool m_inverted;
+
+	// CarLights
 	Light* m_lights[2];
 	bool m_lightsOn = true;
 	float m_timeOut;

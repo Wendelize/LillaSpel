@@ -8,9 +8,11 @@ public:
 	Object(btVector3 pos, int type, Model* model);
 	~Object();
 	ObjectInfo* GetObjectInfo();
-	btRigidBody* getObject();
-	void update();
-
+	btRigidBody* GetObject();
+	void Update();
+	void SetScale(float scale);
+	float GetScale();
+	void SetRotation(float degrees);
 private:
 	btTriangleMesh m_tetraMesh;
 	btConvexHullShape* m_physicsMesh;
@@ -22,4 +24,5 @@ private:
 	vec3 m_color;
 	Transform* m_transform;
 	ObjectInfo* m_info;
+	float m_scale;
 };
