@@ -6,8 +6,8 @@ Ghost::Ghost()
 
 	m_controllerID = 0;
 	m_nrOfBombSwitch = 10000;
-	m_nrOfLightSwitch = 2;
-	m_nrOfCtrlSwitch = 1;
+	m_nrOfLightSwitch = 20;
+	m_nrOfCtrlSwitch = 10;
 
 	m_bombSwitch = false;
 	m_ctrlSwitch = false;
@@ -73,7 +73,7 @@ void Ghost::UpdateGhost(float dt)
 			}
 		}
 
-		if (m_nrOfBombSwitch > 0 && m_timeOut > 0.12)
+		if (m_nrOfBombSwitch > 0 && m_timeOut > 5.f)
 		{
 			if (m_controller->ButtonBIsPressed(m_controllerID))
 			{
@@ -85,7 +85,7 @@ void Ghost::UpdateGhost(float dt)
 			}
 		}
 
-		if (m_nrOfLightSwitch > 0 && m_timeOut > 5)
+		if (m_nrOfLightSwitch > 0 && m_timeOut > 5.f)
 		{
 			if (m_controller->ButtonAIsPressed(m_controllerID))
 			{
@@ -97,11 +97,12 @@ void Ghost::UpdateGhost(float dt)
 			}
 		}
 
-		if (m_nrOfCtrlSwitch > 0 && m_timeOut > 5)
+		if (m_nrOfCtrlSwitch > 0 && m_timeOut > 5.f)
 		{
 			if (m_controller->ButtonXIsPressed(m_controllerID))
 			{
 				// Play "HEHEHEHE, TRY DIZ"
+				m_ctrlSwitch = true;
 				m_nrOfCtrlSwitch--;
 				m_timeOut = 0;
 				cout << "Pressing X" << endl;
@@ -109,7 +110,7 @@ void Ghost::UpdateGhost(float dt)
 		}
 	}
 
-	if (m_timeOut >= 3)
+	if (m_timeOut >= 3.f)
 	{
 		m_lightSwitch = false;
 		m_ctrlSwitch = false;

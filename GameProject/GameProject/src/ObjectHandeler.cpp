@@ -196,6 +196,7 @@ void ObjectHandler::Update(float dt)
 			m_objects.at(isObject)->Update();
 		}
 
+		// GHOSTS
 		if (i < m_ghosts.size()) {
 			m_ghosts.at(i)->UpdateGhost(dt);
 			for (uint j = 0; j < m_ghosts.size(); j++)
@@ -217,14 +218,22 @@ void ObjectHandler::Update(float dt)
 					}
 					cout << width << endl;
 					for(int i = 0; i < 5 ; i++){
-					vec3 temp = vec3(rand() % width - (width / 2) , 0, rand() % width - (width / 2));
-					float height = m_cube->GetHeight(temp);
-					temp.y = height;
+						vec3 temp = vec3(rand() % width - (width / 2) , 0, rand() % width - (width / 2));
+						float height = m_cube->GetHeight(temp);
+						temp.y = height;
 
-					cout << temp.x << ", " << temp.y << ", " << temp.z << endl;
-					m_bombZone.push_back(temp);
+						cout << temp.x << ", " << temp.y << ", " << temp.z << endl;
+						m_bombZone.push_back(temp);
 					}
 					m_ghosts.at(j)->SetBombSwitch(false);
+				}
+
+				if (m_ghosts.at(j)->GetCtrlSwitch())
+				{
+					for (uint j = 0; j < m_players.size(); j++)
+					{
+						m_players.at(j)->GivePower(1);
+					}
 				}
 			}
 		}
