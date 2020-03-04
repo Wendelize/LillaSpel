@@ -924,3 +924,8 @@ int MarchingCubes::GetWidth()
 {
 	return m_width;
 }
+
+int MarchingCubes::GetCurrentWidth()
+{
+	return m_width-m_shrink;
+}

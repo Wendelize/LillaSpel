@@ -206,8 +206,46 @@ void ObjectHandler::Update(float dt)
 			m_objects.at(isObject)->Update();
 		}
 
+		// GHOSTS
 		if (i < m_ghosts.size()) {
 			m_ghosts.at(i)->UpdateGhost(dt);
+			for (uint j = 0; j < m_ghosts.size(); j++)
+			{
+				if (m_ghosts.at(j)->GetLightSwitch())
+				{
+					m_lightsOut = true;
+				}
+				if (!m_ghosts.at(j)->GetLightSwitch())
+				{
+					m_lightsOut = false;
+				}
+
+				if (m_ghosts.at(j)->GetBombSwitch())
+				{
+					int width = m_cube->GetCurrentWidth()-10;
+					if (width < 2) {
+						width = 2;
+					}
+					cout << width << endl;
+					for(int i = 0; i < 5 ; i++){
+						vec3 temp = vec3(rand() % width - (width / 2) , 0, rand() % width - (width / 2));
+						float height = m_cube->GetHeight(temp);
+						temp.y = height;
+
+						cout << temp.x << ", " << temp.y << ", " << temp.z << endl;
+						m_bombZone.push_back(temp);
+					}
+					m_ghosts.at(j)->SetBombSwitch(false);
+				}
+
+				if (m_ghosts.at(j)->GetCtrlSwitch())
+				{
+					for (uint j = 0; j < m_players.size(); j++)
+					{
+						m_players.at(j)->GivePower(1);
+					}
+				}
+			}
 		}
 
 		if (isPowerUp >= 0) {
@@ -917,6 +955,17 @@ bool ObjectHandler::CheckCollisionCars(float dt)
 
 bool ObjectHandler::GetLightsOut()
 {
+	//for (uint i = 0; i < m_ghosts.size(); i++)
+	//{
+	//	if (m_ghosts.at(i)->GetLightSwitch())
+	//	{
+	//		m_lightsOut = true;
+	//	}
+	//	if (!m_ghosts.at(i)->GetLightSwitch())
+	//	{
+	//		m_lightsOut = false;
+	//	}
+	//}
 	return m_lightsOut;
 }
 

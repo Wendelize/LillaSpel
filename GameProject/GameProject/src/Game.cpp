@@ -18,7 +18,7 @@ Game::Game()
 	m_menu->SetActiveMenu(Menu::ActiveMenu::start);
 	m_menu->LoadMenuPic();
 
-	m_maxTime = 60.f;
+	m_maxTime = 120.f;
 	m_debug = false;
 	m_toggle = false;
 	m_platforms = m_scene->GetModels(0);
