@@ -13,7 +13,12 @@ public:
 	void SetScale(float scale);
 	float GetScale();
 	void SetRotation(float degrees);
+	void Move(vec3 dir);
+	vec3 GetPos();
+	void SetWay(bool way);
+	bool GetWay();
 private:
+	bool m_way = false;
 	btTriangleMesh m_tetraMesh;
 	btConvexHullShape* m_physicsMesh;
 	btRigidBody* m_body;

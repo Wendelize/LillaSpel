@@ -15,7 +15,7 @@ Game::Game()
 	// väl playerHud om ni vill spela utan start menu
 	// välj noMenu om ni vill spela utan HUD 
 	//	Pause meny bör fortfarande fungera med noMenu
-	m_menu->SetActiveMenu(Menu::ActiveMenu::playerHud);
+	m_menu->SetActiveMenu(Menu::ActiveMenu::start);
 	m_menu->LoadMenuPic();
 
 	m_maxTime = 60.f;
@@ -29,10 +29,9 @@ Game::Game()
 
 	m_timeSinceSpawn = 0;
 
-	m_objectHandler->AddPlayer(vec3(-10, 4, 3), 0, 0, vec3(0.5, 1, 9), m_cars[0]); // Passa modell
-	m_objectHandler->AddPlayer(vec3(10, 4, 3), 1, 0, vec3(0, 2, 0), m_cars[2]); // Passa modell
-	//m_objectHandler->AddPlayer(vec3(-4, 7, -4), 3, rand() % 4, vec3(1, 1, 0), m_cars[3]); // Passa modell
-	//m_objectHandler->AddGhost(0);
+	m_objectHandler->AddPlayer(vec3(-10, 6, 3), 0, 0, vec3(0.5, 1, 9), m_cars[0]); // Passa modell
+	m_objectHandler->AddPlayer(vec3(10, 6, 3), 1, 0, vec3(0, 2, 0), m_cars[2]); // Passa modell
+
 	m_scene->SetCameraPos(CAMERAPOS_GAME);
 
 
@@ -84,6 +83,7 @@ Game::~Game()
 void Game::Update(float dt)
 {
 	DynamicCamera(dt);
+
 
 	if (m_objectHandler->GetExplosion())
 	{
@@ -141,11 +141,17 @@ void Game::Update(float dt)
 			m_timeSwapTrack = 0.f;
 			m_mapUpdateReady.store(false);
 			m_objectHandler->ClearBombs();
+			if (m_cube->GetCurrentLevel() == 5) {
+				m_objectHandler->RemoveAllObjects();
+				m_objectHandler->AddObject(vec3(0, 2, 0), 0, m_objectModels[0]);
+			}
+			else {
+				m_objectHandler->RemoveAllObjects();
+			}
 		}
 	}
 	if ((!m_menu->Pause() && !m_wasSelect)) // Vet inte om det kan göras snyggare?
 	{
-
 		m_time += dt;
 		m_timeSinceSpawn += dt;
 		m_timeSwapTrack += dt;
@@ -168,8 +174,13 @@ void Game::Update(float dt)
 			m_objectHandler->AddPowerUp();
 			m_timeSinceSpawn = 0;
 		}
-		if (!m_gameOver)
+		if (!m_gameOver){
 			m_objectHandler->Update(dt);
+			if (m_objectHandler->GetSpawnBall()) {
+				m_objectHandler->AddObject(vec3(0, 20, 0), 1, m_objectModels[1]);
+				m_objectHandler->SetSpawnBall(false);
+			}
+		}
 
 		if (m_objectHandler->GetNumPlayers() == 1 && !m_gameOver)
 		{
@@ -187,12 +198,12 @@ void Game::Update(float dt)
 		}
 		if (m_maxTime - m_time <= 30.f && !m_fastMusic)
 		{
+			m_objectHandler->AddObject(vec3(rand() % 10 - 5, 10, rand() & 10 - 5), 1, m_objectModels[1]);
 			if (m_soundEngine)
 			{
 				m_music->setPlaybackSpeed(1.2);
-				m_fastMusic = true;
 			}
-
+			m_fastMusic = true;
 		}
 		if (m_time > m_maxTime && !m_gameOver)
 		{
@@ -410,13 +421,14 @@ void Game::Reset()
 	//m_maxTime = 240.f;
 	m_timeSinceSpawn = 0;
 	// delete remaning players so we can spawn them back att spawn positions
-	for (int i = 0; i < 4; i++)
+	int nrOfPup = m_objectHandler->GetNumPowerUps();
+	for (int i = 0; i < nrOfPup; i++)
 	{
-		
-		if (m_objectHandler->GetNumPowerUps() > 0)
-		{
-			m_objectHandler->RemovePowerUp(m_objectHandler->GetNumPowerUps() - 1);
-		}
+		m_objectHandler->RemovePowerUp(0);
+	}
+	m_objectHandler->RemoveAllObjects();
+	if (m_cube->GetCurrentLevel() == 5) {
+		m_objectHandler->AddObject(vec3(0, 2, 0), 0, m_objectModels[0]);
 	}
 	if (m_soundEngine)
 	{

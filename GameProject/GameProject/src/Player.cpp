@@ -50,7 +50,7 @@ Player::Player(Model* model, int modelId, vec3 pos)
 		break;
 	case 1:
 		//truck
-		mass = 1100.f;
+		mass = 1200.f;
 		break;
 	case 2:
 		mass = 1050.f;
@@ -99,19 +99,19 @@ Player::Player(Model* model, int modelId, vec3 pos)
 	switch (modelId)
 	{
 	case 0:
-		m_body->setDamping(0.1, 0.9);
+		m_body->setDamping(0.2, 100.0);
 		break;
 	case 1:
-		m_body->setDamping(0.1, 0.9);
+		m_body->setDamping(0.2, 100.0);
 		break;
 	case 2:
-		m_body->setDamping(0.01, 0.9);
+		m_body->setDamping(0.2, 100.0);
 		break;
 	case 3:
-		m_body->setDamping(0.1, 0.9);
+		m_body->setDamping(0.2, 100.0);
 		break;
 	default:
-		m_body->setDamping(0.1, 1);
+		m_body->setDamping(0.1, 100.0);
 		break;
 	}
 
