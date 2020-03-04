@@ -18,7 +18,7 @@ Game::Game()
 	m_menu->SetActiveMenu(Menu::ActiveMenu::playerHud);
 	m_menu->LoadMenuPic();
 
-	m_maxTime = 60.f;
+	m_maxTime = 120.f;
 	m_debug = false;
 	m_toggle = false;
 	m_platforms = m_scene->GetModels(0);
@@ -29,10 +29,10 @@ Game::Game()
 
 	m_timeSinceSpawn = 0;
 
-	m_objectHandler->AddPlayer(vec3(-10, 4, 3), 0, 0, vec3(0.5, 1, 9), m_cars[0]); // Passa modell
+	m_objectHandler->AddPlayer(vec3(-10, 4, 3), 3, 0, vec3(0.5, 1, 9), m_cars[0]); // Passa modell
 	m_objectHandler->AddPlayer(vec3(10, 4, 3), 1, 0, vec3(0, 2, 0), m_cars[2]); // Passa modell
-	//m_objectHandler->AddPlayer(vec3(-4, 7, -4), 3, rand() % 4, vec3(1, 1, 0), m_cars[3]); // Passa modell
-	//m_objectHandler->AddGhost(0);
+	m_objectHandler->AddPlayer(vec3(-4, 7, -4), 2, rand() % 4, vec3(1, 1, 0), m_cars[3]); // Passa modell
+	m_objectHandler->AddGhost(0);
 	m_scene->SetCameraPos(CAMERAPOS_GAME);
 
 
