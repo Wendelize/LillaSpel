@@ -119,7 +119,9 @@ void Scene::Init()
 	m_power.push_back(new Model("src/Models/Bulb.obj"));				//7
 	m_power.push_back(new Model("src/Models/Love.obj"));				//8
 
-	m_objects.push_back(new Model("src/Models/LowPolyController.obj"));
+	m_objects.push_back(new Model("src/Models/Log.obj"));  //MÅSTE VARA FÖRSTA SOM LADDAS IN
+	m_objects.push_back(new Model("src/Models/Ball.obj"));
+
 	//m_power.push_back(new Model("src/Models/PowerUp.obj"));
 
 	// Lights

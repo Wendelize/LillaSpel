@@ -149,13 +149,23 @@ void ObjectHandler::Update(float dt)
 	m_dynamicsWorld->stepSimulation(dt, 10);
 	
 	m_scaleTimer += dt;
+	if (m_cube->GetCurrentLevel() == 5) {
+		if (m_objects.size() != 0) {
+			if (m_objects.at(0)->GetPos().z < -21.0f && m_objects.at(0)->GetWay()) {
+				m_objects.at(0)->SetWay(false);
+			}
+			else if (m_objects.at(0)->GetPos().z > 21.0f && !m_objects.at(0)->GetWay()) {
+				m_objects.at(0)->SetWay(true);
 
-	if (m_scaleTimer > 0.3f && m_objects.size() != 0) {
-		m_objects.at(0)->SetScale(m_objects.at(0)->GetScale() + 0.01f);
-		m_objects.at(0)->SetRotation((3.14 * 2)/360);
-		m_scaleTimer = 0;
+			}
+			if (m_objects.at(0)->GetWay()) {
+				m_objects.at(0)->Move(vec3(0, 0, -5));
+			}
+			else {
+				m_objects.at(0)->Move(vec3(0, 0, 5));
+			}
+		}
 	}
-
 	CheckPowerUpCollision();
 	CheckCollisionCars(dt);
 	UpdateVibration(dt);
@@ -613,6 +623,16 @@ void ObjectHandler::SetDeath(bool setFalse)
 	m_death = setFalse;
 }
 
+bool ObjectHandler::GetSpawnBall()
+{
+	return m_spawnBall;
+}
+
+void ObjectHandler::SetSpawnBall(bool spawn)
+{
+	m_spawnBall = spawn;
+}
+
 int ObjectHandler::GetDeadId()
 {
 	int temp = m_dead;
@@ -846,6 +866,9 @@ void ObjectHandler::CheckPowerUpCollision()
 								vec3 temp = vec3(m_powerUps.at(k)->GetPos().x(), m_powerUps.at(k)->GetPos().y(), m_powerUps.at(k)->GetPos().z());
 								m_bombZone.push_back(temp);
 							}
+							else if (m_powerUps.at(k)->GetType() == 10) {
+								m_spawnBall = true;
+							}
 							else
 							{
 								if (m_soundEngine) {
@@ -893,6 +916,9 @@ void ObjectHandler::CheckPowerUpCollision()
 							else if (m_powerUps.at(k)->GetType() == 6) {
 								vec3 temp = vec3(m_powerUps.at(k)->GetPos().x(), m_powerUps.at(k)->GetPos().y(), m_powerUps.at(k)->GetPos().z());
 								m_bombZone.push_back(temp);
+							}
+							else if (m_powerUps.at(k)->GetType() == 10) {
+								m_spawnBall = true;
 							}
 							else
 							{
@@ -972,6 +998,14 @@ void ObjectHandler::RenderParticles()
 {
 	for (int i = 0; i < m_particles.size(); i++) {
 		m_particles.at(i)->Draw();
+	}
+}
+
+void ObjectHandler::RemoveAllObjects()
+{
+	int nrOf = m_objects.size();
+	for (int i = 0; i < nrOf; i++) {
+		RemoveObject(0);
 	}
 }
 

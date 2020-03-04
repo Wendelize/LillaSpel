@@ -31,6 +31,7 @@ private:
 	// used to track collisions for statsMenu
 	bool m_collisionHappened = false;
 	bool m_death = false;
+	bool m_spawnBall = false;
 	int m_aCollisionPlayerId = -1;
 	int m_bCollisionPlayerId = -1;
 	int m_dead = -1;
@@ -39,7 +40,7 @@ private:
 	float m_scaleTimer = 0;
 	// uses controller id
 	vector <int> m_deathOrder;
-
+	
 	ISoundEngine* m_soundEngine;
 
 	const char* m_soundFiles[NRDEATHSOUNDS];
@@ -95,6 +96,8 @@ public:
 	void SetCollisionHappened(bool setFalse = false);
 	bool GetDeath();
 	void SetDeath(bool setFalse = false);
+	bool GetSpawnBall();
+	void SetSpawnBall(bool spawn);
 	// also sets dead to -1;
 	int GetDeadId();
 	// also clears the vector
@@ -126,4 +129,5 @@ public:
 	bool GetLightsOut();
 	void SetLightsOut(bool state);
 	void RenderParticles();
+	void RemoveAllObjects();
 };

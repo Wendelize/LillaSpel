@@ -10,8 +10,14 @@ Object::Object(btVector3 pos, int type, Model* model)
 	m_transform->SetScale(1, 1, 1);
 	m_scale = 1.0f;
 	btVector3 localInertia(0, 0, 0);
-	float mass = 0.0f;
-	//m_shape = new btBoxShape(btVector3(1.f, 1.f, 1.f));
+	float mass;
+
+	if (type == 0) {
+		mass = 100000.0f;
+	}
+	else {
+		mass = 200.f;
+	}
 	m_motionState = new btDefaultMotionState(*m_btTransform);
 	vector<btVector3> points;
 	vector<int> indicies;
@@ -34,7 +40,8 @@ Object::Object(btVector3 pos, int type, Model* model)
 
 	vec3 btPos = vec3(m_btTransform->getOrigin().x(), m_btTransform->getOrigin().y(), m_btTransform->getOrigin().z());
 	m_transform->SetTranslation(btPos);
-	m_color = vec3(1);
+
+	m_color = vec3((rand() % 255)/255.f + 0.1, (rand() % 255) / 255.f + 0.1, (rand() % 255) / 255.f + 0.1);
 	m_model = type;
 	m_currentPos = m_btTransform->getOrigin();
 
@@ -51,7 +58,6 @@ ObjectInfo* Object::GetObjectInfo()
 {
 	btScalar tempScalar[16];
 	m_body->getWorldTransform().getOpenGLMatrix(tempScalar);
-	//m_btTransform->getOpenGLMatrix(tempScalar);
 
 	mat4 temp(tempScalar[0], tempScalar[1], tempScalar[2], tempScalar[3],
 		tempScalar[4], tempScalar[5], tempScalar[6], tempScalar[7]
@@ -68,10 +74,14 @@ btRigidBody* Object::GetObject()
 
 void Object::Update()
 {
+	m_body->activate();
+	if (m_body->getWorldTransform().getOrigin().y() < -10.f) {
+		m_body->setLinearVelocity(btVector3(0, 0, 0));
+		m_body->getWorldTransform().setOrigin(btVector3(0, 30, 0));
+	}
 	btVector3 moveVector = m_body->getWorldTransform().getOrigin() - m_currentPos;
 	m_transform->Translate(vec3(moveVector.x(), moveVector.y(), moveVector.z()));
 	m_currentPos = m_body->getWorldTransform().getOrigin();
-
 }
 
 void Object::SetScale(float scale)
@@ -95,6 +105,26 @@ void Object::SetRotation(float degrees)
 
 	m_body->setCenterOfMassTransform(trans);
 
+}
+
+void Object::Move(vec3 dir)
+{
+	m_body->setLinearVelocity(btVector3(dir.x,dir.y,dir.z));
+}
+
+vec3 Object::GetPos()
+{
+	return vec3(m_currentPos.x(), m_currentPos.y(), m_currentPos.z());
+}
+
+void Object::SetWay(bool way)
+{
+	m_way = way;
+}
+
+bool Object::GetWay()
+{
+	return m_way;
 }
 
 
