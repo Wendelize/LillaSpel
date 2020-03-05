@@ -173,8 +173,8 @@ void Game::Update(float dt)
 
 		if (m_objectHandler->GetNumPlayers() == 1 && !m_gameOver)
 		{
-			m_winner = 0;
 			m_menu->RankPlayers();
+			m_winner = m_menu->GetWinnerIndex();
 			m_menu->SetActiveMenu(Menu::ActiveMenu::win);
 			m_gameOver = true;
 
@@ -197,7 +197,7 @@ void Game::Update(float dt)
 		if (m_time > m_maxTime && !m_gameOver)
 		{
 			m_menu->RankPlayers();
-			m_winner = m_menu->GetWinner();//m_objectHandler->GetWinnerID();
+			m_winner = m_menu->GetWinnerIndex();//m_objectHandler->GetWinnerID();
 			//m_menu->SetWinner(m_winner);
 			m_menu->SetActiveMenu(Menu::ActiveMenu::win);
 			m_gameOver = true;

@@ -40,7 +40,7 @@ public:
 	void CollisionTracking();
 	void KillCount();
 	void RankPlayers();
-	int GetWinner();
+	int GetWinnerIndex();
 	bool GetMapUpdate();
 
 private:
