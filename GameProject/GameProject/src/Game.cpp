@@ -147,9 +147,9 @@ void Game::Update(float dt)
 	}
 	
 	// är select menyn aktiverad? ändra kameran till inzoomad
-	if (m_menu->SelectMenuActive())
+	if (m_menu->SelectMenuActive() || m_menu->SelectLivesMenuActive())
 	{
-		if (m_cube->GetCurrentLevel() != 0) {
+		if (m_cube->GetCurrentLevel() != 0 && m_menu->SelectMenuActive()) {
 			m_cube->SetCurrentLevel(0);
 			m_updateMap.store(true);
 		}
@@ -161,6 +161,13 @@ void Game::Update(float dt)
 			m_timeSwapTrack = 0.f;
 			m_mapUpdateReady.store(false);
 			m_objectHandler->ClearBombs();
+			if (m_cube->GetCurrentLevel() == 5) {
+				m_objectHandler->RemoveAllObjects();
+				m_objectHandler->AddObject(vec3(0, 2, 0), 0, m_objectModels[0]);
+			}
+			else {
+				m_objectHandler->RemoveAllObjects();
+			}
 		}
 		SelectionMenu();
 		m_scene->TranslateCameraPos(vec3(CAMERAPOS_SELECT), 1.f);
@@ -671,5 +678,3 @@ void Game::SelectionMenu()
 		m_wasSelect = true;
 	}
 }
-
-

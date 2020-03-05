@@ -587,6 +587,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		{
 			if (m_selected[0] == 0)
 			{
+				m_mapID = m_objHand->GetCube()->GetCurrentLevel();
 				ImGui::Text("\t\t\t\t\t\t\t\t\t\t\t\t\t\t  <  Level : %d  > ", m_mapID);
 				ImGui::Text("\t\t\t\t\t\t\t Press \"B\" to Select Vehicles Again ");
 			}
@@ -1598,7 +1599,15 @@ void Menu::SetWinner(int playerID)
 
 bool Menu::SelectMenuActive()
 {
-	if (m_menu == ActiveMenu::select || m_menu == ActiveMenu::selectLives)
+	if (m_menu == ActiveMenu::select)
+		return true;
+	else
+		return false;
+}
+
+bool Menu::SelectLivesMenuActive()
+{
+	if (m_menu == ActiveMenu::selectLives)
 		return true;
 	else
 		return false;

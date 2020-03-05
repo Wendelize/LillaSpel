@@ -25,6 +25,7 @@ public:
 	void SetActiveMenu(ActiveMenu activeMenu);
 	void SetWinner(int playerNum); // old might not be needed anymore
 	bool SelectMenuActive();
+	bool SelectLivesMenuActive();
 	bool StartMenuActive();
 	bool RestartMenuActive();
 	bool WinMenuActive();
