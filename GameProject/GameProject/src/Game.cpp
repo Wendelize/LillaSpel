@@ -136,7 +136,6 @@ void Game::Update(float dt)
 		}
 		if (m_mapUpdateReady.load() == true && m_updateMap.load() == false)
 		{
-			cout << "UPDATING MAP!!" << endl;
 			m_objectHandler->RemoveDynamicPlatformMesh(m_cube);
 			m_cube->MapUpdate();
 			m_objectHandler->AddDynamicPlatformMesh(m_cube);
@@ -147,7 +146,6 @@ void Game::Update(float dt)
 		SelectionMenu();
 		m_scene->TranslateCameraPos(vec3(CAMERAPOS_SELECT));
 		m_maxTime = m_menu->GetMaxTime();
-		//cout << m_cube->GetCurrentLevel() << endl;
 
 	}
 	else if (m_menu->SelectMenuActive() == false && m_wasSelect == true)
