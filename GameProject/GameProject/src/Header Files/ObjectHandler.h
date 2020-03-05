@@ -70,6 +70,7 @@ public:
 	void AddPlatform(int modelId, Model* model);
 	void AddGhost(int index);
 	void SetScale(int id, vec3 scale);
+	void SetPlayerFinishRotation(int index);
 	void RemovePlayer(int index);
 	void RemovePlatform();
 	void AddPowerUp();
@@ -78,6 +79,7 @@ public:
 	int GetNumPlayers();
 	int GetPlayerLives(int index);
 	vec3 GetPlayerPos(int index);
+	void SetPlayerPos(vec3 pos, int controllerId);
 	mat4 GetPlayerMatrix(int index);
 	void SetNumberOfLives(int num);
 	vec3 GetPlayerDirection(int index);

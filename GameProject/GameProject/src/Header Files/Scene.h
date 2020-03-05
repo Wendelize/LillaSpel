@@ -28,6 +28,8 @@ private:
 
 	vector<Model*> m_vehicles, m_platform, m_power,m_objects;
 	
+	Model* m_winnerIsland;
+
 	vector <Light*> m_lights;
 	vector <Light*> m_carLights;
 	int m_nrOfLights = 0, m_nrOfCarLights = 0;

@@ -25,6 +25,7 @@ public:
 	void SetActiveMenu(ActiveMenu activeMenu);
 	void SetWinner(int playerNum); // old might not be needed anymore
 	bool SelectMenuActive();
+	bool StartMenuActive();
 	bool RestartMenuActive();
 	bool WinMenuActive();
 	bool StatsMenuActive();
@@ -51,7 +52,7 @@ private:
 	bool m_reset = false;
 	bool m_updateMap = false;
 	int m_maxLives = 3;
-	int m_maxTime = 120.0f;
+	int m_maxTime = 60.0f;
 	int m_winnerID = 0;
 	int m_mapID = 0;
 

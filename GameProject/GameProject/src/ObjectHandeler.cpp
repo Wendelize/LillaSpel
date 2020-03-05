@@ -57,6 +57,7 @@ ObjectHandler::ObjectHandler()
 	m_soundFiles[27] = "src/Audio/Player - Dying 28.mp3";
 	m_soundFiles[28] = "src/Audio/Player - Dying 29.mp3";
 	m_soundFiles[29] = "src/Audio/Player - Dying 30.mp3";
+	m_terrain = true;
 }
 
 ObjectHandler::~ObjectHandler()
@@ -252,7 +253,7 @@ void ObjectHandler::Update(float dt)
 						width = 2;
 					}
 					cout << width << endl;
-					for(int i = 0; i < 5 ; i++){
+					for(int i = 0; i < 1 ; i++){
 						vec3 temp = vec3(rand() % width - (width / 2) , 0, rand() % width - (width / 2));
 						float height = m_cube->GetHeight(temp);
 						temp.y = height;
@@ -408,6 +409,11 @@ void ObjectHandler::SetScale(int id, vec3 scale)
 	m_players.at(id)->SetScale(scale);
 }
 
+void ObjectHandler::SetPlayerFinishRotation(int index)
+{
+	m_players[index]->FinishRotation();
+}
+
 void ObjectHandler::RemovePlayer(int index)
 {
 	m_players[index]->StopEngineSounds();
@@ -505,6 +511,11 @@ vec3 ObjectHandler::GetPlayerPos(int index)
 {
 	btVector3 temp = m_players[index]->GetCurrentPos();
 	return vec3(temp.getX(), temp.getY(), temp.getZ());
+}
+
+void ObjectHandler::SetPlayerPos(vec3 pos, int controllerId)
+{
+	m_players[GetIndexByControllerId(controllerId)]->SetFinishPos(pos);
 }
 
 mat4 ObjectHandler::GetPlayerMatrix(int index)
