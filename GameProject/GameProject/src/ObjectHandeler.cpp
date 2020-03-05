@@ -57,6 +57,7 @@ ObjectHandler::ObjectHandler()
 	m_soundFiles[27] = "src/Audio/Player - Dying 28.mp3";
 	m_soundFiles[28] = "src/Audio/Player - Dying 29.mp3";
 	m_soundFiles[29] = "src/Audio/Player - Dying 30.mp3";
+	m_terrain = true;
 }
 
 ObjectHandler::~ObjectHandler()
