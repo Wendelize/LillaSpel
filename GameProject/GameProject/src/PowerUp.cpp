@@ -22,9 +22,9 @@ PowerUp::PowerUp(int spawn, btVector3 pos, int type,float duration)
 			break;
 
 		case 2: //Player PowerMutiplier
-			m_model = 4; //Exclamation mark
-			m_color = vec3(0, 0, 3);
-			scale = 0.12f;
+			m_model = 9; //Exclamation mark
+			m_color = vec3(3.f, 0.5f, 0);
+			scale = 0.3f;
 			break;
 
 		case 3: //player sizeDown

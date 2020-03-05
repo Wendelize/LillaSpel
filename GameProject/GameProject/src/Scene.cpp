@@ -118,6 +118,8 @@ void Scene::Init()
 	m_power.push_back(new Model("src/Models/SizeUP2.0.obj"));			//6
 	m_power.push_back(new Model("src/Models/Bulb.obj"));				//7
 	m_power.push_back(new Model("src/Models/Love.obj"));				//8
+	m_power.push_back(new Model("src/Models/Rocket.obj"));				//9
+
 
 	m_objects.push_back(new Model("src/Models/Log.obj"));  //MÅSTE VARA FÖRSTA SOM LADDAS IN
 	m_objects.push_back(new Model("src/Models/Ball.obj"));
