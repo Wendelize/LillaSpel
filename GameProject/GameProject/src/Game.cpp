@@ -311,7 +311,7 @@ void Game::DynamicCamera(float dt)
 	vec3 focusPoint = vec3(0);
 	vec3 offset = vec3(0, -6, 0);
 	int numPlayers = m_objectHandler->GetNumPlayers();
-	int winner = m_objectHandler->GetIndexByControllerId(m_winner);
+	int winner = m_winner;
 
 	if (m_menu->WinMenuActive() || m_menu->RestartMenuActive() || m_menu->StatsMenuActive())
 	{

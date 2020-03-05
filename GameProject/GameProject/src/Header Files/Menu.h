@@ -75,7 +75,7 @@ private:
 
 	int m_p2ModelId = 0;
 	double m_p2Seconds = 1;
-	vec3 m_p2Col = vec3(0, 1, 0);
+	vec3 m_p2Col = vec3(0, 2, 0);
 
 	
 	int m_p3ModelId = -1;
