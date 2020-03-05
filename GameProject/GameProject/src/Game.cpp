@@ -29,7 +29,7 @@ Game::Game()
 
 	m_timeSinceSpawn = 0;
 
-	m_objectHandler->AddPlayer(vec3(-10, 6, 3), 1, 0, vec3(0.5, 1, 9), m_cars[0]); // Passa modell
+	m_objectHandler->AddPlayer(vec3(-10, 6, 3), 0, 0, vec3(0.5, 1, 9), m_cars[0]); // Passa modell
 	m_objectHandler->AddPlayer(vec3(10, 6, 3), 1, 0, vec3(0, 2, 0), m_cars[2]); // Passa modell
 	m_scene->SetCameraPos(CAMERAPOS_GAME);
 
