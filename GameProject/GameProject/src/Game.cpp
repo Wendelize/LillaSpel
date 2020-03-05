@@ -133,8 +133,6 @@ void Game::Update(float dt)
 	if (m_menu->StartMenuActive())
 	{
 		m_objectHandler->ClearBombs();
-
-		cout << m_menuTrackSwap << endl;
 		m_menuTrackSwap += dt;
 		if (m_menuTrackSwap > 5.0f) {
 			if (m_cube->GetCurrentLevel() == 6) {
