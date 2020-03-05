@@ -32,6 +32,7 @@ private:
 	bool m_active;
 	float m_startLife = 0;
 	float m_startSize = 0;
+	float m_gravity = 0;
 
 public:
 
@@ -49,7 +50,7 @@ public:
 
 	//void DriftParticles();
 
-	void GenerateParticles(vec3 emitterPos, float speed, float spread, float life, vec3 color1, vec3 color2, float size, vec3 dir);
+	void GenerateParticles(vec3 emitterPos, float speed, float spread, float life, vec3 color1, vec3 color2, float size, vec3 dir, float gravity);
 	void Simulate(float dt);
 
 	//void GenerateParticlesForVictory(vec3 emitterPos);
