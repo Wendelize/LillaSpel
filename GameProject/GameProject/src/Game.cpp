@@ -29,9 +29,8 @@ Game::Game()
 
 	m_timeSinceSpawn = 0;
 
-	m_objectHandler->AddPlayer(vec3(-10, 6, 3), 0, 0, vec3(0.5, 1, 9), m_cars[0]); // Passa modell
+	m_objectHandler->AddPlayer(vec3(-10, 6, 3), 1, 0, vec3(0.5, 1, 9), m_cars[0]); // Passa modell
 	m_objectHandler->AddPlayer(vec3(10, 6, 3), 1, 0, vec3(0, 2, 0), m_cars[2]); // Passa modell
-
 	m_scene->SetCameraPos(CAMERAPOS_GAME);
 
 
@@ -110,13 +109,46 @@ void Game::Update(float dt)
 		m_menu->SetMapUpdate(false);
 	}
 
+	if (m_menu->StartMenuActive())
+	{
+		m_objectHandler->ClearBombs();
 
+		cout << m_menuTrackSwap << endl;
+		m_menuTrackSwap += dt;
+		if (m_menuTrackSwap > 5.0f) {
+			if (m_cube->GetCurrentLevel() == 6) {
+				m_cube->SetCurrentLevel(0);
+			}
+			else {
+				m_cube->SetCurrentLevel(m_cube->GetCurrentLevel() + 1);
+			}
+			m_updateMap.store(true);
+			m_menuTrackSwap = 0;
+		}
+	}
+	
 	// är select menyn aktiverad? ändra kameran till inzoomad
 	if (m_menu->SelectMenuActive())
 	{
+		if (m_cube->GetCurrentLevel() != 0) {
+			m_cube->SetCurrentLevel(0);
+			m_updateMap.store(true);
+		}
+		if (m_mapUpdateReady.load() == true && m_updateMap.load() == false)
+		{
+			cout << "UPDATING MAP!!" << endl;
+			m_objectHandler->RemoveDynamicPlatformMesh(m_cube);
+			m_cube->MapUpdate();
+			m_objectHandler->AddDynamicPlatformMesh(m_cube);
+			m_timeSwapTrack = 0.f;
+			m_mapUpdateReady.store(false);
+			m_objectHandler->ClearBombs();
+		}
 		SelectionMenu();
 		m_scene->TranslateCameraPos(vec3(CAMERAPOS_SELECT));
 		m_maxTime = m_menu->GetMaxTime();
+		//cout << m_cube->GetCurrentLevel() << endl;
+
 	}
 	else if (m_menu->SelectMenuActive() == false && m_wasSelect == true)
 	{

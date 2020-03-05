@@ -16,7 +16,7 @@ Object::Object(btVector3 pos, int type, Model* model)
 		mass = 100000.0f;
 	}
 	else {
-		mass = 200.f;
+		mass = 700.f;
 	}
 	m_motionState = new btDefaultMotionState(*m_btTransform);
 	vector<btVector3> points;
@@ -37,7 +37,7 @@ Object::Object(btVector3 pos, int type, Model* model)
 
 	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, m_motionState, m_physicsMesh, localInertia);
 	m_body = new btRigidBody(rbInfo);
-
+	m_body->setRestitution(1.5);
 	vec3 btPos = vec3(m_btTransform->getOrigin().x(), m_btTransform->getOrigin().y(), m_btTransform->getOrigin().z());
 	m_transform->SetTranslation(btPos);
 

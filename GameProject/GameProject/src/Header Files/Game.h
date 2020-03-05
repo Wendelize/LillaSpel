@@ -25,6 +25,7 @@ private:
 	//Debug variables
 	bool m_debug, m_toggle;
 	int m_controllerID;
+	float m_menuTrackSwap = 0;
 	int m_modelId;
 	float m_pos[3];
 	float m_time;

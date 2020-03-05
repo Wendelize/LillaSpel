@@ -47,19 +47,29 @@ Player::Player(Model* model, int modelId, vec3 pos)
 	case 0:
 		//deafult bil
 		mass = 1000.f;
+		m_powerMultiplier = 1.0f;
+
 		break;
 	case 1:
 		//truck
 		mass = 1200.f;
+		m_powerMultiplier = 1.2f;
+
 		break;
 	case 2:
-		mass = 1050.f;
+		mass = 1100.f;
+		m_powerMultiplier = 1.1f;
+
 		break;
 	case 3:
 		mass = 950.f;
+		m_powerMultiplier = 0.95f;
+
 		break;
 	default:
 		mass = 1000.f;
+		m_powerMultiplier = 1.0f;
+
 		break;
 	}
 	m_btTransform->setOrigin(btVector3(pos.x,pos.y,pos.z));
@@ -99,19 +109,19 @@ Player::Player(Model* model, int modelId, vec3 pos)
 	switch (modelId)
 	{
 	case 0:
-		m_body->setDamping(0.2, 100.0);
+		m_body->setDamping(0.20, 50.0);
 		break;
 	case 1:
-		m_body->setDamping(0.2, 100.0);
+		m_body->setDamping(0.15, 50.0);
 		break;
 	case 2:
-		m_body->setDamping(0.2, 100.0);
+		m_body->setDamping(0.15, 50.0);
 		break;
 	case 3:
-		m_body->setDamping(0.2, 100.0);
+		m_body->setDamping(0.2, 50.0);
 		break;
 	default:
-		m_body->setDamping(0.1, 100.0);
+		m_body->setDamping(0.15, 15.0);
 		break;
 	}
 
@@ -190,11 +200,11 @@ void Player::Update(float dt)
 			
 			if (m_inverted == false)
 			{
-				m_speed = 700000.f * m_powerMultiplier / (dt * 60);
+				m_speed = 900000.f * m_powerMultiplier / (dt * 60);
 			}
 			else if (m_inverted == true)
 			{
-				m_speed = -700000.f * m_powerMultiplier / (dt * 60);
+				m_speed = -900000.f * m_powerMultiplier / (dt * 60);
 			}
 			pressed = true;
 		}
@@ -203,11 +213,11 @@ void Player::Update(float dt)
 		{
 			if (m_inverted == false)
 			{
-				m_speed = -500000.f * m_powerMultiplier / (dt * 60);
+				m_speed = -800000.f * m_powerMultiplier / (dt * 60);
 			}
 			else if (m_inverted == true)
 			{
-				m_speed = 500000.f * m_powerMultiplier / (dt * 60);
+				m_speed = 800000.f * m_powerMultiplier / (dt * 60);
 			}
 				pressed = true;
 		}

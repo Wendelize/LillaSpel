@@ -227,7 +227,7 @@ void ObjectHandler::Update(float dt)
 						width = 2;
 					}
 					cout << width << endl;
-					for(int i = 0; i < 5 ; i++){
+					for(int i = 0; i < 1 ; i++){
 						vec3 temp = vec3(rand() % width - (width / 2) , 0, rand() % width - (width / 2));
 						float height = m_cube->GetHeight(temp);
 						temp.y = height;

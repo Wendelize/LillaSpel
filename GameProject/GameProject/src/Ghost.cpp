@@ -5,7 +5,7 @@ Ghost::Ghost()
 	m_controller = new Controller();
 
 	m_controllerID = 0;
-	m_nrOfBombSwitch = 10000;
+	m_nrOfBombSwitch = 5;
 	m_nrOfLightSwitch = 20;
 	m_nrOfCtrlSwitch = 10;
 
@@ -73,7 +73,7 @@ void Ghost::UpdateGhost(float dt)
 			}
 		}
 
-		if (m_nrOfBombSwitch > 0 && m_timeOut > 5.f)
+		if (m_nrOfBombSwitch > 0 && m_timeOut > 1.5f)
 		{
 			if (m_controller->ButtonBIsPressed(m_controllerID))
 			{
