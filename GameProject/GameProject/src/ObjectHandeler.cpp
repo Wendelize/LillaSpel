@@ -513,9 +513,9 @@ vec3 ObjectHandler::GetPlayerPos(int index)
 	return vec3(temp.getX(), temp.getY(), temp.getZ());
 }
 
-void ObjectHandler::SetPlayerPos(vec3 pos, int controllerId)
+void ObjectHandler::SetPlayerPos(vec3 pos, int index)
 {
-	m_players[GetIndexByControllerId(controllerId)]->SetFinishPos(pos);
+	m_players[index]->SetFinishPos(pos);
 }
 
 mat4 ObjectHandler::GetPlayerMatrix(int index)
