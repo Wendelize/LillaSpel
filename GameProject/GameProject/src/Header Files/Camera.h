@@ -11,6 +11,7 @@ private:
 	float m_shakeCounter;
 	float m_shakeIntensity;
 	float m_shakeFade;
+	float m_speed = 1.f;
 	int k; // används för att sänka m_shakefade varannan iteration.
 
 public:
@@ -19,7 +20,7 @@ public:
 
 	void SetFocusPoint(vec3 p);
 	void TranslateFocusPoint(vec3 p);
-	void TranslatePos(vec3 pos);
+	void TranslatePos(vec3 pos, float speed);
 	vec3 GetDir();
 	vec3 GetPos();
 	vec3 GetUp();
@@ -29,6 +30,6 @@ public:
 	void ChangeDir(vec3 dir);
 	void ChangeUp(vec3 up);
 	void MoveCamera(vec3 newPos);
-	void UpdateMovement(float delta, float speed);
+	void UpdateMovement(float delta);
 };
 

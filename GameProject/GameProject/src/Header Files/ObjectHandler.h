@@ -57,6 +57,7 @@ private:
 	MarchingCubes* m_cube;
 
 	bool m_lightsOut;
+	bool m_terrain;
 
 public:
 	ObjectHandler();
@@ -82,8 +83,10 @@ public:
 	vec3 GetPlayerDirection(int index);
 	int GetPlayerControllerID(int index);
 	void SetPlayerControllerID(int index, int id);
+	int GetIndexByControllerId(int controllerId);
 	int GetPlayerModelID(int index);
 	void SetPlayerModelID(int index, int id);
+	float GetPlayerSpeed(int index);
 	vec3 GetPlayerColor(int index);
 	void SetPlayerColor(int index, vec3 color);
 	vec3 GetPlayerScale(int index);
@@ -126,6 +129,12 @@ public:
 	bool CheckCollisionCars(float dt);
 	bool GetLightsOut();
 	void SetLightsOut(bool state);
+	bool GetTerrain();
+	void SetTerrain(bool state);
 	void RenderParticles();
 	void RemoveAllObjects();
+
+	void UpdateLastPos();
+	void UpdateHook(float dt);
+	bool GetPlayerHook(int index);
 };

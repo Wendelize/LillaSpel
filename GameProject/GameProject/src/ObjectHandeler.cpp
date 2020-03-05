@@ -147,19 +147,25 @@ void ObjectHandler::Update(float dt)
 	m_dynamicsWorld->stepSimulation(dt, 10);
 	
 	m_scaleTimer += dt;
-	if (m_cube->GetCurrentLevel() == 5) {
-		if (m_objects.size() != 0) {
-			if (m_objects.at(0)->GetPos().z < -21.0f && m_objects.at(0)->GetWay()) {
+	if (m_cube->GetCurrentLevel() == 5) 
+	{
+		if (m_objects.size() != 0) 
+		{
+			if (m_objects.at(0)->GetPos().z < -21.0f && m_objects.at(0)->GetWay()) 
+			{
 				m_objects.at(0)->SetWay(false);
 			}
-			else if (m_objects.at(0)->GetPos().z > 21.0f && !m_objects.at(0)->GetWay()) {
+			else if (m_objects.at(0)->GetPos().z > 21.0f && !m_objects.at(0)->GetWay()) 
+			{
 				m_objects.at(0)->SetWay(true);
 
 			}
-			if (m_objects.at(0)->GetWay()) {
+			if (m_objects.at(0)->GetWay()) 
+			{
 				m_objects.at(0)->Move(vec3(0, 0, -5));
 			}
-			else {
+			else 
+			{
 				m_objects.at(0)->Move(vec3(0, 0, 5));
 			}
 		}
@@ -167,6 +173,9 @@ void ObjectHandler::Update(float dt)
 	CheckPowerUpCollision();
 	CheckCollisionCars(dt);
 	UpdateVibration(dt);
+
+	UpdateHook(dt);
+	UpdateLastPos();
 
 	//LightsOut power-up update
 	bool active = false;
@@ -182,6 +191,22 @@ void ObjectHandler::Update(float dt)
 	{
 		m_lightsOut = false;
 	}
+
+	//Invisible terrain 
+	active = false;
+	for (auto p : m_players)
+	{
+		if (p->GetActivePower() == 9) //Questionmark 
+		{
+			active = true;
+			m_terrain = false;
+		}
+	}
+	if (m_terrain == false && active == false)
+	{
+		m_terrain = true;
+	}
+
 
 	for (size_t i = 0; i < m_dynamicsWorld->getNumCollisionObjects(); i++)
 	{
@@ -248,15 +273,19 @@ void ObjectHandler::Update(float dt)
 			}
 		}
 
-		if (isPowerUp >= 0) {
-			if (m_powerUps[isPowerUp]->update(dt)) {
+		if (isPowerUp >= 0) 
+		{
+			if (m_powerUps[isPowerUp]->update(dt)) 
+			{
 				RemovePowerUp(isPowerUp);
 			}
 		}
 
-		if (isPlayer >= 0) {
+		if (isPlayer >= 0) 
+		{
 			m_players[isPlayer]->Update(dt);
-			if (m_players[isPlayer]->updatePower(dt)) {
+			if (m_players[isPlayer]->updatePower(dt)) 
+			{
 				m_dynamicsWorld->removeRigidBody(m_players[isPlayer]->GetBody());
 				m_players[isPlayer]->removePower(m_players[isPlayer]->GetActivePower());
 				m_dynamicsWorld->addRigidBody(m_players[isPlayer]->GetBody());
@@ -409,17 +438,13 @@ void ObjectHandler::AddGhost(int index)
 	m_ghosts.back()->SetControllerID(index);
 }
 
-void ObjectHandler::RemovePlatform()
-{
-	// Kommer aldrig anropas?
-}
-
 void ObjectHandler::AddPowerUp()
 {
 	int type = rand() % (10);
 	bool spawnFound = false;
 	vec3 spawn = vec3(0);// = vec3((rand() % 30) - 15, 7, (rand() % 20 - 15)));
-	while (!spawnFound) {
+	while (!spawnFound) 
+	{
 		spawn = vec3((rand() % m_cube->GetWidth()) - m_cube->GetWidth()/2, 7, (rand() % m_cube->GetWidth()) - m_cube->GetWidth()/2);
 		if (m_cube->IsNotHole(spawn)) {
 			spawnFound = true;
@@ -493,7 +518,6 @@ void ObjectHandler::SetNumberOfLives(int num)
 	{
 		m_players[i]->SetLives(num);
 	}
-	
 }
 
 vec3 ObjectHandler::GetPlayerDirection(int index)
@@ -543,6 +567,19 @@ void ObjectHandler::SetPlayerControllerID(int index, int id)
 	m_players[index]->SetControllerID(id);
 }
 
+int ObjectHandler::GetIndexByControllerId(int controllerId)
+{
+	for (int i = 0; i < m_players.size(); i++)
+	{
+		if (m_players[i]->GetControllerID() == controllerId)
+		{
+			return i;
+		}
+	}
+
+	return -1;
+}
+
 int ObjectHandler::GetPlayerModelID(int index)
 {
 	return m_players[index]->GetModelId();
@@ -551,6 +588,11 @@ int ObjectHandler::GetPlayerModelID(int index)
 void ObjectHandler::SetPlayerModelID(int index, int id)
 {
 	m_players[index]->SetModelId(id);
+}
+
+float ObjectHandler::GetPlayerSpeed(int index)
+{
+	return m_players[index]->GetSpeed();
 }
 
 vec3 ObjectHandler::GetPlayerColor(int index)
@@ -974,9 +1016,21 @@ void ObjectHandler::SetLightsOut(bool state)
 	m_lightsOut = state;
 }
 
+bool ObjectHandler::GetTerrain()
+{
+	return m_terrain;
+}
+
+void ObjectHandler::SetTerrain(bool state)
+{
+	m_terrain = state;
+}
+
+
 void ObjectHandler::RenderParticles()
 {
-	for (int i = 0; i < m_particles.size(); i++) {
+	for (int i = 0; i < m_particles.size(); i++) 
+	{
 		m_particles.at(i)->Draw();
 	}
 }
@@ -984,8 +1038,88 @@ void ObjectHandler::RenderParticles()
 void ObjectHandler::RemoveAllObjects()
 {
 	int nrOf = m_objects.size();
-	for (int i = 0; i < nrOf; i++) {
+	for (int i = 0; i < nrOf; i++) 
+	{
 		RemoveObject(0);
 	}
+}
+
+void ObjectHandler::UpdateLastPos()
+{//For Hook
+
+	int numManifolds = m_dynamicsWorld->getDispatcher()->getNumManifolds();
+	for (int i = 0; i < numManifolds; ++i)
+	{
+		btPersistentManifold* contactManifold = m_dynamicsWorld->getDispatcher()->getManifoldByIndexInternal(i);
+		btCollisionObject* obA = const_cast<btCollisionObject*>(contactManifold->getBody0());
+		btCollisionObject* obB = const_cast<btCollisionObject*>(contactManifold->getBody1());
+
+		btCollisionShape* shapeA = obA->getCollisionShape();
+		btCollisionShape* shapeB = obB->getCollisionShape();
+
+		//Collision between car and terrain
+		for (auto p : m_players)
+		{
+			if (p->GetCurrentPos().y() >= 0)
+			{
+				if (obA == p->GetBody() && obB == m_cube->GetBody())
+				{
+					btVector3 btPos = p->GetCurrentPos();
+
+					//This is stopid unrelialbe way- will need to fix better 
+					vec3 diff = vec3(-7, 6, -7);
+					if (btPos.x() < 0)
+					{
+						diff.x *= -1;
+					}
+					if (btPos.z() < 0)
+					{
+						diff.z *= -1;
+					}
+					vec3 lastPos = vec3(btPos.x() + diff.x, btPos.y() + diff.y, btPos.z() + diff.z);
+					p->SetLastPos(lastPos);
+				}
+			}
+		}
+	}
+}
+
+void ObjectHandler::UpdateHook(float dt)
+{
+	for (auto p : m_players)
+	{
+		if (p->GetActivePower() == 2)
+		{
+			if (p->GetCurrentPos().y() < -0.5)
+			{
+				p->SetHook(true);
+			}
+		}
+	}
+
+	for (auto p : m_players)
+	{
+		if (p->GetHook() == true)
+		{
+			vec3 lastPos = p->GetLastPos();
+			btVector3 btPos = p->GetCurrentPos();
+			vec3 curPos = vec3(btPos.x(), btPos.y(), btPos.z());
+			vec3 dir = curPos - lastPos;
+
+			dir = normalize(dir);
+			vec3 pos = curPos - (dir * dt * 15.f);
+			
+			p->SetPos(pos);
+			if (curPos.y > 6.f)
+			{
+				p->removePower(2); //Also deactivates hookActive bool
+			}
+		}
+	}
+}
+
+bool ObjectHandler::GetPlayerHook(int index)
+{
+	return m_players[index]->GetHook();
 }
 

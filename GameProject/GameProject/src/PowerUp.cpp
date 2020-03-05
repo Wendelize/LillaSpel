@@ -62,7 +62,7 @@ PowerUp::PowerUp(int spawn, btVector3 pos, int type,float duration)
 			scale = 0.01f;
 			break;
 		case 9:
-			m_model = 3; //Question mark - INGEN FUNKTION KOPPLAD
+			m_model = 3; //Question mark - Invisible terrain
 			m_color = vec3(0.741, 0.520, 3.000);
 			scale = 0.09f;
 			break;

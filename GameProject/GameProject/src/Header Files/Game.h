@@ -22,7 +22,6 @@ private:
 	vector<ISoundSource*> m_songs;
 	MarchingCubes* m_cube;
 
-	//Debug variables
 	bool m_debug, m_toggle;
 	int m_controllerID;
 	float m_menuTrackSwap = 0;
@@ -32,6 +31,7 @@ private:
 	float m_maxTime;
 	float m_timeSinceSpawn;
 	float m_timeSwapTrack;
+	float m_slowmoCooldown = 0;
 	bool m_gameOver = false;
 	bool m_fastMusic = false;
 	std::atomic<bool> m_mapUpdateReady;
@@ -46,10 +46,9 @@ public:
 	Game();
 	~Game();
 	void Update(float dt);
-	void UpdateParticles(float dt);
 	void DynamicCamera(float dt);
 	void PlayWithLights(float dt);
-	void Render(float dt);
+	void Render();
 	void Reset();
 	GLFWwindow* GetWindow();
 	void MutliThread(GLFWwindow* window);
