@@ -253,8 +253,7 @@ void Game::Update(float dt)
 			{
 				if (!m_toggle)
 				{
-					if (m_debug)
-						m_debug = !m_debug;
+					m_debug = !m_debug;
 				}
 				m_toggle = true;
 			}
