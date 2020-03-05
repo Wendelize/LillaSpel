@@ -65,6 +65,8 @@ Scene::~Scene()
 	}
 	m_particles.clear();
 
+	delete m_winnerIsland;
+
 
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
@@ -121,6 +123,8 @@ void Scene::Init()
 
 	m_objects.push_back(new Model("src/Models/Log.obj"));  //MÅSTE VARA FÖRSTA SOM LADDAS IN
 	m_objects.push_back(new Model("src/Models/Ball.obj"));
+
+	m_winnerIsland = new Model("src/Models/Island.obj");
 
 	//m_power.push_back(new Model("src/Models/PowerUp.obj"));
 
@@ -274,6 +278,10 @@ void Scene::RenderSceneInfo(Shader* shader, vector<ObjectInfo*> objects)
 			break;
 		}
 	}
+	shader->SetUniform("u_Model", glm::scale(translate(mat4(1.f), vec3(0, 9.65, 30)),vec3(0.25, 0.25, 0.25)));
+	shader->SetUniform("u_PlayerColor", vec3(1, 0, 0));
+	shader->SetUniform("u_Glow", false);
+	m_winnerIsland->Draw(shader);
 }
 
 void Scene::RenderSkybox()

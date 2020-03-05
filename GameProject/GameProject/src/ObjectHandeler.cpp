@@ -409,6 +409,11 @@ void ObjectHandler::SetScale(int id, vec3 scale)
 	m_players.at(id)->SetScale(scale);
 }
 
+void ObjectHandler::SetPlayerFinishRotation(int index)
+{
+	m_players[index]->FinishRotation();
+}
+
 void ObjectHandler::RemovePlayer(int index)
 {
 	m_players[index]->StopEngineSounds();
@@ -506,6 +511,11 @@ vec3 ObjectHandler::GetPlayerPos(int index)
 {
 	btVector3 temp = m_players[index]->GetCurrentPos();
 	return vec3(temp.getX(), temp.getY(), temp.getZ());
+}
+
+void ObjectHandler::SetPlayerPos(vec3 pos, int controllerId)
+{
+	m_players[GetIndexByControllerId(controllerId)]->SetFinishPos(pos);
 }
 
 mat4 ObjectHandler::GetPlayerMatrix(int index)

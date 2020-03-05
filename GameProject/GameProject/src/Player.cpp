@@ -394,6 +394,11 @@ void Player::SetControllerID(int id)
 	m_controllerID = id;
 }
 
+void Player::FinishRotation()
+{
+	m_transform->SetRotation(0, 3.14*1.2, 0);
+}
+
 vec3 Player::GetDirection()
 {
 	return m_transform->GetForward();
@@ -443,6 +448,13 @@ btRigidBody* Player::GetBody()
 btVector3 Player::GetCurrentPos()
 {
 	return m_body->getWorldTransform().getOrigin();
+}
+
+void Player::SetFinishPos(vec3 pos)
+{
+	m_body->getWorldTransform().setOrigin(btVector3(pos.x, pos.y, pos.z));
+	m_body->setLinearVelocity(btVector3(0, 0, 0));
+	m_transform->SetTranslation(pos);
 }
 
 void Player::SetPos(vec3 pos)
