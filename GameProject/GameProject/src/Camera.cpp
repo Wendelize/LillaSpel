@@ -70,8 +70,9 @@ void Camera::ChangePos(vec3 pos)
 	m_viewMatrix = lookAt(m_position, vec3(0, -6, 3), m_up);
 }
 
-void Camera::TranslatePos(vec3 pos)
+void Camera::TranslatePos(vec3 pos, float speed)
 {
+	m_speed = speed;
 	m_translationPoint = pos;
 	m_positionTranslation = m_translationPoint - m_position;
 }
@@ -92,7 +93,7 @@ void Camera::MoveCamera(vec3 newPos)
 	m_viewMatrix = lookAt(m_position, m_position + m_direction, m_up);
 }
 
-void Camera::UpdateMovement(float deltaTime, float speed)
+void Camera::UpdateMovement(float deltaTime)
 {
 	if (m_shakeCounter > 0)
 	{
@@ -109,12 +110,12 @@ void Camera::UpdateMovement(float deltaTime, float speed)
 		m_shakeCounter -= deltaTime;
 	}
 	m_positionTranslation = m_translationPoint - m_position;
-	m_position += m_positionTranslation * deltaTime * speed;
+	m_position += m_positionTranslation * deltaTime * m_speed;
 
 	m_focusTranslation = m_focusTranslationPoint - m_focusPoint;
 	m_translationDistance = m_focusTranslation.length();
 
-	m_focusPoint += m_focusTranslation * deltaTime * speed;
+	m_focusPoint += m_focusTranslation * deltaTime * m_speed;
 	m_direction = normalize(m_position - m_focusPoint);
 	m_parallel = normalize(cross({ 0,1,0 }, m_direction));
 	m_up = normalize(cross(m_direction, m_parallel));

@@ -50,7 +50,7 @@ Player::Player(Model* model, int modelId, vec3 pos)
 		break;
 	case 1:
 		//truck
-		mass = 1100.f;
+		mass = 1200.f;
 		break;
 	case 2:
 		mass = 1050.f;
@@ -99,19 +99,19 @@ Player::Player(Model* model, int modelId, vec3 pos)
 	switch (modelId)
 	{
 	case 0:
-		m_body->setDamping(0.1, 0.9);
+		m_body->setDamping(0.2, 100.0);
 		break;
 	case 1:
-		m_body->setDamping(0.1, 0.9);
+		m_body->setDamping(0.2, 100.0);
 		break;
 	case 2:
-		m_body->setDamping(0.01, 0.9);
+		m_body->setDamping(0.2, 100.0);
 		break;
 	case 3:
-		m_body->setDamping(0.1, 0.9);
+		m_body->setDamping(0.2, 100.0);
 		break;
 	default:
-		m_body->setDamping(0.1, 1);
+		m_body->setDamping(0.1, 100.0);
 		break;
 	}
 
@@ -136,6 +136,8 @@ Player::Player(Model* model, int modelId, vec3 pos)
 		m_honkEngine->setSoundVolume(0.2f);
 		m_honk = m_honkEngine->play2D(m_carSounds[2], false, true);
 	}
+
+	m_hookActive = false;
 
 }
 
@@ -333,7 +335,7 @@ void Player::SetModelId(int id)
 
 float Player::GetSpeed()
 {
-	return m_speed;
+	return m_body->getLinearVelocity().length();
 }
 
 void Player::SetSpeed(float speed)
@@ -446,7 +448,8 @@ bool Player::GetFallen()
 
 void Player::GivePower(int type)
 {
-	if (m_powerActive) {
+	if (m_powerActive) 
+	{
 		removePower(m_powerType);
 	}
 	m_powerType = type;
@@ -455,7 +458,8 @@ void Player::GivePower(int type)
 
 	float mass;
 	btVector3 localInertia(0, 0, 0);
-	switch (type) {
+	switch (type) 
+	{
 		case 0:
 			mass = m_body->getMass() * 1.5f;
 			m_body->getCollisionShape()->calculateLocalInertia(mass, localInertia);
@@ -469,7 +473,8 @@ void Player::GivePower(int type)
 			break;
 
 		case 2:
-			m_powerMultiplier = 0.5f;
+			m_powerDuration = 10000.f;
+			//m_powerMultiplier = 0.5f;
 			break;
 
 		case 3:
@@ -516,9 +521,10 @@ void Player::removePower(int type)
 {
 	float mass;
 	btVector3 localInertia(0, 0, 0);
-
 	m_powerActive = false;
-	switch (type) {
+
+	switch (type) 
+	{
 	case 0:
 		mass = m_body->getMass() / 1.5f;
 		m_body->getCollisionShape()->calculateLocalInertia(mass, localInertia);
@@ -532,7 +538,8 @@ void Player::removePower(int type)
 		break;
 
 	case 2:
-		m_powerMultiplier = 1.f;
+		//m_powerMultiplier = 1.f;
+		m_hookActive = false;
 		break;
 
 	case 3:
@@ -578,7 +585,9 @@ bool Player::updatePower(float dt)
 {
 	bool destroy = false;
 	m_powerDuration = m_powerDuration - dt;
-	if (m_powerDuration <= 0.f && m_powerActive == true) {
+
+	if (m_powerDuration <= 0.f && m_powerActive == true) 
+	{
 		m_powerActive = false;
 		destroy = true;
 	}
@@ -639,4 +648,25 @@ void Player::StopEngineSounds()
 {
 	if (m_soundEngine)
 		m_sound->setIsPaused(true);
+}
+
+vec3 Player::GetLastPos()
+{
+	return m_lastPos;
+}
+
+void Player::SetLastPos(vec3 pos)
+{
+	m_lastPos = pos;
+
+}
+
+bool Player::GetHook()
+{
+	return m_hookActive;
+}
+
+void Player::SetHook(bool state)
+{
+	m_hookActive = state;
 }

@@ -34,7 +34,7 @@ private:
     float m_middle = WIDTH / 2;
     int m_shrink = 0;
     float m_time = 0.0f;
-    int m_currentLvl = 6;
+    int m_currentLvl = 0;
     float m_holeSize = m_middle / 2.0f;
     bool m_smoothTerrain = true;
     bool m_way = true;
@@ -91,5 +91,6 @@ public:
     bool IsNotHole(vec3 pos);
     float GetHeight(vec3 pos);
     int GetWidth();
+    int GetCurrentWidth();
 };
 

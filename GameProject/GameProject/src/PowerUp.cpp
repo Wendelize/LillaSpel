@@ -3,7 +3,7 @@
 PowerUp::PowerUp(int spawn, btVector3 pos, int type,float duration)
 {
 	m_pos = pos;
-	m_type = 6;
+	m_type = type;
 	m_duration = duration;
 	m_transform = new Transform;
 	m_model = 0;
@@ -66,6 +66,10 @@ PowerUp::PowerUp(int spawn, btVector3 pos, int type,float duration)
 			m_color = vec3(0.741, 0.520, 3.000);
 			scale = 0.09f;
 			break;
+		case 10:
+			m_model = 3;
+			m_color = vec3(1, 0, 0);
+			scale = 0.09f;
 	}
 	m_spawn = spawn;
 
