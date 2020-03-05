@@ -8,7 +8,7 @@ private:
 	Controller* m_controller;
 	int m_controllerID;
 
-	const char* m_soundFiles[10];
+	const char* m_soundFiles[30];
 
 	ISoundEngine* m_honkEngine;
 	ISoundEngine* m_tauntEngine;
@@ -16,6 +16,7 @@ private:
 	ISound* m_taunt;
 	vector<ISoundSource*> m_sounds;
 
+	int m_nrOfSpookSounds;
 	float m_timeOut;
 
 	int m_nrOfLightSwitch, m_nrOfCtrlSwitch, m_nrOfBombSwitch;

@@ -21,7 +21,7 @@ Ghost::Ghost()
 	{
 		m_sounds.push_back(m_honkEngine->addSoundSourceFromFile("src/Audio/Player - HonkDELUXE.mp3"));
 
-		m_tauntEngine->setSoundVolume(0.3);
+		m_tauntEngine->setSoundVolume(0.7f);
 		m_taunt = m_tauntEngine->play2D(m_sounds[0], false, true);
 
 		m_honkEngine->setSoundVolume(0.2f);
@@ -29,6 +29,37 @@ Ghost::Ghost()
 	}
 
 	// SpookSounds
+	m_soundFiles[0] = "src/Audio/Player - Dying 1.mp3";
+	m_soundFiles[1] = "src/Audio/Player - Dying 2.mp3";
+	m_soundFiles[2] = "src/Audio/Player - Dying 3.mp3";
+	m_soundFiles[3] = "src/Audio/Player - Dying 4.mp3";
+	m_soundFiles[4] = "src/Audio/Player - Dying 5.mp3";
+	m_soundFiles[5] = "src/Audio/Player - Dying 6.mp3";
+	m_soundFiles[6] = "src/Audio/Player - Dying 7.mp3";
+	m_soundFiles[7] = "src/Audio/Player - Dying 8.mp3";
+	m_soundFiles[8] = "src/Audio/Player - Dying 9.mp3";
+	m_soundFiles[9] = "src/Audio/Player - Dying 10.mp3";
+	m_soundFiles[10] = "src/Audio/Player - Dying 11.mp3";
+	m_soundFiles[11] = "src/Audio/Player - Dying 12.mp3";
+	m_soundFiles[12] = "src/Audio/Player - Dying 13.mp3";
+	m_soundFiles[13] = "src/Audio/Player - Dying 14.mp3";
+	m_soundFiles[14] = "src/Audio/Player - Dying 15.mp3";
+	m_soundFiles[15] = "src/Audio/Player - Dying 16.mp3";
+	m_soundFiles[16] = "src/Audio/Player - Dying 17.mp3";
+	m_soundFiles[17] = "src/Audio/Player - Dying 18.mp3";
+	m_soundFiles[18] = "src/Audio/Player - Dying 19.mp3";
+	m_soundFiles[19] = "src/Audio/Player - Dying 20.mp3";
+	m_soundFiles[20] = "src/Audio/Player - Dying 21.mp3";
+	m_soundFiles[21] = "src/Audio/Player - Dying 22.mp3";
+	m_soundFiles[22] = "src/Audio/Player - Dying 23.mp3";
+	m_soundFiles[23] = "src/Audio/Player - Dying 24.mp3";
+	m_soundFiles[24] = "src/Audio/Player - Dying 25.mp3";
+	m_soundFiles[25] = "src/Audio/Player - Dying 26.mp3";
+	m_soundFiles[26] = "src/Audio/Player - Dying 27.mp3";
+	m_soundFiles[27] = "src/Audio/Player - Dying 28.mp3";
+	m_soundFiles[28] = "src/Audio/Player - Dying 29.mp3";
+	m_soundFiles[29] = "src/Audio/Player - Dying 30.mp3";
+	m_nrOfSpookSounds = 30;
 }
 
 Ghost::~Ghost()
@@ -54,7 +85,7 @@ void Ghost::UpdateGhost(float dt)
 {
 	m_timeOut += dt;
 	const char* filename;
-	int randomNumber = rand() % 10;
+	int randomNumber = rand() % m_nrOfSpookSounds;
 
 	if (glfwJoystickPresent(m_controllerID))
 	{
@@ -63,13 +94,14 @@ void Ghost::UpdateGhost(float dt)
 			m_honkEngine->play2D(m_honk->getSoundSource(), false, false, true);
 		}
 
-		if (m_tauntEngine)
+		if (m_tauntEngine && m_timeOut > 1.0f)
 		{
 			if (m_controller->ButtonYIsPressed(m_controllerID))
 			{
 				filename = m_soundFiles[randomNumber];
 				m_tauntEngine->play2D(filename, false);
-				cout << "Pressing Y" << endl;
+				cout << "Pressing Y and sound nr " << randomNumber << endl;
+				m_timeOut = 0;
 			}
 		}
 
