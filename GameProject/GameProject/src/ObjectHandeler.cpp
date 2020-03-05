@@ -147,19 +147,25 @@ void ObjectHandler::Update(float dt)
 	m_dynamicsWorld->stepSimulation(dt, 10);
 	
 	m_scaleTimer += dt;
-	if (m_cube->GetCurrentLevel() == 5) {
-		if (m_objects.size() != 0) {
-			if (m_objects.at(0)->GetPos().z < -21.0f && m_objects.at(0)->GetWay()) {
+	if (m_cube->GetCurrentLevel() == 5) 
+	{
+		if (m_objects.size() != 0) 
+		{
+			if (m_objects.at(0)->GetPos().z < -21.0f && m_objects.at(0)->GetWay()) 
+			{
 				m_objects.at(0)->SetWay(false);
 			}
-			else if (m_objects.at(0)->GetPos().z > 21.0f && !m_objects.at(0)->GetWay()) {
+			else if (m_objects.at(0)->GetPos().z > 21.0f && !m_objects.at(0)->GetWay()) 
+			{
 				m_objects.at(0)->SetWay(true);
 
 			}
-			if (m_objects.at(0)->GetWay()) {
+			if (m_objects.at(0)->GetWay()) 
+			{
 				m_objects.at(0)->Move(vec3(0, 0, -5));
 			}
-			else {
+			else 
+			{
 				m_objects.at(0)->Move(vec3(0, 0, 5));
 			}
 		}
@@ -248,15 +254,19 @@ void ObjectHandler::Update(float dt)
 			}
 		}
 
-		if (isPowerUp >= 0) {
-			if (m_powerUps[isPowerUp]->update(dt)) {
+		if (isPowerUp >= 0) 
+		{
+			if (m_powerUps[isPowerUp]->update(dt)) 
+			{
 				RemovePowerUp(isPowerUp);
 			}
 		}
 
-		if (isPlayer >= 0) {
+		if (isPlayer >= 0) 
+		{
 			m_players[isPlayer]->Update(dt);
-			if (m_players[isPlayer]->updatePower(dt)) {
+			if (m_players[isPlayer]->updatePower(dt)) 
+			{
 				m_dynamicsWorld->removeRigidBody(m_players[isPlayer]->GetBody());
 				m_players[isPlayer]->removePower(m_players[isPlayer]->GetActivePower());
 				m_dynamicsWorld->addRigidBody(m_players[isPlayer]->GetBody());
@@ -409,17 +419,13 @@ void ObjectHandler::AddGhost(int index)
 	m_ghosts.back()->SetControllerID(index);
 }
 
-void ObjectHandler::RemovePlatform()
-{
-	// Kommer aldrig anropas?
-}
-
 void ObjectHandler::AddPowerUp()
 {
 	int type = rand() % (10);
 	bool spawnFound = false;
 	vec3 spawn = vec3(0);// = vec3((rand() % 30) - 15, 7, (rand() % 20 - 15)));
-	while (!spawnFound) {
+	while (!spawnFound) 
+	{
 		spawn = vec3((rand() % m_cube->GetWidth()) - m_cube->GetWidth()/2, 7, (rand() % m_cube->GetWidth()) - m_cube->GetWidth()/2);
 		if (m_cube->IsNotHole(spawn)) {
 			spawnFound = true;
@@ -493,7 +499,6 @@ void ObjectHandler::SetNumberOfLives(int num)
 	{
 		m_players[i]->SetLives(num);
 	}
-	
 }
 
 vec3 ObjectHandler::GetPlayerDirection(int index)
@@ -994,7 +999,8 @@ void ObjectHandler::SetLightsOut(bool state)
 
 void ObjectHandler::RenderParticles()
 {
-	for (int i = 0; i < m_particles.size(); i++) {
+	for (int i = 0; i < m_particles.size(); i++) 
+	{
 		m_particles.at(i)->Draw();
 	}
 }
@@ -1002,7 +1008,8 @@ void ObjectHandler::RenderParticles()
 void ObjectHandler::RemoveAllObjects()
 {
 	int nrOf = m_objects.size();
-	for (int i = 0; i < nrOf; i++) {
+	for (int i = 0; i < nrOf; i++) 
+	{
 		RemoveObject(0);
 	}
 }

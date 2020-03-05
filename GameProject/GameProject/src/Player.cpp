@@ -446,7 +446,8 @@ bool Player::GetFallen()
 
 void Player::GivePower(int type)
 {
-	if (m_powerActive) {
+	if (m_powerActive) 
+	{
 		removePower(m_powerType);
 	}
 	m_powerType = type;
@@ -455,7 +456,8 @@ void Player::GivePower(int type)
 
 	float mass;
 	btVector3 localInertia(0, 0, 0);
-	switch (type) {
+	switch (type) 
+	{
 		case 0:
 			mass = m_body->getMass() * 1.5f;
 			m_body->getCollisionShape()->calculateLocalInertia(mass, localInertia);
@@ -516,9 +518,10 @@ void Player::removePower(int type)
 {
 	float mass;
 	btVector3 localInertia(0, 0, 0);
-
 	m_powerActive = false;
-	switch (type) {
+
+	switch (type) 
+	{
 	case 0:
 		mass = m_body->getMass() / 1.5f;
 		m_body->getCollisionShape()->calculateLocalInertia(mass, localInertia);
@@ -578,7 +581,9 @@ bool Player::updatePower(float dt)
 {
 	bool destroy = false;
 	m_powerDuration = m_powerDuration - dt;
-	if (m_powerDuration <= 0.f && m_powerActive == true) {
+
+	if (m_powerDuration <= 0.f && m_powerActive == true) 
+	{
 		m_powerActive = false;
 		destroy = true;
 	}
