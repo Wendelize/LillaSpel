@@ -18,7 +18,7 @@ Game::Game()
 	m_menu->SetActiveMenu(Menu::ActiveMenu::start);
 	m_menu->LoadMenuPic();
 
-	m_maxTime = 120.f;
+	m_maxTime = 60.f;
 	m_debug = false;
 	m_toggle = false;
 	m_platforms = m_scene->GetModels(0);
@@ -31,7 +31,6 @@ Game::Game()
 
 	m_objectHandler->AddPlayer(vec3(-10, 6, 3), 0, 0, vec3(0.5, 1, 9), m_cars[0]); // Passa modell
 	m_objectHandler->AddPlayer(vec3(10, 6, 3), 1, 0, vec3(0, 2, 0), m_cars[2]); // Passa modell
-
 	m_scene->SetCameraPos(CAMERAPOS_GAME);
 
 
@@ -131,13 +130,42 @@ void Game::Update(float dt)
 		m_menu->SetMapUpdate(false);
 	}
 
-
+	if (m_menu->StartMenuActive())
+	{
+		m_objectHandler->ClearBombs();
+		m_menuTrackSwap += dt;
+		if (m_menuTrackSwap > 5.0f) {
+			if (m_cube->GetCurrentLevel() == 6) {
+				m_cube->SetCurrentLevel(0);
+			}
+			else {
+				m_cube->SetCurrentLevel(m_cube->GetCurrentLevel() + 1);
+			}
+			m_updateMap.store(true);
+			m_menuTrackSwap = 0;
+		}
+	}
+	
 	// är select menyn aktiverad? ändra kameran till inzoomad
 	if (m_menu->SelectMenuActive())
 	{
+		if (m_cube->GetCurrentLevel() != 0) {
+			m_cube->SetCurrentLevel(0);
+			m_updateMap.store(true);
+		}
+		if (m_mapUpdateReady.load() == true && m_updateMap.load() == false)
+		{
+			m_objectHandler->RemoveDynamicPlatformMesh(m_cube);
+			m_cube->MapUpdate();
+			m_objectHandler->AddDynamicPlatformMesh(m_cube);
+			m_timeSwapTrack = 0.f;
+			m_mapUpdateReady.store(false);
+			m_objectHandler->ClearBombs();
+		}
 		SelectionMenu();
 		m_scene->TranslateCameraPos(vec3(CAMERAPOS_SELECT), 1.f);
 		m_maxTime = m_menu->GetMaxTime();
+
 	}
 	else if (m_menu->SelectMenuActive() == false && m_wasSelect == true)
 	{
@@ -336,28 +364,29 @@ void Game::DynamicCamera(float dt)
 	{
 		//---- Win/Restart/Stats => Game Over, Zoom in on winner and add particles ----//
 
-		vec3 infront = normalize(m_objectHandler->GetPlayerPos(winner) - (m_objectHandler->GetPlayerPos(winner) - m_objectHandler->GetPlayerDirection(winner)));
-		vec3 right = cross(infront, vec3(0, 1, 0));
-		vec3 vec = m_objectHandler->GetPlayerPos(winner) + -infront * 3.f + right * 3.f + vec3(0, -0.6, 0);
+		m_objectHandler->SetPlayerFinishRotation(m_winner);
 
-		m_scene->TranslateCameraPos(vec, 1.f);
+		m_objectHandler->SetPlayerPos(vec3(0, 12, 30), m_winner);
 
-		right = cross(normalize(m_objectHandler->GetPlayerPos(winner) - vec), vec3(0, 1, 0));
+		vec3 winnerPos = m_objectHandler->GetPlayerPos(winner);
 
-		vec3 in = m_objectHandler->GetPlayerPos(winner) - (m_objectHandler->GetPlayerPos(winner) + right * 2.0f);
+		m_scene->TranslateCameraPos(winnerPos + vec3(0, 0.5, 4.5), 1);
+		m_scene->SetCameraFocus(winnerPos + vec3(0, 1.3, 0));
+
+		vec3 right = normalize(winnerPos - (winnerPos + vec3(1, 0, 0)));
 
 		//Confetti
-		m_scene->AddParticleEffect(m_objectHandler->GetPlayerPos(winner) + right * 2.0f + vec3(0, -1, 0), vec3(NULL), vec3(NULL), 1, 0.9, vec3(0, 7, 0) + in + vec3(0, -1, 0), 10, 0.9, 0.04, -9.82);
-		m_scene->AddParticleEffect(m_objectHandler->GetPlayerPos(winner) - right * 2.0f + vec3(0, -1, 0), vec3(NULL), vec3(NULL), 1, 0.9, vec3(0, 7, 0) - in + vec3(0, -1, 0), 10, 0.9, 0.04, -9.82);
+		m_scene->AddParticleEffect(m_objectHandler->GetPlayerPos(winner) + right * 2.0f + vec3(0, -1, 0), vec3(NULL), vec3(NULL), 1, 0.9, vec3(0, 8, 0) - right * 1.5f + vec3(0, -1, 0), 15, 1.0, 0.04, -9.82);
+		m_scene->AddParticleEffect(m_objectHandler->GetPlayerPos(winner) - right * 2.0f + vec3(0, -1, 0), vec3(NULL), vec3(NULL), 1, 0.9, vec3(0, 8, 0) + right * 1.5f + vec3(0, -1, 0), 15, 1.0, 0.04, -9.82);
 
 		//Fireworks
 		m_fireworkCooldown += dt;
 		if (m_fireworkCooldown >= 0.3)
 		{
-			vec3 behind = m_objectHandler->GetPlayerPos(winner) + (m_objectHandler->GetPlayerPos(winner) - vec) * 13.f + vec3(0, 26, 0);
+			vec3 behind = winnerPos + vec3(0, 0, -1) * 50.f + vec3(0, 33, 0);
 
-			vec3 x = normalize(in) * (static_cast <float> (rand()) / static_cast <float> (RAND_MAX)) * 60.f;
-			x = x * 2.f - normalize(in) * 60.f;
+			vec3 x = vec3(1, 0, 0) * (static_cast <float> (rand()) / static_cast <float> (RAND_MAX)) * 60.f;
+			x = x * 2.f - vec3(1, 0, 0) * 60.f;
 
 			vec3 y = vec3(0, 1, 0) * (static_cast <float> (rand()) / static_cast <float> (RAND_MAX)) * 13.f;
 			y = y * 2.f - vec3(0, 1, 0) * 13.f;
@@ -425,7 +454,7 @@ void Game::Render()
 	m_menu->RenderMenu(m_gameOver, m_time, m_cars[0]);
 	m_objectHandler->RenderParticles(); // Används?
 	m_scene->RenderLights(m_carLight);
-	m_scene->Render(m_objects, m_objectHandler->GetWorld(), m_cube, m_gameOver, m_winner, m_objectHandler->GetLightsOut());
+	m_scene->Render(m_objects, m_objectHandler->GetWorld(), m_cube, m_gameOver, m_winner, m_objectHandler->GetLightsOut(),m_objectHandler->GetTerrain());
 
 	if (m_debug)
 		Debug();
@@ -447,6 +476,7 @@ void Game::Reset()
 	m_gameOver = false;
 	m_time = 0;
 	m_objectHandler->SetLightsOut(false);
+	m_objectHandler->SetTerrain(true);
 	//m_maxTime = 240.f;
 	m_timeSinceSpawn = 0;
 	// delete remaning players so we can spawn them back att spawn positions
@@ -495,13 +525,13 @@ void Game::MutliThread(GLFWwindow* window)
 void Game::Debug()
 {
 	// TODO: BUG: fixa så debug inte crashar om det är uppe och nån spelare deletas (förlorar alla liv)
-
 	/*ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
 	ImGui::ShowDemoWindow();*/
 	bool temp = false;
-	ImGui::PushFont(m_scene->GetOurWindow()->m_fonts[2]);
+	ImGui::PushFont(m_scene->GetOurWindow()->m_fonts[1]);
+
 	ImGui::Begin("Stats", &temp, ImGuiWindowFlags_AlwaysAutoResize);
 
 	ImGui::Text("Display Size: W:%.0f, H:%.0f", ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y);
@@ -514,7 +544,7 @@ void Game::Debug()
 
 	ImGui::End();
 
-	ImGui::PushFont(m_scene->GetOurWindow()->m_fonts[2]);
+	ImGui::PushFont(m_scene->GetOurWindow()->m_fonts[1]);
 	ImGui::Begin("Settings", &temp, ImGuiWindowFlags_AlwaysAutoResize);
 
 	ImGui::BeginChild(1, ImVec2(205, 35), true);
@@ -566,7 +596,7 @@ void Game::Debug()
 	{
 		ImGui::PopFont();
 		ImGui::End();
-		ImGui::PushFont(m_scene->GetOurWindow()->m_fonts[2]);
+		ImGui::PushFont(m_scene->GetOurWindow()->m_fonts[1]);
 		ImGui::Begin("Player List", &temp, ImGuiWindowFlags_AlwaysAutoResize);
 		for (int i = 0; i < m_objects.size(); i++)
 		{
@@ -620,7 +650,6 @@ void Game::Debug()
 		}
 	}
 	ImGui::PopFont();
-
 	ImGui::End();
 
 	//vec3 col = vec3((cos(m_time) + 1)/2, (cos(m_time * 0.7f) + 1)/2, (cos(m_time * 0.4f) + 1)/2);

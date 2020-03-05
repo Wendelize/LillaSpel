@@ -28,6 +28,8 @@ private:
 
 	vector<Model*> m_vehicles, m_platform, m_power,m_objects;
 	
+	Model* m_winnerIsland;
+
 	vector <Light*> m_lights;
 	vector <Light*> m_carLights;
 	int m_nrOfLights = 0, m_nrOfCarLights = 0;
@@ -48,7 +50,7 @@ public:
 	void Init();
 	void LightToShader(bool lightsOut);
 	//void Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, MarchingCubes* cube);
-	void Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, MarchingCubes* cube, bool gameOver, int winner, bool lightsOut);
+	void Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, MarchingCubes* cube, bool gameOver, int winner, bool lightsOut, bool terrain);
 	void RenderSceneInfo(Shader * shader, vector<ObjectInfo*> objects);
 	void RenderSkybox();
 	void RenderSky();

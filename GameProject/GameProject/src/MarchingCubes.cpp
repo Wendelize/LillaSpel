@@ -548,7 +548,7 @@ void MarchingCubes::PopulateTerrainMap(int level)
 					}
 					break;
 
-				case 2: // TETRIS + MULTIFRACTAL
+				case 2: // TETRIS + MULTIFRACTAL 
 					if (x <= m_middle && z <= m_middle)
 					{
 						m_terrainMap[x][y][z] = 1;

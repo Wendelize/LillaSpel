@@ -65,6 +65,8 @@ Scene::~Scene()
 	}
 	m_particles.clear();
 
+	delete m_winnerIsland;
+
 
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
@@ -118,9 +120,13 @@ void Scene::Init()
 	m_power.push_back(new Model("src/Models/SizeUP2.0.obj"));			//6
 	m_power.push_back(new Model("src/Models/Bulb.obj"));				//7
 	m_power.push_back(new Model("src/Models/Love.obj"));				//8
+	m_power.push_back(new Model("src/Models/Rocket.obj"));				//9
+
 
 	m_objects.push_back(new Model("src/Models/Log.obj"));  //MÅSTE VARA FÖRSTA SOM LADDAS IN
 	m_objects.push_back(new Model("src/Models/Ball.obj"));
+
+	m_winnerIsland = new Model("src/Models/Island.obj");
 
 	//m_power.push_back(new Model("src/Models/PowerUp.obj"));
 
@@ -191,7 +197,7 @@ void Scene::LightToShader(bool lightsOut)
 	}
 }
 
-void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, MarchingCubes* cube, bool gameOver, int winner, bool lightsOut)
+void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, MarchingCubes* cube, bool gameOver, int winner, bool lightsOut, bool terrain)
 {
 	m_viewMatrix = m_camera->GetView();
 	/* Render here */
@@ -222,6 +228,7 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, 
 	glBindTexture(GL_TEXTURE_2D, m_shadowMap->GetTexture());
 
 	// Terrain
+	if (terrain == true)
 	cube->Draw(m_modelShader);
 
 	// Light uniforms
@@ -273,6 +280,10 @@ void Scene::RenderSceneInfo(Shader* shader, vector<ObjectInfo*> objects)
 			break;
 		}
 	}
+	shader->SetUniform("u_Model", glm::scale(translate(mat4(1.f), vec3(0, 9.65, 30)),vec3(0.25, 0.25, 0.25)));
+	shader->SetUniform("u_PlayerColor", vec3(1, 0, 0));
+	shader->SetUniform("u_Glow", false);
+	m_winnerIsland->Draw(shader);
 }
 
 void Scene::RenderSkybox()

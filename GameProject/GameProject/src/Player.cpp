@@ -47,19 +47,29 @@ Player::Player(Model* model, int modelId, vec3 pos)
 	case 0:
 		//deafult bil
 		mass = 1000.f;
+		m_powerMultiplier = 1.0f;
+
 		break;
 	case 1:
 		//truck
 		mass = 1200.f;
+		m_powerMultiplier = 1.2f;
+
 		break;
 	case 2:
-		mass = 1050.f;
+		mass = 1100.f;
+		m_powerMultiplier = 1.1f;
+
 		break;
 	case 3:
 		mass = 950.f;
+		m_powerMultiplier = 0.95f;
+
 		break;
 	default:
 		mass = 1000.f;
+		m_powerMultiplier = 1.0f;
+
 		break;
 	}
 	m_btTransform->setOrigin(btVector3(pos.x,pos.y,pos.z));
@@ -99,19 +109,19 @@ Player::Player(Model* model, int modelId, vec3 pos)
 	switch (modelId)
 	{
 	case 0:
-		m_body->setDamping(0.2, 100.0);
+		m_body->setDamping(0.20, 50.0);
 		break;
 	case 1:
-		m_body->setDamping(0.2, 100.0);
+		m_body->setDamping(0.15, 50.0);
 		break;
 	case 2:
-		m_body->setDamping(0.2, 100.0);
+		m_body->setDamping(0.15, 50.0);
 		break;
 	case 3:
-		m_body->setDamping(0.2, 100.0);
+		m_body->setDamping(0.2, 50.0);
 		break;
 	default:
-		m_body->setDamping(0.1, 100.0);
+		m_body->setDamping(0.15, 15.0);
 		break;
 	}
 
@@ -192,11 +202,11 @@ void Player::Update(float dt)
 			
 			if (m_inverted == false)
 			{
-				m_speed = 700000.f * m_powerMultiplier / (dt * 60);
+				m_speed = 900000.f * m_powerMultiplier / (dt * 60);
 			}
 			else if (m_inverted == true)
 			{
-				m_speed = -700000.f * m_powerMultiplier / (dt * 60);
+				m_speed = -900000.f * m_powerMultiplier / (dt * 60);
 			}
 			pressed = true;
 		}
@@ -205,11 +215,11 @@ void Player::Update(float dt)
 		{
 			if (m_inverted == false)
 			{
-				m_speed = -500000.f * m_powerMultiplier / (dt * 60);
+				m_speed = -800000.f * m_powerMultiplier / (dt * 60);
 			}
 			else if (m_inverted == true)
 			{
-				m_speed = 500000.f * m_powerMultiplier / (dt * 60);
+				m_speed = 800000.f * m_powerMultiplier / (dt * 60);
 			}
 				pressed = true;
 		}
@@ -384,6 +394,11 @@ void Player::SetControllerID(int id)
 	m_controllerID = id;
 }
 
+void Player::FinishRotation()
+{
+	m_transform->SetRotation(0, 3.14*1.2, 0);
+}
+
 vec3 Player::GetDirection()
 {
 	return m_transform->GetForward();
@@ -433,6 +448,13 @@ btRigidBody* Player::GetBody()
 btVector3 Player::GetCurrentPos()
 {
 	return m_body->getWorldTransform().getOrigin();
+}
+
+void Player::SetFinishPos(vec3 pos)
+{
+	m_body->getWorldTransform().setOrigin(btVector3(pos.x, pos.y, pos.z));
+	m_body->setLinearVelocity(btVector3(0, 0, 0));
+	m_transform->SetTranslation(pos);
 }
 
 void Player::SetPos(vec3 pos)
@@ -501,18 +523,18 @@ void Player::GivePower(int type)
 			m_powerMultiplier = 1.0f;
 			break;
 
-		case 6: 
+		case 6: //Bomb
 			break;
 
-		case 7: 
+		case 7: //Lightbulb
 			break;
 
 		case 8:
 			m_lives++;
 			break;
 
-		case 9:
-			m_body->setRestitution(m_restitution * 1.2);
+		case 9: //Invisible terrain
+			//m_body->setRestitution(m_restitution * 1.2);
 			break;
 	}
 }
@@ -574,7 +596,7 @@ void Player::removePower(int type)
 		//No functionality needed
 		break;
 	case 9:
-		m_body->setRestitution(m_restitution);
+		//m_body->setRestitution(m_restitution);
 		break;
 	}
 
