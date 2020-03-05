@@ -37,7 +37,14 @@ Object::Object(btVector3 pos, int type, Model* model)
 
 	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, m_motionState, m_physicsMesh, localInertia);
 	m_body = new btRigidBody(rbInfo);
-	m_body->setRestitution(1.5);
+	if (type == 1) {
+		m_body->setRestitution(3);
+
+	}
+	else {
+		m_body->setRestitution(1.2);
+
+	}
 	vec3 btPos = vec3(m_btTransform->getOrigin().x(), m_btTransform->getOrigin().y(), m_btTransform->getOrigin().z());
 	m_transform->SetTranslation(btPos);
 

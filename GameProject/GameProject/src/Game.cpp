@@ -494,6 +494,7 @@ void Game::Reset()
 	}
 
 	m_objectHandler->RemoveAllObjects();
+	m_objectHandler->RemoveAllGhost();
 
 	if (m_cube->GetCurrentLevel() == 5) {
 		m_objectHandler->AddObject(vec3(0, 2, 0), 0, m_objectModels[0]);
