@@ -425,7 +425,7 @@ void Game::Render()
 	m_menu->RenderMenu(m_gameOver, m_time, m_cars[0]);
 	m_objectHandler->RenderParticles(); // Används?
 	m_scene->RenderLights(m_carLight);
-	m_scene->Render(m_objects, m_objectHandler->GetWorld(), m_cube, m_gameOver, m_winner, m_objectHandler->GetLightsOut());
+	m_scene->Render(m_objects, m_objectHandler->GetWorld(), m_cube, m_gameOver, m_winner, m_objectHandler->GetLightsOut(),m_objectHandler->GetTerrain());
 
 	if (m_debug)
 		Debug();
@@ -447,6 +447,7 @@ void Game::Reset()
 	m_gameOver = false;
 	m_time = 0;
 	m_objectHandler->SetLightsOut(false);
+	m_objectHandler->SetTerrain(true);
 	//m_maxTime = 240.f;
 	m_timeSinceSpawn = 0;
 	// delete remaning players so we can spawn them back att spawn positions

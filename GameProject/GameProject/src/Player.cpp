@@ -501,18 +501,18 @@ void Player::GivePower(int type)
 			m_powerMultiplier = 1.0f;
 			break;
 
-		case 6: 
+		case 6: //Bomb
 			break;
 
-		case 7: 
+		case 7: //Lightbulb
 			break;
 
 		case 8:
 			m_lives++;
 			break;
 
-		case 9:
-			m_body->setRestitution(m_restitution * 1.2);
+		case 9: //Invisible terrain
+			//m_body->setRestitution(m_restitution * 1.2);
 			break;
 	}
 }
@@ -574,7 +574,7 @@ void Player::removePower(int type)
 		//No functionality needed
 		break;
 	case 9:
-		m_body->setRestitution(m_restitution);
+		//m_body->setRestitution(m_restitution);
 		break;
 	}
 

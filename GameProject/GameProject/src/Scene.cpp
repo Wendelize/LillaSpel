@@ -191,7 +191,7 @@ void Scene::LightToShader(bool lightsOut)
 	}
 }
 
-void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, MarchingCubes* cube, bool gameOver, int winner, bool lightsOut)
+void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, MarchingCubes* cube, bool gameOver, int winner, bool lightsOut, bool terrain)
 {
 	m_viewMatrix = m_camera->GetView();
 	/* Render here */
@@ -222,6 +222,7 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, 
 	glBindTexture(GL_TEXTURE_2D, m_shadowMap->GetTexture());
 
 	// Terrain
+	if (terrain == true)
 	cube->Draw(m_modelShader);
 
 	// Light uniforms

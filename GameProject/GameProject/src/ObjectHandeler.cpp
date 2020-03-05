@@ -192,6 +192,22 @@ void ObjectHandler::Update(float dt)
 		m_lightsOut = false;
 	}
 
+	//Invisible terrain 
+	active = false;
+	for (auto p : m_players)
+	{
+		if (p->GetActivePower() == 9) //Questionmark 
+		{
+			active = true;
+			m_terrain = false;
+		}
+	}
+	if (m_terrain == false && active == false)
+	{
+		m_terrain = true;
+	}
+
+
 	for (size_t i = 0; i < m_dynamicsWorld->getNumCollisionObjects(); i++)
 	{
 		btCollisionObject* obj = m_dynamicsWorld->getCollisionObjectArray()[i];
@@ -999,6 +1015,17 @@ void ObjectHandler::SetLightsOut(bool state)
 {
 	m_lightsOut = state;
 }
+
+bool ObjectHandler::GetTerrain()
+{
+	return m_terrain;
+}
+
+void ObjectHandler::SetTerrain(bool state)
+{
+	m_terrain = state;
+}
+
 
 void ObjectHandler::RenderParticles()
 {

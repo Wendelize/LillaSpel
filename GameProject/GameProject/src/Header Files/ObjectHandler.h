@@ -57,6 +57,7 @@ private:
 	MarchingCubes* m_cube;
 
 	bool m_lightsOut;
+	bool m_terrain;
 
 public:
 	ObjectHandler();
@@ -128,6 +129,8 @@ public:
 	bool CheckCollisionCars(float dt);
 	bool GetLightsOut();
 	void SetLightsOut(bool state);
+	bool GetTerrain();
+	void SetTerrain(bool state);
 	void RenderParticles();
 	void RemoveAllObjects();
 
