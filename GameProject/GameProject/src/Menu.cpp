@@ -104,7 +104,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		if (ImGui::Begin("##Background", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoNav))
 		{
 			ImGui::SetCursorPos(ImVec2(0, 0));
-			ImGui::Image((void*)m_mainMenuPic, ImVec2(width+8, height+2), ImVec2(0, 0), ImVec2(1, 1));
+	//		ImGui::Image((void*)m_mainMenuPic, ImVec2(width+8, height+2), ImVec2(0, 0), ImVec2(1, 1));
 		}
 		ImGui::End();
 
@@ -128,9 +128,13 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 			//	NavHighlight is the border around the button
 			ImGui::PushStyleColor(ImGuiCol_NavHighlight, ImVec4(0, 0, 0, 0));
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
-			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.2, 0.2, 0.2, 1));
-			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.7, 0.1, 0, 0.3));
+			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.1, 0.1, 0.1, 1));
+			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.1, 0.1, 0.1, 0.3));
+
+			ImGui::SetCursorPos(ImVec2(middle - 110, 400 - mainMenuButonHeight));
+			ImGui::Text("KamiCarZe");
 			ImGui::SetCursorPos(ImVec2(middle - 75, 500 - mainMenuButonHeight));
+
 			if (ImGui::Button("Start", ImVec2(200, 75)))
 			{
 				if (m_soundEngine)
@@ -829,8 +833,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				}
 				if (m_objHand->GetNumPlayers() == 0)
 				{
-					m_objHand->AddPlayer(vec3(-10, 2, 3), 0, m_p1ModelId, m_p1Col, model);
-					m_objHand->AddPlayer(vec3(10, 2, 3), 1, m_p2ModelId, m_p2Col, model);
+					m_objHand->AddPlayer(vec3(-10, 6, 3), 0, m_p1ModelId, m_p1Col, model);
+					m_objHand->AddPlayer(vec3(10, 6, 3), 1, m_p2ModelId, m_p2Col, model);
 				}
 			}
 			ImGui::SetCursorPos(ImVec2(((float)width / 3) / 3, 315));
@@ -878,15 +882,15 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				}
 				if (m_objHand->GetNumPlayers() == 0)
 				{
-					m_objHand->AddPlayer(vec3(-10, 2, 3), 0, m_p1ModelId, m_p1Col, model);
-					m_objHand->AddPlayer(vec3(10, 2, 3), 1, m_p2ModelId, m_p2Col, model);
+					m_objHand->AddPlayer(vec3(-10, 6, 3), 0, m_p1ModelId, m_p1Col, model);
+					m_objHand->AddPlayer(vec3(10, 6, 3), 1, m_p2ModelId, m_p2Col, model);
 				}
 				if (m_p3Joined && m_objHand->GetNumPlayers() == 2)
 				{
-					m_objHand->AddPlayer(vec3(-7, 2, 15), 2, m_p3ModelId, m_p3Col, model);
+					m_objHand->AddPlayer(vec3(-7, 6, 15), 2, m_p3ModelId, m_p3Col, model);
 					if (m_p4Joined)
 					{
-						m_objHand->AddPlayer(vec3(7, 2, 15), 3, m_p4ModelId, m_p4Col, model);
+						m_objHand->AddPlayer(vec3(7, 6, 15), 3, m_p4ModelId, m_p4Col, model);
 					}
 				}
 
@@ -915,8 +919,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				}
 				if (m_objHand->GetNumPlayers() == 0)
 				{
-					m_objHand->AddPlayer(vec3(-10, 2, 3), 0, m_p1ModelId, m_p1Col, model);
-					m_objHand->AddPlayer(vec3(10, 2, 3), 1, m_p2ModelId, m_p2Col, model);
+					m_objHand->AddPlayer(vec3(-10, 6, 3), 0, m_p1ModelId, m_p1Col, model);
+					m_objHand->AddPlayer(vec3(10, 6, 3), 1, m_p2ModelId, m_p2Col, model);
 				}
 			}
 			ImGui::SetCursorPos(ImVec2(((float)width / 3) / 3, 315));
@@ -1382,6 +1386,14 @@ void Menu::SetWinner(int playerID)
 bool Menu::SelectMenuActive()
 {
 	if (m_menu == ActiveMenu::select || m_menu == ActiveMenu::selectLives)
+		return true;
+	else
+		return false;
+}
+
+bool Menu::StartMenuActive()
+{
+	if (m_menu == ActiveMenu::start)
 		return true;
 	else
 		return false;
