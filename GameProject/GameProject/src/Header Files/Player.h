@@ -72,12 +72,14 @@ public:
 	void SetScale(vec3 scale);
 	int GetControllerID();
 	void SetControllerID(int id);
+	void FinishRotation();
 	vec3 GetDirection();
 	mat4 GetMatrix();
 	ObjectInfo* GetObjectInfo();
 	Light* GetLight(int index);
 	btRigidBody* GetBody();
 	btVector3 GetCurrentPos();
+	void SetFinishPos(vec3 pos);
 	void SetPos(vec3 pos);
 	bool GetFallen();
 	void SetFallen();
