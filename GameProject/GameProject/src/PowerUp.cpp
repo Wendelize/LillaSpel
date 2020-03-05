@@ -3,7 +3,7 @@
 PowerUp::PowerUp(int spawn, btVector3 pos, int type,float duration)
 {
 	m_pos = pos;
-	m_type = 10;
+	m_type = type;
 	m_duration = duration;
 	m_transform = new Transform;
 	m_model = 0;

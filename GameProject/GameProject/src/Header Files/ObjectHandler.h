@@ -130,4 +130,8 @@ public:
 	void SetLightsOut(bool state);
 	void RenderParticles();
 	void RemoveAllObjects();
+
+	void UpdateLastPos();
+	void UpdateHook(float dt);
+	bool GetPlayerHook(int index);
 };

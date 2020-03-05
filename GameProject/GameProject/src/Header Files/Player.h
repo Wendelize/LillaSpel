@@ -43,6 +43,10 @@ private:
 	btDefaultMotionState* m_motionState;
 	btVector3 m_currentPos;
 
+	//Hook/ Rocket
+	vec3 m_lastPos;
+	bool m_hookActive;
+
 public:
 	Player(Model* model, int modelId, vec3 pos);
 	~Player();
@@ -88,5 +92,10 @@ public:
 	Controller* GetController();
 	bool GetBoolLights();
 	void SetBoolLights(bool state);
+
+	vec3 GetLastPos();
+	void SetLastPos(vec3 pos);
+	bool GetHook();
+	void SetHook(bool state);
 
 };

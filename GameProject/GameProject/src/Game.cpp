@@ -90,17 +90,24 @@ void Game::Update(float dt)
 		dt /= (m_slowmoCooldown * 1.5) + 1;
 	}
 
-	//Exhaust particles
+	//Exhaust particles &	Hook/Rocket
 	for (int i = 0; i < m_objectHandler->GetNumPlayers(); i++)
 	{
 		float speed = m_objectHandler->GetPlayerSpeed(i);
-		if (speed > 15)
+		if (speed > 15 || m_objectHandler->GetPlayerHook(i))
 		{
 			vec3 dir = m_objectHandler->GetPlayerDirection(i);
 			vec3 pos = m_objectHandler->GetPlayerPos(i) + dir * 1.f + vec3(0, -0.45, 0);
 			vec3 right = cross(dir, vec3(0, 1, 0)) * 0.5f;
 
-			m_scene->AddParticleEffect(pos, vec3(0.6, 0.6, 0.6), vec3(0), 5, 0.005, dir, 4, 0.3, 0.3, 1);
+			if (speed > 15)
+			{
+				m_scene->AddParticleEffect(pos, vec3(0.6, 0.6, 0.6), vec3(0), 5, 0.005, dir, 4, 0.3, 0.3, 1);
+			}
+			if (m_objectHandler->GetPlayerHook(i))
+			{
+				m_scene->AddParticleEffect(pos, vec3(1, 0, 0), vec3(0, 1, 0), 5, 1, dir, 50, 0.3, 0.3, 1);
+			}
 		}
 	}
 

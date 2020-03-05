@@ -137,6 +137,8 @@ Player::Player(Model* model, int modelId, vec3 pos)
 		m_honk = m_honkEngine->play2D(m_carSounds[2], false, true);
 	}
 
+	m_hookActive = false;
+
 }
 
 Player::~Player()
@@ -471,7 +473,8 @@ void Player::GivePower(int type)
 			break;
 
 		case 2:
-			m_powerMultiplier = 0.5f;
+			m_powerDuration = 10000.f;
+			//m_powerMultiplier = 0.5f;
 			break;
 
 		case 3:
@@ -535,7 +538,8 @@ void Player::removePower(int type)
 		break;
 
 	case 2:
-		m_powerMultiplier = 1.f;
+		//m_powerMultiplier = 1.f;
+		m_hookActive = false;
 		break;
 
 	case 3:
@@ -644,4 +648,25 @@ void Player::StopEngineSounds()
 {
 	if (m_soundEngine)
 		m_sound->setIsPaused(true);
+}
+
+vec3 Player::GetLastPos()
+{
+	return m_lastPos;
+}
+
+void Player::SetLastPos(vec3 pos)
+{
+	m_lastPos = pos;
+
+}
+
+bool Player::GetHook()
+{
+	return m_hookActive;
+}
+
+void Player::SetHook(bool state)
+{
+	m_hookActive = state;
 }

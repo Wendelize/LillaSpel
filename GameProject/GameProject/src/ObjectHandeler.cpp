@@ -174,6 +174,9 @@ void ObjectHandler::Update(float dt)
 	CheckCollisionCars(dt);
 	UpdateVibration(dt);
 
+	UpdateHook(dt);
+	UpdateLastPos();
+
 	//LightsOut power-up update
 	bool active = false;
 	for (auto p : m_players)
@@ -1012,5 +1015,84 @@ void ObjectHandler::RemoveAllObjects()
 	{
 		RemoveObject(0);
 	}
+}
+
+void ObjectHandler::UpdateLastPos()
+{//For Hook
+
+	int numManifolds = m_dynamicsWorld->getDispatcher()->getNumManifolds();
+	for (int i = 0; i < numManifolds; ++i)
+	{
+		btPersistentManifold* contactManifold = m_dynamicsWorld->getDispatcher()->getManifoldByIndexInternal(i);
+		btCollisionObject* obA = const_cast<btCollisionObject*>(contactManifold->getBody0());
+		btCollisionObject* obB = const_cast<btCollisionObject*>(contactManifold->getBody1());
+
+		btCollisionShape* shapeA = obA->getCollisionShape();
+		btCollisionShape* shapeB = obB->getCollisionShape();
+
+		//Collision between car and terrain
+		for (auto p : m_players)
+		{
+			if (p->GetCurrentPos().y() >= 0)
+			{
+				if (obA == p->GetBody() && obB == m_cube->GetBody())
+				{
+					btVector3 btPos = p->GetCurrentPos();
+
+					//This is stopid unrelialbe way- will need to fix better 
+					vec3 diff = vec3(-7, 6, -7);
+					if (btPos.x() < 0)
+					{
+						diff.x *= -1;
+					}
+					if (btPos.z() < 0)
+					{
+						diff.z *= -1;
+					}
+					vec3 lastPos = vec3(btPos.x() + diff.x, btPos.y() + diff.y, btPos.z() + diff.z);
+					p->SetLastPos(lastPos);
+				}
+			}
+		}
+	}
+}
+
+void ObjectHandler::UpdateHook(float dt)
+{
+	for (auto p : m_players)
+	{
+		if (p->GetActivePower() == 2)
+		{
+			if (p->GetCurrentPos().y() < -0.5)
+			{
+				p->SetHook(true);
+			}
+		}
+	}
+
+	for (auto p : m_players)
+	{
+		if (p->GetHook() == true)
+		{
+			vec3 lastPos = p->GetLastPos();
+			btVector3 btPos = p->GetCurrentPos();
+			vec3 curPos = vec3(btPos.x(), btPos.y(), btPos.z());
+			vec3 dir = curPos - lastPos;
+
+			dir = normalize(dir);
+			vec3 pos = curPos - (dir * dt * 15.f);
+			
+			p->SetPos(pos);
+			if (curPos.y > 6.f)
+			{
+				p->removePower(2); //Also deactivates hookActive bool
+			}
+		}
+	}
+}
+
+bool ObjectHandler::GetPlayerHook(int index)
+{
+	return m_players[index]->GetHook();
 }
 
