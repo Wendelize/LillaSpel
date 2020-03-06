@@ -124,18 +124,20 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 			}
 
 			float middle = (float)width * 0.5f;
-			ImGui::PushFont(m_scene->GetOurWindow()->m_fonts[1]);
+
 
 			//	NavHighlight is the border around the button
 			ImGui::PushStyleColor(ImGuiCol_NavHighlight, ImVec4(0, 0, 0, 0));
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
-			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.1, 0.1, 0.1, 1));
+			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.8, 0.1, 0.1, 1));
 			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.1, 0.1, 0.1, 0.3));
 
 			ImGui::SetCursorPos(ImVec2(middle - 110, 400 - mainMenuButonHeight));
+			ImGui::PushFont(w->m_fonts[3]);
 			ImGui::Text("KamiCarZe");
 			ImGui::SetCursorPos(ImVec2(middle - 75, 500 - mainMenuButonHeight));
-
+			ImGui::PopFont();
+			ImGui::PushFont(m_scene->GetOurWindow()->m_fonts[1]);
 			if (ImGui::Button("Start", ImVec2(200, 75)))
 			{
 				if (m_soundEngine)
