@@ -20,7 +20,7 @@ Object::Object(btVector3 pos, int type, Model* model)
 	btVector3 localInertia(0, 0, 0);
 	float mass;
 
-	if (type == 0 || type == 2) {
+	if (type == 0 || type == 2 || type == 9) {
 		mass = 100000.0f;
 	}
 	else if (type == 3 || type == 4 || type == 5 || type == 6 || type == 7 || type == 8) {

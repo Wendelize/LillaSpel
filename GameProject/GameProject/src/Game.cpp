@@ -451,6 +451,7 @@ void Game::AddInteractiveObjects()
 	// ID 6 = LOW POLY TREE
 	// ID 7 = RAMP
 	// ID 8 = RAMP OTHER WAY
+	// ID 9 = STRANGER DANGER, SPINNER DINNER
 	//m_objectHandler->AddObject(vec3(x, y, z), modelId, m_objectModels[modelid]);
 
 	switch (m_cube->GetCurrentLevel())
@@ -544,7 +545,7 @@ void Game::AddInteractiveObjects()
 		break;
 	default:
 		{
-
+		m_objectHandler->AddObject(vec3(0,2,0), 9, m_objectModels[9]);
 		}
 		break;
 	}
