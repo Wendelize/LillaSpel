@@ -205,7 +205,7 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, 
 	m_viewMatrix = m_camera->GetView();
 	/* Render here */
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClearColor(0.0f, 0.1f, 0.1f, 1.0f);
 	glViewport(0, 0, m_window->GetWidht(), m_window->GetHeight());
 
 	// Render shadows
@@ -215,8 +215,10 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// Render sky dome and clouds
-	RenderSky();
-	
+	if (!m_onlySky)
+	{
+		RenderSky();
+	}
 	
 	// Matrix uniforms
 	m_modelShader->UseShader();
@@ -230,9 +232,10 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_shadowMap->GetTexture());
 
+
 	// Terrain
 	if (terrain == true)
-	cube->Draw(m_modelShader);
+		cube->Draw(m_modelShader);
 
 	// Light uniforms
 	LightToShader(lightsOut);
@@ -415,6 +418,12 @@ void Scene::SwapBuffer()
 	glfwSwapBuffers(m_window->m_window);
 }
 
+void Scene::ResetCameraFOV()
+{
+	m_fov = 60.0f;
+	m_projMatrix = perspective(radians(m_fov), (float)m_window->GetWidht() / (float)m_window->GetHeight(), 0.1f, 500.0f);
+}
+
 void Scene::ZoomIn(float dt)
 {
 	if (m_fov > 40)
@@ -445,8 +454,12 @@ void Scene::TranslateCameraPos(vec3 pos, float speed)
 
 void Scene::SetCameraFocus(vec3 pos)
 {
-	//m_camera->SetFocusPoint(pos);
 	m_camera->TranslateFocusPoint(pos);
+}
+
+void Scene::SetInstantCameraFocus(vec3 pos)
+{
+	m_camera->SetFocusPoint(pos);
 }
 
 void Scene::ShakeCamera(float intensity, float duration)
@@ -491,6 +504,11 @@ int Scene::GetNumPlatformModels()
 int Scene::GetNumPowerUpModels()
 {
 	return m_power.size();
+}
+
+void Scene::SetOnlySky(bool b)
+{
+	m_onlySky = b;
 }
 
 mat4 Scene::GetProjMatrix()

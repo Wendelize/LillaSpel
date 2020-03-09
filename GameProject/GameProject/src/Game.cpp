@@ -29,8 +29,23 @@ Game::Game()
 
 	m_timeSinceSpawn = 0;
 
-	m_objectHandler->AddPlayer(vec3(-10, 6, 3), 0, 0, vec3(0.5, 1, 9), m_cars[0]); // Passa modell
-	m_objectHandler->AddPlayer(vec3(10, 6, 3), 1, 0, vec3(0, 2, 0), m_cars[2]); // Passa modell
+	/*vec3 pos = CAMERAPOS_SELECT + vec3(0, -1, 1) * 3.f;
+	pos += vec3(4.4, 0, 2);
+	m_objectHandler->AddPlayer(SELECTPOS1, 0, 0, vec3(0.5, 1, 9), m_cars[0]);
+	m_scene->AddPointLight(SELECTPOS1 + vec3(0, 1, 0), vec3(1, 1, 1));*/
+
+	/*pos = CAMERAPOS_SELECT + vec3(0, -1, 1) * 3.f;
+	pos += vec3(1.4, 0, 2);
+	m_objectHandler->AddPlayer(pos, 0, 0, vec3(0.5, 1, 9), m_cars[0]);
+
+	pos = CAMERAPOS_SELECT + vec3(0, -1, 1) * 3.f;
+	pos += vec3(-1.4, 0, 2);
+	m_objectHandler->AddPlayer(pos, 0, 0, vec3(0.5, 1, 9), m_cars[0]);
+
+	pos = CAMERAPOS_SELECT + vec3(0, -1, 1) * 3.f;
+	pos += vec3(-4.4, 0, 2);
+	m_objectHandler->AddPlayer(pos, 0, 0, vec3(0.5, 1, 9), m_cars[0]);*/
+
 	m_scene->SetCameraPos(CAMERAPOS_GAME);
 
 
@@ -83,71 +98,32 @@ void Game::Update(float dt)
 {
 	float dtUnchanged = dt;
 
-	if (m_slowmoCooldown > 0)
+	// är vi på en meny som ska pausa spelet? sluta då updatera deltaTime
+	if (m_menu->Pause())
 	{
-		m_slowmoCooldown -= dt;
-		dt /= (m_slowmoCooldown * 1.5) + 1;
-	}
-
-	//Exhaust particles &	Hook/Rocket
-	for (int i = 0; i < m_objectHandler->GetNumPlayers(); i++)
-	{
-		float speed = m_objectHandler->GetPlayerSpeed(i);
-
-		vec3 dir = m_objectHandler->GetPlayerDirection(i);
-		vec3 pos = m_objectHandler->GetPlayerPos(i) + dir * 1.f + vec3(0, -0.45, 0);
-		vec3 right = cross(dir, vec3(0, 1, 0)) * 0.5f;
-
-		if (speed > 3)
-		{
-			m_scene->AddParticleEffect(pos, vec3(0.6, 0.6, 0.6), vec3(0), 5, 0.005, dir, 4, 0.3, 0.3, 1);
+		dt = 0;
+		if (m_menu->GetMapUpdate()) {
+			m_updateMap.store(true);
+			m_menu->SetMapUpdate(false);
 		}
-
-		if (speed > 15 || m_objectHandler->GetPlayerHook(i))
+		if (m_mapUpdateReady.load() == true && m_updateMap.load() == false)
 		{
-			if (m_objectHandler->GetPlayerHook(i))
-			{
-				m_scene->AddParticleEffect(pos, vec3(1, 0, 0), vec3(0, 1, 0), 5, 1, dir, 50, 0.3, 0.3, 1);
-			}
-		}
-	}
-
-	//Explosion particles and screen shake
-	if (m_objectHandler->GetExplosion())
-	{
-		vec3 pos = m_objectHandler->GetExplosionPosition();
-		m_scene->ShakeCamera(0.4f, 1);
-		m_scene->AddParticleEffect(pos, vec3(0.01, 0, 0), vec3(1, 0, 0), 1, 6, vec3(0, 1, 0), 50, 1.2, 0.5, -9.82);
-		m_objectHandler->SetExplosion(false);
-	}
-
-	// ska banan resettas?
-	if (m_menu->Reset())
-	{
-		Reset();
-		m_scene->TranslateCameraPos(vec3(CAMERAPOS_GAME), 1.f);
-		m_objectHandler->ClearHoles();
-		m_updateMap.store(true);
-		m_timeSwapTrack = 0;
-		m_menu->SetMapUpdate(false);
-	}
-
-	if (m_menu->StartMenuActive())
-	{
-		m_objectHandler->ClearBombs();
-		m_menuTrackSwap += dt;
-		if (m_menuTrackSwap > 5.0f) {
-			if (m_cube->GetCurrentLevel() == 6) {
-				m_cube->SetCurrentLevel(0);
+			m_objectHandler->RemoveDynamicPlatformMesh(m_cube);
+			m_cube->MapUpdate();
+			m_objectHandler->AddDynamicPlatformMesh(m_cube);
+			m_timeSwapTrack = 0.f;
+			m_mapUpdateReady.store(false);
+			m_objectHandler->ClearBombs();
+			if (m_cube->GetCurrentLevel() == 5) {
+				m_objectHandler->RemoveAllObjects();
+				m_objectHandler->AddObject(vec3(0, 2, 0), 0, m_objectModels[0]);
 			}
 			else {
-				m_cube->SetCurrentLevel(m_cube->GetCurrentLevel() + 1);
+				m_objectHandler->RemoveAllObjects();
 			}
-			m_updateMap.store(true);
-			m_menuTrackSwap = 0;
 		}
 	}
-	
+
 	// är select menyn aktiverad? ändra kameran till inzoomad
 	if (m_menu->SelectMenuActive() || m_menu->SelectLivesMenuActive())
 	{
@@ -179,31 +155,38 @@ void Game::Update(float dt)
 	else if (m_menu->SelectMenuActive() == false && m_wasSelect == true)
 	{
 		m_wasSelect = false;
-		m_scene->TranslateCameraPos(CAMERAPOS_GAME, 1.f);
+		m_scene->TranslateCameraPos(CAMERAPOS_SELECT, 1.f);
 	}
-	// är vi på en meny som ska pausa spelet? sluta då updatera deltaTime
-	if (m_menu->Pause())
+
+	// ska banan resettas?
+	if (m_menu->Reset())
 	{
-		dt = 0;
-		if (m_menu->GetMapUpdate()) {
-			m_updateMap.store(true);
-			m_menu->SetMapUpdate(false);
-		}
-		if (m_mapUpdateReady.load() == true && m_updateMap.load() == false)
-		{
-			m_objectHandler->RemoveDynamicPlatformMesh(m_cube);
-			m_cube->MapUpdate();
-			m_objectHandler->AddDynamicPlatformMesh(m_cube);
-			m_timeSwapTrack = 0.f;
-			m_mapUpdateReady.store(false);
-			m_objectHandler->ClearBombs();
-			if (m_cube->GetCurrentLevel() == 5) {
-				m_objectHandler->RemoveAllObjects();
-				m_objectHandler->AddObject(vec3(0, 2, 0), 0, m_objectModels[0]);
+		Reset();
+		m_scene->TranslateCameraPos(vec3(CAMERAPOS_GAME), 1.f);
+		m_objectHandler->ClearHoles();
+		m_updateMap.store(true);
+		m_timeSwapTrack = 0;
+		m_menu->SetMapUpdate(false);
+	}
+
+	if (m_menu->GameOn())
+	{
+		m_scene->TranslateCameraPos(vec3(CAMERAPOS_GAME), 1.f);
+	}
+
+	if (m_menu->StartMenuActive())
+	{
+		m_objectHandler->ClearBombs();
+		m_menuTrackSwap += dt;
+		if (m_menuTrackSwap > 5.0f) {
+			if (m_cube->GetCurrentLevel() == 6) {
+				m_cube->SetCurrentLevel(0);
 			}
 			else {
-				m_objectHandler->RemoveAllObjects();
+				m_cube->SetCurrentLevel(m_cube->GetCurrentLevel() + 1);
 			}
+			m_updateMap.store(true);
+			m_menuTrackSwap = 0;
 		}
 	}
 
@@ -241,22 +224,6 @@ void Game::Update(float dt)
 				m_objectHandler->SetSpawnBall(false);
 			}
 		}
-
-		if (m_objectHandler->GetNumPlayers() == 1 && !m_gameOver)
-		{
-			m_menu->RankPlayers();
-			m_winner = m_menu->GetWinnerIndex();
-			m_menu->SetActiveMenu(Menu::ActiveMenu::win);
-			m_gameOver = true;
-
-			if (m_soundEngine)
-			{
-				m_soundEngine->stopAllSounds();
-				m_soundEngine->play2D("src/Audio/Music - Win.mp3", true);
-				m_objectHandler->StopAllSound();
-			}
-		}
-
 		if (m_maxTime - m_time <= 30.f && !m_fastMusic)
 		{
 			m_objectHandler->AddObject(vec3(rand() % 10 - 5, 10, rand() & 10 - 5), 1, m_objectModels[1]);
@@ -337,10 +304,68 @@ void Game::Update(float dt)
 		}
 	}
 
-	DynamicCamera(dtUnchanged);
-	m_scene->UpdateCamera(dtUnchanged);
+	if (m_menu->GameOn())
+	{
+		if (m_slowmoCooldown > 0)
+		{
+			m_slowmoCooldown -= dt;
+			dt /= (m_slowmoCooldown * 1.5) + 1;
+		}
+
+		//Exhaust particles &	Hook/Rocket
+		for (int i = 0; i < m_objectHandler->GetNumPlayers(); i++)
+		{
+			float speed = m_objectHandler->GetPlayerSpeed(i);
+
+			vec3 dir = m_objectHandler->GetPlayerDirection(i);
+			vec3 pos = m_objectHandler->GetPlayerPos(i) + dir * 1.f + vec3(0, -0.45, 0);
+			vec3 right = cross(dir, vec3(0, 1, 0)) * 0.5f;
+
+			if (speed > 3)
+			{
+				m_scene->AddParticleEffect(pos, vec3(0.6, 0.6, 0.6), vec3(0), 5, 0.005, dir, 4, 0.3, 0.3, 1);
+			}
+
+			if (speed > 15 || m_objectHandler->GetPlayerHook(i))
+			{
+				if (m_objectHandler->GetPlayerHook(i))
+				{
+					m_scene->AddParticleEffect(pos, vec3(1, 0, 0), vec3(0, 1, 0), 5, 1, dir, 50, 0.3, 0.3, 1);
+				}
+			}
+		}
+
+		//Explosion particles and screen shake
+		if (m_objectHandler->GetExplosion())
+		{
+			vec3 pos = m_objectHandler->GetExplosionPosition();
+			m_scene->ShakeCamera(0.4f, 1);
+			m_scene->AddParticleEffect(pos, vec3(0.01, 0, 0), vec3(1, 0, 0), 1, 6, vec3(0, 1, 0), 50, 1.2, 0.5, -9.82);
+			m_objectHandler->SetExplosion(false);
+		}
+
+		//Victory condition
+		if (m_objectHandler->GetNumPlayers() == 1 && !m_gameOver)
+		{
+			m_menu->RankPlayers();
+			m_winner = m_menu->GetWinnerIndex();
+			m_menu->SetActiveMenu(Menu::ActiveMenu::win);
+			m_gameOver = true;
+
+			if (m_soundEngine)
+			{
+				m_soundEngine->stopAllSounds();
+				m_soundEngine->play2D("src/Audio/Music - Win.mp3", true);
+				m_objectHandler->StopAllSound();
+			}
+		}
+
+		
+	}
 	m_scene->UpdateSky(dtUnchanged);
 	m_scene->UpdateParticles(dtUnchanged);
+	DynamicCamera(dtUnchanged);
+	m_scene->UpdateCamera(dtUnchanged);
 }
 
 void Game::DynamicCamera(float dt)
@@ -354,7 +379,7 @@ void Game::DynamicCamera(float dt)
 	{
 		focusPoint = m_objectHandler->GetPlayerPos(winner) + vec3(0, 0.5, 0);
 	}
-	else
+	else if(m_menu->GameOn() || m_menu->Pause())
 	{
 		for (int i = 0; i < numPlayers; i++)
 		{
@@ -364,6 +389,10 @@ void Game::DynamicCamera(float dt)
 			}
 		}
 		focusPoint /= vec3(numPlayers);
+	}
+	else
+	{
+		focusPoint = CAMERAPOS_SELECT + vec3(0, -1, 1);
 	}
 
 	if (dt < 1.f)
@@ -411,7 +440,7 @@ void Game::DynamicCamera(float dt)
 			m_fireworkCooldown = 0;
 		}
 	}
-	else
+	else if(m_menu->GameOn())
 	{
 		mat4 matrix = m_scene->GetProjMatrix() * m_scene->GetCameraView();
 

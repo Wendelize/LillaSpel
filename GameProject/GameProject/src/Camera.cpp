@@ -7,7 +7,7 @@ Camera::Camera(vec3 pos, vec3 point, vec3 up)
 	m_direction = normalize(m_position - point);
 	m_parallel = normalize(cross({ 0,1,0 }, m_direction));
 	m_up = normalize(cross(m_direction, m_parallel));
-	m_focusPoint = vec3(0, -6, 3);
+	m_focusPoint = CAMERAPOS_SELECT + vec3(0, -1, 1);
 	m_viewMatrix = lookAt(m_position, m_focusPoint, m_up);
 	m_focusTranslation = vec3(0);
 	m_focusTranslationPoint = vec3(0);

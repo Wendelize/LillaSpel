@@ -61,7 +61,13 @@
 //DEFINES 
 #define NRDEATHSOUNDS 30
 #define CAMERAPOS_SELECT vec3(0, 10, 20)
+#define CAMERAPOS_LEVELSELECT vec3(0, 40, 3)
 #define CAMERAPOS_GAME vec3(0, 22, 28)
+
+#define SELECTPOS1 CAMERAPOS_SELECT + vec3(0, -1, 1) * 3.f + vec3(4.4, 0, 2)
+#define SELECTPOS2 CAMERAPOS_SELECT + vec3(0, -1, 1) * 3.f + vec3(1.4, 0, 2)
+#define SELECTPOS3 CAMERAPOS_SELECT + vec3(0, -1, 1) * 3.f + vec3(-1.4, 0, 2)
+#define SELECTPOS4 CAMERAPOS_SELECT + vec3(0, -1, 1) * 3.f + vec3(-4.4, 0, 2)
 
 //NAMESPACES
 using namespace std;
