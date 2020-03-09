@@ -161,13 +161,8 @@ void Game::Update(float dt)
 			m_timeSwapTrack = 0.f;
 			m_mapUpdateReady.store(false);
 			m_objectHandler->ClearBombs();
-			if (m_cube->GetCurrentLevel() == 5) {
-				m_objectHandler->RemoveAllObjects();
-				m_objectHandler->AddObject(vec3(0, 2, 0), 0, m_objectModels[0]);
-			}
-			else {
-				m_objectHandler->RemoveAllObjects();
-			}
+			m_objectHandler->RemoveAllObjects();
+			AddInteractiveObjects();
 		}
 		SelectionMenu();
 		m_scene->TranslateCameraPos(vec3(CAMERAPOS_SELECT), 1.f);
@@ -195,13 +190,8 @@ void Game::Update(float dt)
 			m_timeSwapTrack = 0.f;
 			m_mapUpdateReady.store(false);
 			m_objectHandler->ClearBombs();
-			if (m_cube->GetCurrentLevel() == 5) {
-				m_objectHandler->RemoveAllObjects();
-				m_objectHandler->AddObject(vec3(0, 2, 0), 0, m_objectModels[0]);
-			}
-			else {
-				m_objectHandler->RemoveAllObjects();
-			}
+			m_objectHandler->RemoveAllObjects();
+			AddInteractiveObjects();
 		}
 	}
 
@@ -448,6 +438,63 @@ void Game::DynamicCamera(float dt)
 	}
 }
 
+void Game::AddInteractiveObjects()
+{
+	// ID 0 = BORING LOG
+	// ID 1 = BALL
+	// ID 2 = NEW SICK LOG
+	// ID 3 = Rock
+	// ID 4 = RED MUSHROOM 
+	// ID 5 = LOW POLY PINE
+	// ID 6 = LOW POLY TREE
+
+	//m_objectHandler->AddObject(vec3(x, y, z), modelId, m_objectModels[modelid]);
+
+	switch (m_cube->GetCurrentLevel())
+	{
+	case 1: 
+		{
+
+		}
+		break;
+	case 2: 
+		{
+
+		}
+		break;
+	case 3: 
+		{
+	
+		}
+		break;
+	case 4: 
+		{
+
+		}
+		break;
+	case 5: 
+		{
+		m_objectHandler->AddObject(vec3(0, 1, 0), 0, m_objectModels[0]);
+		m_objectHandler->AddObject(vec3(15, 0, 15), 3, m_objectModels[3]);
+		m_objectHandler->AddObject(vec3(-15, 0, 0), 4, m_objectModels[4]);
+		m_objectHandler->AddObject(vec3(15, 2.5, 15), 6, m_objectModels[6]);
+
+		m_objectHandler->AddObject(vec3(-15, 0, -15), 5, m_objectModels[5]);
+		m_objectHandler->AddObject(vec3(-17, 0, -15), 5, m_objectModels[5]);
+		m_objectHandler->AddObject(vec3(15, 0, -15), 6, m_objectModels[6]);
+		m_objectHandler->AddObject(vec3(17, 0, -15), 6, m_objectModels[6]);
+
+
+		}
+		break;
+	default:
+		{
+
+		}
+		break;
+	}
+}
+
 void Game::Render()
 {
 	ImGui_ImplOpenGL3_NewFrame();
@@ -493,12 +540,9 @@ void Game::Reset()
 		m_objectHandler->RemovePowerUp(0);
 	}
 
-	m_objectHandler->RemoveAllObjects();
 	m_objectHandler->RemoveAllGhost();
-
-	if (m_cube->GetCurrentLevel() == 5) {
-		m_objectHandler->AddObject(vec3(0, 2, 0), 0, m_objectModels[0]);
-	}
+	m_objectHandler->RemoveAllObjects();
+	AddInteractiveObjects();
 
 	if (m_soundEngine)
 	{

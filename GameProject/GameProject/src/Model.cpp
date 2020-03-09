@@ -102,13 +102,13 @@ Material Model::loadMaterial(aiMaterial* mat) {
     float _shininess;
 
     mat->Get(AI_MATKEY_COLOR_DIFFUSE, _color);
-    _material.Diffuse = glm::vec3(_color.r, _color.b, _color.g);
+    _material.Diffuse = glm::vec3(_color.r, _color.g, _color.b);
 
     mat->Get(AI_MATKEY_COLOR_AMBIENT, _color);
-    _material.Ambient = glm::vec3(_color.r, _color.b, _color.g);
+    _material.Ambient = glm::vec3(_color.r, _color.g, _color.b);
 
     mat->Get(AI_MATKEY_COLOR_SPECULAR, _color);
-    _material.Specular = glm::vec3(_color.r, _color.b, _color.g);
+    _material.Specular = glm::vec3(_color.r, _color.g, _color.b);
 
     mat->Get(AI_MATKEY_SHININESS, _shininess);
     _material.Shininess = _shininess;

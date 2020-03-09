@@ -47,7 +47,7 @@ public:
 	~Game();
 	void Update(float dt);
 	void DynamicCamera(float dt);
-	void PlayWithLights(float dt);
+	void AddInteractiveObjects();
 	void Render();
 	void Reset();
 	GLFWwindow* GetWindow();
