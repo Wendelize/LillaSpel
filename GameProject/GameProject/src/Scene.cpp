@@ -134,8 +134,9 @@ void Scene::Init()
 	//m_power.push_back(new Model("src/Models/PowerUp.obj"));
 
 	// Lights
+	
 	AddDirLight(vec3(-1, -1, 0), { 1,1,1 });
-	/* 
+	/*
 	AddPointLight({ 0,2,10 }, { 1, 0, 0 });
 	AddPointLight({ 10,2,10 }, { 0, 1, 0 });
 	AddPointLight({ 10,2,0 }, { 0, 0, 1 });
@@ -143,8 +144,8 @@ void Scene::Init()
 	AddPointLight({ 0,2,-10 }, { 0, 1, 1 });
 	AddPointLight({ -10,2,-10 }, { 1, 0, 1 });
 	AddPointLight({ -10,2,0 }, { 0, 1, 0 });
-	 */
 	AddPointLight({ 0,0,0 }, { 1, 1, 1});
+	 */
 	// pls do not add spotlights thanks you ^^
 	//AddSpotLight({ 0, 2, 0 }, vec3(vec3(0) - vec3(0, 2, 0)), {1, 1, 1}, 12.5);
 
