@@ -133,6 +133,8 @@ void Scene::Init()
 	m_objects.push_back(new Model("src/Models/RedMushroom.obj"));
 	m_objects.push_back(new Model("src/Models/LowPolyGran2.obj"));
 	m_objects.push_back(new Model("src/Models/LowPolyTree.obj"));
+	m_objects.push_back(new Model("src/Models/Ramp.obj"));
+	m_objects.push_back(new Model("src/Models/RampOtherWay.obj"));
 
 	m_winnerIsland = new Model("src/Models/Island.obj");
 

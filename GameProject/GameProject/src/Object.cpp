@@ -23,7 +23,7 @@ Object::Object(btVector3 pos, int type, Model* model)
 	if (type == 0 || type == 2) {
 		mass = 100000.0f;
 	}
-	else if (type == 3 || type == 4 || type == 5 || type == 6) {
+	else if (type == 3 || type == 4 || type == 5 || type == 6 || type == 7 || type == 8) {
 		mass = 0.f;
 	}
 	else {
@@ -54,7 +54,7 @@ Object::Object(btVector3 pos, int type, Model* model)
 
 	}
 	else {
-		m_body->setRestitution(0.1);
+		m_body->setRestitution(0.8);
 
 	}
 	vec3 btPos = vec3(m_btTransform->getOrigin().x(), m_btTransform->getOrigin().y(), m_btTransform->getOrigin().z());

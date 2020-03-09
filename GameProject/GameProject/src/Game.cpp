@@ -449,11 +449,17 @@ void Game::AddInteractiveObjects()
 	// ID 4 = RED MUSHROOM 
 	// ID 5 = LOW POLY PINE
 	// ID 6 = LOW POLY TREE
-
+	// ID 7 = RAMP
+	// ID 8 = RAMP OTHER WAY
 	//m_objectHandler->AddObject(vec3(x, y, z), modelId, m_objectModels[modelid]);
 
 	switch (m_cube->GetCurrentLevel())
 	{
+	case 0:
+		{
+
+		}
+		break;
 	case 1: 
 		{
 
@@ -461,6 +467,20 @@ void Game::AddInteractiveObjects()
 		break;
 	case 2: 
 		{
+		//RAMPS
+		m_objectHandler->AddObject(vec3(-5, 1.5, -7), 8, m_objectModels[8]);
+
+		m_objectHandler->AddObject(vec3(5, 2, 7), 7, m_objectModels[7]);
+
+		//Trees
+		m_objectHandler->AddObject(vec3(3, 2.5, 13), 6, m_objectModels[6]);
+		m_objectHandler->AddObject(vec3(-3, 2, -13), 6, m_objectModels[6]);
+		m_objectHandler->AddObject(vec3(-9, 6, -18), 5, m_objectModels[5]);
+
+		m_objectHandler->AddObject(vec3(-10, 1, 13), 4, m_objectModels[4]);
+
+		//Rock
+		m_objectHandler->AddObject(vec3(7, 1, -10), 3, m_objectModels[3]);
 
 		}
 		break;
@@ -471,6 +491,15 @@ void Game::AddInteractiveObjects()
 		break;
 	case 4: 
 		{
+		m_objectHandler->AddObject(vec3(-9, 1.0, -16), 6, m_objectModels[6]);
+		m_objectHandler->AddObject(vec3(-20, 2., 2), 5, m_objectModels[5]);
+		m_objectHandler->AddObject(vec3(-17, 1.5, 0), 5, m_objectModels[5]);
+		m_objectHandler->AddObject(vec3(-18, 2, 4), 5, m_objectModels[5]);
+
+		m_objectHandler->AddObject(vec3(14, 4, -8), 4, m_objectModels[4]);
+
+		m_objectHandler->AddObject(vec3(0, 2, 19.5), 3, m_objectModels[3]);
+
 
 		}
 		break;
@@ -480,11 +509,15 @@ void Game::AddInteractiveObjects()
 		m_objectHandler->AddObject(vec3(15, 0, 15), 3, m_objectModels[3]);
 		m_objectHandler->AddObject(vec3(-15, 0, 0), 4, m_objectModels[4]);
 		m_objectHandler->AddObject(vec3(15, 2.5, 15), 6, m_objectModels[6]);
+		m_objectHandler->AddObject(vec3(15, 0, 5), 6, m_objectModels[6]);
+		m_objectHandler->AddObject(vec3(18, 0, 3), 6, m_objectModels[6]);
+		m_objectHandler->AddObject(vec3(16, 0, -3), 6, m_objectModels[6]);
+		m_objectHandler->AddObject(vec3(17, 0, 0), 6, m_objectModels[6]);
 
-		m_objectHandler->AddObject(vec3(-15, 0, -15), 5, m_objectModels[5]);
-		m_objectHandler->AddObject(vec3(-17, 0, -15), 5, m_objectModels[5]);
-		m_objectHandler->AddObject(vec3(15, 0, -15), 6, m_objectModels[6]);
-		m_objectHandler->AddObject(vec3(17, 0, -15), 6, m_objectModels[6]);
+		m_objectHandler->AddObject(vec3(-20, 4, 21), 5, m_objectModels[5]);
+		m_objectHandler->AddObject(vec3(-18, 4, 23), 5, m_objectModels[5]);
+		m_objectHandler->AddObject(vec3(20, 3, -22), 6, m_objectModels[6]);
+		m_objectHandler->AddObject(vec3(22, 3.3, -18), 6, m_objectModels[6]);
 
 
 		}
