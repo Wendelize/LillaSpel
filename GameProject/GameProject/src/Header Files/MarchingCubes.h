@@ -37,6 +37,7 @@ private:
     int m_currentLvl = 0;
     float m_holeSize = m_middle / 2.0f;
     bool m_smoothTerrain = true;
+    bool m_flatShaded = true;
     bool m_way = true;
     int m_lvlChanger = 0;
     int m_terraceHeight = 2;

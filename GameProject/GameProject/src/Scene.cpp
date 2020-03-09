@@ -126,7 +126,7 @@ void Scene::Init()
 	m_power.push_back(new Model("src/Models/Rocket.obj"));				//9
 
 
-	m_objects.push_back(new Model("src/Models/Log.obj"));  //MÅSTE VARA FÖRSTA SOM LADDAS IN
+	m_objects.push_back(new Model("src/Models/Log.obj"));  //Mï¿½STE VARA Fï¿½RSTA SOM LADDAS IN
 	m_objects.push_back(new Model("src/Models/Ball.obj"));
 	m_objects.push_back(new Model("src/Models/Log2.obj"));
 	m_objects.push_back(new Model("src/Models/Rock.obj"));
@@ -139,15 +139,18 @@ void Scene::Init()
 	//m_power.push_back(new Model("src/Models/PowerUp.obj"));
 
 	// Lights
+	
 	AddDirLight(vec3(-1, -1, 0), { 1,1,1 });
-	AddPointLight({ 0,2,10 }, { 1, 1, 1 });
-	AddPointLight({ 10,2,10 }, { 1, 1, 1 });
-	AddPointLight({ 10,2,0 }, { 1, 1, 1 });
-	AddPointLight({ 10,2,-10 }, { 1, 1, 1 });
-	AddPointLight({ 0,2,-10 }, { 1, 1, 1 });
-	AddPointLight({ -10,2,-10 }, { 1, 1, 1 });
-	AddPointLight({ -10,2,0 }, { 1, 1, 1 });
-	AddPointLight({ -10,2,10 }, { 1, 1, 1 });
+	/*
+	AddPointLight({ 0,2,10 }, { 1, 0, 0 });
+	AddPointLight({ 10,2,10 }, { 0, 1, 0 });
+	AddPointLight({ 10,2,0 }, { 0, 0, 1 });
+	AddPointLight({ 10,2,-10 }, { 0, 1, 1 });
+	AddPointLight({ 0,2,-10 }, { 0, 1, 1 });
+	AddPointLight({ -10,2,-10 }, { 1, 0, 1 });
+	AddPointLight({ -10,2,0 }, { 0, 1, 0 });
+	AddPointLight({ 0,0,0 }, { 1, 1, 1});
+	 */
 	// pls do not add spotlights thanks you ^^
 	//AddSpotLight({ 0, 2, 0 }, vec3(vec3(0) - vec3(0, 2, 0)), {1, 1, 1}, 12.5);
 

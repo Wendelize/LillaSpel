@@ -468,9 +468,17 @@ void MarchingCubes::MarchCube(vec3 position)
 		}
 
 		int currentVert = m_vertices.size() - 1;
-		m_vertices[currentVert].normal = normalize(cross(m_vertices[currentVert - 2].pos - m_vertices[currentVert - 1].pos, m_vertices[currentVert - 1].pos - m_vertices[currentVert].pos));
-		m_vertices[currentVert - 1].normal = normalize(cross(m_vertices[currentVert - 2].pos - m_vertices[currentVert - 1].pos, m_vertices[currentVert - 1].pos - m_vertices[currentVert].pos));
-		m_vertices[currentVert - 2].normal = normalize(cross(m_vertices[currentVert - 2].pos - m_vertices[currentVert - 1].pos, m_vertices[currentVert - 1].pos - m_vertices[currentVert].pos));
+
+		if (m_flatShaded)
+		{
+			m_vertices[currentVert].normal = normalize(cross(m_vertices[currentVert - 2].pos - m_vertices[currentVert - 1].pos, m_vertices[currentVert - 1].pos - m_vertices[currentVert].pos));
+			m_vertices[currentVert - 1].normal = normalize(cross(m_vertices[currentVert - 2].pos - m_vertices[currentVert - 1].pos, m_vertices[currentVert - 1].pos - m_vertices[currentVert].pos));
+			m_vertices[currentVert - 2].normal = normalize(cross(m_vertices[currentVert - 2].pos - m_vertices[currentVert - 1].pos, m_vertices[currentVert - 1].pos - m_vertices[currentVert].pos));
+		}
+		else
+		{
+
+		}
 	}
 }
 
@@ -505,123 +513,133 @@ void MarchingCubes::PopulateTerrainMap(int level)
 				switch (level)
 				{
 				case 0 :
-					if ((x < m_middle - 4 && z < m_middle - 4) || (x > m_middle + 4 && z < m_middle - 4) || (x > m_middle + 4 && z > m_middle + 4) || (x < m_middle - 4 && z > m_middle + 4)) // MAKE A MIDDLE VARIABLE
+					if (distance(vec2(m_middle, m_middle), vec2((float)x, (float)z)) < 18.0)
 					{
-						vec2 distVec = (vec2(x, z) - vec2(m_middle, m_middle));
-						float dist = sqrt(pow(distVec.x, 2) + pow(distVec.y, 2));
-						if (dist > 17)
-						{
-							m_terrainMap[x][y][z] = 1;
-						}
-						else
-						{
-							m_terrainMap[x][y][z] = (float)y;
-						}
-					}
-					else
-					{
-						// float thisHeight = (float)m_height * ((float)rand() / (RAND_MAX)) / 16.0f * 1.5f + 0.001f;
-						m_terrainMap[x][y][z] = (float)y - 1.0;
-
-					}
-
-					if (x >= m_width - m_shrink || z >= m_width - m_shrink || x <= m_shrink || z <= m_shrink)
-					{
-						m_terrainMap[x][y][z] = 1;
-
-					}
-					break;
-
-				case 1 :
-					if (x > m_middle - 6 && x < m_middle + 6 && z > m_middle - 6 && z < m_middle + 6)
-					{
-						m_terrainMap[x][y][z] = 1;
-					}
-					else
-					{
-						m_terrainMap[x][y][z] = (float)y;
-					}
-
-					if (x >= m_width - m_shrink || z >= m_width - m_shrink || x <= m_shrink || z <= m_shrink)
-					{
-						m_terrainMap[x][y][z] = 1;
-					}
-					break;
-
-				case 2: // TETRIS + MULTIFRACTAL 
-					if (x <= m_middle && z <= m_middle)
-					{
-						m_terrainMap[x][y][z] = 1;
-					}
-					else
-					{
-						float thisHeight = (float)m_height * m_noise->CreateMultiFractal((float)x, (float)z);
+						float thisHeight = 5.0 * m_noise->CreateMultiFractal((float)x, (float)z);
 						m_terrainMap[x][y][z] = (float)y - thisHeight;
-
-						if (thisHeight < 0.0f)
-							m_terrainMap[x][y][z] = (float)y;
 					}
 
-					if (x >= m_width || z >= m_width || x <= 0 || z <= 0)
+					if (distance(vec2(m_middle, m_middle), vec2((float)x, (float)z)) > 18.0)
 					{
-						m_terrainMap[x][y][z] = 1;
+						float thisHeight = 8.0 * m_noise->CreateMultiFractal((float)x, (float)z);
+						m_terrainMap[x][y][z] = (float)y - thisHeight;
 					}
+
+					if (distance(vec2(m_middle, m_middle), vec2((float)x, (float)z)) > 22.0)
+					{
+						m_terrainMap[x][y][z] = 1.0f;
+					}
+
+					break;
+
+				case 1 : 
+					if (distance(vec2(m_middle, m_middle), vec2((float)x, (float)z)) < 18.0)
+					{
+						float thisHeight = 12.0 * m_noise->CreateSpecificMultiFractal((float)x, (float)z, 300);
+						m_terrainMap[x][y][z] = (float)y - thisHeight;
+					}
+					else
+					{
+						m_terrainMap[x][y][z] = 1.0f;
+					}
+
+					if (distance(vec2(m_middle, m_middle), vec2((float)x, (float)z)) < 5.0)
+					{
+						m_terrainMap[x][y][z] = 1.0f;
+					}
+
+					break;
+
+				case 2: // RAMP / HOPP ÖVER BANA
+					if (distance(vec2(m_middle, m_middle), vec2((float)x, (float)z)) < 18.0)
+					{
+						float thisHeight = 5.0 * m_noise->CreateMultiFractal((float)x, (float)z);
+						m_terrainMap[x][y][z] = (float)y - thisHeight;
+					}
+
+					if (distance(vec2(m_middle, m_middle), vec2((float)x, (float)z)) > 18.0)
+					{
+						float thisHeight = 10.0 * m_noise->CreateSpecificMultiFractal((float)x, (float)z, 500);
+						m_terrainMap[x][y][z] = (float)y - thisHeight;
+					}
+
+					if (distance(vec2(m_middle, m_middle), vec2((float)x, (float)z)) > 22.0)
+					{
+						m_terrainMap[x][y][z] = 1.0f;
+					}
+
+					if (x > m_middle - 3 && x < m_middle + 3)
+					{
+						m_terrainMap[x][y][z] = 1.0f;
+					}
+
 					break;
 
 				case 3:
-					if (x <= m_middle + 5 && x >= m_middle - 5 && z <= m_middle + 5 && z >= m_middle - 5)
+					if (distance(vec2(m_middle, m_middle), vec2((float)x, (float)z)) < 22.0 - m_shrink)
 					{
-						float thisHeight = (float)m_height * ((float)rand() / (RAND_MAX)) / 16.0f * 1.5f + 3.0f;
+						float thisHeight = 6.0 * m_noise->CreateSpecificMultiFractal((float)x, (float)z, 699);
 						m_terrainMap[x][y][z] = (float)y - thisHeight;
-						if (x <= m_middle + 3 && x >= m_middle - 3 && z <= m_middle + 3 && z >= m_middle - 3)
-						{
-							m_terrainMap[x][y][z] = 1;
-						}
 					}
 					else
 					{
-						m_terrainMap[x][y][z] = (float)y;
+						m_terrainMap[x][y][z] = 1.0f;
 					}
 
-					if (distance(vec2(m_middle, m_middle), vec2((float)x, (float)z)) >= 24.0 - m_shrink)
-						m_terrainMap[x][y][z] = 1.0f;
+					if (distance(vec2(m_middle, m_middle), vec2((float)x, (float)z)) < 15.0)
+					{
+						float thisHeight = 6.0 * m_noise->CreateSpecificMultiFractal((float)x, (float)z, 699) + 1.0f;
+						m_terrainMap[x][y][z] = (float)y - thisHeight;
+					}
+
+					if (distance(vec2(m_middle, m_middle), vec2((float)x, (float)z)) < 8.0)
+					{
+						float thisHeight = 6.0 * m_noise->CreateSpecificMultiFractal((float)x, (float)z, 699) + 2.0f;
+						m_terrainMap[x][y][z] = (float)y - thisHeight;
+					}
 
 					break;
 					
 				case 4:
-					if (x > m_middle - 11 && x < m_middle + 11 && z > m_middle - 11 && z < m_middle + 11)
+					if (distance(vec2(m_middle, m_middle), vec2((float)x, (float)z)) < 22.0)
 					{
-						if (x > m_middle - 6 && x < m_middle + 6 && z > m_middle - 6 && z < m_middle + 6)
-						{
-							m_terrainMap[x][y][z] = (float)y - 2.0f;
-						}
-						else
-						{						
-							m_terrainMap[x][y][z] = (float)y - 1.0f;
-						}
-					}
-					else
-					{		
-						m_terrainMap[x][y][z] = (float)y;
-					}
-
-
-					if (x >= m_width - m_shrink || z >= m_width - m_shrink || x <= m_shrink || z <= m_shrink)
-					{
-						m_terrainMap[x][y][z] = 1;
-					}
-					break;
-
-				case 5:
-					if (x <= m_holeSize && z <= 2 || x >= m_width - m_holeSize && z <= 2 || 
-						x <= 2 && z <= m_holeSize || z >= m_width - m_holeSize && x <= 2 ||
-						z >= m_width - 2 && x <= m_holeSize || z >= m_width - 2 && x >= m_width - m_holeSize || 
-						x >= m_width - 2 && z <= m_holeSize || z >= m_width - m_holeSize && x >= m_width - 2)
-					{
-						float thisHeight = (float)m_height * ((float)rand() / (RAND_MAX)) / 16.0f * 1.5f + 3.0f;
+						float thisHeight = 12.0 * m_noise->CreateSpecificPerlinNoise((float)x, (float)z, 1337);
 						m_terrainMap[x][y][z] = (float)y - thisHeight;
 					}
 					else
+					{
+						m_terrainMap[x][y][z] = 1.0;
+					}
+
+					break;
+
+				case 5:
+					if (x <= m_holeSize && z <= m_holeSize || 
+						x <= m_holeSize && z >= m_width - m_holeSize ||
+						x >= m_width - m_holeSize && z <= m_holeSize || 
+						x >= m_width - m_holeSize && z >= m_width - m_holeSize)
+					{
+						float thisHeight = 10.0 * m_noise->CreateSpecificMultiFractal((float)x, (float)z, 500);
+						m_terrainMap[x][y][z] = (float)y - thisHeight;
+					}
+					else
+					{
+						m_terrainMap[x][y][z] = (float)y;
+					}
+
+					if (distance(vec2(x, z), vec2((float)m_holeSize, (float)m_holeSize)) < 10.0)
+					{
+						m_terrainMap[x][y][z] = (float)y;
+					}
+					if (distance(vec2(x, z), vec2((float)m_holeSize, (float)m_width - m_holeSize)) < 10.0)
+					{
+						m_terrainMap[x][y][z] = (float)y;
+					}
+					if (distance(vec2(x, z), vec2((float)m_width - m_holeSize, (float)m_holeSize)) < 10.0)
+					{
+						m_terrainMap[x][y][z] = (float)y;
+					}
+					if (distance(vec2(x, z), vec2((float)m_width - m_holeSize, (float)m_width - m_holeSize)) < 10.0)
 					{
 						m_terrainMap[x][y][z] = (float)y;
 					}
@@ -634,20 +652,20 @@ void MarchingCubes::PopulateTerrainMap(int level)
 					break;
 					
 				default:
-					float thisHeight = (float)m_height * m_noise->CreatePerlinNoise((float)x, (float)z); // ((float)rand() / (RAND_MAX)) / 16.0f * 1.5f + 0.001f; 
+					float thisHeight = (float)m_height * m_noise->CreatePerlinNoise((float)x, (float)z);
 					m_terrainMap[x][y][z] = (float)y - thisHeight;
 					m_heightArray[x][z] = (float)y - thisHeight + 1;
 
 					if (thisHeight < 0.0f)
 						m_terrainMap[x][y][z] = (float)y;
-						//m_heightArray[x][z] = (float)y + 1;
-
 
 					if (distance(vec2(m_middle, m_middle), vec2((float)x, (float)z)) >= (m_middle - 1) - m_shrink) 
 						m_terrainMap[x][y][z] = 1.0f; 
-						//m_heightArray[x][z] = 1.0f;
+
 					break;
 				}
+
+				// SMOOTHA ALLT?
 			}
 		}
 	}

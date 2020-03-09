@@ -105,7 +105,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		if (ImGui::Begin("##Background", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoNav))
 		{
 			ImGui::SetCursorPos(ImVec2(0, 0));
-	//		ImGui::Image((void*)m_mainMenuPic, ImVec2(width+8, height+2), ImVec2(0, 0), ImVec2(1, 1));
+			ImGui::Image((void*)m_mainMenuPic, ImVec2(width+8, height+2), ImVec2(0, 0), ImVec2(1, 1));
 		}
 		ImGui::End();
 
@@ -124,18 +124,19 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 			}
 
 			float middle = (float)width * 0.5f;
+			float heightMiddle = (float)height * 0.5f;
 			ImGui::PushFont(m_scene->GetOurWindow()->m_fonts[1]);
+
 
 			//	NavHighlight is the border around the button
 			ImGui::PushStyleColor(ImGuiCol_NavHighlight, ImVec4(0, 0, 0, 0));
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
-			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.1, 0.1, 0.1, 1));
+			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.8, 0.1, 0.1, 1));
 			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.1, 0.1, 0.1, 0.3));
 
-			ImGui::SetCursorPos(ImVec2(middle - 110, 400 - mainMenuButonHeight));
-			ImGui::Text("KamiCarZe");
-			ImGui::SetCursorPos(ImVec2(middle - 75, 500 - mainMenuButonHeight));
 
+
+			ImGui::SetCursorPos(ImVec2(middle - (middle / 2.f), heightMiddle));
 			if (ImGui::Button("Start", ImVec2(200, 75)))
 			{
 				if (m_soundEngine)
@@ -146,7 +147,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				m_p3Seconds = time;
 				m_p4Seconds = time;
 			}
-			ImGui::SetCursorPos(ImVec2(middle - 75, 600 - mainMenuButonHeight));
+
+			ImGui::SetCursorPos(ImVec2(middle - (middle / 2.f), heightMiddle + (heightMiddle / 4.f)));
 			if (ImGui::Button("Exit", ImVec2(200, 75)))
 			{
 				if (m_soundEngine)
@@ -1662,7 +1664,7 @@ void Menu::LoadMenuPic()
 
 	m_menuPicWidth = 0;
 	m_menuPicHeight = 0;
-	unsigned char* data = stbi_load("src/Textures/wow3.png", &m_menuPicWidth, &m_menuPicHeight, NULL, 4);
+	unsigned char* data = stbi_load("src/Textures/menu1.png", &m_menuPicWidth, &m_menuPicHeight, NULL, 4);
 	if (data)
 	{
 		glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
@@ -1674,7 +1676,7 @@ void Menu::LoadMenuPic()
 	}
 	else
 	{
-		std::cout << "MainMenu texture failed to load at path: " << "src/Textures/wow3.png" << std::endl;
+		std::cout << "MainMenu texture failed to load at path: " << "src/Textures/menu1.png" << std::endl;
 		stbi_image_free(data);
 	}
 }

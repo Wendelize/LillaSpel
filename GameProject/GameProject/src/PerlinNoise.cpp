@@ -101,3 +101,85 @@ float PerlinNoise::CreateMultiFractal(float x, float y)
 
 	return total;
 }
+
+float PerlinNoise::GenSpecificNoise(float x, float y, int fractal)
+{
+	int n = (int)(x + y * fractal);
+	n = (n << 13) ^ n;
+
+	return (1.0f - ((n * (n * n * 15731 + 789221) + 1376312589) & 0x7fffffff) / 1073741824.0f);
+}
+
+float PerlinNoise::SmoothSpecificNoise(float x, float y, int fractal)
+{
+	x = (int)x;
+
+	float corners = (GenSpecificNoise(x - 1, y - 1, fractal) + GenSpecificNoise(x + 1, y - 1, fractal) + GenSpecificNoise(x - 1, y + 1, fractal) + GenSpecificNoise(x + 1, y + 1, fractal)) / 16.0f;
+	float sides = (GenSpecificNoise(x - 1, y, fractal) + GenSpecificNoise(x + 1, y, fractal) + GenSpecificNoise(x, y - 1, fractal) + GenSpecificNoise(x, y + 1, fractal)) / 8.0f;
+	float center = GenSpecificNoise(x, y, fractal) / 4.0f;
+
+	return corners + sides + center;
+}
+
+float PerlinNoise::InterpolatedSpecificNoise(float x, float y, int fractal)
+{
+	int intX = (int)x;
+	float fractionX = x - intX;
+
+	int intY = (int)y;
+	float fractionY = y - intY;
+
+	float v1 = SmoothSpecificNoise(intX, intY, fractal);
+	float v2 = SmoothSpecificNoise(intX + 1, intY, fractal);
+	float v3 = SmoothSpecificNoise(intX, intY + 1, fractal);
+	float v4 = SmoothSpecificNoise(intX + 1, intY + 1, fractal);
+
+	float i1 = CosineInterpolate(v1, v2, fractionX);
+	float i2 = CosineInterpolate(v3, v4, fractionX);
+
+	return CosineInterpolate(i1, i2, fractionY);
+}
+
+float PerlinNoise::CreateSpecificPerlinNoise(float x, float y, int fractal)
+{
+	float total = 0;
+
+	// Persistance 
+	float p = 0.4f;
+
+	// Nr of octaves 
+	int n = 8;
+
+	for (int i = 0; i < n; i++)
+	{
+		float frequency = (float)pow(2, i) / 16.0f;
+		float amplitude = (float)pow(p, i);
+
+		total += InterpolatedSpecificNoise(x * frequency, y * frequency, fractal) * amplitude;
+	}
+
+	return total;
+}
+
+float PerlinNoise::CreateSpecificMultiFractal(float x, float y, int fractal)
+{
+	float total = 0;
+
+	// Persistance 
+	float p = 0.4f;
+
+	// Nr of octaves 
+	int n = 8;
+
+	for (int i = 0; i < n; i++)
+	{
+		float frequency = (float)pow(2.0f, i) / 16.0f;
+		float amplitude = (float)pow(p, i);
+
+		float signal = InterpolatedSpecificNoise(x * frequency, y * frequency, fractal);
+		signal /= signal + 1.0f;
+		total += abs(signal * amplitude);
+	}
+
+	return total;
+}
