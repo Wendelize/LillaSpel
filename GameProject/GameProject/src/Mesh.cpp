@@ -46,20 +46,23 @@ Mesh::~Mesh()
 	glBindVertexArray(0);
 }
 
-void Mesh::SetTexture(Shader shader)
+void Mesh::SetTexture(Shader* shader)
 {
-	unsigned int _diffuseNr = 1;
-	unsigned int _specularNr = 1;
+
 	for (unsigned int i = 0; i < m_textures.size(); i++)
 	{
-		glActiveTexture(GL_TEXTURE0 + i); // activate proper texture unit before binding
-		// retrieve texture number (the N in diffuse_textureN)
+		glActiveTexture(GL_TEXTURE0 + i); // active proper texture unit before binding
 		string number;
 		string name = m_textures[i].type;
 		if (name == "texture_diffuse")
-			number = std::to_string(_diffuseNr++);
+			number ="u_Texture.diffuse";
+		else if (name == "texture_specular")
+			number = "u_Texture.specular"; // transfer unsigned int to stream
 
-		//shader.SetInt(("material." + name + number).c_str(), i);
+		// now set the sampler to the correct texture unit
+		//const int value = i;
+		glUniform1i(glGetUniformLocation(shader->GetShader() , name.c_str()), i); // TODO: kanske fixa så shader har en setUniform för detta?
+		// and finally bind the texture
 		glBindTexture(GL_TEXTURE_2D, m_textures[i].id);
 	}
 	glActiveTexture(GL_TEXTURE0);

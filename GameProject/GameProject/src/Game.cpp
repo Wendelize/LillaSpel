@@ -442,8 +442,8 @@ void Game::DynamicCamera(float dt)
 
 void Game::AddInteractiveObjects()
 {
-	// ID 0 = BORING LOG
-	// ID 1 = BALL
+	// ID 0 = BORING LOG - DYNAMIC
+	// ID 1 = BALL - DYNAMIC
 	// ID 2 = NEW SICK LOG
 	// ID 3 = Rock
 	// ID 4 = RED MUSHROOM 
@@ -455,14 +455,34 @@ void Game::AddInteractiveObjects()
 
 	switch (m_cube->GetCurrentLevel())
 	{
-	case 0:
+		case 0:
 		{
+			m_objectHandler->AddObject(vec3(-18, 3, 10.6), 5, m_objectModels[5]);
+			m_objectHandler->AddObject(vec3(-19, 2.5, 5), 5, m_objectModels[5]);
+			m_objectHandler->AddObject(vec3(-17, 1.5, 5), 5, m_objectModels[5]);
+			m_objectHandler->AddObject(vec3(-19, 3, 8), 5, m_objectModels[5]);
+			m_objectHandler->AddObject(vec3(-17, 2.5, 8), 5, m_objectModels[5]);
+			m_objectHandler->AddObject(vec3(-20.2, 3, 2.7), 5, m_objectModels[5]);
 
+			m_objectHandler->AddObject(vec3(-16, 3, 10.5), 6, m_objectModels[6]);
+			m_objectHandler->AddObject(vec3(-18.5, 2.5, 3), 6, m_objectModels[6]);
+			m_objectHandler->AddObject(vec3(-15, 2, 7), 6, m_objectModels[6]);
+			m_objectHandler->AddObject(vec3(-20.4, 2, 5), 6, m_objectModels[6]);
+
+			m_objectHandler->AddObject(vec3(-15, 0, 11), 3, m_objectModels[3]);
+			m_objectHandler->AddObject(vec3(-20, 1.1, -2), 3, m_objectModels[3]);
+			m_objectHandler->AddObject(vec3(-18, 1.3, 0), 3, m_objectModels[3]);
+			m_objectHandler->AddObject(vec3(0, 0.3, -18), 3, m_objectModels[3]);
 		}
 		break;
 	case 1: 
 		{
+			m_objectHandler->AddObject(vec3(15, 3, 3.2), 4, m_objectModels[4]);
 
+			m_objectHandler->AddObject(vec3(-4.6, 8.8, -15), 6, m_objectModels[6]);
+			m_objectHandler->AddObject(vec3(0, 5.6, -5), 6, m_objectModels[6]);
+
+			m_objectHandler->AddObject(vec3(-5, 6.5, -16), 3, m_objectModels[3]);
 		}
 		break;
 	case 2: 
