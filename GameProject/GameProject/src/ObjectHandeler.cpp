@@ -241,10 +241,6 @@ void ObjectHandler::Update(float dt)
 				{
 					m_lightsOut = true;
 				}
-				if (!m_ghosts.at(j)->GetLightSwitch())
-				{
-					m_lightsOut = false;
-				}
 
 				if (m_ghosts.at(j)->GetBombSwitch())
 				{
@@ -446,7 +442,7 @@ void ObjectHandler::AddGhost(int index)
 
 void ObjectHandler::AddPowerUp()
 {
-	int type = rand() % (10);
+	int type = rand() % (11);
 	bool spawnFound = false;
 	vec3 spawn = vec3(0);// = vec3((rand() % 30) - 15, 7, (rand() % 20 - 15)));
 	while (!spawnFound) 
@@ -513,9 +509,9 @@ vec3 ObjectHandler::GetPlayerPos(int index)
 	return vec3(temp.getX(), temp.getY(), temp.getZ());
 }
 
-void ObjectHandler::SetPlayerPos(vec3 pos, int controllerId)
+void ObjectHandler::SetPlayerPos(vec3 pos, int index)
 {
-	m_players[GetIndexByControllerId(controllerId)]->SetFinishPos(pos);
+	m_players[index]->SetFinishPos(pos);
 }
 
 mat4 ObjectHandler::GetPlayerMatrix(int index)
@@ -901,8 +897,7 @@ void ObjectHandler::CheckPowerUpCollision()
 							}
 							else if (m_powerUps.at(k)->GetType() == 10) {
 								m_spawnBall = true;
-							}
-							else
+							}else
 							{
 								if (m_soundEngine) {
 									m_soundEngine->play2D("src/Audio/Powerup - Pickup.mp3", false);
@@ -1053,6 +1048,15 @@ void ObjectHandler::RemoveAllObjects()
 	{
 		RemoveObject(0);
 	}
+}
+
+void ObjectHandler::RemoveAllGhost()
+{
+	int temp = m_ghosts.size();
+	for (int i = 0; i < temp; i++) {
+		delete m_ghosts.at(i);
+	}
+	m_ghosts.clear();
 }
 
 void ObjectHandler::UpdateLastPos()

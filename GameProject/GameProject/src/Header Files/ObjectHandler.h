@@ -135,7 +135,7 @@ public:
 	void SetTerrain(bool state);
 	void RenderParticles();
 	void RemoveAllObjects();
-
+	void RemoveAllGhost();
 	void UpdateLastPos();
 	void UpdateHook(float dt);
 	bool GetPlayerHook(int index);

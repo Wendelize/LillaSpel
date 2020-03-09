@@ -149,9 +149,9 @@ void Game::Update(float dt)
 	}
 	
 	// är select menyn aktiverad? ändra kameran till inzoomad
-	if (m_menu->SelectMenuActive())
+	if (m_menu->SelectMenuActive() || m_menu->SelectLivesMenuActive())
 	{
-		if (m_cube->GetCurrentLevel() != 0) {
+		if (m_cube->GetCurrentLevel() != 0 && m_menu->SelectMenuActive()) {
 			m_cube->SetCurrentLevel(0);
 			m_updateMap.store(true);
 		}
@@ -163,6 +163,13 @@ void Game::Update(float dt)
 			m_timeSwapTrack = 0.f;
 			m_mapUpdateReady.store(false);
 			m_objectHandler->ClearBombs();
+			if (m_cube->GetCurrentLevel() == 5) {
+				m_objectHandler->RemoveAllObjects();
+				m_objectHandler->AddObject(vec3(0, 2, 0), 0, m_objectModels[0]);
+			}
+			else {
+				m_objectHandler->RemoveAllObjects();
+			}
 		}
 		SelectionMenu();
 		m_scene->TranslateCameraPos(vec3(CAMERAPOS_SELECT), 1.f);
@@ -237,8 +244,8 @@ void Game::Update(float dt)
 
 		if (m_objectHandler->GetNumPlayers() == 1 && !m_gameOver)
 		{
-			m_winner = 0;
 			m_menu->RankPlayers();
+			m_winner = m_menu->GetWinnerIndex();
 			m_menu->SetActiveMenu(Menu::ActiveMenu::win);
 			m_gameOver = true;
 
@@ -265,7 +272,7 @@ void Game::Update(float dt)
 		if (m_time > m_maxTime && !m_gameOver)
 		{
 			m_menu->RankPlayers();
-			m_winner = m_menu->GetWinner();//m_objectHandler->GetWinnerID();
+			m_winner = m_menu->GetWinnerIndex();//m_objectHandler->GetWinnerID();
 			//m_menu->SetWinner(m_winner);
 			m_menu->SetActiveMenu(Menu::ActiveMenu::win);
 			m_gameOver = true;
@@ -341,7 +348,7 @@ void Game::DynamicCamera(float dt)
 	vec3 focusPoint = vec3(0);
 	vec3 offset = vec3(0, -6, 0);
 	int numPlayers = m_objectHandler->GetNumPlayers();
-	int winner = m_objectHandler->GetIndexByControllerId(m_winner);
+	int winner = m_winner;
 
 	if (m_menu->WinMenuActive() || m_menu->RestartMenuActive() || m_menu->StatsMenuActive())
 	{
@@ -489,6 +496,7 @@ void Game::Reset()
 	}
 
 	m_objectHandler->RemoveAllObjects();
+	m_objectHandler->RemoveAllGhost();
 
 	if (m_cube->GetCurrentLevel() == 5) {
 		m_objectHandler->AddObject(vec3(0, 2, 0), 0, m_objectModels[0]);
@@ -673,5 +681,3 @@ void Game::SelectionMenu()
 		m_wasSelect = true;
 	}
 }
-
-

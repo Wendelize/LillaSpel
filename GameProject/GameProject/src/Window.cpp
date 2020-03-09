@@ -85,9 +85,10 @@ Window::Window(int width, int height)
 	m_fonts.push_back(io.Fonts->AddFontFromFileTTF("src/IMGUI/Fonts/Rowdy-Regular.ttf", 60.0f));
 	m_fonts.push_back(io.Fonts->AddFontFromFileTTF("src/IMGUI/Fonts/outrun_future/outrun-future-Bold.ttf", 40.0f));
 	m_fonts.push_back(io.Fonts->AddFontFromFileTTF("src/IMGUI/Fonts/outrun_future/outrun-future-Bold.ttf", 80.0f));
+	m_fonts.push_back(io.Fonts->AddFontFromFileTTF("src/IMGUI/Fonts/HEART shapes.ttf", 30.0f));	// HEART font
 	m_fonts.push_back(io.Fonts->AddFontFromFileTTF("src/IMGUI/Fonts/CFLegendsoftheFall-Regular.ttf", 15.0f));
 	m_fonts.push_back(io.Fonts->AddFontFromFileTTF("src/IMGUI/Fonts/CFLegendsoftheFall-Regular.ttf", 60.0f));
-	m_fonts.push_back(io.Fonts->AddFontFromFileTTF("src/IMGUI/Fonts/spongeboy_me_bob/Spongeboy Me Bob.ttf", 20.0f));
+	m_fonts.push_back(io.Fonts->AddFontFromFileTTF("src/IMGUI/Fonts/thememefont.ttf", 20.0f));	// MEME font
 	m_fonts.push_back(io.Fonts->AddFontFromFileTTF("src/IMGUI/Fonts/spongeboy_me_bob/Spongeboy Me Bob.ttf", 60.0f));
 	m_fonts.push_back(io.Fonts->AddFontFromFileTTF("src/IMGUI/Fonts/djb_crazy_goofy_cool/DJB Crazy Goofy Cool.ttf", 20));
 	ImGui::StyleColorsDark();
