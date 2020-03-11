@@ -161,7 +161,7 @@ void Scene::Init()
 
 }
 
-void Scene::LightToShader(bool lightsOut)
+void Scene::LightToShader()
 {
 	m_nrOfLights = m_lights.size();
 	m_nrOfCarLights = m_carLights.size();
@@ -178,7 +178,7 @@ void Scene::LightToShader(bool lightsOut)
 
 	int nrOf = temp.size();
 	m_modelShader->Uniform("u_NrOf", nrOf);
-	m_modelShader->Uniform("u_LightsOut", lightsOut);
+	m_modelShader->Uniform("u_LightsOut", m_lightsOut);
 
 
 	for (uint i = 0; i < temp.size(); i++)
@@ -213,7 +213,7 @@ void Scene::LightToShader(bool lightsOut)
 	}
 }
 
-void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, MarchingCubes* cube, bool gameOver, int winner, bool lightsOut)
+void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, MarchingCubes* cube, bool gameOver, int winner)
 {
 	m_viewMatrix = m_camera->GetView();
 	/* Render here */
@@ -254,11 +254,20 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, 
 	// Terrain
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	if (gameOver == true)
+	{
+		m_terrainAlpha = 1.0f;
+	}
 	cube->Draw(m_modelShader, m_terrainAlpha);
 	glEnable(GL_BLEND);
 
 	// Light uniforms
-	LightToShader(lightsOut);
+	if (gameOver == true)
+	{
+		m_lightsOut = false;
+	}
+	LightToShader();
+	
 	
 	// Draw all objects
 	RenderSceneInfo(m_modelShader, objects);
@@ -506,7 +515,6 @@ void Scene::AddParticleEffect(vec3 pos, vec3 color1, vec3 color2, float speed, f
 	m_particles.back()->GenerateParticles(pos, speed, spread, duration, color1, color2, size, dir, gravity);
 }
 
-
 void Scene::SetWindowSize(int width, int height)
 {
 	m_window->SetWidht(width);
@@ -585,7 +593,12 @@ void Scene::AddSpotLight(vec3 pos, vec3 dir, vec3 color, float cutOff)
 	m_lights.push_back(new Light(2, dir, pos, color, cutOff));
 }
 
-void Scene::updateTerrainAlpha(float dt, bool terrain)
+void Scene::UpdateLightsOut(bool lightsOut)
+{
+	m_lightsOut = lightsOut;
+}
+
+void Scene::UpdateTerrainAlpha(float dt, bool terrain)
 {
 	if (terrain == true)
 	{

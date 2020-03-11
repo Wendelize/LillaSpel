@@ -527,6 +527,7 @@ void Player::GivePower(int type)
 			break;
 
 		case 7: //Lightbulb
+			m_powerDuration = 5.f;
 			break;
 
 		case 8:
