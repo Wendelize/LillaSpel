@@ -116,7 +116,6 @@ public:
 	void StopAllSound();
 	vector<ObjectInfo*> GetObjects();
 	vector<Light*> GetLights();
-	vector<ParticleSystem*> particles();
 	btDiscreteDynamicsWorld* GetWorld();
 	DebugDrawer* GetDebugDrawer();
 	int GetWinnerID();

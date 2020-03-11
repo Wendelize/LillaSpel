@@ -10,6 +10,7 @@ struct VertexData {
 struct TextureData {
 	unsigned int id;
 	string type;
+	string path;
 };
 
 struct Material {
@@ -41,7 +42,7 @@ public:
 	Mesh(vector<VertexData> vertices, vector<unsigned int> indices, vector<TextureData> textures, vector<Material> materials);
 	~Mesh();
 
-	void SetTexture(Shader shader);
+	void SetTexture(Shader* shader);
 	void SetMaterial(Shader* shader);
 	void Draw(Shader* shader);
 	void UpdateMesh(vector<VertexData> vertices, vector<unsigned int> indices);

@@ -1,5 +1,13 @@
 #include "Header Files\Object.h"
 
+
+// ID 0 = BORING LOG
+// ID 1 = BALL
+// ID 2 = NEW SICK LOG
+// ID 3 = BROWN MUSHROOM
+// ID 4 = RED MUSHROOM 
+// ID 5 = LOW POLY PINE
+// ID 6 = LOW POLY TREE
 Object::Object(btVector3 pos, int type, Model* model)
 {
 	m_transform = new Transform;
@@ -12,8 +20,11 @@ Object::Object(btVector3 pos, int type, Model* model)
 	btVector3 localInertia(0, 0, 0);
 	float mass;
 
-	if (type == 0) {
+	if (type == 0 || type == 2 || type == 9) {
 		mass = 100000.0f;
+	}
+	else if (type == 3 || type == 4 || type == 5 || type == 6 || type == 7 || type == 8) {
+		mass = 0.f;
 	}
 	else {
 		mass = 700.f;
@@ -39,16 +50,18 @@ Object::Object(btVector3 pos, int type, Model* model)
 	m_body = new btRigidBody(rbInfo);
 	if (type == 1) {
 		m_body->setRestitution(3);
+		m_body->setFriction(0);
 
 	}
 	else {
-		m_body->setRestitution(1.2);
+		m_body->setRestitution(0.8);
 
 	}
 	vec3 btPos = vec3(m_btTransform->getOrigin().x(), m_btTransform->getOrigin().y(), m_btTransform->getOrigin().z());
 	m_transform->SetTranslation(btPos);
 
-	m_color = vec3((rand() % 255)/255.f + 0.1, (rand() % 255) / 255.f + 0.1, (rand() % 255) / 255.f + 0.1);
+	//m_color = vec3((rand() % 255)/255.f + 0.1, (rand() % 255) / 255.f + 0.1, (rand() % 255) / 255.f + 0.1);
+	m_color = vec3(1);
 	m_model = type;
 	m_currentPos = m_btTransform->getOrigin();
 
@@ -70,7 +83,7 @@ ObjectInfo* Object::GetObjectInfo()
 		tempScalar[4], tempScalar[5], tempScalar[6], tempScalar[7]
 	, tempScalar[8], tempScalar[9], tempScalar[10], tempScalar[11]
 	, tempScalar[12], tempScalar[13], tempScalar[14], tempScalar[15]);
-	m_info = new ObjectInfo(scale(temp, vec3(m_scale)), m_model, 3, m_color, true);
+	m_info = new ObjectInfo(scale(temp, vec3(m_scale)), m_model, 3, m_color, false);
 	return m_info;
 }
 

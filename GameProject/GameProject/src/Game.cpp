@@ -139,13 +139,8 @@ void Game::Update(float dt)
 			m_timeSwapTrack = 0.f;
 			m_mapUpdateReady.store(false);
 			m_objectHandler->ClearBombs();
-			if (m_cube->GetCurrentLevel() == 5) {
-				m_objectHandler->RemoveAllObjects();
-				m_objectHandler->AddObject(vec3(0, 2, 0), 0, m_objectModels[0]);
-			}
-			else {
-				m_objectHandler->RemoveAllObjects();
-			}
+			m_objectHandler->RemoveAllObjects();
+			AddInteractiveObjects();
 		}
 		SelectionMenu();
 		m_scene->TranslateCameraPos(vec3(CAMERAPOS_SELECT), 1.f);
@@ -479,6 +474,117 @@ void Game::DynamicCamera(float dt)
 	}
 }
 
+void Game::AddInteractiveObjects()
+{
+	// ID 0 = BORING LOG - DYNAMIC
+	// ID 1 = BALL - DYNAMIC
+	// ID 2 = NEW SICK LOG
+	// ID 3 = Rock
+	// ID 4 = RED MUSHROOM 
+	// ID 5 = LOW POLY PINE
+	// ID 6 = LOW POLY TREE
+	// ID 7 = RAMP
+	// ID 8 = RAMP OTHER WAY
+	// ID 9 = STRANGER DANGER, SPINNER DINNER
+	//m_objectHandler->AddObject(vec3(x, y, z), modelId, m_objectModels[modelid]);
+
+	switch (m_cube->GetCurrentLevel())
+	{
+		case 0:
+		{
+			m_objectHandler->AddObject(vec3(-18, 3, 10.6), 5, m_objectModels[5]);
+			m_objectHandler->AddObject(vec3(-19, 2.5, 5), 5, m_objectModels[5]);
+			m_objectHandler->AddObject(vec3(-17, 1.5, 5), 5, m_objectModels[5]);
+			m_objectHandler->AddObject(vec3(-19, 3, 8), 5, m_objectModels[5]);
+			m_objectHandler->AddObject(vec3(-17, 2.5, 8), 5, m_objectModels[5]);
+			m_objectHandler->AddObject(vec3(-20.2, 3, 2.7), 5, m_objectModels[5]);
+
+			m_objectHandler->AddObject(vec3(-16, 3, 10.5), 6, m_objectModels[6]);
+			m_objectHandler->AddObject(vec3(-18.5, 2.5, 3), 6, m_objectModels[6]);
+			m_objectHandler->AddObject(vec3(-15, 2, 7), 6, m_objectModels[6]);
+			m_objectHandler->AddObject(vec3(-20.4, 2, 5), 6, m_objectModels[6]);
+
+			m_objectHandler->AddObject(vec3(-15, 0, 11), 3, m_objectModels[3]);
+			m_objectHandler->AddObject(vec3(-20, 1.1, -2), 3, m_objectModels[3]);
+			m_objectHandler->AddObject(vec3(-18, 1.3, 0), 3, m_objectModels[3]);
+			m_objectHandler->AddObject(vec3(0, 0.3, -18), 3, m_objectModels[3]);
+		}
+		break;
+	case 1: 
+		{
+			m_objectHandler->AddObject(vec3(15, 3, 3.2), 4, m_objectModels[4]);
+
+			m_objectHandler->AddObject(vec3(-4.6, 8.8, -15), 6, m_objectModels[6]);
+			m_objectHandler->AddObject(vec3(0, 5.6, -5), 6, m_objectModels[6]);
+
+			m_objectHandler->AddObject(vec3(-5, 6.5, -16), 3, m_objectModels[3]);
+		}
+		break;
+	case 2: 
+		{
+		//RAMPS
+		m_objectHandler->AddObject(vec3(-5, 1.5, -7), 8, m_objectModels[8]);
+
+		m_objectHandler->AddObject(vec3(5, 2, 7), 7, m_objectModels[7]);
+
+		//Trees
+		m_objectHandler->AddObject(vec3(3, 2.5, 13), 6, m_objectModels[6]);
+		m_objectHandler->AddObject(vec3(-3, 2, -13), 6, m_objectModels[6]);
+		m_objectHandler->AddObject(vec3(-9, 6, -18), 5, m_objectModels[5]);
+
+		m_objectHandler->AddObject(vec3(-10, 1, 13), 4, m_objectModels[4]);
+
+		//Rock
+		m_objectHandler->AddObject(vec3(7, 1, -10), 3, m_objectModels[3]);
+
+		}
+		break;
+	case 3: 
+		{
+	
+		}
+		break;
+	case 4: 
+		{
+		m_objectHandler->AddObject(vec3(-9, 1.0, -16), 6, m_objectModels[6]);
+		m_objectHandler->AddObject(vec3(-20, 2., 2), 5, m_objectModels[5]);
+		m_objectHandler->AddObject(vec3(-17, 1.5, 0), 5, m_objectModels[5]);
+		m_objectHandler->AddObject(vec3(-18, 2, 4), 5, m_objectModels[5]);
+
+		m_objectHandler->AddObject(vec3(14, 4, -8), 4, m_objectModels[4]);
+
+		m_objectHandler->AddObject(vec3(0, 2, 19.5), 3, m_objectModels[3]);
+
+
+		}
+		break;
+	case 5: 
+		{
+		m_objectHandler->AddObject(vec3(0, 1, 0), 0, m_objectModels[0]);
+		m_objectHandler->AddObject(vec3(15, 0, 15), 3, m_objectModels[3]);
+		m_objectHandler->AddObject(vec3(-15, 0, 0), 4, m_objectModels[4]);
+		m_objectHandler->AddObject(vec3(15, 2.5, 15), 6, m_objectModels[6]);
+		m_objectHandler->AddObject(vec3(15, 0, 5), 6, m_objectModels[6]);
+		m_objectHandler->AddObject(vec3(18, 0, 3), 6, m_objectModels[6]);
+		m_objectHandler->AddObject(vec3(16, 0, -3), 6, m_objectModels[6]);
+		m_objectHandler->AddObject(vec3(17, 0, 0), 6, m_objectModels[6]);
+
+		m_objectHandler->AddObject(vec3(-20, 4, 21), 5, m_objectModels[5]);
+		m_objectHandler->AddObject(vec3(-18, 4, 23), 5, m_objectModels[5]);
+		m_objectHandler->AddObject(vec3(20, 3, -22), 6, m_objectModels[6]);
+		m_objectHandler->AddObject(vec3(22, 3.3, -18), 6, m_objectModels[6]);
+
+
+		}
+		break;
+	default:
+		{
+		m_objectHandler->AddObject(vec3(0,2,0), 9, m_objectModels[9]);
+		}
+		break;
+	}
+}
+
 void Game::Render()
 {
 	ImGui_ImplOpenGL3_NewFrame();
@@ -524,12 +630,9 @@ void Game::Reset()
 		m_objectHandler->RemovePowerUp(0);
 	}
 
-	m_objectHandler->RemoveAllObjects();
 	m_objectHandler->RemoveAllGhost();
-
-	if (m_cube->GetCurrentLevel() == 5) {
-		m_objectHandler->AddObject(vec3(0, 2, 0), 0, m_objectModels[0]);
-	}
+	m_objectHandler->RemoveAllObjects();
+	AddInteractiveObjects();
 
 	if (m_soundEngine)
 	{

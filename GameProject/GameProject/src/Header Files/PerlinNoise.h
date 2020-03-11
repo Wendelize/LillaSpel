@@ -17,4 +17,9 @@ public:
 	float InterpolatedNoise(float x, float y);
 	float CreatePerlinNoise(float x, float y);
 	float CreateMultiFractal(float x, float y);
+	float GenSpecificNoise(float x, float y, int fractal);
+	float SmoothSpecificNoise(float x, float y, int fractal);
+	float InterpolatedSpecificNoise(float x, float y, int fractal);
+	float CreateSpecificPerlinNoise(float x, float y, int fractal);
+	float CreateSpecificMultiFractal(float x, float y, int fractal);
 };

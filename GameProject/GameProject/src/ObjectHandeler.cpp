@@ -171,6 +171,12 @@ void ObjectHandler::Update(float dt)
 			}
 		}
 	}
+	if (m_cube->GetCurrentLevel() == 6) {
+		if (m_scaleTimer >= 2.0) {
+			m_objects.at(0)->SetRotation(3.14);
+			m_scaleTimer = 0;
+		}
+	}
 	CheckPowerUpCollision();
 	CheckCollisionCars(dt);
 	UpdateVibration(dt);
