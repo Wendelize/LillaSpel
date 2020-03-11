@@ -214,7 +214,7 @@ void Scene::LightToShader()
 	}
 }
 
-void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, MarchingCubes* cube, bool gameOver, int winner)
+void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, MarchingCubes* cube, bool gameOver, int winner,bool terrain)
 {
 	m_viewMatrix = m_camera->GetView();
 	/* Render here */
@@ -257,7 +257,7 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, 
 	if (terrain == true)
 	{
 		m_modelShader->SetUniform("u_Terrain", 1);
-		cube->Draw(m_modelShader);
+		cube->Draw(m_modelShader, m_terrainAlpha);
 		m_modelShader->SetUniform("u_Terrain", 0);
 	}
 		

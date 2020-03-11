@@ -227,17 +227,12 @@ void main(){
 	vec3 baseColor = vec3(0.3, 0.1, 0.0);
 	if (u_Terrain)
 	{
-		if (u_LightsOut == true)
-			FragColor = vec4(clamp(baseColor + baseColor * vi.position.y / 2.0, 0.0, 1.0) * result + ambient, 1.0);
-		else
-			FragColor = vec4(baseColor + baseColor * vi.position.y / 4.0 + result + ambient, 1.0);
-
+		FragColor = vec4(baseColor + baseColor * vi.position.y / 4.0 + result + ambient, u_Alpha);
 	}
 	else
-	}
-    
-    FragColor = vec4(result + ambient, u_Alpha);
 	{
+		FragColor = vec4(result + ambient, u_Alpha);
+	}
 
     float brightness = dot(result.rgb, vec3(0.2126, 0.7152, 0.0722));
     if(u_Glow)// && brightness > 1)
