@@ -114,13 +114,8 @@ void Game::Update(float dt)
 			m_timeSwapTrack = 0.f;
 			m_mapUpdateReady.store(false);
 			m_objectHandler->ClearBombs();
-			if (m_cube->GetCurrentLevel() == 5) {
-				m_objectHandler->RemoveAllObjects();
-				m_objectHandler->AddObject(vec3(0, 2, 0), 0, m_objectModels[0]);
-			}
-			else {
-				m_objectHandler->RemoveAllObjects();
-			}
+			m_objectHandler->RemoveAllObjects();
+			AddInteractiveObjects();
 		}
 	}
 
