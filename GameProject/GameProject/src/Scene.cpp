@@ -209,7 +209,7 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, 
 	if(m_enableBloom)
 		glClearColor(0.f, 0.f, 0.f, 1.0f);
 	else
-		glClearColor(0.2f, 0.2f, 1.0f, 1.0f);
+		glClearColor(0.7f, 0.7f, 0.9f, 1.0f);
 
 	glViewport(0, 0, m_window->GetWidht(), m_window->GetHeight());
 
@@ -255,7 +255,8 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, 
 	RenderParticles();
 	
 	// Render Skybox
-	//RenderSkybox();
+	if(!m_enableBloom)
+		RenderSkybox();
 
 	// Add glow
 	m_bloom->PingPongRender(3);
