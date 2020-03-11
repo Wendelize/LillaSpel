@@ -22,6 +22,7 @@ private:
 	bool m_debug = false;
 	bool m_toggle = false;
 	bool m_onlySky = false;
+	bool m_enableBloom = true;
 
 	mat4 m_projMatrix,
 		m_viewMatrix,
@@ -72,6 +73,8 @@ public:
 	void SetCameraFocus(vec3 pos);
 	void SetInstantCameraFocus(vec3 pos);
 	void ShakeCamera(float intensity, float duration);
+
+	void SetBloom(bool b);
 
 	void AddParticleEffect(vec3 pos, vec3 color1, vec3 color2, float speed, float spread, vec3 dir, int nr, float duration, float size, float gravity);
 

@@ -27,6 +27,7 @@ public:
 	void RenderBloom(GLFWwindow* w);
 	void RenderQuad();
 
+	void EnableBloom(bool b);
 
 	Shader* GetBlurShader();
 	Shader* GetBloomShader();

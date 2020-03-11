@@ -205,7 +205,12 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, 
 	m_viewMatrix = m_camera->GetView();
 	/* Render here */
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glClearColor(0.0f, 0.1f, 0.1f, 1.0f);
+
+	if(m_enableBloom)
+		glClearColor(0.f, 0.f, 0.f, 1.0f);
+	else
+		glClearColor(0.2f, 0.2f, 1.0f, 1.0f);
+
 	glViewport(0, 0, m_window->GetWidht(), m_window->GetHeight());
 
 	// Render shadows
@@ -267,6 +272,7 @@ void Scene::RenderSceneInfo(Shader* shader, vector<ObjectInfo*> objects)
 		shader->SetUniform("u_Model", objects[i]->modelMatrix);
 		shader->SetUniform("u_PlayerColor", objects[i]->hue);
 		shader->SetUniform("u_Glow", objects[i]->glow);
+
 		switch (objects[i]->typeId)
 		{
 		case 0:
@@ -465,6 +471,12 @@ void Scene::SetInstantCameraFocus(vec3 pos)
 void Scene::ShakeCamera(float intensity, float duration)
 {
 	m_camera->Shake(intensity, duration);
+}
+
+void Scene::SetBloom(bool b)
+{
+	m_bloom->EnableBloom(b);
+	m_enableBloom = b;
 }
 
 void Scene::AddParticleEffect(vec3 pos, vec3 color1, vec3 color2, float speed, float spread, vec3 dir, int nr, float duration, float size, float gravity)
