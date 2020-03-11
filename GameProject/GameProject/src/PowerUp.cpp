@@ -52,9 +52,10 @@ PowerUp::PowerUp(int spawn, btVector3 pos, int type,float duration)
 			break;
 
 		case 7: 
-			m_model = 7; //LightBulb - INGEN FUNKTION KOPPLAD
+			m_model = 7; //LightBulb 
 			m_color = vec3(2, 2, 0);
 			scale = 0.15f;
+			m_duration = 6.0f;
 			break;
 		case 8:
 			m_model = 8; //Heart
@@ -65,6 +66,7 @@ PowerUp::PowerUp(int spawn, btVector3 pos, int type,float duration)
 			m_model = 3; //Question mark - Invisible terrain
 			m_color = vec3(0.741, 0.520, 3.000);
 			scale = 0.09f;
+			m_duration = 5.0f;
 			break;
 		case 10:
 			m_model = 3;

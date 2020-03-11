@@ -27,6 +27,8 @@ Scene::Scene()
 	m_projMatrix = mat4(1.0);
 	m_viewMatrix = mat4(1.0);
 
+	m_terrainAlpha = 1.0f;
+
 }
 
 Scene::~Scene()
@@ -160,7 +162,7 @@ void Scene::Init()
 
 }
 
-void Scene::LightToShader(bool lightsOut)
+void Scene::LightToShader()
 {
 	m_nrOfLights = m_lights.size();
 	m_nrOfCarLights = m_carLights.size();
@@ -177,7 +179,7 @@ void Scene::LightToShader(bool lightsOut)
 
 	int nrOf = temp.size();
 	m_modelShader->Uniform("u_NrOf", nrOf);
-	m_modelShader->Uniform("u_LightsOut", lightsOut);
+	m_modelShader->Uniform("u_LightsOut", m_lightsOut);
 
 
 	for (uint i = 0; i < temp.size(); i++)
@@ -212,7 +214,7 @@ void Scene::LightToShader(bool lightsOut)
 	}
 }
 
-void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, MarchingCubes* cube, bool gameOver, int winner, bool lightsOut, bool terrain)
+void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, MarchingCubes* cube, bool gameOver, int winner)
 {
 	m_viewMatrix = m_camera->GetView();
 	/* Render here */
@@ -259,9 +261,22 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, 
 		m_modelShader->SetUniform("u_Terrain", 0);
 	}
 		
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	if (gameOver == true)
+	{
+		m_terrainAlpha = 1.0f;
+	}
+	cube->Draw(m_modelShader, m_terrainAlpha);
+	glEnable(GL_BLEND);
 
 	// Light uniforms
-	LightToShader(lightsOut);
+	if (gameOver == true)
+	{
+		m_lightsOut = false;
+	}
+	LightToShader();
+	
 	
 	// Draw all objects
 	RenderSceneInfo(m_modelShader, objects);
@@ -285,12 +300,15 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, 
 void Scene::RenderSceneInfo(Shader* shader, vector<ObjectInfo*> objects)
 {
 	// Draw all objects
+	float alpha = 1.0f;
 	shader->UseShader();
 	for (uint i = 0; i < objects.size(); i++)
 	{
+		
 		shader->SetUniform("u_Model", objects[i]->modelMatrix);
 		shader->SetUniform("u_PlayerColor", objects[i]->hue);
 		shader->SetUniform("u_Glow", objects[i]->glow);
+		shader->SetUniform("u_Alpha", alpha);
 
 		switch (objects[i]->typeId)
 		{
@@ -314,6 +332,7 @@ void Scene::RenderSceneInfo(Shader* shader, vector<ObjectInfo*> objects)
 	shader->SetUniform("u_Model", glm::scale(translate(mat4(1.f), vec3(0, 9.65, 30)),vec3(0.25, 0.25, 0.25)));
 	shader->SetUniform("u_PlayerColor", vec3(1, 0, 0));
 	shader->SetUniform("u_Glow", false);
+	shader->SetUniform("u_Alpha", alpha);
 	m_winnerIsland->Draw(shader);
 }
 
@@ -505,7 +524,6 @@ void Scene::AddParticleEffect(vec3 pos, vec3 color1, vec3 color2, float speed, f
 	m_particles.back()->GenerateParticles(pos, speed, spread, duration, color1, color2, size, dir, gravity);
 }
 
-
 void Scene::SetWindowSize(int width, int height)
 {
 	m_window->SetWidht(width);
@@ -583,3 +601,23 @@ void Scene::AddSpotLight(vec3 pos, vec3 dir, vec3 color, float cutOff)
 {
 	m_lights.push_back(new Light(2, dir, pos, color, cutOff));
 }
+
+void Scene::UpdateLightsOut(bool lightsOut)
+{
+	m_lightsOut = lightsOut;
+}
+
+void Scene::UpdateTerrainAlpha(float dt, bool terrain)
+{
+	if (terrain == true)
+	{
+		if (m_terrainAlpha < 1.0f)
+			m_terrainAlpha += 0.03;
+	}
+	else
+	{
+		if (m_terrainAlpha > 0.f)
+			m_terrainAlpha -= 0.03;
+	}
+}
+

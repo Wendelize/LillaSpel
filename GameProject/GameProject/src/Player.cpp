@@ -527,6 +527,7 @@ void Player::GivePower(int type)
 			break;
 
 		case 7: //Lightbulb
+			m_powerDuration = 5.f;
 			break;
 
 		case 8:
@@ -535,6 +536,7 @@ void Player::GivePower(int type)
 
 		case 9: //Invisible terrain
 			//m_body->setRestitution(m_restitution * 1.2);
+			m_powerDuration = 5.f;
 			break;
 	}
 }

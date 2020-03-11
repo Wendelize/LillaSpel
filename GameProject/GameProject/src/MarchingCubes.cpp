@@ -495,12 +495,13 @@ void MarchingCubes::BuildMesh()
 	m_mesh->UpdateMesh(m_vertices, m_indices); 
 }
 
-void MarchingCubes::Draw(Shader* shader)
+void MarchingCubes::Draw(Shader* shader, float alpha)
 {
 	shader->UseShader();
 	shader->SetUniform("u_Model", m_transform->GetMatrix());
 	shader->SetUniform("u_PlayerColor", vec3(1));
 	shader->SetUniform("u_Glow", false);
+	shader->SetUniform("u_Alpha", alpha);
 	m_mesh->Draw(shader);
 }
 

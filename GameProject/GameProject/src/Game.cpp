@@ -356,6 +356,8 @@ void Game::Update(float dt)
 	}
 	m_scene->UpdateSky(dtUnchanged);
 	m_scene->UpdateParticles(dtUnchanged);
+	m_scene->UpdateTerrainAlpha(dtUnchanged, m_objectHandler->GetTerrain());
+	m_scene->UpdateLightsOut(m_objectHandler->GetLightsOut());
 	DynamicCamera(dtUnchanged);
 	m_scene->UpdateCamera(dtUnchanged);
 }
@@ -614,7 +616,7 @@ void Game::Render()
 	m_menu->RenderMenu(m_gameOver, m_time, m_cars[0]);
 	m_objectHandler->RenderParticles(); // Används?
 	m_scene->RenderLights(m_carLight);
-	m_scene->Render(m_objects, m_objectHandler->GetWorld(), m_cube, m_gameOver, m_winner, m_objectHandler->GetLightsOut(),m_objectHandler->GetTerrain());
+	m_scene->Render(m_objects, m_objectHandler->GetWorld(), m_cube, m_gameOver, m_winner);
 
 	if (m_debug)
 		Debug();
