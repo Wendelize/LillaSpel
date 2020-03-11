@@ -422,16 +422,16 @@ Light* Player::GetLight(int index)
 	switch (index)
 	{
 	case 0:
-		m_lights[0] = new Light(2, -m_transform->GetForward() - vec3(0, 0.05, 0), pos /*+ m_transform->GetForward() * 1.f*/ + t * 0.5f + vec3(0, 0.5, 0), vec3(m_color.x * 5, m_color.y * 5, m_color.z * 5), 12.5);
+		m_lights[0] = new Light(2, -m_transform->GetForward() - vec3(0, 0.05, 0), pos /*+ m_transform->GetForward() * 1.f*/ + t * 0.5f + vec3(0, 0.5, 0), vec3(5.0, 5.0, 5.0), 12.5);
 		break;
 	case 1:
-		m_lights[1] = new Light(2, -m_transform->GetForward() - vec3(0, 0.05, 0), pos /*+ m_transform->GetForward() * 1.f*/ - t * 0.5f + vec3(0, 0.5, 0), vec3(m_color.x * 5, m_color.y * 5, m_color.z * 5), 12.5);
+		m_lights[1] = new Light(2, -m_transform->GetForward() - vec3(0, 0.05, 0), pos /*+ m_transform->GetForward() * 1.f*/ - t * 0.5f + vec3(0, 0.5, 0), vec3(5.0, 5.0, 5.0), 12.5);
 		break;
 	case 2:
-		m_lights[2] = new Light(2, m_transform->GetForward() - vec3(0, 0.05, 0), pos + vec3(-0.5, 0.5, 0), vec3(m_color.x * 5, m_color.y * 5, m_color.z * 5), 12.5);
+		m_lights[2] = new Light(2, m_transform->GetForward() - vec3(0, 0.05, 0), pos + vec3(-0.5, 0.5, 0), vec3(5.0, 5.0, 5.0), 12.5);
 		break;
 	case 3:
-		m_lights[3] = new Light(2, m_transform->GetForward() - vec3(0, 0.05, 0), pos + vec3(0.5, 0.5, 0), vec3(m_color.x * 5, m_color.y * 5, m_color.z * 5), 12.5);
+		m_lights[3] = new Light(2, m_transform->GetForward() - vec3(0, 0.05, 0), pos + vec3(0.5, 0.5, 0), vec3(5.0, 5.0, 5.0), 12.5);
 		break;
 	default:
 		break;

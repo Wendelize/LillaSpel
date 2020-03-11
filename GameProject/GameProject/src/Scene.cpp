@@ -136,6 +136,7 @@ void Scene::Init()
 	m_objects.push_back(new Model("src/Models/Ramp.obj"));
 	m_objects.push_back(new Model("src/Models/RampOtherWay.obj"));
 	m_objects.push_back(new Model("src/Models/DangerObject.obj"));
+	m_objects.push_back(new Model("src/Models/Astro.obj"));
 
 	m_winnerIsland = new Model("src/Models/Island.obj");
 
@@ -238,6 +239,7 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, 
 	
 	// Matrix uniforms
 	m_modelShader->UseShader();
+	m_modelShader->SetUniform("u_Terrain", 0);
 	m_modelShader->SetUniform("u_ViewPos", m_camera->GetPos());
 	m_modelShader->SetUniform("u_View", m_viewMatrix);
 	m_modelShader->SetUniform("u_Projection", m_projMatrix);
@@ -251,7 +253,12 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, 
 
 	// Terrain
 	if (terrain == true)
+	{
+		m_modelShader->SetUniform("u_Terrain", 1);
 		cube->Draw(m_modelShader);
+		m_modelShader->SetUniform("u_Terrain", 0);
+	}
+		
 
 	// Light uniforms
 	LightToShader(lightsOut);

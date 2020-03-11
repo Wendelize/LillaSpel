@@ -328,7 +328,7 @@ MarchingCubes::MarchingCubes()
 	tempTexture.id = 0;
 	tempTexture.type = " ";
 	m_textures.push_back(tempTexture);
-
+	m_currentLvl = 1;
 	m_mesh = new Mesh(m_vertices, m_indices, m_textures, m_materials);
 	m_transform = new Transform;
 	m_transform->Translate(vec3(-m_middle, 0, -m_middle));

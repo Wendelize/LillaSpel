@@ -77,6 +77,10 @@ ObjectHandler::~ObjectHandler()
 	{
 		delete m_objects.at(i);
 	}
+	for (uint i = 0; i < m_oribtObjects.size(); i++)
+	{
+		delete m_oribtObjects.at(i);
+	}
 	int temp = m_powerUps.size();
 	for (uint i = 0; i < temp; i++) {
 		RemovePowerUp(0);
@@ -238,9 +242,13 @@ void ObjectHandler::Update(float dt)
 			trans = obj->getWorldTransform();
 		}
 		int nrOfPlatforms = 1;
-		int isPlayer = i - nrOfPlatforms - m_objects.size() - m_powerUps.size();
-		int isPowerUp = i - nrOfPlatforms - m_objects.size() - m_players.size();
-		int isObject = i - nrOfPlatforms - m_powerUps.size() - m_players.size();
+		int isPlayer = i - nrOfPlatforms - m_objects.size() - m_powerUps.size() - m_oribtObjects.size();
+		int isPowerUp = i - nrOfPlatforms - m_objects.size() - m_players.size() - m_oribtObjects.size();
+		int isObject = i - nrOfPlatforms - m_powerUps.size() - m_players.size() - m_oribtObjects.size();
+		
+		if (i < m_oribtObjects.size()) {
+			m_oribtObjects.at(i)->rotateAroundCenter(dt);
+		}
 		
 		if (isObject >= 0) {
 			m_objects.at(isObject)->Update();
@@ -399,6 +407,27 @@ void ObjectHandler::AddObject(vec3 pos, int modelId, Model* model)
 	m_objects.push_back(new Object(btVector3(pos.x, pos.y, pos.z), modelId, model));
 	m_dynamicsWorld->addRigidBody(m_objects.back()->GetObject());
 
+}
+
+void ObjectHandler::AddOrbitObjects(vec3 pos, int modelId, Model* model, float speed)
+{
+	float randPos = rand() % 10;
+//	m_oribtObjects.push_back(new Object(btVector3(pos.x, pos.y + randPos, pos.z), modelId, model));
+	m_oribtObjects.push_back(new Object(btVector3(pos.x, pos.y, pos.z), modelId, model, speed));
+	m_dynamicsWorld->addRigidBody(m_oribtObjects.back()->GetObject());
+}
+
+void ObjectHandler::RemoveOrbitObjects(int index)
+{
+	m_dynamicsWorld->removeCollisionObject(m_oribtObjects.at(index)->GetObject());
+	btRigidBody* body = m_oribtObjects.at(index)->GetObject();
+	delete m_oribtObjects.at(index);
+	m_oribtObjects.erase(m_oribtObjects.begin() + index);
+	if (body && body->getMotionState())
+	{
+		delete body->getMotionState();
+	}
+	delete body;
 }
 
 void ObjectHandler::RemoveObject(int index)
@@ -727,6 +756,10 @@ vector<ObjectInfo*> ObjectHandler::GetObjects()
 	for (int i = 0; i < m_objects.size(); i++)
 	{
 		m_structs.push_back(m_objects[i]->GetObjectInfo());
+	}
+	for (int i = 0; i < m_oribtObjects.size(); i++)
+	{
+		m_structs.push_back(m_oribtObjects[i]->GetObjectInfo());
 	}
 	return m_structs;
 }
@@ -1066,6 +1099,11 @@ void ObjectHandler::RemoveAllObjects()
 	for (int i = 0; i < nrOf; i++) 
 	{
 		RemoveObject(0);
+	}
+	nrOf = m_oribtObjects.size();
+	for (int i = 0; i < nrOf; i++)
+	{
+		RemoveOrbitObjects(0);
 	}
 }
 

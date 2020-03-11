@@ -43,6 +43,7 @@ uniform Light u_CarLights[MAX_NR_OF_LIGHTS];
 uniform Material u_Material;
 uniform bool u_Glow;
 uniform bool u_LightsOut;
+uniform bool u_Terrain;
 
 uniform sampler2D u_ShadowMap;
 
@@ -99,6 +100,10 @@ vec3 CalcSpecular(Light light, vec3 lightVec, vec3 lookVec, vec3 n, bool blinn){
 		spec = pow(max(dot(lookVec, reflectionVec), 0.0), u_Material.shininess);
 	}
 	vec3 specular = vec3(light.specular) * spec;
+
+	if (u_Terrain)
+		specular = vec3(0, 0, 0);
+
 	return specular;
 }
 
@@ -217,8 +222,20 @@ void main(){
 		}
 	}
 	
+	vec3 baseColor = vec3(0.3, 0.1, 0.0);
+	if (u_Terrain)
+	{
+		if (u_LightsOut == true)
+			FragColor = vec4(clamp(baseColor + baseColor * vi.position.y / 2.0, 0.0, 1.0) * result + ambient, 1.0);
+		else
+			FragColor = vec4(baseColor + baseColor * vi.position.y / 4.0 + result + ambient, 1.0);
 
-    FragColor = vec4(result + ambient, 1.0);
+	}
+	else
+	{
+		FragColor = vec4(result + ambient, 1.0);
+	}
+    
 
     float brightness = dot(result.rgb, vec3(0.2126, 0.7152, 0.0722));
     if(u_Glow)// && brightness > 1)

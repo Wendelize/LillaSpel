@@ -10,7 +10,6 @@ Menu::Menu(Scene* scene, ObjectHandler* objHand)
 	m_kills.push_back(temp);
 	m_kills.push_back(temp);
 	m_kills.push_back(temp);
-
 	m_soundEngine = createIrrKlangDevice();
 
 	if (m_soundEngine)
@@ -142,6 +141,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				if (m_soundEngine)
 					m_soundEngine->play2D(m_menuSounds[1], false);
 				m_menu = ActiveMenu::select;
+				m_objHand->GetCube()->SetCurrentLevel(m_mapID);
 				m_objHand->AddPlayer(SELECTPOS1, 0, 0, vec3(0.5, 1, 9), model);
 				m_p1Seconds = time;
 				m_p2Seconds = time;

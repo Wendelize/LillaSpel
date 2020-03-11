@@ -24,6 +24,8 @@ private:
 	vector<PowerUp*> m_powerUps;
 	vector<Ghost*> m_ghosts;
 	vector<Object*> m_objects;
+	vector<Object*> m_oribtObjects;
+
 	vector<ObjectInfo*> m_structs;
 	vector<Light*> m_carLights;
 	vector<vec3> m_bombZone;
@@ -66,6 +68,8 @@ public:
 	void Update(float dt);
 	void AddPlayer(vec3 pos, int controllerID, int modelId, vec3 color, Model* model);
 	void AddObject(vec3 pos, int modelId, Model* model);
+	void AddOrbitObjects(vec3 pos, int modelId, Model* model, float speed);
+	void RemoveOrbitObjects(int index);
 	void RemoveObject(int index);
 	void AddPlatform(int modelId, Model* model);
 	void AddGhost(int index);

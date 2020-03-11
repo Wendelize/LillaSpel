@@ -19,13 +19,13 @@ Sky::~Sky()
 
 void Sky::Init()
 {
-	m_centerColor = vec3(0, 0, 0.6f);
-	m_apexColor = vec3(0.5, 0.5, 1);
+	m_centerColor = vec3(0.5, 0.0, 0.3);
+	m_apexColor = vec3(0.0, 0.0, 0.0);
 
-	m_translationSpeed[0] = 0.019f;
-	m_translationSpeed[1] = 0.008f;
-	m_translationSpeed[2] = 0.01f;
-	m_translationSpeed[3] = 0.0f;
+	m_translationSpeed[0] = 0.115f;
+	m_translationSpeed[1] = 0.04f;
+	m_translationSpeed[2] = 0.15f;
+	m_translationSpeed[3] = 0.05f;
 
 	m_textureTranslation[0] = 0.4f;
 	m_textureTranslation[1] = 0.0f;

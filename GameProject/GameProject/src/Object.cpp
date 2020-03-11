@@ -1,14 +1,18 @@
 #include "Header Files\Object.h"
 
 
-// ID 0 = BORING LOG
-// ID 1 = BALL
+// ID 0 = BORING LOG - DYNAMIC
+// ID 1 = BALL - DYNAMIC
 // ID 2 = NEW SICK LOG
-// ID 3 = BROWN MUSHROOM
+// ID 3 = Rock
 // ID 4 = RED MUSHROOM 
 // ID 5 = LOW POLY PINE
 // ID 6 = LOW POLY TREE
-Object::Object(btVector3 pos, int type, Model* model)
+// ID 7 = RAMP
+// ID 8 = RAMP OTHER WAY
+// ID 9 = STRANGER DANGER, SPINNER DINNER
+
+Object::Object(btVector3 pos, int type, Model* model, float speed)
 {
 	m_transform = new Transform;
 
@@ -17,6 +21,7 @@ Object::Object(btVector3 pos, int type, Model* model)
 	m_btTransform->setOrigin(pos);
 	m_transform->SetScale(1, 1, 1);
 	m_scale = 1.0f;
+	m_speed = speed;
 	btVector3 localInertia(0, 0, 0);
 	float mass;
 
@@ -53,8 +58,11 @@ Object::Object(btVector3 pos, int type, Model* model)
 		m_body->setFriction(0);
 
 	}
+	else if (type == 7 || type == 8) {
+		m_body->setRestitution(0);
+	}
 	else {
-		m_body->setRestitution(0.8);
+		m_body->setRestitution(0.4);
 
 	}
 	vec3 btPos = vec3(m_btTransform->getOrigin().x(), m_btTransform->getOrigin().y(), m_btTransform->getOrigin().z());
@@ -147,6 +155,62 @@ void Object::SetWay(bool way)
 bool Object::GetWay()
 {
 	return m_way;
+}
+
+void Object::rotateAroundCenter(float dt)
+{
+	btMatrix3x3 orn = m_body->getWorldTransform().getBasis();
+	btQuaternion quat;
+	orn.getRotation(quat);
+	btVector3 axis = quat.getAxis();
+
+	//Move rigidbody 2 units along its axis to the origin
+	m_body->translate(-m_currentPos);
+	float temp = -3 * 3.14 / 180 * dt * m_speed;
+	//Rotate the rigidbody 	
+	//by 1 degree on its center of mass
+	orn *= btMatrix3x3(btQuaternion(btVector3(0, 1, 0), btScalar(temp)));
+	m_body->getWorldTransform().setBasis(orn);
+
+	//Get rotation matrix
+	btTransform invRot(btQuaternion(btVector3(0, 1, 0), btScalar(temp)), btVector3(0, 0, 0));
+	//Rotate your first translation vector with the matrix
+	btVector3 invTrans = invRot * -m_currentPos;
+
+	//Update axis variable to apply transform on
+	orn.getRotation(quat);
+	axis = quat.getAxis();
+
+	//Translate back by rotated vector
+	m_body->translate(-invTrans);
+	m_currentPos = -invTrans;
+
+	rotate(dt);
+}
+
+void Object::rotate(float dt)
+{
+	btMatrix3x3 orn = m_body->getWorldTransform().getBasis();
+	btQuaternion quat;
+	orn.getRotation(quat);
+	btVector3 axis = quat.getAxis();
+
+	//Move rigidbody 2 units along its axis to the origin
+	float temp = -3 * 3.14 / 180 * dt * m_speed * 10;
+	//Rotate the rigidbody 	
+	//by 1 degree on its center of mass
+	orn *= btMatrix3x3(btQuaternion(btVector3(1, 0, 1), btScalar(temp)));
+	m_body->getWorldTransform().setBasis(orn);
+
+	//Get rotation matrix
+	btTransform invRot(btQuaternion(btVector3(1, 1, 1), btScalar(temp)), btVector3(0, 0, 0));
+	//Rotate your first translation vector with the matrix
+
+	//Update axis variable to apply transform on
+	orn.getRotation(quat);
+	axis = quat.getAxis();
+
+	//Translate back by rotated vector
 }
 
 

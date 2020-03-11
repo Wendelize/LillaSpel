@@ -103,11 +103,13 @@ void Game::Update(float dt)
 	{
 		dt = 0;
 		if (m_menu->GetMapUpdate()) {
+
 			m_updateMap.store(true);
 			m_menu->SetMapUpdate(false);
 		}
 		if (m_mapUpdateReady.load() == true && m_updateMap.load() == false)
 		{
+
 			m_objectHandler->RemoveDynamicPlatformMesh(m_cube);
 			m_cube->MapUpdate();
 			m_objectHandler->AddDynamicPlatformMesh(m_cube);
@@ -481,6 +483,7 @@ void Game::AddInteractiveObjects()
 	// ID 7 = RAMP
 	// ID 8 = RAMP OTHER WAY
 	// ID 9 = STRANGER DANGER, SPINNER DINNER
+	// ID 10 = ASTRO
 	//m_objectHandler->AddObject(vec3(x, y, z), modelId, m_objectModels[modelid]);
 
 	switch (m_cube->GetCurrentLevel())
@@ -578,6 +581,24 @@ void Game::AddInteractiveObjects()
 		}
 		break;
 	}
+
+	for (int i = 0; i < 30; i++) {
+		int x = rand() % 2;
+		int z = rand() % 2;
+		if (x == 0) {
+			x = -1;
+		}
+		if (z == 0) {
+			z = -1;
+		}
+		float speed = rand() % 10 - 5;
+		if (speed <= 0.01f && speed > -0.01f) {
+			speed = 1;
+		}
+		m_objectHandler->AddOrbitObjects(vec3((rand() % 100 + 30) * x, rand() % 10 - 20, (rand() % 100 + 30)*z), 3, m_objectModels[3], speed);
+
+	}
+
 }
 
 void Game::Render()

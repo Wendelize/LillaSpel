@@ -56,7 +56,7 @@ private:
 	int m_maxLives = 3;
 	int m_maxTime = 60.0f;
 	int m_winnerID = 0;
-	int m_mapID = 0;
+	int m_mapID = 1;
 
 	int m_lastCollied[4] = { -1, -1, -1, -1 }; 	// TODO: resetta det jag laggt till efter jag gjorde resett funktionen
 	int m_lastCollisionTime[4] = { 0, 0, 0, 0 };

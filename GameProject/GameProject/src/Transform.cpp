@@ -51,6 +51,7 @@ void Transform::Rotate(vec3 vec)
 	m_isDirty = true;
 }
 
+
 void Transform::Rotate(float pitch, float yaw, float roll)
 {
 	m_rotation += vec3(pitch, yaw, roll);
