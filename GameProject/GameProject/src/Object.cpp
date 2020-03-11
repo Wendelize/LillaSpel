@@ -118,10 +118,12 @@ float Object::GetScale()
 void Object::SetRotation(float degrees)
 {
 	btQuaternion quat = m_body->getWorldTransform().getRotation();
-	btTransform trans = m_body->getWorldTransform();
-	quat.setRotation(btVector3(0,1,0), quat.getAngle() + degrees);
+	btTransform trans;
+	trans.setIdentity();
+	btQuaternion quat2;
+	quat2.setEuler(quat.getAngle() + degrees,0,0);
 	
-	trans.setRotation(quat);
+	trans.setRotation(quat2);
 
 	m_body->setCenterOfMassTransform(trans);
 

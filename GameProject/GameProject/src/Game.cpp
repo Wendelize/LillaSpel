@@ -574,7 +574,7 @@ void Game::AddInteractiveObjects()
 		break;
 	default:
 		{
-		m_objectHandler->AddObject(vec3(0,2,0), 9, m_objectModels[9]);
+		m_objectHandler->AddObject(vec3(0,1,0), 4, m_objectModels[4]);
 		}
 		break;
 	}
@@ -649,7 +649,7 @@ void Game::MutliThread(GLFWwindow* window)
 	while (!glfwWindowShouldClose(window)) 
 	{
 		if (m_updateMap.load()) {
-			m_cube->Update(window, m_objectHandler->GetBomb());
+			m_cube->Update(window, m_objectHandler->GetBomb(), m_menu->Pause());
 			m_updateMap.store(false);// = false;
 			m_mapUpdateReady.store(true);
 		}

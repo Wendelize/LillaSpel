@@ -188,6 +188,17 @@ void main(){
 	vec3 result = vec3(0.0);
 	bool blinn = true;
 	vec3 col = normalize(vi.color);
+	vec3 heightColor = vec3(1);
+	if(vi.position.y < -1.0 )
+	{
+	heightColor = vec3(1,1,1);
+	}else if(vi.position.y > 6.0)
+	{
+	heightColor = vec3(1,1,1);
+	}else
+	{
+		heightColor = vec3(0,1,0);
+	}
 	vec3 ambient = u_Material.ambient * col * 0.05;
 	
 	for(int i = 0; i < u_NrOf; i++)

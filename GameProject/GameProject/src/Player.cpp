@@ -85,10 +85,10 @@ Player::Player(Model* model, int modelId, vec3 pos)
 	float theta = acos(dot(normalize(forward), normalize(posVec2)));
 
 	if (posVec2.x < 0) {
-		m_transform->Rotate(vec3(0, -theta, 0));
+		m_transform->TranslateDirection(vec3(0, -theta, 0));
 	}
 	else {
-		m_transform->Rotate(vec3(0, theta, 0));
+		m_transform->TranslateDirection(vec3(0, theta, 0));
 	}
 
 

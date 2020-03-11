@@ -373,20 +373,22 @@ void MarchingCubes::Init()
 {
 }
 
-void MarchingCubes::Update(GLFWwindow* window, vector<vec3> bombPos)
+void MarchingCubes::Update(GLFWwindow* window, vector<vec3> bombPos, bool notShrink)
 {
 	//Multithread PART
 	ClearMeshData();
-	if (m_way == true)
-	{
-		m_shrink++;
-		if (m_shrink > 9)
-			m_way = false;
-	}
-	else if (m_way == false) {
-		m_shrink--;
-		if (m_shrink == 0)
-			m_way = true;
+	if (!notShrink) {
+		if (m_way == true)
+		{
+			m_shrink++;
+			if (m_shrink > 9)
+				m_way = false;
+		}
+		else if (m_way == false) {
+			m_shrink--;
+			if (m_shrink == 0)
+				m_way = true;
+		}
 	}
 	PopulateTerrainMap(m_currentLvl);
 

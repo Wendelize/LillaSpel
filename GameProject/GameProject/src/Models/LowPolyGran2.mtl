@@ -1,4 +1,4 @@
-# Blender MTL File: 'BlenderNatureAsset.blend'
+# Blender MTL File: 'None'
 # Material Count: 2
 
 newmtl Material.005
@@ -14,7 +14,7 @@ illum 2
 newmtl Material.014
 Ns 225.000000
 Ka 1.000000 1.000000 1.000000
-Kd 0.000000 1.000000 0.000000
+Kd 1.000000 0.119877 0.016418
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.000000
