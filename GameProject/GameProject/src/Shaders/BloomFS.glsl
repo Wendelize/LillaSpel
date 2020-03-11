@@ -5,6 +5,7 @@ in vec2 TexCoords;
 
 uniform sampler2D u_Scene;
 uniform sampler2D u_BloomBlur;
+uniform sampler2D u_Color;
 uniform bool u_Bloom;
 uniform float u_Exposure;
 
@@ -13,6 +14,7 @@ void main()
     const float gamma = 2.2;
     vec3 color = texture(u_Scene, TexCoords).rgb;      
     vec3 bloomColor = texture(u_BloomBlur, TexCoords).rgb;
+    vec3 aa = texture(u_Color, TexCoords).rgb;
     if(u_Bloom)
         color += bloomColor; 
    

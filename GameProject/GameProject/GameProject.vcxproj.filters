@@ -100,6 +100,9 @@
     <ClCompile Include="src\Ghost.cpp">
       <Filter>Src</Filter>
     </ClCompile>
+    <ClCompile Include="src\AntiAliasing.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Header Files\Camera.h">
@@ -207,6 +210,9 @@
     <ClInclude Include="src\Header Files\Ghost.h">
       <Filter>Header</Filter>
     </ClInclude>
+    <ClInclude Include="src\Header Files\AntiAliasing.h">
+      <Filter>Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Shaders\ShadowFS.glsl">
@@ -255,6 +261,12 @@
       <Filter>Src\Shader</Filter>
     </None>
     <None Include="src\Shaders\SkyPlaneVS.glsl">
+      <Filter>Src\Shader</Filter>
+    </None>
+    <None Include="src\Shaders\AntiAliasingFS.glsl">
+      <Filter>Src\Shader</Filter>
+    </None>
+    <None Include="src\Shaders\AntiAliasingVS.glsl">
       <Filter>Src\Shader</Filter>
     </None>
   </ItemGroup>

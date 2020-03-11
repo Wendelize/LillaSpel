@@ -22,6 +22,7 @@ Scene::Scene()
 	m_sky = new Sky();
 	m_shadowMap = new ShadowMap(m_shadowMapWidth, m_shadowMapHeight);
 	m_bloom = new Bloom(m_screenWidth, m_screenHeight, m_bloomTextureScale);
+	m_AA = new AntiAliasing(m_screenWidth, m_screenHeight);
 
 	m_modelMatrix = mat4(1.0);
 	m_projMatrix = mat4(1.0);
@@ -84,8 +85,9 @@ Scene::~Scene()
 	delete m_skybox;
 	delete m_sky;
 	delete m_bloom;
+	delete m_AA;
 
-	
+
 	delete m_window;
 }
 
@@ -97,18 +99,13 @@ void Scene::Init()
 	m_viewMatrix = m_camera->GetView();
 	m_modelMatrix = mat4(1.0);
 
-	m_platform.push_back(new Model("src/Models/platform2.obj"));
+
+
 	// Veichles
-
-	// racingcar scale 0.5 
 	m_vehicles.push_back(new Model("src/Models/Low-Poly-Racing-Car-Grey.obj"));
-	// snowcat scale 0.08 
 	m_vehicles.push_back(new Model("src/Models/Lowpoly-Snowcat2.obj"));
-	// cybertruck scale 0.3 
 	m_vehicles.push_back(new Model("src/Models/Cybertruck.obj"));
-	// shoppingcart scale 0.01 
 	m_vehicles.push_back(new Model("src/Models/shoppingcart.obj"));
-
 
 	// Platforms
 	m_platform.push_back(new Model("src/Models/platform2.obj"));
@@ -125,13 +122,11 @@ void Scene::Init()
 	m_power.push_back(new Model("src/Models/Love.obj"));				//8
 	m_power.push_back(new Model("src/Models/Rocket.obj"));				//9
 
-
+	// Objects
 	m_objects.push_back(new Model("src/Models/Log.obj"));  //MÅSTE VARA FÖRSTA SOM LADDAS IN
 	m_objects.push_back(new Model("src/Models/Ball.obj"));
 
 	m_winnerIsland = new Model("src/Models/Island.obj");
-
-	//m_power.push_back(new Model("src/Models/PowerUp.obj"));
 
 	// Lights
 	AddDirLight(vec3(-1, -1, 0), { 1,1,1 });
@@ -143,7 +138,6 @@ void Scene::Init()
 	AddPointLight({ -10,2,-10 }, { 1, 0, 1 });
 	AddPointLight({ -10,2,0 }, { 0, 1, 0 });
 	AddPointLight({ -10,2,10 }, { 1, 1, 0 });
-	// pls do not add spotlights thanks you ^^
 	//AddSpotLight({ 0, 2, 0 }, vec3(vec3(0) - vec3(0, 2, 0)), {1, 1, 1}, 12.5);
 
 }
@@ -204,14 +198,14 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, 
 {
 	m_viewMatrix = m_camera->GetView();
 	/* Render here */
+	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glViewport(0, 0, m_window->GetWidht(), m_window->GetHeight());
 
 	// Render shadows
 	RenderShadows(objects);
 
-	glBindFramebuffer(GL_FRAMEBUFFER, m_bloom->getFBO());
+	glBindFramebuffer(GL_FRAMEBUFFER, m_bloom->GetFBO());
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// Render sky dome and clouds
@@ -249,10 +243,13 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, 
 	// Render Skybox
 	//RenderSkybox();
 
+	// AntiAliasing
+	//RenderAA(objects);
+
 	// Add glow
 	m_bloom->PingPongRender(3);
 
-	m_bloom->RenderBloom(m_window->m_window);
+	m_bloom->RenderBloom(m_window->m_window, m_AA->GetTexture());
 }
 
 void Scene::RenderSceneInfo(Shader* shader, vector<ObjectInfo*> objects)
@@ -312,6 +309,29 @@ void Scene::RenderSky()
 
 	glDepthMask(GL_TRUE);
 	glDepthFunc(GL_LESS);
+}
+
+void Scene::RenderAA(vector<ObjectInfo*> objects)
+{
+
+	glBindFramebuffer(GL_FRAMEBUFFER, m_AA->GetFBO());
+	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//	glEnable(GL_DEPTH_TEST);
+
+
+	RenderSceneInfo(m_modelShader, objects);
+
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, m_AA->GetFBO());
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_AA->GetSecondFBO());
+	glBlitFramebuffer(0, 0, m_screenWidth, m_screenHeight, 0, 0, m_screenWidth, m_screenHeight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+//	glDisable(GL_DEPTH_TEST);
 }
 
 void Scene::RenderLights(vector<Light*> light)
@@ -460,7 +480,6 @@ void Scene::AddParticleEffect(vec3 pos, vec3 color1, vec3 color2, float speed, f
 	m_particles.back()->SetActive();
 	m_particles.back()->GenerateParticles(pos, speed, spread, duration, color1, color2, size, dir, gravity);
 }
-
 
 void Scene::SetWindowSize(int width, int height)
 {

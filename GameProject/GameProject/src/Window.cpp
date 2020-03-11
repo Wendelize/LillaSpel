@@ -57,7 +57,10 @@ Window::Window(int width, int height)
 	if (!glfwInit())
 		cout << "Could not Initialize the library" << endl;
 
-
+	// AntiAliasing shit...
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	m_window = glfwCreateWindow(m_width, m_height, "KamiCarZe", NULL, NULL); //glfwGetPrimaryMonitor()
 	if (!m_window) {
@@ -74,7 +77,6 @@ Window::Window(int width, int height)
 	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 	glDebugMessageCallback(glDebugOutput, nullptr);
 	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
-
 
 	glfwMakeContextCurrent(m_window);
 

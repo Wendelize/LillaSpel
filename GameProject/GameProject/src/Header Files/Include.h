@@ -57,6 +57,7 @@
 #include "ShadowMap.h"
 #include "Bloom.h"
 #include "ParticleSystem.h"
+#include "AntiAliasing.h"
 
 //DEFINES 
 #define NRDEATHSOUNDS 30

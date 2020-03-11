@@ -142,6 +142,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\AntiAliasing.cpp" />
     <ClCompile Include="src\Bloom.cpp" />
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\Controller.cpp" />
@@ -176,6 +177,7 @@
     <ClCompile Include="src\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Header Files\AntiAliasing.h" />
     <ClInclude Include="src\Header Files\Bloom.h" />
     <ClInclude Include="src\Header Files\Camera.h" />
     <ClInclude Include="src\Header Files\Controller.h" />
@@ -213,6 +215,8 @@
     <ClInclude Include="src\IMGUI\imstb_truetype.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="src\Shaders\AntiAliasingFS.glsl" />
+    <None Include="src\Shaders\AntiAliasingVS.glsl" />
     <None Include="src\Shaders\BloomFS.glsl" />
     <None Include="src\Shaders\BloomVS.glsl" />
     <None Include="src\Shaders\GaussianBlurFS.glsl" />

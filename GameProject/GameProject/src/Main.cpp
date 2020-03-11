@@ -12,6 +12,7 @@ int main(void)
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	srand(time(NULL));
 	GAME = new Game();
+	glEnable(GL_MULTISAMPLE);
 
 	float _deltaTime = 0.0, _curTime = 0.0, _lastTime = 0.0;
 	GLFWwindow* _window = GAME->GetWindow();

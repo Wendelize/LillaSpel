@@ -16,6 +16,7 @@ Bloom::Bloom(int width, int height, float resScale)
 	m_bloom->UseShader();
 	m_bloom->Uniform("u_Scene", 0);
 	m_bloom->Uniform("u_BloomBlur", 1);
+	m_bloom->Uniform("u_Color", 2);
 }
 
 Bloom::~Bloom()
@@ -52,7 +53,6 @@ void Bloom::Init()
 
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		std::cout << "Framebuffer not complete!" << std::endl;
-
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
@@ -99,7 +99,7 @@ void Bloom::PingPongRender(int nrOfSteps) //gaussian blur on the bloom texture
 
 }
 
-void Bloom::RenderBloom(GLFWwindow* w)
+void Bloom::RenderBloom(GLFWwindow* w, unsigned int tex)
 {
 	int width;
 	int height;
@@ -114,6 +114,8 @@ void Bloom::RenderBloom(GLFWwindow* w)
 	glBindTexture(GL_TEXTURE_2D, m_colorBuffers[0]);
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, m_pingPongColorBuffer[!m_horizontal]);
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, tex);
 
 	m_bloom->Uniform("u_Bloom", m_bool);
 	m_bloom->Uniform("u_Exposure", m_exposure);
@@ -158,7 +160,7 @@ Shader* Bloom::GetBloomShader()
 	return m_bloom;;
 }
 
-unsigned int Bloom::getFBO()
+unsigned int Bloom::GetFBO()
 {
 	return m_FBO1;
 }

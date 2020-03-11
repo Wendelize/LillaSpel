@@ -18,6 +18,7 @@ private:
 	Bloom  * m_bloom;
 	vector<ParticleSystem*> m_particles;
 	ShadowMap * m_shadowMap;
+	AntiAliasing* m_AA;
 
 	bool m_debug = false;
 	bool m_toggle = false;
@@ -54,6 +55,7 @@ public:
 	void RenderSceneInfo(Shader * shader, vector<ObjectInfo*> objects);
 	void RenderSkybox();
 	void RenderSky();
+	void RenderAA(vector<ObjectInfo*> objects);
 	void RenderLights(vector<Light*> light);
 	void RenderShadows(vector<ObjectInfo*> objects);
 	void RenderImGui(btDiscreteDynamicsWorld* world);

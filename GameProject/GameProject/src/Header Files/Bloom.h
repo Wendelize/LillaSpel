@@ -7,6 +7,7 @@ private:
 	Shader* m_blur, * m_bloom;
 	unsigned int m_FBO1, m_pingPongFBO[2];
 	unsigned int m_colorBuffers[2], m_depth, m_pingPongColorBuffer[2];
+	unsigned int m_FBO = 0, m_multiSampled = 0, m_renderBuffer = 0;
 	unsigned int m_quadVAO = 0;
 	unsigned int m_quadVBO;
 
@@ -24,14 +25,14 @@ public:
 	void Init();
 	void InitPingPong();
 	void PingPongRender(int nrOfSteps);
-	void RenderBloom(GLFWwindow* w);
+	void RenderBloom(GLFWwindow* w, unsigned int tex);
 	void RenderQuad();
 
 
 	Shader* GetBlurShader();
 	Shader* GetBloomShader();
 
-	unsigned int getFBO();
-
+	unsigned int GetFBO1();
+	unsigned int GetFBO();
 
 };
