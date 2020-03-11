@@ -252,23 +252,21 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_shadowMap->GetTexture());
 
-
-	// Terrain
-	if (terrain == true)
-	{
-		m_modelShader->SetUniform("u_Terrain", 1);
-		cube->Draw(m_modelShader, m_terrainAlpha);
-		m_modelShader->SetUniform("u_Terrain", 0);
-	}
-		
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	if (gameOver == true)
 	{
 		m_terrainAlpha = 1.0f;
 	}
-	cube->Draw(m_modelShader, m_terrainAlpha);
+
+
+	// Terrain
 	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	m_modelShader->SetUniform("u_Terrain", 1);
+	cube->Draw(m_modelShader, m_terrainAlpha);
+	m_modelShader->SetUniform("u_Terrain", 0);
+		
+
+	glDisable(GL_BLEND);
 
 	// Light uniforms
 	if (gameOver == true)
@@ -612,12 +610,12 @@ void Scene::UpdateTerrainAlpha(float dt, bool terrain)
 	if (terrain == true)
 	{
 		if (m_terrainAlpha < 1.0f)
-			m_terrainAlpha += 0.03;
+			m_terrainAlpha += dt/2;
 	}
 	else
 	{
 		if (m_terrainAlpha > 0.f)
-			m_terrainAlpha -= 0.03;
+			m_terrainAlpha -= dt;
 	}
 }
 
