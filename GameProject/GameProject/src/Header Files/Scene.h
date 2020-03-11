@@ -43,6 +43,8 @@ private:
 	float m_bloomTextureScale;
 	int m_bloomNrOfGaussianBlur;
 	float m_fov;
+	float m_terrainAlpha;
+
 
 public:
 
@@ -52,7 +54,7 @@ public:
 	void Init();
 	void LightToShader(bool lightsOut);
 	//void Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, MarchingCubes* cube);
-	void Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, MarchingCubes* cube, bool gameOver, int winner, bool lightsOut, bool terrain);
+	void Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, MarchingCubes* cube, bool gameOver, int winner, bool lightsOut);
 	void RenderSceneInfo(Shader * shader, vector<ObjectInfo*> objects);
 	void RenderSkybox();
 	void RenderSky();
@@ -93,5 +95,6 @@ public:
 	void AddPointLight(vec3 pos = { 2,2,2 }, vec3 color = { 1,0,0 });
 	void AddDirLight(vec3 dir = { 0,-1,0 }, vec3 color = { 0,1,0 });
 	void AddSpotLight(vec3 pos = { 0,10,0 }, vec3 dir = { 0,-1,0 }, vec3 color = {0,0,1}, float cutOff = 12.0);
+	void updateTerrainAlpha(float dt, bool terrain);
 	//void CameraFollowCar(ObjectInfo* objects);
 };

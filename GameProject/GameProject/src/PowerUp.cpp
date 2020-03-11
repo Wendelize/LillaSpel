@@ -65,6 +65,7 @@ PowerUp::PowerUp(int spawn, btVector3 pos, int type,float duration)
 			m_model = 3; //Question mark - Invisible terrain
 			m_color = vec3(0.741, 0.520, 3.000);
 			scale = 0.09f;
+			m_duration = 5.0f;
 			break;
 		case 10:
 			m_model = 3;
