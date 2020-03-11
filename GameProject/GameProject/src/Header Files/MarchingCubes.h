@@ -64,7 +64,7 @@ public:
     void MarchCube(vec3 position);
     void ClearMeshData();
     void BuildMesh();
-    void Draw(Shader* shader);
+    void Draw(Shader* shader, float alpha);
     void PopulateTerrainMap(int level);
     int GetLookupIndex(float *cube);
     void CreateMeshData();

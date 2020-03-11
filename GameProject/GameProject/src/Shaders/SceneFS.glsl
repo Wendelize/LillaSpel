@@ -44,6 +44,8 @@ uniform Material u_Material;
 uniform bool u_Glow;
 uniform bool u_LightsOut;
 
+uniform float u_Alpha;
+
 uniform sampler2D u_ShadowMap;
 
 
@@ -218,12 +220,12 @@ void main(){
 	}
 	
 
-    FragColor = vec4(result + ambient, 1.0);
+    FragColor = vec4(result + ambient, u_Alpha);
 
     float brightness = dot(result.rgb, vec3(0.2126, 0.7152, 0.0722));
     if(u_Glow)// && brightness > 1)
-        BrightColor = vec4(result.rgb, 1.0);
+        BrightColor = vec4(result.rgb, u_Alpha);
     else
-        BrightColor = vec4(0.0, 0.0, 0.0, 1.0);
+        BrightColor = vec4(0.0, 0.0, 0.0, u_Alpha);
 
 }
