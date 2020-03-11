@@ -52,7 +52,7 @@ Menu::~Menu()
 void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 {
 	GLFWgamepadstate state;
-	float borderCol = 0.5;
+	float borderCol = 0.2;
 
 	Window* w = m_scene->GetOurWindow();
 	//if (gameOver)
@@ -142,6 +142,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				if (m_soundEngine)
 					m_soundEngine->play2D(m_menuSounds[1], false);
 				m_menu = ActiveMenu::select;
+				m_objHand->AddPlayer(SELECTPOS1, 0, 0, vec3(0.5, 1, 9), model);
 				m_p1Seconds = time;
 				m_p2Seconds = time;
 				m_p3Seconds = time;
@@ -163,17 +164,20 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		ImGui::End();
 		break;
 	case ActiveMenu::select:
-		ImGui::SetNextWindowPos(ImVec2(50, 25));
-		ImGui::SetNextWindowSize(ImVec2(350, 100));
+
+		m_scene->SetBloom(false);
+		m_scene->ResetCameraFOV();
+		m_scene->SetOnlySky(true);
+		m_scene->SetInstantCameraFocus(CAMERAPOS_SELECT + vec3(0, -1, 1));
+
+		ImGui::SetNextWindowPos(ImVec2(0, height / 2));
+		ImGui::SetNextWindowSize(ImVec2(width / 4, height / 2)); 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 5);
-		ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(m_p1Col.x - borderCol, m_p1Col.y - borderCol, m_p1Col.z - borderCol, 1));
+		ImGui::GetStyle().WindowRounding = 0.0f;
+		ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(m_p1Col.x * borderCol, m_p1Col.y * borderCol, m_p1Col.z * borderCol, 1));
 		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_p1Col.x, m_p1Col.y, m_p1Col.z, 1));
 		if (ImGui::Begin("##player1Select", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoNavInputs))
 		{
-			//GLFWgamepadstate state;
-			// letar upp r�tt index f�r modellen f�r de deletas och addas om och om ien s� de beh�ller ej standard
-			// just nu s�tts f�rgera en g�ng och �ndras aldrig men man kanske vill �ndra dem senare
-			// s� d�rf�r finns detta (for-loopen som letar upp r�tt index) inbyggt
 			int index = 0;
 			for (int i = 0; i < m_objHand->GetNumPlayers(); i++)
 			{
@@ -185,13 +189,27 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 			m_p1Col = m_objHand->GetPlayerColor(index);
 			m_playerColor[0] = m_p1Col;
 			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0, 0, 1));
+			//ImGui::SetCursorPos(ImVec2(width / 8 - (width/16), 0));
+
 			if (m_selected[0] == 0)
 			{
-				ImGui::Text("\t\t\t<  Vehicle Model : %d  > ", m_p1ModelId);
+				string temp = "PLAYER 1";
+				ImGui::SetCursorPosX(width / 8 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+				ImGui::Text(temp.c_str());
+
+				temp = " < Vehicle Model :" + to_string(m_p1ModelId) + "  >";
+				ImGui::SetCursorPosX(width / 8 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+				ImGui::Text(temp.c_str());
 			}
 			else
 			{
-				ImGui::Text("\t\t\tVehicle Selected! \n\t\tPress \"B\" to Unselect!");
+				string temp = "PLAYER 1";
+				ImGui::SetCursorPosX(width / 8 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+				ImGui::Text(temp.c_str());
+
+				temp = "Press \"B\" to Unselect!";
+				ImGui::SetCursorPosX(width / 8 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+				ImGui::Text(temp.c_str());
 			}
 
 			if (time - m_p1Seconds >= 0.3 && (glfwGetGamepadState(0, &state)))
@@ -209,8 +227,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 						m_p1ModelId = 0;
 					}
 
-					m_objHand->RemovePlayer(index);
-					m_objHand->AddPlayer(vec3(-10, 6, 3), 0, m_p1ModelId, m_p1Col, model);
+					m_objHand->SetPlayerModelID(index, m_p1ModelId);
 
 					m_p1Seconds = time;
 				}
@@ -227,8 +244,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 						m_p1ModelId = m_scene->GetNumPlayerModels() - 1;
 					}
 
-					m_objHand->RemovePlayer(index);
-					m_objHand->AddPlayer(vec3(-10, 6, 3), 0, m_p1ModelId, m_p1Col, model);
+					m_objHand->SetPlayerModelID(index, m_p1ModelId);
 
 					m_p1Seconds = time;
 				}
@@ -245,21 +261,41 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 						m_soundEngine->play2D(m_menuSounds[2], false);
 					m_selected[0] = 0;
 				}
-
 			}
+
 			ImGui::PopStyleColor(3);
 			ImGui::PopStyleVar();
 		}
 		ImGui::End();
 
-		if (m_objHand->GetNumPlayers() >= 2)
+		ImGui::SetNextWindowPos(ImVec2(width / 4, height / 2));
+		ImGui::SetNextWindowSize(ImVec2(width / 4, height / 2));
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 5);
+		ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(m_p2Col.x * borderCol, m_p2Col.y * borderCol, m_p2Col.z * borderCol, 1));
+		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_p2Col.x, m_p2Col.y, m_p2Col.z, 1));
+		if (ImGui::Begin("##player2Select", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoNavInputs))
 		{
-			ImGui::SetNextWindowPos(ImVec2(width - 400, 25));
-			ImGui::SetNextWindowSize(ImVec2(350, 100));
-			ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 5);
-			ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(m_p2Col.x - borderCol, m_p2Col.y - borderCol - 1, m_p2Col.z - borderCol, 1));
-			ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_p2Col.x, m_p2Col.y, m_p2Col.z, 1));
-			if (ImGui::Begin("##player2Select", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoNavInputs))
+			if (m_p2Joined == false)
+			{
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0, 0, 1));
+				if (time - m_p3Seconds >= 0.3 && (glfwGetGamepadState(1, &state)))
+				{
+					string temp = " Join? Press \"A\"!";
+					ImGui::SetCursorPosX(width / 8 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+					ImGui::Text(temp.c_str());
+
+					if (state.buttons[GLFW_GAMEPAD_BUTTON_A])
+					{
+						if (m_soundEngine)
+							m_soundEngine->play2D(m_menuSounds[1], false);
+						m_p2Joined = true;
+						m_objHand->AddPlayer(SELECTPOS2, 1, 0, vec3(0, 2, 0), model);
+						m_p2Seconds = time;
+						m_p2ModelId = 0;
+					}
+				}
+			}
+			else
 			{
 				//GLFWgamepadstate state;
 				int index = 1;
@@ -275,12 +311,23 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0, 0, 1));
 				if (m_selected[1] == 0)
 				{
-					ImGui::Text("\t\t\t<  Vehicle Model : %d  > ", m_p2ModelId);
+					string temp = "PLAYER 2";
+					ImGui::SetCursorPosX(width / 8 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+					ImGui::Text(temp.c_str());
+
+					temp = "Vehicle Model : " + to_string(m_p2ModelId) + "  >";
+					ImGui::SetCursorPosX(width / 8 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+					ImGui::Text(temp.c_str());
 				}
 				else
 				{
-					ImGui::Text("\t\t\tVehicle Selected! \n\t\tPress \"B\" to Unselect!");
+					string temp = "PLAYER 2";
+					ImGui::SetCursorPosX(width / 8 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+					ImGui::Text(temp.c_str());
 
+					temp = "Press \"B\" to Unselect!";
+					ImGui::SetCursorPosX(width / 8 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+					ImGui::Text(temp.c_str());
 				}
 
 				if (time - m_p2Seconds >= 0.3 && (glfwGetGamepadState(1, &state)))
@@ -297,8 +344,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 						{
 							m_p2ModelId = 0;
 						}
-						m_objHand->RemovePlayer(index);
-						m_objHand->AddPlayer(vec3(10, 6, 3), 1, m_p2ModelId, m_p2Col, model);
+						m_objHand->SetPlayerModelID(index, m_p2ModelId);
 						m_p2Seconds = time;
 					}
 					else if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_LEFT] && m_selected[1] == 0)
@@ -314,8 +360,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 							m_p2ModelId = m_scene->GetNumPlayerModels() - 1;
 						}
 
-						m_objHand->RemovePlayer(index);
-						m_objHand->AddPlayer(vec3(10, 6, 3), 1, m_p2ModelId, m_p2Col, model);
+						m_objHand->SetPlayerModelID(index, m_p2ModelId);
 						m_p2Seconds = time;
 					}
 					else if (state.buttons[GLFW_GAMEPAD_BUTTON_A])
@@ -332,234 +377,262 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 						m_selected[1] = 0;
 						m_p2Seconds = time;
 					}
-
 				}
-				ImGui::PopStyleColor(3);
-				ImGui::PopStyleVar();
 			}
+			
+			ImGui::PopStyleColor(3);
+			ImGui::PopStyleVar();
 			ImGui::End();
 		}
+
 		// TODO: Kanske Fixa s� det f�ljer kontrollerId eller n�tt
-		if(glfwGetGamepadState(2, &state))//m_objHand->GetNumPlayers() >= 3)
+		//if(glfwGetGamepadState(2, &state))//m_objHand->GetNumPlayers() >= 3)
+		//{
+		ImGui::SetNextWindowPos(ImVec2(width / 2, height / 2));
+		ImGui::SetNextWindowSize(ImVec2(width / 4, height / 2));
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 5);
+		ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(m_p3Col.x * borderCol, m_p3Col.y * borderCol, m_p3Col.z * borderCol, 1));
+		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_p3Col.x, m_p3Col.y, m_p3Col.z, 1));
+		if (ImGui::Begin("##player3Select", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoNavInputs))
 		{
-			ImGui::SetNextWindowPos(ImVec2(50, height - 200));
-			ImGui::SetNextWindowSize(ImVec2(350, 100));
-			ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 5);
-			ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(m_p3Col.x - borderCol - 2, m_p3Col.y - borderCol, m_p3Col.z - borderCol, 1));
-			ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_p3Col.x, m_p3Col.y, m_p3Col.z, 1));
-			if (ImGui::Begin("##player3Select", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoNavInputs))
+			//GLFWgamepadstate state;
+			if (m_p3Joined == false)
 			{
-				//GLFWgamepadstate state;
-				if (m_p3Joined == false)
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0, 0, 1));
+				if (time - m_p3Seconds >= 0.3 && (glfwGetGamepadState(2, &state)))
 				{
-					ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0, 0, 1));
-					if (time - m_p3Seconds >= 0.3 && (glfwGetGamepadState(2, &state)))
+					string temp = " Join? Press \"A\"!";
+					ImGui::SetCursorPosX(width / 8 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+					ImGui::Text(temp.c_str());
+
+					if (state.buttons[GLFW_GAMEPAD_BUTTON_A])
 					{
-						ImGui::Text(" Join? Press \"A\"!");
-						if (state.buttons[GLFW_GAMEPAD_BUTTON_A])
+						if (m_soundEngine)
+							m_soundEngine->play2D(m_menuSounds[1], false);
+						m_p3Joined = true;
+						m_objHand->AddPlayer(SELECTPOS3, 2, 0, vec3(3, 0, 0), model);
+						m_p3Seconds = time;
+						m_p3ModelId = 0;
+					}
+
+				}
+			}
+			else
+			{
+				int index = 2;
+				for (int i = 0; i < m_objHand->GetNumPlayers(); i++)
+				{
+					if (m_objHand->GetPlayerControllerIDBloo(i, 29) == 2)
+					{
+						index = i;
+					}
+				}
+				m_p3Col = m_objHand->GetPlayerColor(index);
+				m_playerColor[2] = m_p3Col;
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0, 0, 1));
+				if (m_selected[2] == 0)
+				{
+					string temp = "PLAYER 3";
+					ImGui::SetCursorPosX(width / 8 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+					ImGui::Text(temp.c_str());
+
+					temp = "Vehicle Model : " + to_string(m_p3ModelId) + "  >";
+					ImGui::SetCursorPosX(width / 8 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+					ImGui::Text(temp.c_str());
+				}
+				else
+				{
+					string temp = "PLAYER 3";
+					ImGui::SetCursorPosX(width / 8 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+					ImGui::Text(temp.c_str());
+
+					temp = "Press \"B\" to Unselect!";
+					ImGui::SetCursorPosX(width / 8 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+					ImGui::Text(temp.c_str());
+				}
+
+				if (time - m_p3Seconds >= 0.3 && (glfwGetGamepadState(2, &state)))
+				{
+					if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_RIGHT] && m_selected[2] == 0)
+					{
+						if (m_soundEngine)
+							m_soundEngine->play2D(m_menuSounds[0], false);
+						if ((m_p3ModelId + 1) <= m_scene->GetNumPlayerModels() - 1)
 						{
-							if (m_soundEngine)
-								m_soundEngine->play2D(m_menuSounds[1], false);
-							m_p3Joined = true;
-							m_objHand->AddPlayer(vec3(-7, 6, 15), 2, 0, vec3(3, 0, 0), model);
-							m_p3Seconds = time;
+							m_p3ModelId += 1;
+						}
+						else
+						{
 							m_p3ModelId = 0;
 						}
 
+						m_objHand->SetPlayerModelID(index, m_p3ModelId);
+						m_p3Seconds = time;
 					}
+					else if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_LEFT] && m_selected[2] == 0)
+					{
+						if (m_soundEngine)
+							m_soundEngine->play2D(m_menuSounds[0], false);
+						if ((m_p3ModelId - 1) >= 0)
+						{
+							m_p3ModelId -= 1;
+						}
+						else
+						{
+							m_p3ModelId = m_scene->GetNumPlayerModels() - 1;
+						}
+
+						m_objHand->SetPlayerModelID(index, m_p3ModelId);
+						m_p3Seconds = time;
+					}
+					else if (state.buttons[GLFW_GAMEPAD_BUTTON_A])
+					{
+						if (m_soundEngine)
+							m_soundEngine->play2D(m_menuSounds[1], false);
+						m_selected[2] = 1;
+						m_p3Seconds = time;
+					}
+					else if (m_selected[2] == 1 && state.buttons[GLFW_GAMEPAD_BUTTON_B])
+					{
+						if (m_soundEngine)
+							m_soundEngine->play2D(m_menuSounds[2], false);
+						m_selected[2] = 0;
+						m_p3Seconds = time;
+					}
+
+				}
+			}
+
+			ImGui::PopStyleColor(3);
+			ImGui::PopStyleVar();
+		}
+		ImGui::End();
+		//}
+
+		//if (m_p3Joined && glfwGetGamepadState(3, &state))//m_objHand->GetNumPlayers() >= 4)
+		//{
+		ImGui::SetNextWindowPos(ImVec2(width / 2 + width / 4, height / 2));
+		ImGui::SetNextWindowSize(ImVec2(width / 4, height / 2));
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 5);
+		ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(m_p4Col.x * borderCol, m_p4Col.y * borderCol, m_p4Col.z * borderCol, 1));
+		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_p4Col.x, m_p4Col.y, m_p4Col.z, 1));
+		if (ImGui::Begin("##player4Select", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoNavInputs))
+		{
+				
+			if (m_p4Joined == false)
+			{
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0, 0, 1));
+				if (time - m_p4Seconds >= 0.3 && (glfwGetGamepadState(3, &state)))
+				{
+					string temp = " Join? Press \"A\"!";
+					ImGui::SetCursorPosX(width / 8 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+					ImGui::Text(temp.c_str());
+
+					if (state.buttons[GLFW_GAMEPAD_BUTTON_A])
+					{
+						if (m_soundEngine)
+							m_soundEngine->play2D(m_menuSounds[1], false);
+						m_p4Joined = true;
+						m_objHand->AddPlayer(SELECTPOS4, 3, 0, vec3(3, 3, 0), model);
+						m_p4Seconds = time;
+						m_p4ModelId = 0;
+					}
+
+				}
+				//ImGui::PopStyleColor();
+			}
+			else
+			{
+				int index = 3;
+				for (int i = 0; i < m_objHand->GetNumPlayers(); i++)
+				{
+					if (m_objHand->GetPlayerControllerIDBloo(i, 30) == 3)
+					{
+						index = i;
+					}
+				}
+				m_p4Col = m_objHand->GetPlayerColor(index);
+				m_playerColor[3] = m_p4Col;
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0, 0, 1));
+				if (m_selected[3] == 0)
+				{
+					string temp = "PLAYER 4";
+					ImGui::SetCursorPosX(width / 8 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+					ImGui::Text(temp.c_str());
+
+					temp = "Vehicle Model : " + to_string(m_p4ModelId) + "  >";
+					ImGui::SetCursorPosX(width / 8 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+					ImGui::Text(temp.c_str());
 				}
 				else
 				{
-					int index = 2;
-					for (int i = 0; i < m_objHand->GetNumPlayers(); i++)
-					{
-						if (m_objHand->GetPlayerControllerIDBloo(i, 29) == 2)
-						{
-							index = i;
-						}
-					}
-					m_p3Col = m_objHand->GetPlayerColor(index);
-					m_playerColor[2] = m_p3Col;
-					ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0, 0, 1));
-					if (m_selected[2] == 0)
-					{
-						ImGui::Text("\t\t\t<  Vehicle Model : %d  > ", m_p3ModelId);
-					}
-					else
-					{
-						ImGui::Text("\t\t\tVehicle Selected! \n\t\tPress \"B\" to Unselect!");
-					}
+					string temp = "PLAYER 4";
+					ImGui::SetCursorPosX(width / 8 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+					ImGui::Text(temp.c_str());
 
-					if (time - m_p3Seconds >= 0.3 && (glfwGetGamepadState(2, &state)))
-					{
-						if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_RIGHT] && m_selected[2] == 0)
-						{
-							if (m_soundEngine)
-								m_soundEngine->play2D(m_menuSounds[0], false);
-							if ((m_p3ModelId + 1) <= m_scene->GetNumPlayerModels() - 1)
-							{
-								m_p3ModelId += 1;
-							}
-							else
-							{
-								m_p3ModelId = 0;
-							}
-
-							m_objHand->RemovePlayer(index);
-							m_objHand->AddPlayer(vec3(-7, 6, 15), 2, m_p3ModelId, m_p3Col, model);
-							m_p3Seconds = time;
-						}
-						else if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_LEFT] && m_selected[2] == 0)
-						{
-							if (m_soundEngine)
-								m_soundEngine->play2D(m_menuSounds[0], false);
-							if ((m_p3ModelId - 1) >= 0)
-							{
-								m_p3ModelId -= 1;
-							}
-							else
-							{
-								m_p3ModelId = m_scene->GetNumPlayerModels() - 1;
-							}
-
-							m_objHand->RemovePlayer(index);
-							m_objHand->AddPlayer(vec3(-7, 6, 15), 2, m_p3ModelId, m_p3Col, model);
-							m_p3Seconds = time;
-						}
-						else if (state.buttons[GLFW_GAMEPAD_BUTTON_A])
-						{
-							if (m_soundEngine)
-								m_soundEngine->play2D(m_menuSounds[1], false);
-							m_selected[2] = 1;
-							m_p3Seconds = time;
-						}
-						else if (m_selected[2] == 1 && state.buttons[GLFW_GAMEPAD_BUTTON_B])
-						{
-							if (m_soundEngine)
-								m_soundEngine->play2D(m_menuSounds[2], false);
-							m_selected[2] = 0;
-							m_p3Seconds = time;
-						}
-
-					}
+					temp = "Press \"B\" to Unselect!";
+					ImGui::SetCursorPosX(width / 8 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+					ImGui::Text(temp.c_str());
 				}
 
-				ImGui::PopStyleColor(3);
-				ImGui::PopStyleVar();
-			}
-			ImGui::End();
-		}
-
-		if (m_p3Joined && glfwGetGamepadState(3, &state))//m_objHand->GetNumPlayers() >= 4)
-		{
-			ImGui::SetNextWindowPos(ImVec2(width - 400, height - 200));
-			ImGui::SetNextWindowSize(ImVec2(350, 100));
-			ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 5);
-			ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(m_p4Col.x - borderCol - 2, m_p4Col.y - borderCol - 2, m_p4Col.z - borderCol, 1));
-			ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_p4Col.x, m_p4Col.y, m_p4Col.z, 1));
-			if (ImGui::Begin("##player4Select", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoNavInputs))
-			{
-				
-				if (m_p4Joined == false)
+				if (time - m_p4Seconds >= 0.3 && (glfwGetGamepadState(3, &state)))
 				{
-					ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0, 0, 1));
-					if (time - m_p4Seconds >= 0.3 && (glfwGetGamepadState(3, &state)))
+					if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_RIGHT] && m_selected[3] == 0)
 					{
-						ImGui::Text(" Join? Press \"A\"! ");
-						if (state.buttons[GLFW_GAMEPAD_BUTTON_A])
+						if (m_soundEngine)
+							m_soundEngine->play2D(m_menuSounds[0], false);
+						if ((m_p4ModelId + 1) <= m_scene->GetNumPlayerModels() - 1)
 						{
-							if (m_soundEngine)
-								m_soundEngine->play2D(m_menuSounds[1], false);
-							m_p4Joined = true;
-							m_objHand->AddPlayer(vec3(7, 6, 15), 3, 0, vec3(3, 3, 0), model);
-							m_p4Seconds = time;
+							m_p4ModelId += 1;
+						}
+						else
+						{
 							m_p4ModelId = 0;
 						}
 
+						m_objHand->SetPlayerModelID(index, m_p4ModelId);
+						m_p4Seconds = time;
 					}
-					//ImGui::PopStyleColor();
+					else if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_LEFT] && m_selected[3] == 0)
+					{
+						if (m_soundEngine)
+							m_soundEngine->play2D(m_menuSounds[0], false);
+						if ((m_p4ModelId - 1) >= 0)
+						{
+							m_p4ModelId -= 1;
+						}
+						else
+						{
+							m_p4ModelId = m_scene->GetNumPlayerModels() - 1;
+						}
+
+						m_objHand->SetPlayerModelID(index, m_p4ModelId);
+						m_p4Seconds = time;
+					}
+					else if (state.buttons[GLFW_GAMEPAD_BUTTON_A])
+					{
+						if (m_soundEngine)
+							m_soundEngine->play2D(m_menuSounds[1], false);
+						m_selected[3] = 1;
+						m_p4Seconds = time;
+					}
+					else if (m_selected[3] == 1 && state.buttons[GLFW_GAMEPAD_BUTTON_B])
+					{
+						if (m_soundEngine)
+							m_soundEngine->play2D(m_menuSounds[2], false);
+						m_selected[3] = 0;
+						m_p4Seconds = time;
+					}
+
 				}
-				else
-				{
-					int index = 3;
-					for (int i = 0; i < m_objHand->GetNumPlayers(); i++)
-					{
-						if (m_objHand->GetPlayerControllerIDBloo(i, 30) == 3)
-						{
-							index = i;
-						}
-					}
-					m_p4Col = m_objHand->GetPlayerColor(index);
-					m_playerColor[3] = m_p4Col;
-					ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0, 0, 1));
-					if (m_selected[3] == 0)
-					{
-						ImGui::Text("\t\t\t<  Vehicle Model : %d  > ", m_p4ModelId);
-					}
-					else
-					{
-						ImGui::Text("\t\t\tVehicle Selected! \n\t\tPress \"B\" to Unselect!");
-					}
-
-					if (time - m_p4Seconds >= 0.3 && (glfwGetGamepadState(3, &state)))
-					{
-						if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_RIGHT] && m_selected[3] == 0)
-						{
-							if (m_soundEngine)
-								m_soundEngine->play2D(m_menuSounds[0], false);
-							if ((m_p4ModelId + 1) <= m_scene->GetNumPlayerModels() - 1)
-							{
-								m_p4ModelId += 1;
-							}
-							else
-							{
-								m_p4ModelId = 0;
-							}
-
-							m_objHand->RemovePlayer(index);
-							m_objHand->AddPlayer(vec3(7, 6, 15), 3, m_p4ModelId, m_p4Col, model);
-							m_p4Seconds = time;
-						}
-						else if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_LEFT] && m_selected[3] == 0)
-						{
-							if (m_soundEngine)
-								m_soundEngine->play2D(m_menuSounds[0], false);
-							if ((m_p4ModelId - 1) >= 0)
-							{
-								m_p4ModelId -= 1;
-							}
-							else
-							{
-								m_p4ModelId = m_scene->GetNumPlayerModels() - 1;
-							}
-
-							m_objHand->RemovePlayer(index);
-							m_objHand->AddPlayer(vec3(7, 6, 15), 3, m_p4ModelId, m_p4Col, model);
-							m_p4Seconds = time;
-						}
-						else if (state.buttons[GLFW_GAMEPAD_BUTTON_A])
-						{
-							if (m_soundEngine)
-								m_soundEngine->play2D(m_menuSounds[1], false);
-							m_selected[3] = 1;
-							m_p4Seconds = time;
-						}
-						else if (m_selected[3] == 1 && state.buttons[GLFW_GAMEPAD_BUTTON_B])
-						{
-							if (m_soundEngine)
-								m_soundEngine->play2D(m_menuSounds[2], false);
-							m_selected[3] = 0;
-							m_p4Seconds = time;
-						}
-
-					}
-				}
-
-				ImGui::PopStyleColor(3);
-				ImGui::PopStyleVar();
 			}
-			ImGui::End();
+
+			ImGui::PopStyleColor(3);
+			ImGui::PopStyleVar();
 		}
+		ImGui::End();
+		//}
+
 		for (int i = 0; i < m_objHand->GetNumPlayers(); i++)
 		{
 
@@ -568,6 +641,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				m_continue += 1;
 			}
 		}
+
 
 		if (m_continue == m_objHand->GetNumPlayers())
 		{
@@ -578,19 +652,32 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				m_selected[i] = 0;
 			}
 		}
+
 		m_continue = 0;
 		break;
 	case ActiveMenu::selectLevel:
-	
+
+		if(m_objHand->GetNumPlayers() == 1)
+			m_objHand->AddPlayer(SELECTPOS2, 1, 0, vec3(0, 2, 0), model);
+
+		m_scene->SetBloom(true);
+		m_scene->SetOnlySky(false);
+		m_scene->SetInstantCameraFocus(vec3(0, 0, 0));
+		m_scene->SetCameraPos(CAMERAPOS_GAME);
+
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 10);
 		ImGui::SetNextWindowPos(ImVec2((float)width / 3 - (slWidth / 2), height / 4));
 		ImGui::SetNextWindowSize(ImVec2((float)width / 3 + slWidth, height / 4 - 300));
+
 		if (ImGui::Begin("##selectLevel", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiNavInput_Activate))
 		{
 			if (m_selected[0] == 0)
 			{
+				float windowSizeX = (float)width / 3 + slWidth;
 				m_mapID = m_objHand->GetCube()->GetCurrentLevel();
-				ImGui::Text("\t\t\t\t\t\t\t\t\t\t\t\t\t\t  <  Level : %d  > ", m_mapID);
+				string temp = "<  Level : " + to_string(m_mapID) + "  > ";
+				ImGui::SetCursorPosX(windowSizeX/2 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+				ImGui::Text(temp.c_str());
 				ImGui::Text("\t\t\t\t\t\t\t Press \"B\" to Select Vehicles Again ");
 			}
 			else if (m_selected[0] == 1)
@@ -681,6 +768,23 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		break;
 
 	case ActiveMenu::selectLives:
+		m_scene->SetBloom(true);
+		m_scene->SetOnlySky(false);
+		m_scene->SetInstantCameraFocus(vec3(0, 0, 0));
+		m_scene->SetCameraPos(CAMERAPOS_GAME);
+
+		for (int i = 0; i < m_objHand->GetNumPlayers(); i++)
+		{
+			if (i == 0)
+				m_objHand->SetWholePlayerPos(vec3(-10, 6, 3), i);
+			else if (i == 1)
+				m_objHand->SetWholePlayerPos(vec3(10, 6, 3), i);
+			else if (i == 2)
+				m_objHand->SetWholePlayerPos(vec3(-7, 6, 15), i);
+			else if (i == 3)
+				m_objHand->SetWholePlayerPos(vec3(7, 6, 15), i);
+		}
+
 		//GLFWgamepadstate state;
 	////	int fillerSize = 300;
 	//	if (height <= 720)
@@ -806,6 +910,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		ImGui::End();
 		break;
 	case ActiveMenu::pause:
+		m_scene->SetBloom(true);
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 15);
 		ImGui::SetNextWindowPos(ImVec2((float)width / 3 - (pauseMenuWidth / 2), height / 4 - (pauseMenuHeight / 2)));
 		ImGui::SetNextWindowSize(ImVec2((float)width / 3 + pauseMenuWidth, height / 4 + 150 + pauseMenuHeight));
@@ -840,6 +945,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 					m_soundEngine->play2D(m_menuSounds[1], false);
 				m_menu = ActiveMenu::start;
 				m_reset = true;
+				m_p2Joined = false;
 				m_p3Joined = false;
 				m_p4Joined = false;
 				m_p1ModelId = 0;
@@ -853,11 +959,10 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 						m_objHand->RemovePlayer(m_objHand->GetNumPlayers() - 1);
 					}
 				}
-				if (m_objHand->GetNumPlayers() == 0)
+				/*if (m_objHand->GetNumPlayers() == 0)
 				{
 					m_objHand->AddPlayer(vec3(-10, 6, 3), 0, m_p1ModelId, m_p1Col, model);
-					m_objHand->AddPlayer(vec3(10, 6, 3), 1, m_p2ModelId, m_p2Col, model);
-				}
+				}*/
 			}
 			ImGui::SetCursorPos(ImVec2(((float)width / 3) / 3, 315));
 			if (ImGui::Button("Exit", ImVec2(200, 75)))
@@ -874,6 +979,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		ImGui::End();
 		break;
 	case ActiveMenu::restart:
+		m_scene->SetBloom(true);
+		m_scene->SetOnlySky(false);
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 15);
 		ImGui::SetNextWindowPos(ImVec2((float)width / 3 - (pauseMenuWidth / 2), height / 4 - (pauseMenuHeight / 2)));
 		ImGui::SetNextWindowSize(ImVec2((float)width / 3 + pauseMenuWidth, height / 4 + 150 + pauseMenuHeight));
@@ -905,18 +1012,19 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				if (m_objHand->GetNumPlayers() == 0)
 				{
 					m_objHand->AddPlayer(vec3(-10, 6, 3), 0, m_p1ModelId, m_p1Col, model);
-					m_objHand->AddPlayer(vec3(10, 6, 3), 1, m_p2ModelId, m_p2Col, model);
 				}
-				if (m_p3Joined && m_objHand->GetNumPlayers() == 2)
+				if (m_p2Joined && m_objHand->GetNumPlayers() == 1)
 				{
-					m_objHand->AddPlayer(vec3(-7, 6, 15), 2, m_p3ModelId, m_p3Col, model);
-					if (m_p4Joined)
+					m_objHand->AddPlayer(vec3(10, 6, 3), 1, m_p2ModelId, m_p2Col, model);
+					if (m_p3Joined && m_objHand->GetNumPlayers() == 2)
 					{
-						m_objHand->AddPlayer(vec3(7, 6, 15), 3, m_p4ModelId, m_p4Col, model);
+						m_objHand->AddPlayer(vec3(-7, 6, 15), 2, m_p3ModelId, m_p3Col, model);
+						if (m_p4Joined)
+						{
+							m_objHand->AddPlayer(vec3(7, 6, 15), 3, m_p4ModelId, m_p4Col, model);
+						}
 					}
 				}
-
-
 			}
 			ImGui::SetCursorPos(ImVec2(((float)width / 3) / 3 - 100, 215));
 			if (ImGui::Button("Main Menu", ImVec2(400, 75)))
@@ -926,6 +1034,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 					m_soundEngine->play2D(m_menuSounds[1], false);
 				m_menu = ActiveMenu::start;
 				m_reset = true;
+				m_p2Joined = false;
 				m_p3Joined = false;
 				m_p4Joined = false;
 				m_p1ModelId = 0;
@@ -939,11 +1048,11 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 						m_objHand->RemovePlayer(m_objHand->GetNumPlayers() - 1);
 					}
 				}
-				if (m_objHand->GetNumPlayers() == 0)
+				/*if (m_objHand->GetNumPlayers() == 0)
 				{
 					m_objHand->AddPlayer(vec3(-10, 6, 3), 0, m_p1ModelId, m_p1Col, model);
 					m_objHand->AddPlayer(vec3(10, 6, 3), 1, m_p2ModelId, m_p2Col, model);
-				}
+				}*/
 			}
 			ImGui::SetCursorPos(ImVec2(((float)width / 3) / 3, 315));
 			if (ImGui::Button("Exit", ImVec2(200, 75)))
@@ -960,6 +1069,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		ImGui::End();
 		break;
 	case ActiveMenu::win:
+		m_scene->SetBloom(true);
+		m_scene->SetOnlySky(false);
 		ImGui::SetNextWindowPos(ImVec2(width / 2 - 150, 0));
 		ImGui::SetNextWindowSize(ImVec2(300, 60));
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 5);
@@ -1025,6 +1136,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		}
 		break;
 	case ActiveMenu::stats:
+		m_scene->SetBloom(true);
+		m_scene->SetOnlySky(false);
 		// Winner
 		ImGui::SetNextWindowPos(ImVec2(0, 0));
 		ImGui::SetNextWindowSize(ImVec2(250, 80));
@@ -1410,6 +1523,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		}
 		break;
 	case ActiveMenu::playerHud:
+		m_scene->SetBloom(true);
+		m_scene->SetOnlySky(false);
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 5);
 		ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0, 0, 0, 1));
 		ImGui::SetNextWindowPos(ImVec2(width / 2 - 125, 0));
@@ -1642,6 +1757,14 @@ bool Menu::WinMenuActive()
 bool Menu::StatsMenuActive()
 {
 	if (m_menu == ActiveMenu::stats)
+		return true;
+	else
+		return false;
+}
+
+bool Menu::GameOn()
+{
+	if (m_menu == ActiveMenu::playerHud)
 		return true;
 	else
 		return false;

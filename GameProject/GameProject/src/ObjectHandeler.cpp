@@ -520,6 +520,11 @@ void ObjectHandler::SetPlayerPos(vec3 pos, int index)
 	m_players[index]->SetFinishPos(pos);
 }
 
+void ObjectHandler::SetWholePlayerPos(vec3 pos, int index)
+{
+	m_players[index]->SetPos(pos);
+}
+
 mat4 ObjectHandler::GetPlayerMatrix(int index)
 {
 	return m_players[index]->GetMatrix();

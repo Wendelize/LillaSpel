@@ -148,6 +148,11 @@ void Bloom::RenderQuad()
 	glBindVertexArray(0);
 }
 
+void Bloom::EnableBloom(bool b)
+{
+	m_bool = b;
+}
+
 Shader* Bloom::GetBlurShader()
 {
 	return m_blur;
