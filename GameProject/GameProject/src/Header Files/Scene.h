@@ -34,7 +34,8 @@ private:
 
 	vector <Light*> m_lights;
 	vector <Light*> m_carLights;
-	int m_nrOfLights = 0, m_nrOfCarLights = 0;
+	vector <Light*> m_objLights;
+	int m_nrOfLights = 0, m_nrOfCarLights = 0, m_nrOfObjLights = 0;
 
 	int m_screenWidth;
 	int m_screenHeight;
@@ -59,7 +60,7 @@ public:
 	void RenderSceneInfo(Shader * shader, vector<ObjectInfo*> objects);
 	void RenderSkybox();
 	void RenderSky();
-	void RenderLights(vector<Light*> light);
+	void RenderLights(vector<Light*> carlight, vector<Light*> objlight);
 	void RenderShadows(vector<ObjectInfo*> objects);
 	void RenderImGui(btDiscreteDynamicsWorld* world);
 	void RenderParticles();
@@ -92,7 +93,8 @@ public:
 	mat4 GetCameraView();
 	vector<Model*> GetModels(int index);
 
-	vector<Light*> GetLight();
+	vector<Light*> GetCarLight();
+	vector<Light*> GetObjLight();
 	void AddPointLight(vec3 pos = { 2,2,2 }, vec3 color = { 1,0,0 });
 	void AddDirLight(vec3 dir = { 0,-1,0 }, vec3 color = { 0,1,0 });
 	void AddSpotLight(vec3 pos = { 0,10,0 }, vec3 dir = { 0,-1,0 }, vec3 color = {0,0,1}, float cutOff = 12.0);

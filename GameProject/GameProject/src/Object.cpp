@@ -83,6 +83,7 @@ Object::~Object()
 	delete m_btTransform;
 	delete m_transform;
 	delete m_physicsMesh;
+	m_lights.clear();
 }
 
 ObjectInfo* Object::GetObjectInfo()
@@ -101,6 +102,45 @@ ObjectInfo* Object::GetObjectInfo()
 btRigidBody* Object::GetObject()
 {
 	return m_body;
+}
+
+vector<Light*> Object::GetAllLight()
+{
+	m_nrOfLights = 0;
+	vec3 pos = vec3(m_transform->GetMatrix()[3][0], m_transform->GetMatrix()[3][1], m_transform->GetMatrix()[3][2]);
+	float scale = m_scale;
+	switch (m_model)
+	{
+	case 4:
+		m_lights.clear();
+		m_lights.push_back(new Light(1, { 0,-1,0 }, { pos.x -2, pos.y + 15 *scale, pos.z + 2 }, { 0.6,0.6,0.6 }, 0));
+		m_lights.push_back(new Light(1, { 0,-1,0 }, { pos.x + 2, pos.y + 15 * scale, pos.z -2 }, { 0.6,0.6,0.6 }, 0));
+		m_lights.push_back(new Light(1, { 0,0,0 }, { pos.x+1.5, pos.y + 3, pos.z }, { 0,0.9,0.7 }, 0));
+		m_lights.push_back(new Light(1, { 0,0,0 }, { pos.x-1.5, pos.y + 3, pos.z }, { 0,0.9,0.7 }, 0));
+		//m_lights.push_back(new Light(1, { 0,0,0 }, { pos.x + 1.5, pos.y + 3, pos.z }, { 1,1,1 }, 0));
+		//m_lights.push_back(new Light(1, { 0,0,0 }, { pos.x - 1.5, pos.y + 3, pos.z }, { 1,1,1 }, 0));
+		break;
+	case 5:
+		m_lights.clear();
+		m_lights.push_back(new Light(1, { 0,0,0 }, { pos.x, pos.y + 0.5, pos.z }, { 1, 0.5, 0.2 }, 0));
+		break;
+	case 6:
+		m_nrOfLights = 2;
+		m_lights.clear();
+		m_lights.push_back(new Light(1, { 0,0,0 }, { pos.x, pos.y + 6, pos.z }, { 1, 1, 1 }, 0));
+		m_lights.push_back(new Light(1, { 0,0,0 }, { pos.x, pos.y + 1, pos.z }, { 1, 0, 0 }, 0));
+		break;
+	case 10:
+
+		m_lights.clear();
+		m_lights.push_back(new Light(1, { 0,0,0 }, { pos.x , pos.y, pos.z + 3 * scale }, { 1, 0, 0 }, 0));
+		m_lights.push_back(new Light(1, { 0,0,0 }, { pos.x, pos.y + 3 * scale , pos.z}, { 1, 0, 0 }, 0));
+		m_lights.push_back(new Light(1, { 0,0,0 }, { pos.x + 3 * scale, pos.y, pos.z }, { 1, 0, 0 }, 0));
+	default:
+		break;
+	}
+
+	return m_lights;
 }
 
 void Object::Update()

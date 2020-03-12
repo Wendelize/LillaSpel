@@ -166,6 +166,7 @@ void Scene::LightToShader()
 {
 	m_nrOfLights = m_lights.size();
 	m_nrOfCarLights = m_carLights.size();
+	m_nrOfObjLights = m_objLights.size();
 
 	vector<Light*> temp;
 	for (int i = 0; i < m_nrOfLights; i++)
@@ -175,6 +176,10 @@ void Scene::LightToShader()
 	for (int i = 0; i < m_nrOfCarLights; i++)
 	{
 		temp.push_back(m_carLights.at(i));
+	}
+	for (int i = 0; i < m_nrOfObjLights; i++)
+	{
+		temp.push_back(m_objLights.at(i));
 	}
 
 	int nrOf = temp.size();
@@ -359,9 +364,10 @@ void Scene::RenderSky()
 	glDepthFunc(GL_LESS);
 }
 
-void Scene::RenderLights(vector<Light*> light)
+void Scene::RenderLights(vector<Light*> carlight, vector<Light*> objlight)
 {
-	m_carLights = light;
+	m_carLights = carlight;
+	m_objLights = objlight;
 }
 
 void Scene::RenderShadows(vector<ObjectInfo*> objects)
@@ -580,9 +586,14 @@ vector<Model*> Scene::GetModels(int index)
 		return m_objects;
 }
 
-vector<Light*> Scene::GetLight()
+vector<Light*> Scene::GetCarLight()
 {
 	return m_lights;
+}
+
+vector<Light*> Scene::GetObjLight()
+{
+	return vector<Light*>();
 }
 
 void Scene::AddPointLight(vec3 pos, vec3 color)

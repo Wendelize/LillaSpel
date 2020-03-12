@@ -29,23 +29,6 @@ Game::Game()
 
 	m_timeSinceSpawn = 0;
 
-	/*vec3 pos = CAMERAPOS_SELECT + vec3(0, -1, 1) * 3.f;
-	pos += vec3(4.4, 0, 2);
-	m_objectHandler->AddPlayer(SELECTPOS1, 0, 0, vec3(0.5, 1, 9), m_cars[0]);
-	m_scene->AddPointLight(SELECTPOS1 + vec3(0, 1, 0), vec3(1, 1, 1));*/
-
-	/*pos = CAMERAPOS_SELECT + vec3(0, -1, 1) * 3.f;
-	pos += vec3(1.4, 0, 2);
-	m_objectHandler->AddPlayer(pos, 0, 0, vec3(0.5, 1, 9), m_cars[0]);
-
-	pos = CAMERAPOS_SELECT + vec3(0, -1, 1) * 3.f;
-	pos += vec3(-1.4, 0, 2);
-	m_objectHandler->AddPlayer(pos, 0, 0, vec3(0.5, 1, 9), m_cars[0]);
-
-	pos = CAMERAPOS_SELECT + vec3(0, -1, 1) * 3.f;
-	pos += vec3(-4.4, 0, 2);
-	m_objectHandler->AddPlayer(pos, 0, 0, vec3(0.5, 1, 9), m_cars[0]);*/
-
 	m_scene->SetCameraPos(CAMERAPOS_GAME);
 
 
@@ -493,10 +476,10 @@ void Game::AddInteractiveObjects()
 		case 0:
 		{
 			m_objectHandler->AddObject(vec3(-18, 3, 10.6), 5, m_objectModels[5]);
-			m_objectHandler->AddObject(vec3(-19, 2.5, 5), 5, m_objectModels[5]);
+			m_objectHandler->AddObject(vec3(-19, 2.5, 5), 5, m_objectModels[5], 1.2);
 			m_objectHandler->AddObject(vec3(-17, 1.5, 5), 5, m_objectModels[5]);
 			m_objectHandler->AddObject(vec3(-19, 3, 8), 5, m_objectModels[5]);
-			m_objectHandler->AddObject(vec3(-17, 2.5, 8), 5, m_objectModels[5]);
+			m_objectHandler->AddObject(vec3(-17, 2.5, 8), 5, m_objectModels[5], 1.4);
 			m_objectHandler->AddObject(vec3(-20.2, 3, 2.7), 5, m_objectModels[5]);
 
 			m_objectHandler->AddObject(vec3(-16, 3, 10.5), 6, m_objectModels[6]);
@@ -512,7 +495,12 @@ void Game::AddInteractiveObjects()
 		break;
 	case 1: 
 		{
-			m_objectHandler->AddObject(vec3(15, 3, 3.2), 4, m_objectModels[4]);
+			m_objectHandler->AddObject(vec3(15, 4.5, 3.2), 5, m_objectModels[4], 2);
+			mat4 temp = m_objectHandler->GetObjects().front()->modelMatrix;
+			temp[0][0] *= 10;
+			temp[1][1] *= 10;
+			temp[2][2] *= 10;
+			m_objectHandler->GetObjects().front()->modelMatrix = temp;
 
 			m_objectHandler->AddObject(vec3(-4.6, 8.8, -15), 6, m_objectModels[6]);
 			m_objectHandler->AddObject(vec3(0, 5.6, -5), 6, m_objectModels[6]);
@@ -528,7 +516,7 @@ void Game::AddInteractiveObjects()
 		m_objectHandler->AddObject(vec3(5, 2, 7), 7, m_objectModels[7]);
 
 		//Trees
-		m_objectHandler->AddObject(vec3(3, 2.5, 13), 6, m_objectModels[6]);
+		m_objectHandler->AddObject(vec3(3, 2.5, 13), 6, m_objectModels[6], 1.5);
 		m_objectHandler->AddObject(vec3(-3, 2, -13), 6, m_objectModels[6]);
 		m_objectHandler->AddObject(vec3(-9, 6, -18), 5, m_objectModels[5]);
 
@@ -547,15 +535,13 @@ void Game::AddInteractiveObjects()
 	case 4: 
 		{
 		m_objectHandler->AddObject(vec3(-9, 1.0, -16), 6, m_objectModels[6]);
-		m_objectHandler->AddObject(vec3(-20, 2., 2), 5, m_objectModels[5]);
+		m_objectHandler->AddObject(vec3(-20, 2., 2), 5, m_objectModels[5] ,2);
 		m_objectHandler->AddObject(vec3(-17, 1.5, 0), 5, m_objectModels[5]);
 		m_objectHandler->AddObject(vec3(-18, 2, 4), 5, m_objectModels[5]);
 
-		m_objectHandler->AddObject(vec3(14, 4, -8), 4, m_objectModels[4]);
+		m_objectHandler->AddObject(vec3(14, 4, -8), 5, m_objectModels[4], 2);
 
 		m_objectHandler->AddObject(vec3(0, 2, 19.5), 3, m_objectModels[3]);
-
-
 		}
 		break;
 	case 5: 
@@ -564,9 +550,9 @@ void Game::AddInteractiveObjects()
 		m_objectHandler->AddObject(vec3(15, 0, 15), 3, m_objectModels[3]);
 		m_objectHandler->AddObject(vec3(-15, 0, 0), 4, m_objectModels[4]);
 		m_objectHandler->AddObject(vec3(15, 2.5, 15), 6, m_objectModels[6]);
-		m_objectHandler->AddObject(vec3(15, 0, 5), 6, m_objectModels[6]);
+		m_objectHandler->AddObject(vec3(15, 0, 5), 6, m_objectModels[6], 0.8);
 		m_objectHandler->AddObject(vec3(18, 0, 3), 6, m_objectModels[6]);
-		m_objectHandler->AddObject(vec3(16, 0, -3), 6, m_objectModels[6]);
+		m_objectHandler->AddObject(vec3(16, 0, -3), 6, m_objectModels[6], 1.5);
 		m_objectHandler->AddObject(vec3(17, 0, 0), 6, m_objectModels[6]);
 
 		m_objectHandler->AddObject(vec3(-20, 4, 21), 5, m_objectModels[5]);
@@ -578,8 +564,6 @@ void Game::AddInteractiveObjects()
 		}
 		break;
 	default:
-		{
-		}
 		break;
 	}
 
@@ -611,10 +595,11 @@ void Game::Render()
 
 	m_objects = m_objectHandler->GetObjects();
 	m_carLight = m_objectHandler->GetLights();
+	m_objLight = m_objectHandler->GetObjLight();
 
 	m_menu->RenderMenu(m_gameOver, m_time, m_cars[0]);
 	m_objectHandler->RenderParticles(); // Används?
-	m_scene->RenderLights(m_carLight);
+	m_scene->RenderLights(m_carLight, m_objLight);
 	m_scene->Render(m_objects, m_objectHandler->GetWorld(), m_cube, m_gameOver, m_winner,m_objectHandler->GetTerrain());
 
 	if (m_debug)

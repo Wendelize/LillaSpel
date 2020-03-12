@@ -13,6 +13,7 @@ private:
 
 	vector<ObjectInfo*> m_objects;
 	vector<Light*> m_carLight;
+	vector<Light*> m_objLight;
 	vector<Model*> m_platforms;
 	vector<Model*> m_cars;
 	vector<Model*> m_objectModels;

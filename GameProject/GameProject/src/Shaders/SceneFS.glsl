@@ -213,11 +213,12 @@ void main(){
 		if(u_Lights[i].type == 0)
 		{
 			if(u_LightsOut== false)
-			result += CalcDirLight(u_Lights[i], vi.position, vi.normal, u_ViewPos, true, true);
+				result += CalcDirLight(u_Lights[i], vi.position, vi.normal, u_ViewPos, true, true);
 
 		} else if (u_Lights[i].type == 1)
 		{
-			result += CalcPointLight(u_Lights[i], vi.position, vi.normal, u_ViewPos, blinn); 
+			if(u_LightsOut== false)
+				result += CalcPointLight(u_Lights[i], vi.position, vi.normal, u_ViewPos, blinn); 
 		} else if (u_Lights[i].type == 2) 
 		{
 			result += CalcSpotLight(u_Lights[i], vi.position, vi.normal, u_ViewPos, false); 
