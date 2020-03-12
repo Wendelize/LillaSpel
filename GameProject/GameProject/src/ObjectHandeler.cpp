@@ -409,11 +409,9 @@ void ObjectHandler::AddObject(vec3 pos, int modelId, Model* model)
 
 }
 
-void ObjectHandler::AddOrbitObjects(vec3 pos, int modelId, Model* model, float speed)
+void ObjectHandler::AddOrbitObjects(vec3 pos, int modelId, Model* model, float speed, float scale)
 {
-	float randPos = rand() % 10;
-//	m_oribtObjects.push_back(new Object(btVector3(pos.x, pos.y + randPos, pos.z), modelId, model));
-	m_oribtObjects.push_back(new Object(btVector3(pos.x, pos.y, pos.z), modelId, model, speed));
+	m_oribtObjects.push_back(new Object(btVector3(pos.x, pos.y, pos.z), modelId, model, speed,scale));
 	m_dynamicsWorld->addRigidBody(m_oribtObjects.back()->GetObject());
 }
 
@@ -1160,7 +1158,7 @@ void ObjectHandler::UpdateHook(float dt)
 {
 	for (auto p : m_players)
 	{
-		if (p->GetActivePower() == 2)
+		if (p->GetNrOfRockets() > 0)
 		{
 			if (p->GetCurrentPos().y() < -0.5)
 			{
@@ -1184,7 +1182,7 @@ void ObjectHandler::UpdateHook(float dt)
 			p->SetPos(pos);
 			if (curPos.y > 6.f)
 			{
-				p->removePower(2); //Also deactivates hookActive bool
+				p->removeRocket(); //Also deactivates hookActive bool
 			}
 		}
 	}

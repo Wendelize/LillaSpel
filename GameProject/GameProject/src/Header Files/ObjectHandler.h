@@ -68,7 +68,7 @@ public:
 	void Update(float dt);
 	void AddPlayer(vec3 pos, int controllerID, int modelId, vec3 color, Model* model);
 	void AddObject(vec3 pos, int modelId, Model* model);
-	void AddOrbitObjects(vec3 pos, int modelId, Model* model, float speed);
+	void AddOrbitObjects(vec3 pos, int modelId, Model* model, float speed,float scale);
 	void RemoveOrbitObjects(int index);
 	void RemoveObject(int index);
 	void AddPlatform(int modelId, Model* model);
@@ -76,7 +76,6 @@ public:
 	void SetScale(int id, vec3 scale);
 	void SetPlayerFinishRotation(int index);
 	void RemovePlayer(int index);
-	void RemovePlatform();
 	void AddPowerUp();
 	int GetNumPowerUps();
 	void RemovePowerUp(int index);

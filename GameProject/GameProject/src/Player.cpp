@@ -109,19 +109,19 @@ Player::Player(Model* model, int modelId, vec3 pos)
 	switch (modelId)
 	{
 	case 0:
-		m_body->setDamping(0.20, 50.0);
+		m_body->setDamping(0.20, 100.0);
 		break;
 	case 1:
-		m_body->setDamping(0.15, 50.0);
+		m_body->setDamping(0.15, 100.0);
 		break;
 	case 2:
-		m_body->setDamping(0.15, 50.0);
+		m_body->setDamping(0.15, 100.0);
 		break;
 	case 3:
-		m_body->setDamping(0.2, 50.0);
+		m_body->setDamping(0.2, 100.0);
 		break;
 	default:
-		m_body->setDamping(0.15, 15.0);
+		m_body->setDamping(0.15, 100.0);
 		break;
 	}
 
@@ -298,6 +298,21 @@ void Player::Update(float dt)
 	m_currentPos = m_body->getWorldTransform().getOrigin();
 }
 
+int Player::GetNrOfRockets()
+{
+	return m_nrOfRockets;
+}
+
+void Player::removeRocket()
+{
+	m_hookActive = false;
+
+	m_nrOfRockets--;
+	if (m_nrOfRockets < 0) {
+		m_nrOfRockets == 0;
+	}
+}
+
 int Player::GetLives()
 {
 	return m_lives;
@@ -411,6 +426,7 @@ mat4 Player::GetMatrix()
 
 ObjectInfo* Player::GetObjectInfo()
 {
+
 	m_info = new ObjectInfo(m_transform->GetMatrix(), m_modelId, 0, m_color, false);
 	return m_info;
 }
@@ -470,6 +486,12 @@ bool Player::GetFallen()
 
 void Player::GivePower(int type)
 {
+	if (type == 2) {
+		m_nrOfRockets++;
+	}
+	else {
+
+	}
 	if (m_powerActive) 
 	{
 		removePower(m_powerType);

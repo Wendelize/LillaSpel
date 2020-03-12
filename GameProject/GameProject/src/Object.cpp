@@ -11,8 +11,9 @@
 // ID 7 = RAMP
 // ID 8 = RAMP OTHER WAY
 // ID 9 = STRANGER DANGER, SPINNER DINNER
+// ID 10 = ASTRO
 
-Object::Object(btVector3 pos, int type, Model* model, float speed)
+Object::Object(btVector3 pos, int type, Model* model, float speed, float scale)
 {
 	m_transform = new Transform;
 
@@ -22,13 +23,14 @@ Object::Object(btVector3 pos, int type, Model* model, float speed)
 	m_transform->SetScale(1, 1, 1);
 	m_scale = 1.0f;
 	m_speed = speed;
+	m_scale = scale;
 	btVector3 localInertia(0, 0, 0);
 	float mass;
 
 	if (type == 0 || type == 2 || type == 9) {
 		mass = 100000.0f;
 	}
-	else if (type == 3 || type == 4 || type == 5 || type == 6 || type == 7 || type == 8) {
+	else if (type == 3 || type == 4 || type == 5 || type == 6 || type == 7 || type == 8 || type == 10) {
 		mass = 0.f;
 	}
 	else {
@@ -72,6 +74,7 @@ Object::Object(btVector3 pos, int type, Model* model, float speed)
 	m_color = vec3(1);
 	m_model = type;
 	m_currentPos = m_btTransform->getOrigin();
+	m_body->getCollisionShape()->setLocalScaling(btVector3(m_scale, m_scale, m_scale));
 
 }
 
@@ -203,7 +206,7 @@ void Object::rotate(float dt)
 	m_body->getWorldTransform().setBasis(orn);
 
 	//Get rotation matrix
-	btTransform invRot(btQuaternion(btVector3(1, 1, 1), btScalar(temp)), btVector3(0, 0, 0));
+	btTransform invRot(btQuaternion(btVector3(1, 0, 1), btScalar(temp)), btVector3(0, 0, 0));
 	//Rotate your first translation vector with the matrix
 
 	//Update axis variable to apply transform on

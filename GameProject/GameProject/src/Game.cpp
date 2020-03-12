@@ -597,7 +597,7 @@ void Game::AddInteractiveObjects()
 		if (speed <= 0.01f && speed > -0.01f) {
 			speed = 1;
 		}
-		m_objectHandler->AddOrbitObjects(vec3((rand() % 100 + 30) * x, rand() % 10 - 20, (rand() % 100 + 30)*z), 3, m_objectModels[3], speed);
+		m_objectHandler->AddOrbitObjects(vec3((rand() % 100 + 30) * x, rand() % 10 - 20, (rand() % 100 + 30)*z), 10, m_objectModels[10], speed, rand() % 7);
 
 	}
 

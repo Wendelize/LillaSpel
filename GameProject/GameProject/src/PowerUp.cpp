@@ -22,7 +22,7 @@ PowerUp::PowerUp(int spawn, btVector3 pos, int type,float duration)
 			break;
 
 		case 2: //Player PowerMutiplier
-			m_model = 9; //Exclamation mark
+			m_model = 9; //Raket
 			m_color = vec3(3.f, 0.5f, 0);
 			scale = 0.3f;
 			break;
@@ -68,8 +68,8 @@ PowerUp::PowerUp(int spawn, btVector3 pos, int type,float duration)
 			scale = 0.09f;
 			m_duration = 5.0f;
 			break;
-		case 10:
-			m_model = 3;
+		case 10: 
+			m_model = 4;
 			m_color = vec3(1, 0, 0);
 			scale = 0.09f;
 	}

@@ -5,7 +5,7 @@
 class Object
 {
 public:
-	Object(btVector3 pos, int type, Model* model, float speed = 1);
+	Object(btVector3 pos, int type, Model* model, float speed = 1, float scale = 1);
 	~Object();
 	ObjectInfo* GetObjectInfo();
 	btRigidBody* GetObject();
