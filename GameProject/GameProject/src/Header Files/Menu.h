@@ -74,24 +74,24 @@ private:
 	int m_p1ModelId = 0;
 	double m_p1Seconds = 1;
 	bool m_p1Joined = false;
-	vec3 m_p1Col = vec3(0.5, 1, 9);
+	vec3 m_p1Col = vec3(2, 0, 4);
 
 
 	int m_p2ModelId = 0;
 	double m_p2Seconds = 1;
 	bool m_p2Joined = false;
-	vec3 m_p2Col = vec3(0, 2, 0);
+	vec3 m_p2Col = vec3(0, 1.6, 0.8);
 
 	
 	int m_p3ModelId = -1;
 	double m_p3Seconds = 1;
 	bool m_p3Joined = false;
-	vec3 m_p3Col = vec3(3, 0, 0);
+	vec3 m_p3Col = vec3(3.2, 0, 0.8);
 
 	int m_p4ModelId = -1;
 	double m_p4Seconds = 1;
 	bool m_p4Joined = false;
-	vec3 m_p4Col = vec3(1, 1, 0);
+	vec3 m_p4Col = vec3(4, 4, 0.6);
 
 	double m_inputSeconds = 1;
 	

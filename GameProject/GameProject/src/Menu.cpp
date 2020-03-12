@@ -130,7 +130,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 			//	NavHighlight is the border around the button
 			ImGui::PushStyleColor(ImGuiCol_NavHighlight, ImVec4(0, 0, 0, 0));
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
-			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.8, 0.1, 0.1, 1));
+			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0, 0.0, 0.0, 1));
 			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.1, 0.1, 0.1, 0.3));
 
 
@@ -142,7 +142,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 					m_soundEngine->play2D(m_menuSounds[1], false);
 				m_menu = ActiveMenu::select;
 				m_objHand->GetCube()->SetCurrentLevel(m_mapID);
-				m_objHand->AddPlayer(SELECTPOS1, 0, 0, vec3(0.5, 1, 9), model);
+				m_objHand->AddPlayer(SELECTPOS1, 0, 0, m_p1Col, model);
 				m_p1Seconds = time;
 				m_p2Seconds = time;
 				m_p3Seconds = time;
@@ -289,7 +289,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 						if (m_soundEngine)
 							m_soundEngine->play2D(m_menuSounds[1], false);
 						m_p2Joined = true;
-						m_objHand->AddPlayer(SELECTPOS2, 1, 0, vec3(0, 2, 0), model);
+						m_objHand->AddPlayer(SELECTPOS2, 1, 0, m_p2Col, model);
 						m_p2Seconds = time;
 						m_p2ModelId = 0;
 					}
@@ -410,7 +410,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 						if (m_soundEngine)
 							m_soundEngine->play2D(m_menuSounds[1], false);
 						m_p3Joined = true;
-						m_objHand->AddPlayer(SELECTPOS3, 2, 0, vec3(3, 0, 0), model);
+						m_objHand->AddPlayer(SELECTPOS3, 2, 0, m_p3Col, model);
 						m_p3Seconds = time;
 						m_p3ModelId = 0;
 					}
@@ -533,7 +533,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 						if (m_soundEngine)
 							m_soundEngine->play2D(m_menuSounds[1], false);
 						m_p4Joined = true;
-						m_objHand->AddPlayer(SELECTPOS4, 3, 0, vec3(3, 3, 0), model);
+						m_objHand->AddPlayer(SELECTPOS4, 3, 0, m_p4Col, model);
 						m_p4Seconds = time;
 						m_p4ModelId = 0;
 					}
@@ -658,7 +658,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 	case ActiveMenu::selectLevel:
 
 		if(m_objHand->GetNumPlayers() == 1)
-			m_objHand->AddPlayer(SELECTPOS2, 1, 0, vec3(0, 2, 0), model);
+			m_objHand->AddPlayer(SELECTPOS2, 1, 0, m_p2Col, model);
 
 		m_scene->SetBloom(true);
 		m_scene->SetOnlySky(false);
@@ -1570,7 +1570,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 			ImGui::Text("P1\t ");
 			ImGui::SameLine();
 			ImGui::PushFont(m_scene->GetOurWindow()->m_fonts[4]);
-			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 1, 0, 1));
+			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0, 0, 1));
 			ImGui::Text("T");
 			ImGui::PopStyleColor(1);
 			ImGui::PopFont();
@@ -1607,7 +1607,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 			ImGui::Text("P2\t ");
 			ImGui::SameLine();
 			ImGui::PushFont(m_scene->GetOurWindow()->m_fonts[4]);
-			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 0, 0, 1));
+			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0, 0, 1));
 			ImGui::Text("T");
 			ImGui::PopStyleColor(1);
 			ImGui::PopFont();
@@ -1646,7 +1646,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				ImGui::Text("P3\t ");
 				ImGui::SameLine();
 				ImGui::PushFont(m_scene->GetOurWindow()->m_fonts[4]);
-				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 1, 0, 1));
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0, 0, 1));
 				ImGui::Text("T");
 				ImGui::PopStyleColor(1);
 				ImGui::PopFont();
@@ -1686,7 +1686,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				ImGui::Text("P4\t ");
 				ImGui::SameLine();
 				ImGui::PushFont(m_scene->GetOurWindow()->m_fonts[4]);
-				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.3, .7, 3, 1));
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0, 0, 1));
 				ImGui::Text("T");
 				ImGui::PopStyleColor(1);
 				ImGui::PopFont();
