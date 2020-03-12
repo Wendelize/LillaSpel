@@ -25,7 +25,7 @@ public:
 	void Init();
 	void InitPingPong();
 	void PingPongRender(int nrOfSteps);
-	void RenderBloom(GLFWwindow* w, unsigned int tex);
+	void RenderBloom(GLFWwindow* w);
 	void RenderQuad();
 
 

@@ -15,9 +15,10 @@ void main()
     vec3 color = texture(u_Scene, TexCoords).rgb;      
     vec3 bloomColor = texture(u_BloomBlur, TexCoords).rgb;
     vec3 aa = texture(u_Color, TexCoords).rgb;
-    if(u_Bloom)
-        color += bloomColor; 
+    //if(u_Bloom)
+       // color += bloomColor; 
    
+  // color += aa;
    // Use for crazy
     vec3 result = vec3(1.0) - exp(-color * u_Exposure);
     result = pow(result, vec3(1.0 / gamma));

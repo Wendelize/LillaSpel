@@ -1,6 +1,7 @@
 #include "Header Files/Game.h"
 #define STB_IMAGE_IMPLEMENTATION    
 #include "Header Files/stb_image.h"
+
 Game::Game()
 {
 	m_mapUpdateReady.store(false);

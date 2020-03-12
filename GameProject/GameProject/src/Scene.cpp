@@ -205,7 +205,7 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, 
 	// Render shadows
 	RenderShadows(objects);
 
-	glBindFramebuffer(GL_FRAMEBUFFER, m_bloom->GetFBO());
+	glBindFramebuffer(GL_FRAMEBUFFER, m_bloom->GetFBO1());
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// Render sky dome and clouds
@@ -224,6 +224,12 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_shadowMap->GetTexture());
 
+	glBindFramebuffer(GL_FRAMEBUFFER, m_bloom->GetFBO());
+	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glEnable(GL_DEPTH_TEST);
+
+
 	// Terrain
 	if (terrain == true)
 	cube->Draw(m_modelShader);
@@ -237,8 +243,11 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, 
 	// Render Imgui
 	RenderImGui(world);
 
+
 	// Render Particles
 	RenderParticles();
+
+
 	
 	// Render Skybox
 	//RenderSkybox();
@@ -246,11 +255,26 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, 
 	// AntiAliasing
 	//RenderAA(objects);
 
+
+	//RenderSceneInfo(m_modelShader, objects);
+
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, m_bloom->GetFBO());
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_bloom->GetFBO1());
+	glBlitFramebuffer(0, 0, m_screenWidth, m_screenHeight, 0, 0, m_screenWidth, m_screenHeight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+	glDisable(GL_DEPTH_TEST);
+
 	// Add glow
 	m_bloom->PingPongRender(3);
 
-	m_bloom->RenderBloom(m_window->m_window, m_AA->GetTexture());
+	m_bloom->RenderBloom(m_window->m_window);
 }
+
 
 void Scene::RenderSceneInfo(Shader* shader, vector<ObjectInfo*> objects)
 {
@@ -314,24 +338,7 @@ void Scene::RenderSky()
 void Scene::RenderAA(vector<ObjectInfo*> objects)
 {
 
-	glBindFramebuffer(GL_FRAMEBUFFER, m_AA->GetFBO());
-	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-//	glEnable(GL_DEPTH_TEST);
 
-
-	RenderSceneInfo(m_modelShader, objects);
-
-
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glBindFramebuffer(GL_READ_FRAMEBUFFER, m_AA->GetFBO());
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_AA->GetSecondFBO());
-	glBlitFramebuffer(0, 0, m_screenWidth, m_screenHeight, 0, 0, m_screenWidth, m_screenHeight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
-//	glDisable(GL_DEPTH_TEST);
 }
 
 void Scene::RenderLights(vector<Light*> light)

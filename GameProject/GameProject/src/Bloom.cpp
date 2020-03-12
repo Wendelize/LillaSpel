@@ -27,6 +27,33 @@ Bloom::~Bloom()
 
 void Bloom::Init()
 {
+	glGenFramebuffers(1, &m_FBO);
+	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO);
+
+	// create a multisampled color attachment texture
+	glGenTextures(1, &m_multiSampled);
+	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, m_multiSampled);
+	glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, GL_RGB, m_width, m_height, GL_TRUE);
+	glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, m_multiSampled, 0);
+
+	// create a (also multisampled) renderbuffer object for depth and stencil attachments
+	glGenRenderbuffers(1, &m_renderBuffer);
+	glBindRenderbuffer(GL_RENDERBUFFER, m_renderBuffer);
+	glRenderbufferStorageMultisample(GL_RENDERBUFFER, 4, GL_DEPTH24_STENCIL8, m_width, m_height);
+	glBindRenderbuffer(GL_RENDERBUFFER, 0);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_renderBuffer);
+
+	// attach to fbo
+	//glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_FBO);
+	//glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, m_multiSampled, 0);
+	//glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_renderBuffer);
+
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+		cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << endl;
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+
 	glGenFramebuffers(1, &m_FBO1);
 	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO1);
 
@@ -99,7 +126,7 @@ void Bloom::PingPongRender(int nrOfSteps) //gaussian blur on the bloom texture
 
 }
 
-void Bloom::RenderBloom(GLFWwindow* w, unsigned int tex)
+void Bloom::RenderBloom(GLFWwindow* w)
 {
 	int width;
 	int height;
@@ -111,7 +138,7 @@ void Bloom::RenderBloom(GLFWwindow* w, unsigned int tex)
 	m_bloom->UseShader();
 
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, m_colorBuffers[0]);
+	glBindTexture(GL_TEXTURE_2D, m_colorBuffers[1]);
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, m_pingPongColorBuffer[!m_horizontal]);
 	glActiveTexture(GL_TEXTURE2);
@@ -160,7 +187,12 @@ Shader* Bloom::GetBloomShader()
 	return m_bloom;;
 }
 
-unsigned int Bloom::GetFBO()
+unsigned int Bloom::GetFBO1()
 {
 	return m_FBO1;
+}
+
+unsigned int Bloom::GetFBO()
+{
+	return m_FBO;
 }
