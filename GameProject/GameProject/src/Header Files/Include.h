@@ -8,7 +8,7 @@
 #include "assimp/postprocess.h"
 #include "assimp/Importer.hpp"
 #include "btBulletDynamicsCommon.h"
-#include "BulletCollision\CollisionDispatch\btCollisionWorld.h"
+#include "BulletCollision/CollisionDispatch/btCollisionWorld.h"
 #include "BulletCollision/CollisionDispatch/btGhostObject.h"
 #include "BulletCollision/CollisionShapes/btTriangleMeshShape.h"
 //IMGUI
@@ -84,19 +84,22 @@ struct ObjectInfo
 	vec3 hue; // F�rgnyans
 	bool glow;
 
-	ObjectInfo(mat4 m, int mID, int tID, vec3 h, bool g) {
+	ObjectInfo(mat4 m, int mID, int tID, vec3 h, bool g)
+	{
 		modelMatrix = m;
 		modelId = mID;
 		typeId = tID;
 		hue = h;
 		glow = g;
 	}
-	~ObjectInfo() {
 
+	~ObjectInfo()
+	{
 	}
 };
 
-struct Hole {
+struct Hole
+{
 	vec3 position;
 	float depth;
 };

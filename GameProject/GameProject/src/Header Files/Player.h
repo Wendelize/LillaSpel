@@ -35,7 +35,7 @@ private:
 	Light* m_lights[2];
 	bool m_lightsOn = true;
 	float m_timeOut;
-
+	int m_nrOfRockets;
 	//Variables 4 Fysik
 	btCollisionShape* m_carShape;
 	btRigidBody* m_body;
@@ -52,7 +52,8 @@ public:
 	~Player();
 
 	void Update(float dt);
-
+	int GetNrOfRockets();
+	void removeRocket();
 	int GetLives();
 	void SetLives(int num);
 	void ReduceLife();
@@ -99,5 +100,4 @@ public:
 	void SetLastPos(vec3 pos);
 	bool GetHook();
 	void SetHook(bool state);
-
 };

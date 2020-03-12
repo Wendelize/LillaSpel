@@ -1,4 +1,4 @@
-#include "Header Files/PerlinNoise.h" 
+#include "Header Files/PerlinNoise.h"
 
 float PerlinNoise::GenNoise(int x)
 {
@@ -9,7 +9,7 @@ float PerlinNoise::GenNoise(int x)
 
 float PerlinNoise::GenNoise(float x, float y)
 {
-	int n = (int)(x + y * 599); //599 NAJHSSSS // 42069  //690 //1338
+	int n = static_cast<int>(x + y * 599); //599 NAJHSSSS // 42069  //690 //1338
 	n = (n << 13) ^ n;
 
 	return (1.0f - ((n * (n * n * 15731 + 789221) + 1376312589) & 0x7fffffff) / 1073741824.0f);
@@ -23,16 +23,17 @@ float PerlinNoise::Lerp(float a, float b, float x)
 float PerlinNoise::CosineInterpolate(float a, float b, float x)
 {
 	float ft = x * 3.141592f;
-	float f = (1 - (float)cos(ft)) * 0.5f;
+	float f = (1 - static_cast<float>(cos(ft))) * 0.5f;
 
 	return a * (1 - f) + b * f;
 }
 
 float PerlinNoise::SmoothNoise(float x, float y)
 {
-	x = (int)x;
+	x = static_cast<int>(x);
 
-	float corners = (GenNoise(x - 1, y - 1) + GenNoise(x + 1, y - 1) + GenNoise(x - 1, y + 1) + GenNoise(x + 1, y + 1)) / 16.0f;
+	float corners = (GenNoise(x - 1, y - 1) + GenNoise(x + 1, y - 1) + GenNoise(x - 1, y + 1) + GenNoise(x + 1, y + 1))
+		/ 16.0f;
 	float sides = (GenNoise(x - 1, y) + GenNoise(x + 1, y) + GenNoise(x, y - 1) + GenNoise(x, y + 1)) / 8.0f;
 	float center = GenNoise(x, y) / 4.0f;
 
@@ -41,10 +42,10 @@ float PerlinNoise::SmoothNoise(float x, float y)
 
 float PerlinNoise::InterpolatedNoise(float x, float y)
 {
-	int intX = (int)x;
+	int intX = static_cast<int>(x);
 	float fractionX = x - intX;
 
-	int intY = (int)y;
+	int intY = static_cast<int>(y);
 	float fractionY = y - intY;
 
 	float v1 = SmoothNoise(intX, intY);
@@ -70,8 +71,8 @@ float PerlinNoise::CreatePerlinNoise(float x, float y)
 
 	for (int i = 0; i < n; i++)
 	{
-		float frequency = (float)pow(2, i) / 16.0f;
-		float amplitude = (float)pow(p, i);
+		float frequency = static_cast<float>(pow(2, i)) / 16.0f;
+		float amplitude = static_cast<float>(pow(p, i));
 
 		total += InterpolatedNoise(x * frequency, y * frequency) * amplitude;
 	}
@@ -91,8 +92,8 @@ float PerlinNoise::CreateMultiFractal(float x, float y)
 
 	for (int i = 0; i < n; i++)
 	{
-		float frequency = (float)pow(2.0f, i) / 16.0f;
-		float amplitude = (float)pow(p, i);
+		float frequency = static_cast<float>(pow(2.0f, i)) / 16.0f;
+		float amplitude = static_cast<float>(pow(p, i));
 
 		float signal = InterpolatedNoise(x * frequency, y * frequency);
 		signal /= signal + 1.0f;
@@ -104,7 +105,7 @@ float PerlinNoise::CreateMultiFractal(float x, float y)
 
 float PerlinNoise::GenSpecificNoise(float x, float y, int fractal)
 {
-	int n = (int)(x + y * fractal);
+	int n = static_cast<int>(x + y * fractal);
 	n = (n << 13) ^ n;
 
 	return (1.0f - ((n * (n * n * 15731 + 789221) + 1376312589) & 0x7fffffff) / 1073741824.0f);
@@ -112,10 +113,12 @@ float PerlinNoise::GenSpecificNoise(float x, float y, int fractal)
 
 float PerlinNoise::SmoothSpecificNoise(float x, float y, int fractal)
 {
-	x = (int)x;
+	x = static_cast<int>(x);
 
-	float corners = (GenSpecificNoise(x - 1, y - 1, fractal) + GenSpecificNoise(x + 1, y - 1, fractal) + GenSpecificNoise(x - 1, y + 1, fractal) + GenSpecificNoise(x + 1, y + 1, fractal)) / 16.0f;
-	float sides = (GenSpecificNoise(x - 1, y, fractal) + GenSpecificNoise(x + 1, y, fractal) + GenSpecificNoise(x, y - 1, fractal) + GenSpecificNoise(x, y + 1, fractal)) / 8.0f;
+	float corners = (GenSpecificNoise(x - 1, y - 1, fractal) + GenSpecificNoise(x + 1, y - 1, fractal) +
+		GenSpecificNoise(x - 1, y + 1, fractal) + GenSpecificNoise(x + 1, y + 1, fractal)) / 16.0f;
+	float sides = (GenSpecificNoise(x - 1, y, fractal) + GenSpecificNoise(x + 1, y, fractal) +
+		GenSpecificNoise(x, y - 1, fractal) + GenSpecificNoise(x, y + 1, fractal)) / 8.0f;
 	float center = GenSpecificNoise(x, y, fractal) / 4.0f;
 
 	return corners + sides + center;
@@ -123,10 +126,10 @@ float PerlinNoise::SmoothSpecificNoise(float x, float y, int fractal)
 
 float PerlinNoise::InterpolatedSpecificNoise(float x, float y, int fractal)
 {
-	int intX = (int)x;
+	int intX = static_cast<int>(x);
 	float fractionX = x - intX;
 
-	int intY = (int)y;
+	int intY = static_cast<int>(y);
 	float fractionY = y - intY;
 
 	float v1 = SmoothSpecificNoise(intX, intY, fractal);
@@ -152,8 +155,8 @@ float PerlinNoise::CreateSpecificPerlinNoise(float x, float y, int fractal)
 
 	for (int i = 0; i < n; i++)
 	{
-		float frequency = (float)pow(2, i) / 16.0f;
-		float amplitude = (float)pow(p, i);
+		float frequency = static_cast<float>(pow(2, i)) / 16.0f;
+		float amplitude = static_cast<float>(pow(p, i));
 
 		total += InterpolatedSpecificNoise(x * frequency, y * frequency, fractal) * amplitude;
 	}
@@ -173,8 +176,8 @@ float PerlinNoise::CreateSpecificMultiFractal(float x, float y, int fractal)
 
 	for (int i = 0; i < n; i++)
 	{
-		float frequency = (float)pow(2.0f, i) / 16.0f;
-		float amplitude = (float)pow(p, i);
+		float frequency = static_cast<float>(pow(2.0f, i)) / 16.0f;
+		float amplitude = static_cast<float>(pow(p, i));
 
 		float signal = InterpolatedSpecificNoise(x * frequency, y * frequency, fractal);
 		signal /= signal + 1.0f;

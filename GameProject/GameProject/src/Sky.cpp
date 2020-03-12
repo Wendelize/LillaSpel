@@ -70,18 +70,17 @@ void Sky::Update(float dt)
 	m_textureTranslation[2] += m_translationSpeed[2] * dt;
 	m_textureTranslation[3] += m_translationSpeed[3] * dt;
 
-	if (m_textureTranslation[0] > 1.0f) 
+	if (m_textureTranslation[0] > 1.0f)
 		m_textureTranslation[0] -= 1.0f;
 
-	if (m_textureTranslation[1] > 1.0f) 
+	if (m_textureTranslation[1] > 1.0f)
 		m_textureTranslation[1] -= 1.0f;
 
-	if (m_textureTranslation[2] > 1.0f) 
+	if (m_textureTranslation[2] > 1.0f)
 		m_textureTranslation[2] -= 1.0f;
 
-	if (m_textureTranslation[3] > 1.0f) 
+	if (m_textureTranslation[3] > 1.0f)
 		m_textureTranslation[3] -= 1.0f;
-
 }
 
 void Sky::RenderSkyDome(Shader* shader, mat4 model, mat4 view, mat4 proj)
@@ -123,8 +122,6 @@ void Sky::RenderSkyPlane(Shader* shader, mat4 model, mat4 view, mat4 proj)
 	shader->SetUniform("u_secondTranslationX", m_textureTranslation[2]);
 	shader->SetUniform("u_secondTranslationZ", m_textureTranslation[3]);
 
-
-	
 
 	m_skyPlane->Draw(shader);
 

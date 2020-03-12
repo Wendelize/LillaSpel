@@ -34,7 +34,7 @@ void Bloom::Init()
 	for (int i = 0; i < 2; i++)
 	{
 		glBindTexture(GL_TEXTURE_2D, m_colorBuffers[i]);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, m_width, m_height, 0, GL_RGB, GL_FLOAT, NULL);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, m_width, m_height, 0, GL_RGB, GL_FLOAT, nullptr);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -47,7 +47,7 @@ void Bloom::Init()
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, m_width, m_height);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_depth);
 
-	unsigned int attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+	unsigned int attachments[2] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1};
 	glDrawBuffers(2, attachments);
 
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
@@ -64,10 +64,12 @@ void Bloom::InitPingPong()
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, m_pingPongFBO[i]);
 		glBindTexture(GL_TEXTURE_2D, m_pingPongColorBuffer[i]);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, m_width * m_resolutionScale, m_height * m_resolutionScale, 0, GL_RGB, GL_FLOAT, NULL);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, m_width * m_resolutionScale, m_height * m_resolutionScale, 0, GL_RGB,
+		             GL_FLOAT, nullptr);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); // we clamp to the edge as the blur filter would otherwise sample repeated texture values!
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		// we clamp to the edge as the blur filter would otherwise sample repeated texture values!
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_pingPongColorBuffer[i], 0);
 		// also check if framebuffers are complete (no need for depth buffer)
@@ -89,14 +91,14 @@ void Bloom::PingPongRender(int nrOfSteps) //gaussian blur on the bloom texture
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, m_pingPongFBO[m_horizontal]);
 		m_blur->Uniform("u_Horizontal", m_horizontal);
-		glBindTexture(GL_TEXTURE_2D, m_firstIteration ? m_colorBuffers[1] : m_pingPongColorBuffer[!m_horizontal]);  // bind texture of other framebuffer (or scene if first iteration)
+		glBindTexture(GL_TEXTURE_2D, m_firstIteration ? m_colorBuffers[1] : m_pingPongColorBuffer[!m_horizontal]);
+		// bind texture of other framebuffer (or scene if first iteration)
 		RenderQuad();
 		m_horizontal = !m_horizontal;
 		if (m_firstIteration)
 			m_firstIteration = false;
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
 }
 
 void Bloom::RenderBloom(GLFWwindow* w)
@@ -118,7 +120,6 @@ void Bloom::RenderBloom(GLFWwindow* w)
 	m_bloom->Uniform("u_Bloom", m_bool);
 	m_bloom->Uniform("u_Exposure", m_exposure);
 	RenderQuad();
-
 }
 
 void Bloom::RenderQuad()
@@ -127,9 +128,9 @@ void Bloom::RenderQuad()
 	{
 		float quadVertices[] = {
 			// positions        // texture Coords
-			-1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
+			-1.0f, 1.0f, 0.0f, 0.0f, 1.0f,
 			-1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
-			1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
+			1.0f, 1.0f, 0.0f, 1.0f, 1.0f,
 			1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
 		};
 		// setup plane VAO
@@ -139,7 +140,7 @@ void Bloom::RenderQuad()
 		glBindBuffer(GL_ARRAY_BUFFER, m_quadVBO);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
 		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), static_cast<void*>(nullptr));
 		glEnableVertexAttribArray(1);
 		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 	}
@@ -160,7 +161,7 @@ Shader* Bloom::GetBlurShader()
 
 Shader* Bloom::GetBloomShader()
 {
-	return m_bloom;;
+	return m_bloom;
 }
 
 unsigned int Bloom::getFBO()

@@ -10,19 +10,19 @@ void DebugDrawer::drawLine(const btVector3& from, const btVector3& to, const btV
 	glVertex3f(from.getX(), from.getY(), from.getZ());
 	glVertex3f(to.getX(), to.getY(), to.getZ());
 	glEnd();
-
 }
 
-void DebugDrawer::drawContactPoint(const btVector3& pointOnB, const btVector3& normalOnB, btScalar distance, int lifeTime, const btVector3& color)
+void DebugDrawer::drawContactPoint(const btVector3& pointOnB, const btVector3& normalOnB, btScalar distance,
+                                   int lifeTime, const btVector3& color)
 {
 	// draws a line between two contact points
 	btVector3 const startPoint = pointOnB;
 	btVector3 const endPoint = pointOnB + normalOnB * distance;
 	drawLine(startPoint, endPoint, color);
-
 }
 
-void DebugDrawer::ToggleDebugFlag(int flag) {
+void DebugDrawer::ToggleDebugFlag(int flag)
+{
 	// checks if a flag is set and enables/
 	// disables it
 	if (m_debugMode & flag)
@@ -31,5 +31,4 @@ void DebugDrawer::ToggleDebugFlag(int flag) {
 	else
 		// flag is disabled, so enable it
 		m_debugMode |= flag;
-
 }
