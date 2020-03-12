@@ -1,4 +1,4 @@
-#include "Header Files\Ghost.h"
+#include "Header Files/Ghost.h"
 
 Ghost::Ghost()
 {
@@ -29,16 +29,16 @@ Ghost::Ghost()
 	}
 
 	// SpookSounds
-	m_soundFiles[0] =  "src/Audio/Ghost sound 1.mp3";
-	m_soundFiles[1] =  "src/Audio/Ghost sound 2.mp3";
-	m_soundFiles[2] =  "src/Audio/Ghost sound 3.mp3";
-	m_soundFiles[3] =  "src/Audio/Ghost sound 4.mp3";
-	m_soundFiles[4] =  "src/Audio/Ghost sound 5.mp3";
-	m_soundFiles[5] =  "src/Audio/Ghost sound 6.mp3";
-	m_soundFiles[6] =  "src/Audio/Ghost sound 7.mp3";
-	m_soundFiles[7] =  "src/Audio/Ghost sound 8.mp3";
-	m_soundFiles[8] =  "src/Audio/Ghost sound 9.mp3";
-	m_soundFiles[9] =  "src/Audio/Ghost sound 10.mp3";
+	m_soundFiles[0] = "src/Audio/Ghost sound 1.mp3";
+	m_soundFiles[1] = "src/Audio/Ghost sound 2.mp3";
+	m_soundFiles[2] = "src/Audio/Ghost sound 3.mp3";
+	m_soundFiles[3] = "src/Audio/Ghost sound 4.mp3";
+	m_soundFiles[4] = "src/Audio/Ghost sound 5.mp3";
+	m_soundFiles[5] = "src/Audio/Ghost sound 6.mp3";
+	m_soundFiles[6] = "src/Audio/Ghost sound 7.mp3";
+	m_soundFiles[7] = "src/Audio/Ghost sound 8.mp3";
+	m_soundFiles[8] = "src/Audio/Ghost sound 9.mp3";
+	m_soundFiles[9] = "src/Audio/Ghost sound 10.mp3";
 	m_soundFiles[10] = "src/Audio/Ghost sound 11.mp3";
 	m_soundFiles[11] = "src/Audio/Ghost sound 12.mp3";
 	m_soundFiles[12] = "src/Audio/Ghost sound 13.mp3";
@@ -66,7 +66,7 @@ Ghost::~Ghost()
 	delete m_controller;
 
 
-	if (m_honkEngine )
+	if (m_honkEngine)
 	{
 		for (uint i = 0; i < m_sounds.size(); i++)
 		{
@@ -76,7 +76,7 @@ Ghost::~Ghost()
 
 		m_honk->drop();
 		m_taunt->drop();
-		m_tauntEngine->drop(); 
+		m_tauntEngine->drop();
 	}
 }
 
@@ -194,5 +194,3 @@ void Ghost::SetLightSwitch(bool state)
 {
 	m_lightSwitch = state;
 }
-
-

@@ -1,7 +1,7 @@
 #include "Header Files/MarchingCubes.h"
 
 /* MARCHING CUBES RELATED DATA FOR TRIANGULATION */
-vec3 cornerTable[8] = 
+vec3 cornerTable[8] =
 {
 	vec3(0, 0, 0),
 	vec3(1, 0, 0),
@@ -15,7 +15,7 @@ vec3 cornerTable[8] =
 
 int edgeIndices[12][2] =
 {
-	{0, 1}, 
+	{0, 1},
 	{1, 2},
 	{3, 2},
 	{0, 3},
@@ -29,24 +29,24 @@ int edgeIndices[12][2] =
 	{3, 7}
 };
 
-vec3 edgeTable[12][2] = 
+vec3 edgeTable[12][2] =
 {
-	{ vec3(0, 0, 0), vec3(1, 0, 0) },
-	{ vec3(1, 0, 0), vec3(1, 1, 0) },
-	{ vec3(0, 1, 0), vec3(1, 1, 0) },
-	{ vec3(0, 0, 0), vec3(0, 1, 0) },
-	{ vec3(0, 0, 1), vec3(1, 0, 1) },
-	{ vec3(1, 0, 1), vec3(1, 1, 1) },
-	{ vec3(0, 1, 1), vec3(1, 1, 1) },
-	{ vec3(0, 0, 1), vec3(0, 1, 1) },
-	{ vec3(0, 0, 0), vec3(0, 0, 1) },
-	{ vec3(1, 0, 0), vec3(1, 0, 1) },
-	{ vec3(1, 1, 0), vec3(1, 1, 1) },
-	{ vec3(0, 1, 0), vec3(0, 1, 1) }
+	{vec3(0, 0, 0), vec3(1, 0, 0)},
+	{vec3(1, 0, 0), vec3(1, 1, 0)},
+	{vec3(0, 1, 0), vec3(1, 1, 0)},
+	{vec3(0, 0, 0), vec3(0, 1, 0)},
+	{vec3(0, 0, 1), vec3(1, 0, 1)},
+	{vec3(1, 0, 1), vec3(1, 1, 1)},
+	{vec3(0, 1, 1), vec3(1, 1, 1)},
+	{vec3(0, 0, 1), vec3(0, 1, 1)},
+	{vec3(0, 0, 0), vec3(0, 0, 1)},
+	{vec3(1, 0, 0), vec3(1, 0, 1)},
+	{vec3(1, 1, 0), vec3(1, 1, 1)},
+	{vec3(0, 1, 0), vec3(0, 1, 1)}
 };
 
 int triTable[256][16] =
-{ 
+{
 	{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
 	{0, 8, 3, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
 	{0, 1, 9, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
@@ -302,7 +302,7 @@ int triTable[256][16] =
 	{1, 3, 8, 9, 1, 8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
 	{0, 9, 1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
 	{0, 3, 8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
-	{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1} 
+	{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}
 };
 
 MarchingCubes::MarchingCubes()
@@ -377,14 +377,16 @@ void MarchingCubes::Update(GLFWwindow* window, vector<vec3> bombPos, bool notShr
 {
 	//Multithread PART
 	ClearMeshData();
-	if (!notShrink) {
+	if (!notShrink)
+	{
 		if (m_way == true)
 		{
 			m_shrink++;
 			if (m_shrink > 9)
 				m_way = false;
 		}
-		else if (m_way == false) {
+		else if (m_way == false)
+		{
 			m_shrink--;
 			if (m_shrink == 0)
 				m_way = true;
@@ -404,7 +406,6 @@ void MarchingCubes::Update(GLFWwindow* window, vector<vec3> bombPos, bool notShr
 		UpdateHoles();
 
 	CreateMeshData();
-
 }
 
 void MarchingCubes::MarchCube(vec3 position)
@@ -427,7 +428,7 @@ void MarchingCubes::MarchCube(vec3 position)
 	temp.normal = vec3(0, 1, 0); // Calculate per vertex for better result
 	temp.color = vec3(1, 0, 0);
 	temp.uv = vec2(1);
-	
+
 	int edgeIndex = 0;
 	for (int i = 0; i < 5; i++) // Maximum 5 triangles per cell
 	{
@@ -473,13 +474,18 @@ void MarchingCubes::MarchCube(vec3 position)
 
 		if (m_flatShaded)
 		{
-			m_vertices[currentVert].normal = normalize(cross(m_vertices[currentVert - 2].pos - m_vertices[currentVert - 1].pos, m_vertices[currentVert - 1].pos - m_vertices[currentVert].pos));
-			m_vertices[currentVert - 1].normal = normalize(cross(m_vertices[currentVert - 2].pos - m_vertices[currentVert - 1].pos, m_vertices[currentVert - 1].pos - m_vertices[currentVert].pos));
-			m_vertices[currentVert - 2].normal = normalize(cross(m_vertices[currentVert - 2].pos - m_vertices[currentVert - 1].pos, m_vertices[currentVert - 1].pos - m_vertices[currentVert].pos));
+			m_vertices[currentVert].normal = normalize(cross(
+				m_vertices[currentVert - 2].pos - m_vertices[currentVert - 1].pos,
+				m_vertices[currentVert - 1].pos - m_vertices[currentVert].pos));
+			m_vertices[currentVert - 1].normal = normalize(cross(
+				m_vertices[currentVert - 2].pos - m_vertices[currentVert - 1].pos,
+				m_vertices[currentVert - 1].pos - m_vertices[currentVert].pos));
+			m_vertices[currentVert - 2].normal = normalize(cross(
+				m_vertices[currentVert - 2].pos - m_vertices[currentVert - 1].pos,
+				m_vertices[currentVert - 1].pos - m_vertices[currentVert].pos));
 		}
 		else
 		{
-
 		}
 	}
 }
@@ -492,7 +498,7 @@ void MarchingCubes::ClearMeshData()
 
 void MarchingCubes::BuildMesh()
 {
-	m_mesh->UpdateMesh(m_vertices, m_indices); 
+	m_mesh->UpdateMesh(m_vertices, m_indices);
 }
 
 void MarchingCubes::Draw(Shader* shader, float alpha)
@@ -515,38 +521,41 @@ void MarchingCubes::PopulateTerrainMap(int level)
 			{
 				switch (level)
 				{
-				case 0 :
-					if (distance(vec2(m_middle, m_middle), vec2((float)x, (float)z)) < 18.0)
+				case 0:
+					if (distance(vec2(m_middle, m_middle), vec2(static_cast<float>(x), static_cast<float>(z))) < 18.0)
 					{
-						float thisHeight = 5.0 * m_noise->CreateMultiFractal((float)x, (float)z);
-						m_terrainMap[x][y][z] = (float)y - thisHeight;
+						float thisHeight = 5.0 * m_noise->CreateMultiFractal(
+							static_cast<float>(x), static_cast<float>(z));
+						m_terrainMap[x][y][z] = static_cast<float>(y) - thisHeight;
 					}
 
-					if (distance(vec2(m_middle, m_middle), vec2((float)x, (float)z)) > 18.0)
+					if (distance(vec2(m_middle, m_middle), vec2(static_cast<float>(x), static_cast<float>(z))) > 18.0)
 					{
-						float thisHeight = 8.0 * m_noise->CreateMultiFractal((float)x, (float)z);
-						m_terrainMap[x][y][z] = (float)y - thisHeight;
+						float thisHeight = 8.0 * m_noise->CreateMultiFractal(
+							static_cast<float>(x), static_cast<float>(z));
+						m_terrainMap[x][y][z] = static_cast<float>(y) - thisHeight;
 					}
 
-					if (distance(vec2(m_middle, m_middle), vec2((float)x, (float)z)) > 22.0)
+					if (distance(vec2(m_middle, m_middle), vec2(static_cast<float>(x), static_cast<float>(z))) > 22.0)
 					{
 						m_terrainMap[x][y][z] = 1.0f;
 					}
 
 					break;
 
-				case 1 : 
-					if (distance(vec2(m_middle, m_middle), vec2((float)x, (float)z)) < 18.0)
+				case 1:
+					if (distance(vec2(m_middle, m_middle), vec2(static_cast<float>(x), static_cast<float>(z))) < 18.0)
 					{
-						float thisHeight = 12.0 * m_noise->CreateSpecificMultiFractal((float)x, (float)z, 300);
-						m_terrainMap[x][y][z] = (float)y - thisHeight;
+						float thisHeight = 12.0 * m_noise->CreateSpecificMultiFractal(
+							static_cast<float>(x), static_cast<float>(z), 300);
+						m_terrainMap[x][y][z] = static_cast<float>(y) - thisHeight;
 					}
 					else
 					{
 						m_terrainMap[x][y][z] = 1.0f;
 					}
 
-					if (distance(vec2(m_middle, m_middle), vec2((float)x, (float)z)) < 5.0)
+					if (distance(vec2(m_middle, m_middle), vec2(static_cast<float>(x), static_cast<float>(z))) < 5.0)
 					{
 						m_terrainMap[x][y][z] = 1.0f;
 					}
@@ -554,19 +563,21 @@ void MarchingCubes::PopulateTerrainMap(int level)
 					break;
 
 				case 2: // RAMP / HOPP ÖVER BANA
-					if (distance(vec2(m_middle, m_middle), vec2((float)x, (float)z)) < 18.0)
+					if (distance(vec2(m_middle, m_middle), vec2(static_cast<float>(x), static_cast<float>(z))) < 18.0)
 					{
-						float thisHeight = 5.0 * m_noise->CreateMultiFractal((float)x, (float)z);
-						m_terrainMap[x][y][z] = (float)y - thisHeight;
+						float thisHeight = 5.0 * m_noise->CreateMultiFractal(
+							static_cast<float>(x), static_cast<float>(z));
+						m_terrainMap[x][y][z] = static_cast<float>(y) - thisHeight;
 					}
 
-					if (distance(vec2(m_middle, m_middle), vec2((float)x, (float)z)) > 18.0)
+					if (distance(vec2(m_middle, m_middle), vec2(static_cast<float>(x), static_cast<float>(z))) > 18.0)
 					{
-						float thisHeight = 10.0 * m_noise->CreateSpecificMultiFractal((float)x, (float)z, 500);
-						m_terrainMap[x][y][z] = (float)y - thisHeight;
+						float thisHeight = 10.0 * m_noise->CreateSpecificMultiFractal(
+							static_cast<float>(x), static_cast<float>(z), 500);
+						m_terrainMap[x][y][z] = static_cast<float>(y) - thisHeight;
 					}
 
-					if (distance(vec2(m_middle, m_middle), vec2((float)x, (float)z)) > 22.0)
+					if (distance(vec2(m_middle, m_middle), vec2(static_cast<float>(x), static_cast<float>(z))) > 22.0)
 					{
 						m_terrainMap[x][y][z] = 1.0f;
 					}
@@ -579,35 +590,40 @@ void MarchingCubes::PopulateTerrainMap(int level)
 					break;
 
 				case 3:
-					if (distance(vec2(m_middle, m_middle), vec2((float)x, (float)z)) < 22.0 - m_shrink)
+					if (distance(vec2(m_middle, m_middle), vec2(static_cast<float>(x), static_cast<float>(z))) < 22.0 -
+						m_shrink)
 					{
-						float thisHeight = 6.0 * m_noise->CreateSpecificMultiFractal((float)x, (float)z, 699);
-						m_terrainMap[x][y][z] = (float)y - thisHeight;
+						float thisHeight = 6.0 * m_noise->CreateSpecificMultiFractal(
+							static_cast<float>(x), static_cast<float>(z), 699);
+						m_terrainMap[x][y][z] = static_cast<float>(y) - thisHeight;
 					}
 					else
 					{
 						m_terrainMap[x][y][z] = 1.0f;
 					}
 
-					if (distance(vec2(m_middle, m_middle), vec2((float)x, (float)z)) < 15.0)
+					if (distance(vec2(m_middle, m_middle), vec2(static_cast<float>(x), static_cast<float>(z))) < 15.0)
 					{
-						float thisHeight = 6.0 * m_noise->CreateSpecificMultiFractal((float)x, (float)z, 699) + 1.0f;
-						m_terrainMap[x][y][z] = (float)y - thisHeight;
+						float thisHeight = 6.0 * m_noise->CreateSpecificMultiFractal(
+							static_cast<float>(x), static_cast<float>(z), 699) + 1.0f;
+						m_terrainMap[x][y][z] = static_cast<float>(y) - thisHeight;
 					}
 
-					if (distance(vec2(m_middle, m_middle), vec2((float)x, (float)z)) < 8.0)
+					if (distance(vec2(m_middle, m_middle), vec2(static_cast<float>(x), static_cast<float>(z))) < 8.0)
 					{
-						float thisHeight = 6.0 * m_noise->CreateSpecificMultiFractal((float)x, (float)z, 699) + 2.0f;
-						m_terrainMap[x][y][z] = (float)y - thisHeight;
+						float thisHeight = 6.0 * m_noise->CreateSpecificMultiFractal(
+							static_cast<float>(x), static_cast<float>(z), 699) + 2.0f;
+						m_terrainMap[x][y][z] = static_cast<float>(y) - thisHeight;
 					}
 
 					break;
-					
+
 				case 4:
-					if (distance(vec2(m_middle, m_middle), vec2((float)x, (float)z)) < 22.0)
+					if (distance(vec2(m_middle, m_middle), vec2(static_cast<float>(x), static_cast<float>(z))) < 22.0)
 					{
-						float thisHeight = 12.0 * m_noise->CreateSpecificPerlinNoise((float)x, (float)z, 1337);
-						m_terrainMap[x][y][z] = (float)y - thisHeight;
+						float thisHeight = 12.0 * m_noise->CreateSpecificPerlinNoise(
+							static_cast<float>(x), static_cast<float>(z), 1337);
+						m_terrainMap[x][y][z] = static_cast<float>(y) - thisHeight;
 					}
 					else
 					{
@@ -617,34 +633,39 @@ void MarchingCubes::PopulateTerrainMap(int level)
 					break;
 
 				case 5:
-					if (x <= m_holeSize && z <= m_holeSize || 
+					if (x <= m_holeSize && z <= m_holeSize ||
 						x <= m_holeSize && z >= m_width - m_holeSize ||
-						x >= m_width - m_holeSize && z <= m_holeSize || 
+						x >= m_width - m_holeSize && z <= m_holeSize ||
 						x >= m_width - m_holeSize && z >= m_width - m_holeSize)
 					{
-						float thisHeight = 10.0 * m_noise->CreateSpecificMultiFractal((float)x, (float)z, 500);
-						m_terrainMap[x][y][z] = (float)y - thisHeight;
+						float thisHeight = 10.0 * m_noise->CreateSpecificMultiFractal(
+							static_cast<float>(x), static_cast<float>(z), 500);
+						m_terrainMap[x][y][z] = static_cast<float>(y) - thisHeight;
 					}
 					else
 					{
-						m_terrainMap[x][y][z] = (float)y;
+						m_terrainMap[x][y][z] = static_cast<float>(y);
 					}
 
-					if (distance(vec2(x, z), vec2((float)m_holeSize, (float)m_holeSize)) < 10.0)
+					if (distance(vec2(x, z), vec2(static_cast<float>(m_holeSize), static_cast<float>(m_holeSize))) <
+						10.0)
 					{
-						m_terrainMap[x][y][z] = (float)y;
+						m_terrainMap[x][y][z] = static_cast<float>(y);
 					}
-					if (distance(vec2(x, z), vec2((float)m_holeSize, (float)m_width - m_holeSize)) < 10.0)
+					if (distance(vec2(x, z), vec2(static_cast<float>(m_holeSize),
+					                              static_cast<float>(m_width) - m_holeSize)) < 10.0)
 					{
-						m_terrainMap[x][y][z] = (float)y;
+						m_terrainMap[x][y][z] = static_cast<float>(y);
 					}
-					if (distance(vec2(x, z), vec2((float)m_width - m_holeSize, (float)m_holeSize)) < 10.0)
+					if (distance(vec2(x, z), vec2(static_cast<float>(m_width) - m_holeSize,
+					                              static_cast<float>(m_holeSize))) < 10.0)
 					{
-						m_terrainMap[x][y][z] = (float)y;
+						m_terrainMap[x][y][z] = static_cast<float>(y);
 					}
-					if (distance(vec2(x, z), vec2((float)m_width - m_holeSize, (float)m_width - m_holeSize)) < 10.0)
+					if (distance(vec2(x, z), vec2(static_cast<float>(m_width) - m_holeSize,
+					                              static_cast<float>(m_width) - m_holeSize)) < 10.0)
 					{
-						m_terrainMap[x][y][z] = (float)y;
+						m_terrainMap[x][y][z] = static_cast<float>(y);
 					}
 
 					if (x >= m_width || z >= m_width || x <= 0 || z <= 0)
@@ -653,17 +674,19 @@ void MarchingCubes::PopulateTerrainMap(int level)
 						m_heightArray[x][y] = 1;
 					}
 					break;
-					
+
 				default:
-					float thisHeight = (float)m_height * m_noise->CreatePerlinNoise((float)x, (float)z);
-					m_terrainMap[x][y][z] = (float)y - thisHeight;
-					m_heightArray[x][z] = (float)y - thisHeight + 1;
+					float thisHeight = static_cast<float>(m_height) * m_noise->CreatePerlinNoise(
+						static_cast<float>(x), static_cast<float>(z));
+					m_terrainMap[x][y][z] = static_cast<float>(y) - thisHeight;
+					m_heightArray[x][z] = static_cast<float>(y) - thisHeight + 1;
 
 					if (thisHeight < 0.0f)
-						m_terrainMap[x][y][z] = (float)y;
+						m_terrainMap[x][y][z] = static_cast<float>(y);
 
-					if (distance(vec2(m_middle, m_middle), vec2((float)x, (float)z)) >= (m_middle - 1) - m_shrink) 
-						m_terrainMap[x][y][z] = 1.0f; 
+					if (distance(vec2(m_middle, m_middle), vec2(static_cast<float>(x), static_cast<float>(z))) >= (
+						m_middle - 1) - m_shrink)
+						m_terrainMap[x][y][z] = 1.0f;
 
 					break;
 				}
@@ -705,7 +728,7 @@ void MarchingCubes::CreateMeshData()
 
 float MarchingCubes::SampleTerrain(vec3 point)
 {
-	return m_terrainMap[(int)point.x][(int)point.y][(int)point.z];
+	return m_terrainMap[static_cast<int>(point.x)][static_cast<int>(point.y)][static_cast<int>(point.z)];
 }
 
 void MarchingCubes::DrawWarning(int x, int y, int z)
@@ -713,11 +736,11 @@ void MarchingCubes::DrawWarning(int x, int y, int z)
 	glPointSize(2.0f);
 	glBegin(GL_POINTS);
 	{
-			glVertex3f(
-				(float)x,
-				(float)y,
-				(float)z
-			);
+		glVertex3f(
+			static_cast<float>(x),
+			static_cast<float>(y),
+			static_cast<float>(z)
+		);
 	}
 	glEnd();
 }
@@ -734,14 +757,15 @@ void MarchingCubes::CreatePhysics()
 	m_tetraMesh = tetraMesh;
 	for (int j = 0; j < m_mesh->m_vertices.size(); j++)
 	{
-
-		points.push_back(btVector3(m_mesh->m_vertices[j].pos.x, m_mesh->m_vertices[j].pos.y, m_mesh->m_vertices[j].pos.z));
+		points.push_back(btVector3(m_mesh->m_vertices[j].pos.x, m_mesh->m_vertices[j].pos.y,
+		                           m_mesh->m_vertices[j].pos.z));
 	}
-	if (points.size() > 3) {
-		for (int j = 0; j < points.size() - 3; j = j+3)
+	if (points.size() > 3)
+	{
+		for (int j = 0; j < points.size() - 3; j = j + 3)
 		{
-			m_tetraMesh.addTriangle(points[j], points[j+1], points[j+2], false);
-			m_tetraMesh.addTriangleIndices(m_mesh->m_indices[j], m_mesh->m_indices[j+1], m_mesh->m_indices[j+2]);
+			m_tetraMesh.addTriangle(points[j], points[j + 1], points[j + 2], false);
+			m_tetraMesh.addTriangleIndices(m_mesh->m_indices[j], m_mesh->m_indices[j + 1], m_mesh->m_indices[j + 2]);
 		}
 	}
 	m_newPlatformShape = new btBvhTriangleMeshShape(&m_tetraMesh, true, true);
@@ -766,10 +790,11 @@ void MarchingCubes::UpdatePhysics()
 	m_tetraMesh = tetraMesh;
 	for (int j = 0; j < m_mesh->m_vertices.size(); j++)
 	{
-
-		points.push_back(btVector3(m_mesh->m_vertices[j].pos.x, m_mesh->m_vertices[j].pos.y, m_mesh->m_vertices[j].pos.z));
+		points.push_back(btVector3(m_mesh->m_vertices[j].pos.x, m_mesh->m_vertices[j].pos.y,
+		                           m_mesh->m_vertices[j].pos.z));
 	}
-	if (points.size() > 3) {
+	if (points.size() > 3)
+	{
 		for (int j = 0; j < points.size() - 3; j = j + 3)
 		{
 			m_tetraMesh.addTriangle(points[j], points[j + 1], points[j + 2], false);
@@ -861,9 +886,15 @@ void MarchingCubes::CalculateNormals()
 	if (m_vertices.size() > 3)
 	{
 		int currentVert = m_vertices.size() - 1;
-		m_vertices[currentVert].normal = normalize(cross(m_vertices[currentVert - 2].pos - m_vertices[currentVert - 1].pos, m_vertices[currentVert - 1].pos - m_vertices[currentVert].pos));
-		m_vertices[currentVert - 1].normal = normalize(cross(m_vertices[currentVert - 2].pos - m_vertices[currentVert - 1].pos, m_vertices[currentVert - 1].pos - m_vertices[currentVert].pos));
-		m_vertices[currentVert - 2].normal = normalize(cross(m_vertices[currentVert - 2].pos - m_vertices[currentVert - 1].pos, m_vertices[currentVert - 1].pos - m_vertices[currentVert].pos));
+		m_vertices[currentVert].normal = normalize(cross(
+			m_vertices[currentVert - 2].pos - m_vertices[currentVert - 1].pos,
+			m_vertices[currentVert - 1].pos - m_vertices[currentVert].pos));
+		m_vertices[currentVert - 1].normal = normalize(cross(
+			m_vertices[currentVert - 2].pos - m_vertices[currentVert - 1].pos,
+			m_vertices[currentVert - 1].pos - m_vertices[currentVert].pos));
+		m_vertices[currentVert - 2].normal = normalize(cross(
+			m_vertices[currentVert - 2].pos - m_vertices[currentVert - 1].pos,
+			m_vertices[currentVert - 1].pos - m_vertices[currentVert].pos));
 	}
 }
 
@@ -879,7 +910,7 @@ void MarchingCubes::MakeHole(vec3 position)
 				if (distance(posToTerrain, vec3(x, y, z)) < 3.0f)
 				{
 					Hole temp;
-					 
+
 					temp.position = vec3(x, y, z);
 					temp.depth = 3.0 / (distance(posToTerrain, vec3(x, y, z)) + 0.1);
 					m_holes.push_back(temp);
@@ -901,7 +932,10 @@ void MarchingCubes::UpdateHoles()
 {
 	for (int i = 0; i < m_holes.size(); i++)
 	{
-		m_terrainMap[(int)m_holes[i].position.x][(int)m_holes[i].position.y][(int)m_holes[i].position.z] = m_terrainMap[(int)m_holes[i].position.x][(int)m_holes[i].position.y][(int)m_holes[i].position.z] + m_holes[i].depth;
+		m_terrainMap[static_cast<int>(m_holes[i].position.x)][static_cast<int>(m_holes[i].position.y)][static_cast<int>(
+			m_holes[i].position.z)] = m_terrainMap[static_cast<int>(m_holes[i].position.x)][static_cast<int>(m_holes[i]
+			                                                                                                 .position.y
+		)][static_cast<int>(m_holes[i].position.z)] + m_holes[i].depth;
 	}
 }
 
@@ -912,10 +946,14 @@ void MarchingCubes::ClearHoles()
 
 bool MarchingCubes::IsNotHole(vec3 pos)
 {
-	for (int k = pos.z - 2; k < pos.z + 2; k++) {
-		for (int j = pos.x - 2; j < pos.x + 2; j++) {
-			for (int i = 0; i < m_height; i++) {
-				if (m_terrainMap[(int)(pos.x + m_middle)][i][(int)(pos.z + m_middle)] <= 0) {
+	for (int k = pos.z - 2; k < pos.z + 2; k++)
+	{
+		for (int j = pos.x - 2; j < pos.x + 2; j++)
+		{
+			for (int i = 0; i < m_height; i++)
+			{
+				if (m_terrainMap[static_cast<int>(pos.x + m_middle)][i][static_cast<int>(pos.z + m_middle)] <= 0)
+				{
 					return true;
 				}
 			}
@@ -927,12 +965,19 @@ bool MarchingCubes::IsNotHole(vec3 pos)
 float MarchingCubes::GetHeight(vec3 pos)
 {
 	float height = 0;
-	for (int k = pos.z - 2; k < pos.z + 2; k++) {
-		for (int j = pos.x - 2; j < pos.x + 2; j++) {
-			for (int i = 0; i < m_height; i++) {
-				if (m_terrainMap[(int)(pos.x + m_middle)][i][(int)(pos.z + m_middle)] <= 0) {
-					if (height < m_terrainMap[(int)(pos.x + m_middle)][i][(int)(pos.z + m_middle)] * -1) {
-						height = m_terrainMap[(int)(pos.x + m_middle)][i][(int)(pos.z + m_middle)] * -1;
+	for (int k = pos.z - 2; k < pos.z + 2; k++)
+	{
+		for (int j = pos.x - 2; j < pos.x + 2; j++)
+		{
+			for (int i = 0; i < m_height; i++)
+			{
+				if (m_terrainMap[static_cast<int>(pos.x + m_middle)][i][static_cast<int>(pos.z + m_middle)] <= 0)
+				{
+					if (height < m_terrainMap[static_cast<int>(pos.x + m_middle)][i][static_cast<int>(pos.z + m_middle)]
+						* -1)
+					{
+						height = m_terrainMap[static_cast<int>(pos.x + m_middle)][i][static_cast<int>(pos.z + m_middle)]
+							* -1;
 					}
 				}
 			}
@@ -948,5 +993,5 @@ int MarchingCubes::GetWidth()
 
 int MarchingCubes::GetCurrentWidth()
 {
-	return m_width-m_shrink;
+	return m_width - m_shrink;
 }

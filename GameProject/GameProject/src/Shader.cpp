@@ -19,11 +19,12 @@ Shader::Shader(const GLchar* VertexShaderFile, const GLchar* FragmentShaderFile)
 	glDeleteShader(fs);
 
 
-	GLsizei  size = 0;
+	GLsizei size = 0;
 	GLchar test[1000];
 	glGetProgramInfoLog(m_shaderProgram, 1000, &size, test);
 
-	for (GLsizei i = 0; i < size; i++) {
+	for (GLsizei i = 0; i < size; i++)
+	{
 		cout << test[i];
 	}
 }
@@ -51,11 +52,12 @@ Shader::Shader(const GLchar* VertexShaderFile, const GLchar* GeoShaderFile, cons
 	glDeleteShader(fs);
 
 
-	GLsizei  sizei = 0;
+	GLsizei sizei = 0;
 	GLchar test[1000];
 	glGetProgramInfoLog(m_shaderProgram, 1000, &sizei, test);
 
-	for (GLsizei i = 0; i < sizei; i++) {
+	for (GLsizei i = 0; i < sizei; i++)
+	{
 		cout << test[i];
 	}
 }
@@ -67,7 +69,6 @@ Shader::~Shader()
 
 inline GLuint Shader::LoadShader(GLenum ShaderType, const GLchar* fileName)
 {
-
 	GLuint shader = glCreateShader(ShaderType);
 
 	ifstream shaderFile(fileName);
@@ -93,7 +94,8 @@ void Shader::UseShader()
 	m_activeProgram = m_shaderProgram;
 }
 
-GLuint Shader::GetShader() {
+GLuint Shader::GetShader()
+{
 	return m_shaderProgram;
 }
 
@@ -104,8 +106,10 @@ GLint Shader::GetUniform(const GLchar* name)
 
 	GLint location = glGetUniformLocation(m_shaderProgram, name);
 
-	if (location == -1){}
-		//printf("cant find uniform '%s' in shader nr %d\n", name, m_shaderProgram);
+	if (location == -1)
+	{
+	}
+	//printf("cant find uniform '%s' in shader nr %d\n", name, m_shaderProgram);
 
 	return location;
 }
@@ -120,17 +124,17 @@ void Shader::SetUniform(const GLchar* name, const float& value)
 	glUniform1f(GetUniform(name), value);
 }
 
-void Shader::SetUniform(const GLchar* name, const glm::vec2& vector)
+void Shader::SetUniform(const GLchar* name, const vec2& vector)
 {
 	glUniform2fv(GetUniform(name), 1, value_ptr(vector));
 }
 
-void Shader::SetUniform(const GLchar* name, const glm::vec3& vector)
+void Shader::SetUniform(const GLchar* name, const vec3& vector)
 {
 	glUniform3fv(GetUniform(name), 1, value_ptr(vector));
 }
 
-void Shader::SetUniform(const GLchar* name, const glm::mat4& matrix)
+void Shader::SetUniform(const GLchar* name, const mat4& matrix)
 {
 	glUniformMatrix4fv(GetUniform(name), 1, GL_FALSE, value_ptr(matrix));
 }
@@ -150,7 +154,7 @@ GLint Shader::GetUniform(const string& name)
 	GLint location = glGetUniformLocation(m_shaderProgram, name.c_str());
 
 	//if (location == -1)
-		//printf("cant find uniform '%s' in shader nr %d\n", name, m_shaderProgram);
+	//printf("cant find uniform '%s' in shader nr %d\n", name, m_shaderProgram);
 
 	return location;
 }
@@ -169,5 +173,3 @@ void Shader::Uniform(const string& name, const vec3& value)
 {
 	glUniform3fv(GetUniform(name), 1, &value[0]);
 }
-
-

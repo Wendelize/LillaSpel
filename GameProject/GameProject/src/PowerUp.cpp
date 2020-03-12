@@ -1,6 +1,6 @@
 #include "Header Files/PowerUp.h"
 
-PowerUp::PowerUp(int spawn, btVector3 pos, int type,float duration)
+PowerUp::PowerUp(int spawn, btVector3 pos, int type, float duration)
 {
 	m_pos = pos;
 	m_type = type;
@@ -8,77 +8,78 @@ PowerUp::PowerUp(int spawn, btVector3 pos, int type,float duration)
 	m_transform = new Transform;
 	m_model = 0;
 	float scale = 1.f;
-	switch (m_type) {
-		case 0: //Player sizeUp
-			m_model = 6;
-			m_color = vec3(0, 1, 0);
-			scale = 0.1;
-			break;
+	switch (m_type)
+	{
+	case 0: //Player sizeUp
+		m_model = 6;
+		m_color = vec3(0, 1, 0);
+		scale = 0.1;
+		break;
 
-		case 1: //Enemy get inverted Controller
-			m_model = 2;
-			m_color = vec3(0, 1, 0);
-			scale = 0.2f;
-			break;
+	case 1: //Enemy get inverted Controller
+		m_model = 2;
+		m_color = vec3(0, 1, 0);
+		scale = 0.2f;
+		break;
 
-		case 2: //Player PowerMutiplier
-			m_model = 9; //Raket
-			m_color = vec3(3.f, 0.5f, 0);
-			scale = 0.3f;
-			break;
+	case 2: //Player PowerMutiplier
+		m_model = 9; //Raket
+		m_color = vec3(3.f, 0.5f, 0);
+		scale = 0.3f;
+		break;
 
-		case 3: //player sizeDown
-			m_model = 5;
-			m_color = vec3(1, 0.5, 0);
-			scale = 0.1f;
-			break;
+	case 3: //player sizeDown
+		m_model = 5;
+		m_color = vec3(1, 0.5, 0);
+		scale = 0.1f;
+		break;
 
-		case 4: //Enemy sizeUp
-			m_model = 6;
-			m_color = vec3(1, 0, 0);
-			scale = 0.1f;
-			break;
+	case 4: //Enemy sizeUp
+		m_model = 6;
+		m_color = vec3(1, 0, 0);
+		scale = 0.1f;
+		break;
 
-		case 5: //Enemy sizeDown
-			m_model = 5;
-			m_color = vec3(0, 1, 0);
-			scale = 0.1f;
-			break;
+	case 5: //Enemy sizeDown
+		m_model = 5;
+		m_color = vec3(0, 1, 0);
+		scale = 0.1f;
+		break;
 
-		case 6:
-			m_model = 0; //Bomb - Tempor�rt kollision koeficient �kad. 
-			m_color = vec3(0, 0.1, 0.1);
-			scale = 0.3f;
-			break;
+	case 6:
+		m_model = 0; //Bomb - Tempor�rt kollision koeficient �kad. 
+		m_color = vec3(0, 0.1, 0.1);
+		scale = 0.3f;
+		break;
 
-		case 7: 
-			m_model = 7; //LightBulb 
-			m_color = vec3(2, 2, 0);
-			scale = 0.15f;
-			m_duration = 6.0f;
-			break;
-		case 8:
-			m_model = 8; //Heart
-			m_color = vec3(5.000, 0.719, 0.738);
-			scale = 0.01f;
-			break;
-		case 9:
-			m_model = 3; //Question mark - Invisible terrain
-			m_color = vec3(0.741, 0.520, 3.000);
-			scale = 0.09f;
-			m_duration = 5.0f;
-			break;
-		case 10: 
-			m_model = 4;
-			m_color = vec3(1, 0, 0);
-			scale = 0.09f;
+	case 7:
+		m_model = 7; //LightBulb 
+		m_color = vec3(2, 2, 0);
+		scale = 0.15f;
+		m_duration = 6.0f;
+		break;
+	case 8:
+		m_model = 8; //Heart
+		m_color = vec3(5.000, 0.719, 0.738);
+		scale = 0.01f;
+		break;
+	case 9:
+		m_model = 3; //Question mark - Invisible terrain
+		m_color = vec3(0.741, 0.520, 3.000);
+		scale = 0.09f;
+		m_duration = 5.0f;
+		break;
+	case 10:
+		m_model = 4;
+		m_color = vec3(1, 0, 0);
+		scale = 0.09f;
 	}
 	m_spawn = spawn;
 
-		m_btTransform = new btTransform();
-		m_btTransform->setIdentity();
-		m_btTransform->setOrigin(m_pos);
-		m_transform->SetScale(scale, scale, scale);
+	m_btTransform = new btTransform();
+	m_btTransform->setIdentity();
+	m_btTransform->setOrigin(m_pos);
+	m_transform->SetScale(scale, scale, scale);
 
 	btVector3 localInertia(0, 0, 0);
 	float mass = 1.f;
@@ -149,12 +150,14 @@ ObjectInfo* PowerUp::GetObjectInfo()
 bool PowerUp::update(float dt)
 {
 	bool destroy = true;
-	if (GetDuration() - dt > 0) {
+	if (GetDuration() - dt > 0)
+	{
 		SetDuration(GetDuration() - dt);
 		m_transform->Rotate(0.f, 2.0f * dt, 0.f);
 		destroy = false;
 	}
-	else if (m_bombBlown) {
+	else if (m_bombBlown)
+	{
 		destroy = false;
 	}
 	//m_body->setLinearVelocity(btVector3(0,-1,0));
@@ -171,7 +174,7 @@ int PowerUp::GetSpawn()
 }
 
 void PowerUp::StartParticles()
-{	
+{
 	vec3 temp = vec3(m_currentPos.x(), m_currentPos.y(), m_currentPos.z());
 	m_particlesActive = true;
 	//m_particles->GenerateParticles(0.1f, temp, 5);
@@ -186,4 +189,3 @@ bool PowerUp::IsBombBlown()
 {
 	return m_bombBlown;
 }
-

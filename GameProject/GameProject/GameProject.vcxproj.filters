@@ -34,16 +34,7 @@
     <ClCompile Include="src\Shader.cpp">
       <Filter>Src</Filter>
     </ClCompile>
-    <ClCompile Include="src\Transform.cpp">
-      <Filter>Src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Window.cpp">
-      <Filter>Src</Filter>
-    </ClCompile>
     <ClCompile Include="src\Light.cpp">
-      <Filter>Src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Skybox.cpp">
       <Filter>Src</Filter>
     </ClCompile>
     <ClCompile Include="src\Skybox.cpp">
@@ -98,6 +89,15 @@
       <Filter>Src</Filter>
     </ClCompile>
     <ClCompile Include="src\Ghost.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Window.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Transform.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Skybox.cpp">
       <Filter>Src</Filter>
     </ClCompile>
   </ItemGroup>

@@ -16,11 +16,14 @@ Platform::Platform(Model* model, int platformIndex)
 	{
 		for (int j = 0; j < model->GetMeshes()[i].m_vertices.size(); j++)
 		{
-			points.push_back(btVector3(model->GetMeshes()[i].m_vertices[j].pos.x, model->GetMeshes()[i].m_vertices[j].pos.y, model->GetMeshes()[i].m_vertices[j].pos.z));
+			points.push_back(btVector3(model->GetMeshes()[i].m_vertices[j].pos.x,
+			                           model->GetMeshes()[i].m_vertices[j].pos.y,
+			                           model->GetMeshes()[i].m_vertices[j].pos.z));
 		}
 	}
-	
-	m_platformShape = new btConvexHullShape(&points[0].getX(), points.size(), sizeof(btVector3)); // vertexdata, numberofvertices, stride
+
+	m_platformShape = new btConvexHullShape(&points[0].getX(), points.size(), sizeof(btVector3));
+	// vertexdata, numberofvertices, stride
 	m_btTransform = new btTransform;
 	m_btTransform->setIdentity();
 	m_btTransform->setOrigin(btVector3(0.f, -0.f, 0.f));

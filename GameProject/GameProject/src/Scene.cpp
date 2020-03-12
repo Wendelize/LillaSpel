@@ -1,9 +1,10 @@
 #include "Header Files/Scene.h"
+
 Scene::Scene()
 {
-/*	m_screenWidth = 1280;
-	m_screenHeight = 720;
-*/
+	/*	m_screenWidth = 1280;
+		m_screenHeight = 720;
+	*/
 	m_screenWidth = 1920;
 	m_screenHeight = 1080;
 	m_shadowMapWidth = 1200;
@@ -28,7 +29,6 @@ Scene::Scene()
 	m_viewMatrix = mat4(1.0);
 
 	m_terrainAlpha = 1.0f;
-
 }
 
 Scene::~Scene()
@@ -87,7 +87,7 @@ Scene::~Scene()
 	delete m_sky;
 	delete m_bloom;
 
-	
+
 	delete m_window;
 }
 
@@ -95,7 +95,9 @@ void Scene::Init()
 {
 	glEnable(GL_DEPTH_TEST);
 	m_fov = 60.0f;
-	m_projMatrix = perspective(radians(m_fov), (float)m_window->GetWidht() / (float)m_window->GetHeight(), 0.1f, 500.0f);
+	m_projMatrix = perspective(radians(m_fov),
+	                           static_cast<float>(m_window->GetWidht()) / static_cast<float>(m_window->GetHeight()),
+	                           0.1f, 500.0f);
 	m_viewMatrix = m_camera->GetView();
 	m_modelMatrix = mat4(1.0);
 
@@ -116,19 +118,19 @@ void Scene::Init()
 	m_platform.push_back(new Model("src/Models/platform2.obj"));
 
 	// Powers
-	m_power.push_back(new Model("src/Models/CartoonBomb.obj"));			//0
-	m_power.push_back(new Model("src/Models/PowerUpCar.obj"));			//1
-	m_power.push_back(new Model("src/Models/LowPolyController.obj"));	//2
-	m_power.push_back(new Model("src/Models/Question.obj"));			//3
-	m_power.push_back(new Model("src/Models/Exclamation.obj"));			//4
-	m_power.push_back(new Model("src/Models/SizeDown2.0.obj"));			//5
-	m_power.push_back(new Model("src/Models/SizeUP2.0.obj"));			//6
-	m_power.push_back(new Model("src/Models/Bulb.obj"));				//7
-	m_power.push_back(new Model("src/Models/Love.obj"));				//8
-	m_power.push_back(new Model("src/Models/Rocket.obj"));				//9
+	m_power.push_back(new Model("src/Models/CartoonBomb.obj")); //0
+	m_power.push_back(new Model("src/Models/PowerUpCar.obj")); //1
+	m_power.push_back(new Model("src/Models/LowPolyController.obj")); //2
+	m_power.push_back(new Model("src/Models/Question.obj")); //3
+	m_power.push_back(new Model("src/Models/Exclamation.obj")); //4
+	m_power.push_back(new Model("src/Models/SizeDown2.0.obj")); //5
+	m_power.push_back(new Model("src/Models/SizeUP2.0.obj")); //6
+	m_power.push_back(new Model("src/Models/Bulb.obj")); //7
+	m_power.push_back(new Model("src/Models/Love.obj")); //8
+	m_power.push_back(new Model("src/Models/Rocket.obj")); //9
 
 
-	m_objects.push_back(new Model("src/Models/Log.obj"));  //M�STE VARA F�RSTA SOM LADDAS IN
+	m_objects.push_back(new Model("src/Models/Log.obj")); //M�STE VARA F�RSTA SOM LADDAS IN
 	m_objects.push_back(new Model("src/Models/Ball.obj"));
 	m_objects.push_back(new Model("src/Models/Log2.obj"));
 	m_objects.push_back(new Model("src/Models/Rock.obj"));
@@ -145,8 +147,8 @@ void Scene::Init()
 	//m_power.push_back(new Model("src/Models/PowerUp.obj"));
 
 	// Lights
-	
-	AddDirLight(vec3(-1, -1, 0), { 1,1,1 });
+
+	AddDirLight(vec3(-1, -1, 0), {1, 1, 1});
 	/*
 	AddPointLight({ 0,2,10 }, { 1, 0, 0 });
 	AddPointLight({ 10,2,10 }, { 0, 1, 0 });
@@ -159,7 +161,6 @@ void Scene::Init()
 	 */
 	// pls do not add spotlights thanks you ^^
 	//AddSpotLight({ 0, 2, 0 }, vec3(vec3(0) - vec3(0, 2, 0)), {1, 1, 1}, 12.5);
-
 }
 
 void Scene::LightToShader()
@@ -214,13 +215,14 @@ void Scene::LightToShader()
 	}
 }
 
-void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, MarchingCubes* cube, bool gameOver, int winner,bool terrain)
+void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, MarchingCubes* cube, bool gameOver,
+                   int winner, bool terrain)
 {
 	m_viewMatrix = m_camera->GetView();
 	/* Render here */
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	if(m_enableBloom)
+	if (m_enableBloom)
 		glClearColor(0.f, 0.f, 0.f, 1.0f);
 	else
 		glClearColor(0.7f, 0.7f, 0.9f, 1.0f);
@@ -238,7 +240,7 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, 
 	{
 		RenderSky();
 	}
-	
+
 	// Matrix uniforms
 	m_modelShader->UseShader();
 	m_modelShader->SetUniform("u_Terrain", 0);
@@ -264,7 +266,7 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, 
 	m_modelShader->SetUniform("u_Terrain", 1);
 	cube->Draw(m_modelShader, m_terrainAlpha);
 	m_modelShader->SetUniform("u_Terrain", 0);
-		
+
 
 	glDisable(GL_BLEND);
 
@@ -274,8 +276,8 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, 
 		m_lightsOut = false;
 	}
 	LightToShader();
-	
-	
+
+
 	// Draw all objects
 	RenderSceneInfo(m_modelShader, objects);
 
@@ -284,9 +286,9 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, 
 
 	// Render Particles
 	RenderParticles();
-	
+
 	// Render Skybox
-	if(!m_enableBloom)
+	if (!m_enableBloom)
 		RenderSkybox();
 
 	// Add glow
@@ -302,7 +304,6 @@ void Scene::RenderSceneInfo(Shader* shader, vector<ObjectInfo*> objects)
 	shader->UseShader();
 	for (uint i = 0; i < objects.size(); i++)
 	{
-		
 		shader->SetUniform("u_Model", objects[i]->modelMatrix);
 		shader->SetUniform("u_PlayerColor", objects[i]->hue);
 		shader->SetUniform("u_Glow", objects[i]->glow);
@@ -327,7 +328,7 @@ void Scene::RenderSceneInfo(Shader* shader, vector<ObjectInfo*> objects)
 			break;
 		}
 	}
-	shader->SetUniform("u_Model", glm::scale(translate(mat4(1.f), vec3(0, 9.65, 30)),vec3(0.25, 0.25, 0.25)));
+	shader->SetUniform("u_Model", scale(translate(mat4(1.f), vec3(0, 9.65, 30)), vec3(0.25, 0.25, 0.25)));
 	shader->SetUniform("u_PlayerColor", vec3(1, 0, 0));
 	shader->SetUniform("u_Glow", false);
 	shader->SetUniform("u_Alpha", alpha);
@@ -353,7 +354,8 @@ void Scene::RenderSky()
 
 	glCullFace(GL_BACK);
 
-	m_sky->RenderSkyPlane(m_skyPlaneShader, scale(translate(mat4(1.0f), vec3(0, -120, -150)), vec3(200)), m_camera->GetView(), m_projMatrix);
+	m_sky->RenderSkyPlane(m_skyPlaneShader, scale(translate(mat4(1.0f), vec3(0, -120, -150)), vec3(200)),
+	                      m_camera->GetView(), m_projMatrix);
 
 	glDepthMask(GL_TRUE);
 	glDepthFunc(GL_LESS);
@@ -402,11 +404,11 @@ void Scene::RenderImGui(btDiscreteDynamicsWorld* world)
 		m_toggle = false;
 	}
 
-	if (m_debug) {
+	if (m_debug)
+	{
 		m_modelShader->SetUniform("u_Model", mat4(1));
 		m_modelShader->SetUniform("u_PlayerColor", vec3(1, 0, 0));
 		world->debugDrawWorld();
-
 	}
 }
 
@@ -463,7 +465,9 @@ void Scene::SwapBuffer()
 void Scene::ResetCameraFOV()
 {
 	m_fov = 60.0f;
-	m_projMatrix = perspective(radians(m_fov), (float)m_window->GetWidht() / (float)m_window->GetHeight(), 0.1f, 500.0f);
+	m_projMatrix = perspective(radians(m_fov),
+	                           static_cast<float>(m_window->GetWidht()) / static_cast<float>(m_window->GetHeight()),
+	                           0.1f, 500.0f);
 }
 
 void Scene::ZoomIn(float dt)
@@ -471,7 +475,9 @@ void Scene::ZoomIn(float dt)
 	if (m_fov > 40)
 	{
 		m_fov -= dt * (m_fov - 40) * 0.1f;
-		m_projMatrix = perspective(radians(m_fov), (float)m_window->GetWidht() / (float)m_window->GetHeight(), 0.1f, 500.0f);
+		m_projMatrix = perspective(radians(m_fov),
+		                           static_cast<float>(m_window->GetWidht()) / static_cast<float>(m_window->GetHeight()),
+		                           0.1f, 500.0f);
 	}
 }
 
@@ -480,7 +486,9 @@ void Scene::ZoomOut(float dt)
 	if (m_fov < 60)
 	{
 		m_fov += dt * (60 - m_fov) * 0.1f;
-		m_projMatrix = perspective(radians(m_fov), (float)m_window->GetWidht() / (float)m_window->GetHeight(), 0.1f, 500.0f);
+		m_projMatrix = perspective(radians(m_fov),
+		                           static_cast<float>(m_window->GetWidht()) / static_cast<float>(m_window->GetHeight()),
+		                           0.1f, 500.0f);
 	}
 }
 
@@ -515,7 +523,8 @@ void Scene::SetBloom(bool b)
 	m_enableBloom = b;
 }
 
-void Scene::AddParticleEffect(vec3 pos, vec3 color1, vec3 color2, float speed, float spread, vec3 dir, int nr, float duration, float size, float gravity)
+void Scene::AddParticleEffect(vec3 pos, vec3 color1, vec3 color2, float speed, float spread, vec3 dir, int nr,
+                              float duration, float size, float gravity)
 {
 	m_particles.push_back(new ParticleSystem(nr));
 	m_particles.back()->SetActive();
@@ -560,7 +569,7 @@ void Scene::SetOnlySky(bool b)
 
 mat4 Scene::GetProjMatrix()
 {
-	return m_projMatrix;;
+	return m_projMatrix;
 }
 
 mat4 Scene::GetCameraView()
@@ -572,11 +581,11 @@ vector<Model*> Scene::GetModels(int index)
 {
 	if (index == 0)
 		return m_platform;
-	else if (index == 1)
+	if (index == 1)
 		return m_vehicles;
-	else if (index == 2)
+	if (index == 2)
 		return m_power;
-	else if (index == 3)
+	if (index == 3)
 		return m_objects;
 }
 
@@ -610,7 +619,7 @@ void Scene::UpdateTerrainAlpha(float dt, bool terrain)
 	if (terrain == true)
 	{
 		if (m_terrainAlpha < 1.0f)
-			m_terrainAlpha += dt/2;
+			m_terrainAlpha += dt / 2;
 	}
 	else
 	{
@@ -618,4 +627,3 @@ void Scene::UpdateTerrainAlpha(float dt, bool terrain)
 			m_terrainAlpha -= dt;
 	}
 }
-

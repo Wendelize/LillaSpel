@@ -1,11 +1,11 @@
-#include "Header Files\ParticleSystem.h"
+#include "Header Files/ParticleSystem.h"
 
 ParticleSystem::ParticleSystem(int nrOfParticles)
 {
 	m_nrOfParticle = nrOfParticles;
 	m_particles = new Particle[m_nrOfParticle];
 	m_particleShader = new Shader("src/Shaders/ParticleVS.glsl", "src/Shaders/ParticleFS.glsl");
-	m_particlePos	= new GLfloat[4 * m_nrOfParticle];
+	m_particlePos = new GLfloat[4 * m_nrOfParticle];
 	m_particleColor = new GLfloat[4 * m_nrOfParticle];
 	m_active = true;
 
@@ -21,12 +21,12 @@ ParticleSystem::~ParticleSystem()
 	delete m_particleShader;
 	delete[] m_particlePos;
 	delete[] m_particleColor;
-	
 }
 
 void ParticleSystem::InitParticles()
 {
-	for (int i = 0; i < m_nrOfParticle; i++) {
+	for (int i = 0; i < m_nrOfParticle; i++)
+	{
 		m_particles[i].life = 0.f;
 		m_particles[i].cameraDist = -1.0f;
 	}
@@ -40,10 +40,10 @@ void ParticleSystem::Init()
 	InitParticles();
 
 	static const GLfloat g_vertex_buffer_data[] = {
-		 -0.5f, -0.5f, 0.0f,
-		  0.5f, -0.5f, 0.0f,
-		 -0.5f,  0.5f, 0.0f,
-		  0.5f,  0.5f, 0.0f,
+		-0.5f, -0.5f, 0.0f,
+		0.5f, -0.5f, 0.0f,
+		-0.5f, 0.5f, 0.0f,
+		0.5f, 0.5f, 0.0f,
 	};
 
 	glGenBuffers(1, &m_billBoardBuffer);
@@ -52,24 +52,28 @@ void ParticleSystem::Init()
 
 	glGenBuffers(1, &m_particlePosBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, m_particlePosBuffer);
-	glBufferData(GL_ARRAY_BUFFER, m_nrOfParticle * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, m_nrOfParticle * 4 * sizeof(GLfloat), nullptr, GL_STREAM_DRAW);
 
 	glGenBuffers(1, &m_particleColorBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, m_particleColorBuffer);
-	glBufferData(GL_ARRAY_BUFFER, m_nrOfParticle * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, m_nrOfParticle * 4 * sizeof(GLfloat), nullptr, GL_STREAM_DRAW);
 }
 
 int ParticleSystem::FindParticle()
 {
-	for (int i = m_lastUsedParticle; i < m_nrOfParticle; i++) {
-		if (m_particles[i].life < 0) {
+	for (int i = m_lastUsedParticle; i < m_nrOfParticle; i++)
+	{
+		if (m_particles[i].life < 0)
+		{
 			m_lastUsedParticle = i;
 			return i;
 		}
 	}
 
-	for (int i = 0; i < m_lastUsedParticle; i++) {
-		if (m_particles[i].life < 0) {
+	for (int i = 0; i < m_lastUsedParticle; i++)
+	{
+		if (m_particles[i].life < 0)
+		{
 			m_lastUsedParticle = i;
 			return i;
 		}
@@ -85,29 +89,29 @@ void ParticleSystem::SortParticles()
 
 
 void ParticleSystem::Draw()
-{	 
+{
 	glBindBuffer(GL_ARRAY_BUFFER, m_particlePosBuffer);
-	glBufferData(GL_ARRAY_BUFFER, m_nrOfParticle * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW); 
+	glBufferData(GL_ARRAY_BUFFER, m_nrOfParticle * 4 * sizeof(GLfloat), nullptr, GL_STREAM_DRAW);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, m_particleCount * sizeof(GLfloat) * 4, m_particlePos);
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_particleColorBuffer);
-	glBufferData(GL_ARRAY_BUFFER, m_nrOfParticle * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, m_nrOfParticle * 4 * sizeof(GLfloat), nullptr, GL_STREAM_DRAW);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, m_particleCount * sizeof(GLfloat) * 4, m_particleColor);
 
 	// 1rst attribute buffer : vertices
 	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, m_billBoardBuffer);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, static_cast<void*>(nullptr));
 
 	// 2nd attribute buffer : positions of particles' centers
 	glEnableVertexAttribArray(1);
 	glBindBuffer(GL_ARRAY_BUFFER, m_particlePosBuffer);
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, (void*)0);
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, static_cast<void*>(nullptr));
 
 	// 3rd attribute buffer : particles' colors
 	glEnableVertexAttribArray(2);
 	glBindBuffer(GL_ARRAY_BUFFER, m_particleColorBuffer);
-	glVertexAttribPointer(2, 4, GL_FLOAT, GL_TRUE, 0, (void*)0);
+	glVertexAttribPointer(2, 4, GL_FLOAT, GL_TRUE, 0, static_cast<void*>(nullptr));
 
 	glVertexAttribDivisor(0, 0); // particles vertices : always reuse the same 4 vertices -> 0
 	glVertexAttribDivisor(1, 1); // positions : one per quad (its center)                 -> 1
@@ -118,7 +122,6 @@ void ParticleSystem::Draw()
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);
 	glDisableVertexAttribArray(2);
-	
 }
 
 Shader* ParticleSystem::GetShader()
@@ -126,7 +129,8 @@ Shader* ParticleSystem::GetShader()
 	return m_particleShader;
 }
 
-void ParticleSystem::GenerateParticles(vec3 emitterPos, float speed ,float spread, float life, vec3 color1, vec3 color2, float size, vec3 dir, float gravity)
+void ParticleSystem::GenerateParticles(vec3 emitterPos, float speed, float spread, float life, vec3 color1, vec3 color2,
+                                       float size, vec3 dir, float gravity)
 {
 	for (int i = 0; i < m_nrOfParticle; i++)
 	{
@@ -135,19 +139,19 @@ void ParticleSystem::GenerateParticles(vec3 emitterPos, float speed ,float sprea
 		m_particles[i].position = emitterPos;
 
 		//glm::vec3 maindir = glm::vec3(0.0f, 8.0f, 0.0f);
-		glm::vec3 randomdir = glm::vec3(
+		vec3 randomdir = vec3(
 			(rand() % 2000 - 1000.0f) / 1000.0f,
 			(rand() % 2000 - 1000.0f) / 1000.0f,
 			(rand() % 2000 - 1000.0f) / 1000.0f
 		);
 		m_particles[i].velocity = (dir + randomdir * spread) * speed;
 
-		float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+		float r = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
 		if (color1 == vec3(NULL))
 		{
-			float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-			float g = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-			float b = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+			float r = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+			float g = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+			float b = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
 			m_particles[i].color.x = r;
 			m_particles[i].color.y = g;
 			m_particles[i].color.z = b;
@@ -155,16 +159,16 @@ void ParticleSystem::GenerateParticles(vec3 emitterPos, float speed ,float sprea
 		}
 		else
 		{
-			m_particles[i].color = vec4(color1, 1.0f);;
+			m_particles[i].color = vec4(color1, 1.0f);
 
-			if(color2.x == 1)
-				m_particles[i].color.x += static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+			if (color2.x == 1)
+				m_particles[i].color.x += static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
 			if (color2.y == 1)
-				m_particles[i].color.y += static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+				m_particles[i].color.y += static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
 			if (color2.z == 1)
-				m_particles[i].color.z += static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+				m_particles[i].color.z += static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
 		}
-		
+
 		m_particles[i].size = size;
 		m_startSize = size;
 		m_gravity = gravity;
@@ -175,7 +179,7 @@ void ParticleSystem::Simulate(float dt)
 {
 	int nrOfDead = 0;
 	m_particleCount = m_nrOfParticle;
-	for (int i = 0; i < m_nrOfParticle; i++) 
+	for (int i = 0; i < m_nrOfParticle; i++)
 	{
 		Particle& p = m_particles[i];
 		if (p.life > 0.0f)
@@ -183,11 +187,11 @@ void ParticleSystem::Simulate(float dt)
 			p.life -= dt;
 
 			// Simulate simple physics : gravity only, no collisions
-			p.velocity += glm::vec3(0.0f, m_gravity, 0.0f) * (float)dt;
-			p.position += p.velocity * (float)dt;
+			p.velocity += vec3(0.0f, m_gravity, 0.0f) * static_cast<float>(dt);
+			p.position += p.velocity * static_cast<float>(dt);
 			p.cameraDist = length(p.position - vec3(0, 3, 33));
 			p.size = m_startSize * (p.life) / m_startLife;
-			
+
 			// Fill the GPU buffer
 			m_particlePos[4 * i + 0] = p.position.x;
 			m_particlePos[4 * i + 1] = p.position.y;
