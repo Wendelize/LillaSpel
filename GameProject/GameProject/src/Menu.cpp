@@ -176,7 +176,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 5);
 		ImGui::GetStyle().WindowRounding = 0.0f;
 		ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(m_p1Col.x * borderCol, m_p1Col.y * borderCol, m_p1Col.z * borderCol, 1));
-		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_p1Col.x, m_p1Col.y, m_p1Col.z, 1));
+		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_p1Col.x / 3, m_p1Col.y / 3, m_p1Col.z / 3, 1));
 		if (ImGui::Begin("##player1Select", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoNavInputs))
 		{
 			int index = 0;
@@ -273,7 +273,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		ImGui::SetNextWindowSize(ImVec2(width / 4, height / 2));
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 5);
 		ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(m_p2Col.x * borderCol, m_p2Col.y * borderCol, m_p2Col.z * borderCol, 1));
-		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_p2Col.x, m_p2Col.y, m_p2Col.z, 1));
+		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_p2Col.x / 3, m_p2Col.y / 3, m_p2Col.z / 3, 1));
 		if (ImGui::Begin("##player2Select", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoNavInputs))
 		{
 			if (m_p2Joined == false)
@@ -393,7 +393,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		ImGui::SetNextWindowSize(ImVec2(width / 4, height / 2));
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 5);
 		ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(m_p3Col.x * borderCol, m_p3Col.y * borderCol, m_p3Col.z * borderCol, 1));
-		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_p3Col.x, m_p3Col.y, m_p3Col.z, 1));
+		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_p3Col.x / 3, m_p3Col.y / 3, m_p3Col.z / 3, 1));
 		if (ImGui::Begin("##player3Select", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoNavInputs))
 		{
 			//GLFWgamepadstate state;
@@ -515,8 +515,9 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		ImGui::SetNextWindowPos(ImVec2(width / 2 + width / 4, height / 2));
 		ImGui::SetNextWindowSize(ImVec2(width / 4, height / 2));
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 5);
+		p4FadeCol = 0.25;
 		ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(m_p4Col.x * borderCol, m_p4Col.y * borderCol, m_p4Col.z * borderCol, 1));
-		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_p4Col.x, m_p4Col.y, m_p4Col.z, 1));
+		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_p4Col.x / 3 - p4FadeCol, m_p4Col.y / 3 - p4FadeCol, m_p4Col.z / 3 - p4FadeCol, 1));
 		if (ImGui::Begin("##player4Select", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoNavInputs))
 		{
 				
@@ -1227,30 +1228,40 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		if (ImGui::Begin("##statsP1.2", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize))
 		{
 			ImGui::Text("Kills : ");
+			int killCursorPosY = ImGui::GetCursorPosY();
 			int suicides = 0;
 			int j = 0;
 			for (int i = 0; i < m_kills[m_winOrder[0]].size(); i++)
 			{
-				if (i % 3 != 0)
+				if (i % 4 != 0)
 				{
 					ImGui::SameLine();
 				}
 				ImGui::Text("\tP%d ", (m_kills[m_winOrder[0]]).at(i) + 1);
+
 			}
 			if (m_kills[m_winOrder[0]].size() == 0)
 			{
 				ImGui::SameLine();
-				ImGui::Text("\t0 ");
+				string temp = "0";
+				ImGui::SetCursorPosX(250 - ImGui::CalcTextSize(temp.c_str()).x - 10);
+				ImGui::Text(temp.c_str());
+
+			}
+			if (ImGui::GetCursorPosY() < (killCursorPosY + ImGui::GetTextLineHeightWithSpacing() * 4))
+			{
+				ImGui::SetCursorPosY(killCursorPosY + ImGui::GetTextLineHeightWithSpacing() * 4);
 			}
 			ImGui::Separator();
-			ImGui::Text("Deaths : ");//	TODO: FIxa så att antal suicides skrivs ut för sig själv
+			ImGui::Text("Deaths : ");//	TODO: FIxa så att antal suicides skrivs ut för sig själv 
+			int deathCursorPosY = ImGui::GetCursorPosY();
 			for (int i = 0; i < m_killers[m_winOrder[0]].size(); i++)
 			{
 
 
 				if ((m_killers[m_winOrder[0]].at(i)) != m_winOrder[0])
 				{
-					if (j % 3 != 0)
+					if (j % 4 != 0)
 					{
 						ImGui::SameLine();
 					}
@@ -1268,16 +1279,34 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 			if (j == 0)
 			{
 				ImGui::SameLine();
-				ImGui::Text("\t0 ");
+				string temp = "0";
+				ImGui::SetCursorPosX(250 - ImGui::CalcTextSize(temp.c_str()).x - 10);
+				ImGui::Text(temp.c_str());
 
 			}
 
-
-			ImGui::Text("Suicides: \t%d ", suicides);
+			if (ImGui::GetCursorPosY() < (deathCursorPosY + ImGui::GetTextLineHeightWithSpacing() * 4))
+			{
+				ImGui::SetCursorPosY(deathCursorPosY + ImGui::GetTextLineHeightWithSpacing() * 4);
+			}
+			ImGui::Text("Suicides:");
+			int suicidesCursorPosY = ImGui::GetCursorPosY();
+			ImGui::SameLine();
+			string temp = to_string(suicides);
+			ImGui::SetCursorPosX(250 - ImGui::CalcTextSize(temp.c_str()).x - 10);
+			ImGui::Text(temp.c_str());
 			ImGui::SameLine();
 			ImGui::Separator();
+			if (ImGui::GetCursorPosY() < (suicidesCursorPosY + ImGui::GetTextLineHeightWithSpacing()))
+			{
+				ImGui::SetCursorPosY(suicidesCursorPosY + ImGui::GetTextLineHeightWithSpacing());
+			}
 			ImGui::Separator();
-			ImGui::Text("Collisions: \t%d ", m_timesCollided[m_winOrder[0]]); 
+			ImGui::Text("Collisions:");
+			ImGui::SameLine();
+			temp = to_string(m_timesCollided[m_winOrder[0]]);
+			ImGui::SetCursorPosX(250 - ImGui::CalcTextSize(temp.c_str()).x - 10);
+			ImGui::Text(temp.c_str());
 
 
 			ImGui::PopStyleColor(3);
@@ -1303,9 +1332,18 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		{
 			borderCol = 0.5;
 		}
+
+		if (m_winOrder[1] == 3)
+		{
+			p4FadeCol = 0.25;
+		}
+		else
+		{
+			p4FadeCol = 0;
+		}
 		ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(m_playerColor[m_winOrder[1]].x - borderCol, m_playerColor[m_winOrder[1]].y - borderCol, m_playerColor[m_winOrder[1]].z - borderCol, 1));
 		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0, 0, 1));
-		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_playerColor[m_winOrder[1]].x / 3, m_playerColor[m_winOrder[1]].y / 3, m_playerColor[m_winOrder[1]].z / 3, 1));
+		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_playerColor[m_winOrder[1]].x / 3 - p4FadeCol, m_playerColor[m_winOrder[1]].y / 3 - p4FadeCol, m_playerColor[m_winOrder[1]].z / 3, 1));
 		if (ImGui::Begin("##statsP2.1", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize))
 		{
 			ImGui::Text("\t\t\t\t\t 2nd \n\t\t\tPlayer\t%d ", m_winOrder[1] + 1);
@@ -1319,34 +1357,44 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0, 0, 1));
 		ImGui::SetNextWindowPos(ImVec2(width / 9 * 2, height / 6 * 2));
 		ImGui::SetNextWindowSize(ImVec2(250, 500));
-		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_playerColor[m_winOrder[1]].x / 3, m_playerColor[m_winOrder[1]].y / 3, m_playerColor[m_winOrder[1]].z / 3, 1));
+		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_playerColor[m_winOrder[1]].x / 3 - p4FadeCol, m_playerColor[m_winOrder[1]].y / 3 - p4FadeCol, m_playerColor[m_winOrder[1]].z / 3, 1));
 		if (ImGui::Begin("##statsP2.2", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize))
 		{
 			ImGui::Text("Kills : ");
+			int killCursorPosY = ImGui::GetCursorPosY();
 			int suicides = 0;
 			int j = 0;
 			for (int i = 0; i < m_kills[m_winOrder[1]].size(); i++)
 			{
-				if (i % 3 != 0)
+				if (i % 4 != 0)
 				{
 					ImGui::SameLine();
 				}
 				ImGui::Text("\tP%d ", (m_kills[m_winOrder[1]]).at(i) + 1);
+
 			}
 			if (m_kills[m_winOrder[1]].size() == 0)
 			{
 				ImGui::SameLine();
-				ImGui::Text("\t0 ");
+				string temp = "0";
+				ImGui::SetCursorPosX(250 - ImGui::CalcTextSize(temp.c_str()).x - 10);
+				ImGui::Text(temp.c_str());
+
+			}
+			if (ImGui::GetCursorPosY() < (killCursorPosY + ImGui::GetTextLineHeightWithSpacing() * 4))
+			{
+				ImGui::SetCursorPosY(killCursorPosY + ImGui::GetTextLineHeightWithSpacing() * 4);
 			}
 			ImGui::Separator();
-			ImGui::Text("Deaths : ");
+			ImGui::Text("Deaths : ");//	TODO: FIxa så att antal suicides skrivs ut för sig själv 
+			int deathCursorPosY = ImGui::GetCursorPosY();
 			for (int i = 0; i < m_killers[m_winOrder[1]].size(); i++)
 			{
 
 
 				if ((m_killers[m_winOrder[1]].at(i)) != m_winOrder[1])
 				{
-					if (j % 3 != 0)
+					if (j % 4 != 0)
 					{
 						ImGui::SameLine();
 					}
@@ -1364,15 +1412,34 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 			if (j == 0)
 			{
 				ImGui::SameLine();
-				ImGui::Text("\t0 ");
+				string temp = "0";
+				ImGui::SetCursorPosX(250 - ImGui::CalcTextSize(temp.c_str()).x - 10);
+				ImGui::Text(temp.c_str());
 
 			}
 
+			if (ImGui::GetCursorPosY() < (deathCursorPosY + ImGui::GetTextLineHeightWithSpacing() * 4))
+			{
+				ImGui::SetCursorPosY(deathCursorPosY + ImGui::GetTextLineHeightWithSpacing() * 4);
+			}
+			ImGui::Text("Suicides:");
+			int suicidesCursorPosY = ImGui::GetCursorPosY();
+			ImGui::SameLine();
+			string temp = to_string(suicides);
+			ImGui::SetCursorPosX(250 - ImGui::CalcTextSize(temp.c_str()).x - 10);
+			ImGui::Text(temp.c_str());
+			ImGui::SameLine();
 			ImGui::Separator();
-			ImGui::Text("Suicides: \t%d ", suicides);
+			if (ImGui::GetCursorPosY() < (suicidesCursorPosY + ImGui::GetTextLineHeightWithSpacing()))
+			{
+				ImGui::SetCursorPosY(suicidesCursorPosY + ImGui::GetTextLineHeightWithSpacing());
+			}
 			ImGui::Separator();
-			ImGui::Text("Collisions: \t%d ", m_timesCollided[m_winOrder[1]]);
-
+			ImGui::Text("Collisions:");
+			ImGui::SameLine();
+			temp = to_string(m_timesCollided[m_winOrder[1]]);
+			ImGui::SetCursorPosX(250 - ImGui::CalcTextSize(temp.c_str()).x - 10);
+			ImGui::Text(temp.c_str());
 			ImGui::PopStyleColor(3);
 			ImGui::PopStyleVar();
 		}
@@ -1394,11 +1461,20 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 			{
 				borderCol = 0.5;
 			}
+
+			if (m_winOrder[2] == 3)
+			{
+				p4FadeCol = 0.25;
+			}
+			else
+			{
+				p4FadeCol = 0;
+			}
 			ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(m_playerColor[m_winOrder[2]].x - borderCol, m_playerColor[m_winOrder[2]].y - borderCol, m_playerColor[m_winOrder[2]].z - borderCol, 1));
 			ImGui::SetNextWindowPos(ImVec2(width / 9 * 6, 0));
 			ImGui::SetNextWindowSize(ImVec2(250, 80));
 			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0, 0, 1));
-			ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_playerColor[m_winOrder[2]].x / 3, m_playerColor[m_winOrder[2]].y / 3, m_playerColor[m_winOrder[2]].z / 3, 1));
+			ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_playerColor[m_winOrder[2]].x / 3 - p4FadeCol, m_playerColor[m_winOrder[2]].y / 3 - p4FadeCol, m_playerColor[m_winOrder[2]].z / 3, 1));
 			if (ImGui::Begin("##statsP3.1", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize))
 			{
 				ImGui::Text("\t\t\t\t\t 3rd \n\t\t\tPlayer\t%d ", m_winOrder[2] + 1);
@@ -1413,32 +1489,44 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 			ImGui::SetNextWindowPos(ImVec2(width / 9 * 6, height / 6 * 2));
 			ImGui::SetNextWindowSize(ImVec2(250, 500));
 			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0, 0, 1));
-			ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_playerColor[m_winOrder[2]].x / 3, m_playerColor[m_winOrder[2]].y / 3, m_playerColor[m_winOrder[2]].z / 3, 1));
+			ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_playerColor[m_winOrder[2]].x / 3 - p4FadeCol, m_playerColor[m_winOrder[2]].y / 3 - p4FadeCol, m_playerColor[m_winOrder[2]].z / 3, 1));
 			if (ImGui::Begin("##statsP3.2", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize))
 			{
 				ImGui::Text("Kills : ");
+				int killCursorPosY = ImGui::GetCursorPosY();
 				int suicides = 0;
 				int j = 0;
 				for (int i = 0; i < m_kills[m_winOrder[2]].size(); i++)
 				{
-					if (i % 3 != 0)
+					if (i % 4 != 0)
 					{
 						ImGui::SameLine();
 					}
 					ImGui::Text("\tP%d ", (m_kills[m_winOrder[2]]).at(i) + 1);
+
 				}
 				if (m_kills[m_winOrder[2]].size() == 0)
 				{
 					ImGui::SameLine();
-					ImGui::Text("\t0 ");
+					string temp = "0";
+					ImGui::SetCursorPosX(250 - ImGui::CalcTextSize(temp.c_str()).x - 10);
+					ImGui::Text(temp.c_str());
+
+				}
+				if (ImGui::GetCursorPosY() < (killCursorPosY + ImGui::GetTextLineHeightWithSpacing() * 4))
+				{
+					ImGui::SetCursorPosY(killCursorPosY + ImGui::GetTextLineHeightWithSpacing() * 4);
 				}
 				ImGui::Separator();
-				ImGui::Text("Deaths : ");
+				ImGui::Text("Deaths : ");//	TODO: FIxa så att antal suicides skrivs ut för sig själv 
+				int deathCursorPosY = ImGui::GetCursorPosY();
 				for (int i = 0; i < m_killers[m_winOrder[2]].size(); i++)
 				{
+
+
 					if ((m_killers[m_winOrder[2]].at(i)) != m_winOrder[2])
 					{
-						if (j % 3 != 0)
+						if (j % 4 != 0)
 						{
 							ImGui::SameLine();
 						}
@@ -1449,19 +1537,41 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 					{
 						suicides++;
 					}
+
+
 				}
 
 				if (j == 0)
 				{
 					ImGui::SameLine();
-					ImGui::Text("\t0 ");
+					string temp = "0";
+					ImGui::SetCursorPosX(250 - ImGui::CalcTextSize(temp.c_str()).x - 10);
+					ImGui::Text(temp.c_str());
 
 				}
 
+				if (ImGui::GetCursorPosY() < (deathCursorPosY + ImGui::GetTextLineHeightWithSpacing() * 4))
+				{
+					ImGui::SetCursorPosY(deathCursorPosY + ImGui::GetTextLineHeightWithSpacing() * 4);
+				}
+				ImGui::Text("Suicides:");
+				int suicidesCursorPosY = ImGui::GetCursorPosY();
+				ImGui::SameLine();
+				string temp = to_string(suicides);
+				ImGui::SetCursorPosX(250 - ImGui::CalcTextSize(temp.c_str()).x - 10);
+				ImGui::Text(temp.c_str());
+				ImGui::SameLine();
 				ImGui::Separator();
-				ImGui::Text("Suicides: \t%d ", suicides);
+				if (ImGui::GetCursorPosY() < (suicidesCursorPosY + ImGui::GetTextLineHeightWithSpacing()))
+				{
+					ImGui::SetCursorPosY(suicidesCursorPosY + ImGui::GetTextLineHeightWithSpacing());
+				}
 				ImGui::Separator();
-				ImGui::Text("Collisions: \t%d ", m_timesCollided[m_winOrder[2]]);
+				ImGui::Text("Collisions:");
+				ImGui::SameLine();
+				temp = to_string(m_timesCollided[m_winOrder[2]]);
+				ImGui::SetCursorPosX(250 - ImGui::CalcTextSize(temp.c_str()).x - 10);
+				ImGui::Text(temp.c_str());
 
 				ImGui::PopStyleColor(3);
 				ImGui::PopStyleVar();
@@ -1485,11 +1595,20 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 			{
 				borderCol = 0.5;
 			}
+
+			if (m_winOrder[3] == 3)
+			{
+				p4FadeCol = 0.25;
+			}
+			else
+			{
+				p4FadeCol = 0;
+			}
 			ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(m_playerColor[m_winOrder[3]].x - borderCol, m_playerColor[m_winOrder[3]].y - borderCol, m_playerColor[m_winOrder[3]].z - borderCol, 1));
 			ImGui::SetNextWindowPos(ImVec2(width / 9 * 8 - 32, 0));
 			ImGui::SetNextWindowSize(ImVec2(250, 80));
 			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0, 0, 1));
-			ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_playerColor[m_winOrder[3]].x / 3, m_playerColor[m_winOrder[3]].y / 3, m_playerColor[m_winOrder[3]].z / 3, 1));
+			ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_playerColor[m_winOrder[3]].x / 3 - p4FadeCol, m_playerColor[m_winOrder[3]].y / 3 - p4FadeCol, m_playerColor[m_winOrder[3]].z / 3, 1));
 			if (ImGui::Begin("##statsP4.1", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize))
 			{
 				ImGui::Text("\t\t\t\t\t 4th \n\t\t\tPlayer\t%d ", m_winOrder[3] + 1);
@@ -1504,32 +1623,44 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 			ImGui::SetNextWindowPos(ImVec2(width / 9 * 8 - 32, height / 6 * 2));
 			ImGui::SetNextWindowSize(ImVec2(250, 500));
 			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0, 0, 1));
-			ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_playerColor[m_winOrder[3]].x / 3, m_playerColor[m_winOrder[3]].y / 3, m_playerColor[m_winOrder[3]].z / 3, 1));
+			ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_playerColor[m_winOrder[3]].x / 3 - p4FadeCol, m_playerColor[m_winOrder[3]].y / 3 - p4FadeCol, m_playerColor[m_winOrder[3]].z / 3, 1));
 			if (ImGui::Begin("##statsP4.2", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize))
 			{
 				ImGui::Text("Kills : ");
+				int killCursorPosY = ImGui::GetCursorPosY();
 				int suicides = 0;
 				int j = 0;
 				for (int i = 0; i < m_kills[m_winOrder[3]].size(); i++)
 				{
-					if (i % 3 != 0)
+					if (i % 4 != 0)
 					{
 						ImGui::SameLine();
 					}
 					ImGui::Text("\tP%d ", (m_kills[m_winOrder[3]]).at(i) + 1);
+
 				}
 				if (m_kills[m_winOrder[3]].size() == 0)
 				{
 					ImGui::SameLine();
-					ImGui::Text("\t0 ");
+					string temp = "0";
+					ImGui::SetCursorPosX(250 - ImGui::CalcTextSize(temp.c_str()).x - 10);
+					ImGui::Text(temp.c_str());
+
+				}
+				if (ImGui::GetCursorPosY() < (killCursorPosY + ImGui::GetTextLineHeightWithSpacing() * 4))
+				{
+					ImGui::SetCursorPosY(killCursorPosY + ImGui::GetTextLineHeightWithSpacing() * 4);
 				}
 				ImGui::Separator();
-				ImGui::Text("Deaths : ");
+				ImGui::Text("Deaths : ");//	TODO: FIxa så att antal suicides skrivs ut för sig själv 
+				int deathCursorPosY = ImGui::GetCursorPosY();
 				for (int i = 0; i < m_killers[m_winOrder[3]].size(); i++)
 				{
-					if ((m_killers[m_winOrder[3]].at(i)) != m_winOrder[3])
+
+
+					if ((m_killers[m_winOrder[0]].at(i)) != m_winOrder[3])
 					{
-						if (j % 3 != 0)
+						if (j % 4 != 0)
 						{
 							ImGui::SameLine();
 						}
@@ -1540,17 +1671,41 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 					{
 						suicides++;
 					}
+
+
 				}
+
 				if (j == 0)
 				{
 					ImGui::SameLine();
-					ImGui::Text("\t0 ");
+					string temp = "0";
+					ImGui::SetCursorPosX(250 - ImGui::CalcTextSize(temp.c_str()).x - 10);
+					ImGui::Text(temp.c_str());
 
 				}
+
+				if (ImGui::GetCursorPosY() < (deathCursorPosY + ImGui::GetTextLineHeightWithSpacing() * 4))
+				{
+					ImGui::SetCursorPosY(deathCursorPosY + ImGui::GetTextLineHeightWithSpacing() * 4);
+				}
+				ImGui::Text("Suicides:");
+				int suicidesCursorPosY = ImGui::GetCursorPosY();
+				ImGui::SameLine();
+				string temp = to_string(suicides);
+				ImGui::SetCursorPosX(250 - ImGui::CalcTextSize(temp.c_str()).x - 10);
+				ImGui::Text(temp.c_str());
+				ImGui::SameLine();
 				ImGui::Separator();
-				ImGui::Text("Suicides: \t%d ", suicides);
+				if (ImGui::GetCursorPosY() < (suicidesCursorPosY + ImGui::GetTextLineHeightWithSpacing()))
+				{
+					ImGui::SetCursorPosY(suicidesCursorPosY + ImGui::GetTextLineHeightWithSpacing());
+				}
 				ImGui::Separator();
-				ImGui::Text("Collisions: \t%d ", m_timesCollided[m_winOrder[3]]);
+				ImGui::Text("Collisions:");
+				ImGui::SameLine();
+				temp = to_string(m_timesCollided[m_winOrder[3]]);
+				ImGui::SetCursorPosX(250 - ImGui::CalcTextSize(temp.c_str()).x - 10);
+				ImGui::Text(temp.c_str());
 
 				ImGui::PopStyleColor(3);
 				ImGui::PopStyleVar();
@@ -1603,7 +1758,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		ImGui::SetNextWindowSize(ImVec2(170, 65));
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 5);
 		ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(m_playerColor[0].x - borderCol, m_playerColor[0].y - borderCol, m_playerColor[0].z - borderCol, 1));
-		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_p1Col.x, m_p1Col.y, m_p1Col.z, 1));
+		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_p1Col.x / 3, m_p1Col.y / 3, m_p1Col.z / 3, 1));
 		if (ImGui::Begin("##player1Hud", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize))
 		{
 			int index = -1;
@@ -1641,7 +1796,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		ImGui::SetNextWindowSize(ImVec2(170, 65));
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 5);
 		ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(m_playerColor[1].x - borderCol, m_playerColor[1].y - borderCol - 1, m_playerColor[1].z - borderCol, 1));
-		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_p2Col.x, m_p2Col.y, m_p2Col.z, 1));
+		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_p2Col.x / 3, m_p2Col.y / 3, m_p2Col.z / 3, 1));
 		if (ImGui::Begin("##player2Hud", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize))
 		{
 			int index = -1;
@@ -1680,7 +1835,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 			ImGui::SetNextWindowSize(ImVec2(170, 65));
 			ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 5);
 			ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(m_playerColor[2].x - borderCol - 2, m_playerColor[2].y - borderCol - 1, m_playerColor[2].z - borderCol, 1));
-			ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_p3Col.x, m_p3Col.y, m_p3Col.z, 1));
+			ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_p3Col.x / 3, m_p3Col.y / 3, m_p3Col.z / 3, 1));
 			if (ImGui::Begin("##player3Hud", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize))
 			{
 				int index = -1;
@@ -1719,8 +1874,9 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 			ImGui::SetNextWindowPos(ImVec2(width - 171, height - 66));
 			ImGui::SetNextWindowSize(ImVec2(170, 65));
 			ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 5);
+			p4FadeCol = 0.25;
 			ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(m_playerColor[3].x - borderCol - 2, m_playerColor[3].y - borderCol - 2, m_playerColor[3].z - borderCol, 1));
-			ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_p4Col.x, m_p4Col.y, m_p4Col.z, 1));
+			ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_p4Col.x / 3 - p4FadeCol, m_p4Col.y / 3 - p4FadeCol, m_p4Col.z / 3 , 1));
 			if (ImGui::Begin("##player4Hud", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize))
 			{
 				int index = -1;
