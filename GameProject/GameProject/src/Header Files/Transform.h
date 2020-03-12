@@ -1,5 +1,5 @@
-#pragma once 
-#include "Include.h" 
+#pragma once
+#include "Include.h"
 
 class Transform
 {

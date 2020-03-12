@@ -100,5 +100,4 @@ public:
 	void SetLastPos(vec3 pos);
 	bool GetHook();
 	void SetHook(bool state);
-
 };

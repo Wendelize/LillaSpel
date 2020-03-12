@@ -5,7 +5,8 @@ class Model
 {
 private:
 	vector<Mesh> m_meshes;
-	vector<TextureData> m_texturesLoaded; // stores all the textures loaded so far, optimization to make sure textures aren't loaded more than once.
+	vector<TextureData> m_texturesLoaded;
+	// stores all the textures loaded so far, optimization to make sure textures aren't loaded more than once.
 	bool m_textureBool = false;
 	string m_dir = "../Models/";
 
@@ -17,7 +18,7 @@ private:
 	int TextureFromFile(const char* path, const string& directory, bool gamma);
 
 public:
-	Model(const char * path, bool textureBool = false);
+	Model(const char* path, bool textureBool = false);
 	~Model();
 
 	void Draw(Shader* shader);

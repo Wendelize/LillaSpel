@@ -2,7 +2,8 @@
 
 #include "Include.h"
 
-struct skyboxData {
+struct skyboxData
+{
 	vec3 pos;
 };
 
@@ -18,13 +19,16 @@ private:
 	GLuint m_textureSkybox;
 	int m_width, m_height, m_nrChannels;
 
-	GLsizeiptr vertexBufferSizeSkybox()const {
+	GLsizeiptr vertexBufferSizeSkybox() const
+	{
 		return (m_nrOfVSkybox * sizeof(VertexData));
 	}
 
-	GLsizeiptr indexBufferSizeSkybox()const {
+	GLsizeiptr indexBufferSizeSkybox() const
+	{
 		return (m_nrOfISkybox * sizeof(unsigned int));
 	}
+
 public:
 	GLuint m_vertexBufferSkybox, m_indicesBufferSkybox, m_vertexArraySkybox;
 
