@@ -90,8 +90,8 @@ Window::Window(int width, int height)
 	m_fonts.push_back(io.Fonts->AddFontFromFileTTF("src/IMGUI/Fonts/CFLegendsoftheFall-Regular.ttf", 60.0f));
 	m_fonts.push_back(io.Fonts->AddFontFromFileTTF("src/IMGUI/Fonts/thememefont.ttf", 20.0f));	// MEME font
 	m_fonts.push_back(io.Fonts->AddFontFromFileTTF("src/IMGUI/Fonts/Rowdy-Regular.ttf", 90.0f));
-	m_fonts.push_back(io.Fonts->AddFontFromFileTTF("src/IMGUI/Fonts/spongeboy_me_bob/Spongeboy Me Bob.ttf", 60.0f));
-	m_fonts.push_back(io.Fonts->AddFontFromFileTTF("src/IMGUI/Fonts/djb_crazy_goofy_cool/DJB Crazy Goofy Cool.ttf", 20));
+	m_fonts.push_back(io.Fonts->AddFontFromFileTTF("src/IMGUI/Fonts/SugarpunchDEMO.ttf", 30.0f));
+	m_fonts.push_back(io.Fonts->AddFontFromFileTTF("src/IMGUI/Fonts/SugarpunchDEMO.ttf", 60.0f));
 	ImGui::StyleColorsDark();
 	
 	// Application init
