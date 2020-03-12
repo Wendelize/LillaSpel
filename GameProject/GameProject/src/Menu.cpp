@@ -665,20 +665,28 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		m_scene->SetInstantCameraFocus(vec3(0, 0, 0));
 		m_scene->SetCameraPos(CAMERAPOS_GAME);
 
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 10);
-		ImGui::SetNextWindowPos(ImVec2((float)width / 3 - (slWidth / 2), height / 4));
-		ImGui::SetNextWindowSize(ImVec2((float)width / 3 + slWidth, height / 4 - 300));
+		//ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 10);
+		ImGui::SetNextWindowPos(ImVec2((float)width / 3 - (slWidth / 2), 0));
+		ImGui::SetNextWindowSize(ImVec2((float)width / 3 + slWidth, height / 4));
 
-		if (ImGui::Begin("##selectLevel", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiNavInput_Activate))
+		if (ImGui::Begin("##selectLevel", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_AlwaysAutoResize | ImGuiNavInput_Activate))
 		{
 			if (m_selected[0] == 0)
 			{
 				float windowSizeX = (float)width / 3 + slWidth;
 				m_mapID = m_objHand->GetCube()->GetCurrentLevel();
-				string temp = "<  Level : " + to_string(m_mapID) + "  > ";
+				ImGui::PushFont(w->m_fonts[1]);
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.8, 0.8, 0.8, 1));
+				string temp = "Select Level";
 				ImGui::SetCursorPosX(windowSizeX/2 - ImGui::CalcTextSize(temp.c_str()).x / 2);
 				ImGui::Text(temp.c_str());
-				ImGui::Text("\t\t\t\t\t\t\t Press \"B\" to Select Vehicles Again ");
+				ImGui::PopFont();
+				ImGui::PushFont(w->m_fonts[8]);
+				temp = to_string(m_mapID);
+				ImGui::SetCursorPosX(windowSizeX / 2 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+				ImGui::Text(temp.c_str());
+				ImGui::PopStyleColor();
+				ImGui::PopFont();
 			}
 			else if (m_selected[0] == 1)
 			{
@@ -762,7 +770,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				}
 			}
 			//ImGui::PopStyleColor();
-			ImGui::PopStyleVar();
+			//ImGui::PopFont();
+			//ImGui::PopStyleVar();
 		}
 		ImGui::End();
 		break;
@@ -792,21 +801,50 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 	//		fillerSize = 200;
 	//	}
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 10);
-		ImGui::SetNextWindowPos(ImVec2((float)width / 3 - (slWidth / 2), height / 4));
-		ImGui::SetNextWindowSize(ImVec2((float)width / 3 + slWidth, height / 4 - 300));
-		if (ImGui::Begin("##selectLives", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiNavInput_Activate))
+		ImGui::SetNextWindowPos(ImVec2((float)width / 3 - (slWidth / 2), 0));
+		ImGui::SetNextWindowSize(ImVec2((float)width / 3 + slWidth, height / 4));
+		if (ImGui::Begin("##selectLives", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_AlwaysAutoResize | ImGuiNavInput_Activate))
 		{
 			if (m_selected[0] == 0)
 			{
-				ImGui::Text("\t\t\t\t\t\t\t\t\t\t\t\t\t\t <  Lives : %d  > ", m_maxLives);
-				ImGui::Text("\t\t\t\t\t\t\t Press \"B\" to Select Level Again ");
+				//ImGui::Text("\t\t\t\t\t\t\t\t\t\t\t\t\t\t <  Lives : %d  > ", m_maxLives);
+				//ImGui::Text("\t\t\t\t\t\t\t Press \"B\" to Select Level Again ");
+
+				float windowSizeX = (float)width / 3 + slWidth;
+				ImGui::PushFont(w->m_fonts[1]);
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.8, 0.8, 0.8, 1));
+				string temp = "Select Lives";
+				ImGui::SetCursorPosX(windowSizeX / 2 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+				ImGui::Text(temp.c_str());
+				ImGui::PopFont();
+				ImGui::PushFont(w->m_fonts[8]);
+				temp = to_string(m_maxLives);
+				ImGui::SetCursorPosX(windowSizeX / 2 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+				ImGui::Text(temp.c_str());
+				ImGui::PopStyleColor();
+				ImGui::PopFont();
+
 			}
 			else if (m_selected[0] == 1)
 			{
 				int minutes = m_maxTime / 60;
 				int seconds = m_maxTime % 60;
-				ImGui::Text("\t\t\t\t\t\t\t\t\t\t\t\t\t <  Time : %dm : %ds > ", minutes, seconds);
-				ImGui::Text("\t\t\t\t\t\t\t Press \"B\" to Select Lives Again ");
+				//ImGui::Text("\t\t\t\t\t\t\t\t\t\t\t\t\t <  Time : %dm : %ds > ", minutes, seconds);
+				//ImGui::Text("\t\t\t\t\t\t\t Press \"B\" to Select Lives Again ");
+
+				float windowSizeX = (float)width / 3 + slWidth;
+				ImGui::PushFont(w->m_fonts[1]);
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.8, 0.8, 0.8, 1));
+				string temp = "Set Time Limit";
+				ImGui::SetCursorPosX(windowSizeX / 2 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+				ImGui::Text(temp.c_str());
+				ImGui::PopFont();
+				ImGui::PushFont(w->m_fonts[8]);
+				temp = to_string(minutes) + "m : " + to_string(seconds) + "s";
+				ImGui::SetCursorPosX(windowSizeX / 2 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+				ImGui::Text(temp.c_str());
+				ImGui::PopStyleColor();
+				ImGui::PopFont();
 			}
 			else if (m_selected[0] == 2)
 			{
@@ -881,9 +919,9 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 						{
 							m_maxTime -= 30;
 						}
-						else
+						else if (m_maxTime == 15)
 						{
-							m_maxTime = 15;
+							m_maxTime = 600;
 						}
 					}
 					m_p1Seconds = time;
@@ -906,6 +944,8 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 			}
 			//ImGui::PopStyleColor();
 			ImGui::PopStyleVar();
+			//ImGui::PopFont();
+
 		}
 		ImGui::End();
 		break;
