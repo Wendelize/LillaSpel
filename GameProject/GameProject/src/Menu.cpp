@@ -1645,7 +1645,7 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 				{
 
 
-					if ((m_killers[m_winOrder[0]].at(i)) != m_winOrder[3])
+					if ((m_killers[m_winOrder[3]].at(i)) != m_winOrder[3])
 					{
 						if (j % 4 != 0)
 						{
