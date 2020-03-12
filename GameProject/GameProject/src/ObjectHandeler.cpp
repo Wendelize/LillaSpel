@@ -418,6 +418,15 @@ void ObjectHandler::RemoveOrbitObjects(int index)
 	delete body;
 }
 
+void ObjectHandler::RemoveAllOrbitObjects()
+{
+	int size = m_oribtObjects.size();
+	for(int i = 0; i < size; i ++)
+	{
+		RemoveOrbitObjects(0);
+	}
+}
+
 void ObjectHandler::RemoveObject(int index)
 {
 	m_dynamicsWorld->removeCollisionObject(m_objects.at(index)->GetObject());
@@ -1095,11 +1104,6 @@ void ObjectHandler::RemoveAllObjects()
 	for (int i = 0; i < nrOf; i++)
 	{
 		RemoveObject(0);
-	}
-	nrOf = m_oribtObjects.size();
-	for (int i = 0; i < nrOf; i++)
-	{
-		RemoveOrbitObjects(0);
 	}
 }
 

@@ -328,7 +328,7 @@ void Scene::RenderSceneInfo(Shader* shader, vector<ObjectInfo*> objects)
 			break;
 		}
 	}
-	shader->SetUniform("u_Model", glm::scale(translate(mat4(1.f), vec3(0, 9.65, 30)),vec3(0.25, 0.25, 0.25)));
+	shader->SetUniform("u_Model", glm::scale(translate(mat4(1.f), vec3(0, 9.65, 30)), vec3(0.25, 0.25, 0.25)));
 	shader->SetUniform("u_PlayerColor", vec3(3.0, 1.5, 0.5));
 	shader->SetUniform("u_Glow", false);
 	shader->SetUniform("u_Alpha", alpha);

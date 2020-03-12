@@ -70,6 +70,7 @@ public:
 	void AddObject(vec3 pos, int modelId, Model* model);
 	void AddOrbitObjects(vec3 pos, int modelId, Model* model, float speed, float scale);
 	void RemoveOrbitObjects(int index);
+	void RemoveAllOrbitObjects();
 	void RemoveObject(int index);
 	void AddPlatform(int modelId, Model* model);
 	void AddGhost(int index);

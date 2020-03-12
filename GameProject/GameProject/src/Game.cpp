@@ -73,10 +73,32 @@ Game::Game()
 		m_soundEngine->setListenerPosition(vec3df(0, 18, 33), vec3df(0, -4, 3)); // Listener position, view direction
 		m_music->setIsPaused(false);
 	}
+
+	for (int i = 0; i < 10; i++)
+	{
+		int x = rand() % 2;
+		int z = rand() % 2;
+		if (x == 0)
+		{
+			x = -1;
+		}
+		if (z == 0)
+		{
+			z = -1;
+		}
+		float speed = rand() % 10 - 5;
+		if (speed <= 0.01f && speed > -0.01f)
+		{
+			speed = 1;
+		}
+		m_objectHandler->AddOrbitObjects(vec3((rand() % 100 + 30) * x, rand() % 10 - 20, (rand() % 100 + 30) * z), 10,
+			m_objectModels[10], speed, rand() % 7);
+	}
 }
 
 Game::~Game()
 {
+	m_objectHandler->RemoveAllOrbitObjects();
 	delete m_objectHandler;
 	delete m_scene;
 	delete m_cube;
@@ -588,26 +610,6 @@ void Game::AddInteractiveObjects()
 		break;
 	}
 
-	for (int i = 0; i < 10; i++)
-	{
-		int x = rand() % 2;
-		int z = rand() % 2;
-		if (x == 0)
-		{
-			x = -1;
-		}
-		if (z == 0)
-		{
-			z = -1;
-		}
-		float speed = rand() % 10 - 5;
-		if (speed <= 0.01f && speed > -0.01f)
-		{
-			speed = 1;
-		}
-		m_objectHandler->AddOrbitObjects(vec3((rand() % 100 + 30) * x, rand() % 10 - 20, (rand() % 100 + 30) * z), 10,
-		                                 m_objectModels[10], speed, rand() % 7);
-	}
 }
 
 void Game::Render()
