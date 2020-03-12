@@ -175,20 +175,6 @@ void ObjectHandler::Update(float dt)
 			}
 		}
 	}
-	if (m_cube->GetCurrentLevel() == 6) {
-		if (m_objects.at(0)->GetScale() >= 3.) {
-			m_objects.at(0)->SetWay(false);
-		}
-		else if (m_objects.at(0)->GetScale() <= 0.01) {
-			m_objects.at(0)->SetWay(true);
-		}
-		if (m_objects.at(0)->GetWay()) {
-			m_objects.at(0)->SetScale(m_objects.at(0)->GetScale() + 0.5f * dt);
-		}
-		else {
-			m_objects.at(0)->SetScale(m_objects.at(0)->GetScale() - 0.5f * dt);
-		}
-	}
 	CheckPowerUpCollision();
 	CheckCollisionCars(dt);
 	UpdateVibration(dt);

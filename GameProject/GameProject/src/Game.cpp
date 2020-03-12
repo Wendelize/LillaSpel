@@ -579,7 +579,6 @@ void Game::AddInteractiveObjects()
 		break;
 	default:
 		{
-		m_objectHandler->AddObject(vec3(0,1,0), 4, m_objectModels[4]);
 		}
 		break;
 	}
