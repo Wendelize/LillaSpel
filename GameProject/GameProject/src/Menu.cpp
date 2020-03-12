@@ -130,7 +130,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 			//	NavHighlight is the border around the button
 			ImGui::PushStyleColor(ImGuiCol_NavHighlight, ImVec4(0, 0, 0, 0));
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
-			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.8, 0.1, 0.1, 1));
+			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0, 0.0, 0.0, 1));
 			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.1, 0.1, 0.1, 0.3));
 
 
