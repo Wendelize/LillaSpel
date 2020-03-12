@@ -29,37 +29,36 @@ Ghost::Ghost()
 	}
 
 	// SpookSounds
-	m_soundFiles[0] = "src/Audio/Player - Dying 1.mp3";
-	m_soundFiles[1] = "src/Audio/Player - Dying 2.mp3";
-	m_soundFiles[2] = "src/Audio/Player - Dying 3.mp3";
-	m_soundFiles[3] = "src/Audio/Player - Dying 4.mp3";
-	m_soundFiles[4] = "src/Audio/Player - Dying 5.mp3";
-	m_soundFiles[5] = "src/Audio/Player - Dying 6.mp3";
-	m_soundFiles[6] = "src/Audio/Player - Dying 7.mp3";
-	m_soundFiles[7] = "src/Audio/Player - Dying 8.mp3";
-	m_soundFiles[8] = "src/Audio/Player - Dying 9.mp3";
-	m_soundFiles[9] = "src/Audio/Player - Dying 10.mp3";
-	m_soundFiles[10] = "src/Audio/Player - Dying 11.mp3";
-	m_soundFiles[11] = "src/Audio/Player - Dying 12.mp3";
-	m_soundFiles[12] = "src/Audio/Player - Dying 13.mp3";
-	m_soundFiles[13] = "src/Audio/Player - Dying 14.mp3";
-	m_soundFiles[14] = "src/Audio/Player - Dying 15.mp3";
-	m_soundFiles[15] = "src/Audio/Player - Dying 16.mp3";
-	m_soundFiles[16] = "src/Audio/Player - Dying 17.mp3";
-	m_soundFiles[17] = "src/Audio/Player - Dying 18.mp3";
-	m_soundFiles[18] = "src/Audio/Player - Dying 19.mp3";
-	m_soundFiles[19] = "src/Audio/Player - Dying 20.mp3";
-	m_soundFiles[20] = "src/Audio/Player - Dying 21.mp3";
-	m_soundFiles[21] = "src/Audio/Player - Dying 22.mp3";
-	m_soundFiles[22] = "src/Audio/Player - Dying 23.mp3";
-	m_soundFiles[23] = "src/Audio/Player - Dying 24.mp3";
-	m_soundFiles[24] = "src/Audio/Player - Dying 25.mp3";
-	m_soundFiles[25] = "src/Audio/Player - Dying 26.mp3";
-	m_soundFiles[26] = "src/Audio/Player - Dying 27.mp3";
-	m_soundFiles[27] = "src/Audio/Player - Dying 28.mp3";
-	m_soundFiles[28] = "src/Audio/Player - Dying 29.mp3";
-	m_soundFiles[29] = "src/Audio/Player - Dying 30.mp3";
-	m_nrOfSpookSounds = 30;
+	m_soundFiles[0] =  "src/Audio/Ghost sound 1.mp3";
+	m_soundFiles[1] =  "src/Audio/Ghost sound 2.mp3";
+	m_soundFiles[2] =  "src/Audio/Ghost sound 3.mp3";
+	m_soundFiles[3] =  "src/Audio/Ghost sound 4.mp3";
+	m_soundFiles[4] =  "src/Audio/Ghost sound 5.mp3";
+	m_soundFiles[5] =  "src/Audio/Ghost sound 6.mp3";
+	m_soundFiles[6] =  "src/Audio/Ghost sound 7.mp3";
+	m_soundFiles[7] =  "src/Audio/Ghost sound 8.mp3";
+	m_soundFiles[8] =  "src/Audio/Ghost sound 9.mp3";
+	m_soundFiles[9] =  "src/Audio/Ghost sound 10.mp3";
+	m_soundFiles[10] = "src/Audio/Ghost sound 11.mp3";
+	m_soundFiles[11] = "src/Audio/Ghost sound 12.mp3";
+	m_soundFiles[12] = "src/Audio/Ghost sound 13.mp3";
+	m_soundFiles[13] = "src/Audio/Ghost sound 14.mp3";
+	m_soundFiles[14] = "src/Audio/Ghost sound 15.mp3";
+	m_soundFiles[15] = "src/Audio/Ghost sound 16.mp3";
+	m_soundFiles[16] = "src/Audio/Ghost sound 17.mp3";
+	m_soundFiles[17] = "src/Audio/Ghost sound 18.mp3";
+	m_soundFiles[18] = "src/Audio/Ghost sound 19.mp3";
+	m_soundFiles[19] = "src/Audio/Ghost sound 20.mp3";
+	m_soundFiles[20] = "src/Audio/Ghost sound 21.mp3";
+	m_soundFiles[21] = "src/Audio/Ghost sound 22.mp3";
+	m_soundFiles[22] = "src/Audio/Ghost sound 23.mp3";
+	m_soundFiles[23] = "src/Audio/Ghost sound 24.mp3";
+	m_soundFiles[24] = "src/Audio/Ghost sound 25.mp3";
+	m_nrOfSpookSounds = 25;
+
+	m_soundFiles[25] = "src/Audio/Ghost - bomb.mp3";
+	m_soundFiles[26] = "src/Audio/Ghost - lights.mp3";
+	m_soundFiles[27] = "src/Audio/Ghost - turns.mp3";
 }
 
 Ghost::~Ghost()
@@ -110,6 +109,8 @@ void Ghost::UpdateGhost(float dt)
 			if (m_controller->ButtonBIsPressed(m_controllerID))
 			{
 				// Play "Here comes a bomb"" 
+				filename = m_soundFiles[25];
+				m_tauntEngine->play2D(filename, false);
 				m_nrOfBombSwitch--;
 				m_timeOut = 0;
 				m_bombSwitch = true;
@@ -122,6 +123,8 @@ void Ghost::UpdateGhost(float dt)
 			if (m_controller->ButtonAIsPressed(m_controllerID))
 			{
 				// Play "Buuuuh, daaark"
+				filename = m_soundFiles[26];
+				m_tauntEngine->play2D(filename, false);
 				m_lightSwitch = true;
 				m_nrOfLightSwitch--;
 				m_timeOut = 0;
@@ -134,6 +137,8 @@ void Ghost::UpdateGhost(float dt)
 			if (m_controller->ButtonXIsPressed(m_controllerID))
 			{
 				// Play "HEHEHEHE, TRY DIZ"
+				filename = m_soundFiles[27];
+				m_tauntEngine->play2D(filename, false);
 				m_ctrlSwitch = true;
 				m_nrOfCtrlSwitch--;
 				m_timeOut = 0;
