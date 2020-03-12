@@ -91,7 +91,7 @@ private:
 	int m_p4ModelId = -1;
 	double m_p4Seconds = 1;
 	bool m_p4Joined = false;
-	vec3 m_p4Col = vec3(4, 4, 1.6);
+	vec3 m_p4Col = vec3(4, 4, 0.6);
 
 	double m_inputSeconds = 1;
 	

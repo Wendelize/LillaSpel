@@ -1570,7 +1570,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 			ImGui::Text("P1\t ");
 			ImGui::SameLine();
 			ImGui::PushFont(m_scene->GetOurWindow()->m_fonts[4]);
-			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 1, 0, 1));
+			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0, 0, 1));
 			ImGui::Text("T");
 			ImGui::PopStyleColor(1);
 			ImGui::PopFont();
@@ -1607,7 +1607,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 			ImGui::Text("P2\t ");
 			ImGui::SameLine();
 			ImGui::PushFont(m_scene->GetOurWindow()->m_fonts[4]);
-			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 0, 0, 1));
+			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0, 0, 1));
 			ImGui::Text("T");
 			ImGui::PopStyleColor(1);
 			ImGui::PopFont();
@@ -1646,7 +1646,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				ImGui::Text("P3\t ");
 				ImGui::SameLine();
 				ImGui::PushFont(m_scene->GetOurWindow()->m_fonts[4]);
-				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 1, 0, 1));
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0, 0, 1));
 				ImGui::Text("T");
 				ImGui::PopStyleColor(1);
 				ImGui::PopFont();
@@ -1686,7 +1686,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				ImGui::Text("P4\t ");
 				ImGui::SameLine();
 				ImGui::PushFont(m_scene->GetOurWindow()->m_fonts[4]);
-				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.3, .7, 3, 1));
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0, 0, 1));
 				ImGui::Text("T");
 				ImGui::PopStyleColor(1);
 				ImGui::PopFont();
