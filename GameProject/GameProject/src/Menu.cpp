@@ -1055,6 +1055,8 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 						}
 					}
 				}
+				if (m_objHand->GetNumPlayers() == 1)
+					m_objHand->AddPlayer(vec3(10, 6, 3), 1, m_p2ModelId, m_p2Col, model);
 			}
 			ImGui::SetCursorPos(ImVec2((static_cast<float>(width) / 3) / 3 - 100, 215));
 			if (ImGui::Button("Main Menu", ImVec2(400, 75)))
