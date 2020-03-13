@@ -47,6 +47,7 @@ public:
 	void RankPlayers();
 	int GetWinnerIndex();
 	bool GetMapUpdate();
+	vec3 GetWinnerColor();
 
 private:
 	Scene* m_scene;
