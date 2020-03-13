@@ -43,6 +43,9 @@ uniform Light u_CarLights[MAX_NR_OF_LIGHTS];
 uniform Material u_Material;
 uniform bool u_Glow;
 uniform bool u_LightsOut;
+uniform bool u_Terrain;
+
+uniform float u_Alpha;
 
 uniform sampler2D u_ShadowMap;
 
@@ -99,6 +102,10 @@ vec3 CalcSpecular(Light light, vec3 lightVec, vec3 lookVec, vec3 n, bool blinn){
 		spec = pow(max(dot(lookVec, reflectionVec), 0.0), u_Material.shininess);
 	}
 	vec3 specular = vec3(light.specular) * spec;
+
+	if (u_Terrain)
+		specular = vec3(0, 0, 0);
+
 	return specular;
 }
 
@@ -188,6 +195,17 @@ void main(){
 	vec3 result = vec3(0.0);
 	bool blinn = true;
 	vec3 col = normalize(vi.color);
+	vec3 heightColor = vec3(1);
+	if(vi.position.y < -1.0 )
+	{
+	heightColor = vec3(1,1,1);
+	}else if(vi.position.y > 6.0)
+	{
+	heightColor = vec3(1,1,1);
+	}else
+	{
+		heightColor = vec3(0,1,0);
+	}
 	vec3 ambient = u_Material.ambient * col * 0.05;
 	
 	for(int i = 0; i < u_NrOf; i++)
@@ -206,13 +224,24 @@ void main(){
 		}
 	}
 	
+	vec3 baseColor = vec3(0.3, 0.1, 0.0);
+	if (u_Terrain)
+	{
+		if (u_LightsOut == true)
+			FragColor = vec4(clamp(baseColor + baseColor * vi.position.y / 2.0, 0.0, 1.0) * result + ambient, u_Alpha);
+		else
+			FragColor = vec4(baseColor + baseColor * vi.position.y / 4.0 + result + ambient, u_Alpha);
 
-    FragColor = vec4(result + ambient, 1.0);
+	}
+	else
+	{
+		FragColor = vec4(result + ambient, u_Alpha);
+	}
 
     float brightness = dot(result.rgb, vec3(0.2126, 0.7152, 0.0722));
     if(u_Glow)// && brightness > 1)
-        BrightColor = vec4(result.rgb, 1.0);
+        BrightColor = vec4(result.rgb, u_Alpha);
     else
-        BrightColor = vec4(0.0, 0.0, 0.0, 1.0);
+        BrightColor = vec4(0.0, 0.0, 0.0, u_Alpha);
 
 }

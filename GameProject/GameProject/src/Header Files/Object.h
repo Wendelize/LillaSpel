@@ -5,7 +5,7 @@
 class Object
 {
 public:
-	Object(btVector3 pos, int type, Model* model);
+	Object(btVector3 pos, int type, Model* model, float speed = 1, float scale = 1);
 	~Object();
 	ObjectInfo* GetObjectInfo();
 	btRigidBody* GetObject();
@@ -17,6 +17,8 @@ public:
 	vec3 GetPos();
 	void SetWay(bool way);
 	bool GetWay();
+	void rotateAroundCenter(float dt);
+	void rotate(float dt);
 private:
 	bool m_way = false;
 	btTriangleMesh m_tetraMesh;
@@ -30,4 +32,5 @@ private:
 	Transform* m_transform;
 	ObjectInfo* m_info;
 	float m_scale;
+	float m_speed;
 };

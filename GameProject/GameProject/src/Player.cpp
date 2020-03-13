@@ -72,8 +72,9 @@ Player::Player(Model* model, int modelId, vec3 pos)
 
 		break;
 	}
-	m_btTransform->setOrigin(btVector3(pos.x,pos.y,pos.z));
-	vec3 testPos = vec3(m_btTransform->getOrigin().x(), m_btTransform->getOrigin().y()- radius * scale, m_btTransform->getOrigin().z());
+	m_btTransform->setOrigin(btVector3(pos.x, pos.y, pos.z));
+	vec3 testPos = vec3(m_btTransform->getOrigin().x(), m_btTransform->getOrigin().y() - radius * scale,
+	                    m_btTransform->getOrigin().z());
 	m_transform->SetTranslation(testPos);
 
 	//float dotRotation = dot(m_transform->GetForward(), m_transform->GetPos());
@@ -84,17 +85,19 @@ Player::Player(Model* model, int modelId, vec3 pos)
 
 	float theta = acos(dot(normalize(forward), normalize(posVec2)));
 
-	if (posVec2.x < 0) {
-		m_transform->Rotate(vec3(0, -theta, 0));
+	if (posVec2.x < 0)
+	{
+		m_transform->TranslateDirection(vec3(0, -theta, 0));
 	}
-	else {
-		m_transform->Rotate(vec3(0, theta, 0));
+	else
+	{
+		m_transform->TranslateDirection(vec3(0, theta, 0));
 	}
 
 
 	btVector3 localInertia(0, 0, 0);
 	m_carShape->calculateLocalInertia(mass, localInertia);
-	
+
 	//using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
 	m_motionState = new btDefaultMotionState(*m_btTransform);
 	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, m_motionState, m_carShape, localInertia);
@@ -109,19 +112,19 @@ Player::Player(Model* model, int modelId, vec3 pos)
 	switch (modelId)
 	{
 	case 0:
-		m_body->setDamping(0.20, 50.0);
+		m_body->setDamping(0.20, 100.0);
 		break;
 	case 1:
-		m_body->setDamping(0.15, 50.0);
+		m_body->setDamping(0.15, 100.0);
 		break;
 	case 2:
-		m_body->setDamping(0.15, 50.0);
+		m_body->setDamping(0.15, 100.0);
 		break;
 	case 3:
-		m_body->setDamping(0.2, 50.0);
+		m_body->setDamping(0.2, 100.0);
 		break;
 	default:
-		m_body->setDamping(0.15, 15.0);
+		m_body->setDamping(0.15, 100.0);
 		break;
 	}
 
@@ -148,7 +151,6 @@ Player::Player(Model* model, int modelId, vec3 pos)
 	}
 
 	m_hookActive = false;
-
 }
 
 Player::~Player()
@@ -157,7 +159,7 @@ Player::~Player()
 	delete m_transform;
 	delete m_btTransform;
 	delete m_carShape;
-	if (m_soundEngine) 
+	if (m_soundEngine)
 	{
 		for (uint i = 0; i < m_carSounds.size(); i++)
 		{
@@ -168,9 +170,7 @@ Player::~Player()
 		m_sound->drop();
 		m_honk->drop();
 		m_honkEngine->drop();
-
 	}
-
 }
 
 void Player::Update(float dt)
@@ -199,7 +199,7 @@ void Player::Update(float dt)
 		if (m_controller->ButtonAIsPressed(m_controllerID))
 		{
 			//Acceleration
-			
+
 			if (m_inverted == false)
 			{
 				m_speed = 900000.f * m_powerMultiplier / (dt * 60);
@@ -221,7 +221,7 @@ void Player::Update(float dt)
 			{
 				m_speed = 800000.f * m_powerMultiplier / (dt * 60);
 			}
-				pressed = true;
+			pressed = true;
 		}
 
 		//Triggers
@@ -243,7 +243,7 @@ void Player::Update(float dt)
 		{
 			//Left trigger pressed
 			//Speed-Up
-			
+
 			if (m_inverted == false)
 			{
 				m_speed = -900000.f * m_powerMultiplier / (dt * 60);
@@ -256,33 +256,36 @@ void Player::Update(float dt)
 		}
 
 		// Left stick horisontal input
-		if ((m_controller->GetLeftStickHorisontal(m_controllerID) > 0.2f || m_controller->GetLeftStickHorisontal(m_controllerID) < -0.2f) && m_inverted == false)
+		if ((m_controller->GetLeftStickHorisontal(m_controllerID) > 0.2f || m_controller->
+			GetLeftStickHorisontal(m_controllerID) < -0.2f) && m_inverted == false)
 		{
 			if (m_speed < 0)
 				rotate.y -= m_controller->GetLeftStickHorisontal(m_controllerID) * -1.0;
 			else
 				rotate.y -= m_controller->GetLeftStickHorisontal(m_controllerID);
 		}
-		else if ((m_controller->GetLeftStickHorisontal(m_controllerID) > 0.2f || m_controller->GetLeftStickHorisontal(m_controllerID) < -0.2f) && m_inverted == true)
+		else if ((m_controller->GetLeftStickHorisontal(m_controllerID) > 0.2f || m_controller->
+			GetLeftStickHorisontal(m_controllerID) < -0.2f) && m_inverted == true)
 		{
 			if (m_speed < 0)
 				rotate.y -= m_controller->GetLeftStickHorisontal(m_controllerID);
 			else
-				rotate.y -= m_controller->GetLeftStickHorisontal(m_controllerID)* -1.0;
+				rotate.y -= m_controller->GetLeftStickHorisontal(m_controllerID) * -1.0;
 		}
-		
+
 		//Set rotationSpeed depending on your speed, less speed--> Can turn less. 
 		if (m_body->getLinearVelocity().length() < 3.f)
 		{
-			rotationSpeed = 2 * (m_body->getLinearVelocity().length()/3);
+			rotationSpeed = 2 * (m_body->getLinearVelocity().length() / 3);
 		}
 		direction = m_transform->TranslateDirection(rotate * dt * rotationSpeed);
 	}
 
 	//apply force
-	btVector3 directionBt = { direction.x,0,direction.z };
-	if(pressed){
-		m_body->applyForce(directionBt * -m_speed * dt , m_body->getWorldTransform().getOrigin());
+	btVector3 directionBt = {direction.x, 0, direction.z};
+	if (pressed)
+	{
+		m_body->applyForce(directionBt * -m_speed * dt, m_body->getWorldTransform().getOrigin());
 	}
 
 	if (m_soundEngine && m_body->getLinearVelocity().y() < 0.3f && m_body->getLinearVelocity().y() > -0.3f)
@@ -294,8 +297,24 @@ void Player::Update(float dt)
 
 	btVector3 moveVector = m_body->getWorldTransform().getOrigin() - m_currentPos;
 
-	m_transform->Translate(vec3(moveVector.x(), moveVector.y(), moveVector.z())); 
+	m_transform->Translate(vec3(moveVector.x(), moveVector.y(), moveVector.z()));
 	m_currentPos = m_body->getWorldTransform().getOrigin();
+}
+
+int Player::GetNrOfRockets()
+{
+	return m_nrOfRockets;
+}
+
+void Player::removeRocket()
+{
+	m_hookActive = false;
+
+	m_nrOfRockets--;
+	if (m_nrOfRockets < 0)
+	{
+		m_nrOfRockets == 0;
+	}
 }
 
 int Player::GetLives()
@@ -396,7 +415,7 @@ void Player::SetControllerID(int id)
 
 void Player::FinishRotation()
 {
-	m_transform->SetRotation(0, 3.14*1.2, 0);
+	m_transform->SetRotation(0, 3.14 * 1.2, 0);
 }
 
 vec3 Player::GetDirection()
@@ -423,20 +442,26 @@ ObjectInfo* Player::GetObjectInfo()
 Light* Player::GetLight(int index)
 {
 	vec3 pos = vec3(m_transform->GetMatrix()[3][0], m_transform->GetMatrix()[3][1], m_transform->GetMatrix()[3][2]);
-	vec3 t = cross(m_transform->GetForward(), { 0,1,0 });
+	vec3 t = cross(m_transform->GetForward(), {0, 1, 0});
 	switch (index)
 	{
 	case 0:
-		m_lights[0] = new Light(2, -m_transform->GetForward() - vec3(0, 0.05, 0), pos /*+ m_transform->GetForward() * 1.f*/ + t * 0.5f + vec3(0, 0.5, 0), vec3(m_color.x * 5, m_color.y * 5, m_color.z * 5), 12.5);
+		m_lights[0] = new Light(2, -m_transform->GetForward() - vec3(0, 0.05, 0),
+		                        pos /*+ m_transform->GetForward() * 1.f*/ + t * 0.5f + vec3(0, 0.5, 0),
+		                        vec3(5.0, 5.0, 5.0), 12.5);
 		break;
 	case 1:
-		m_lights[1] = new Light(2, -m_transform->GetForward() - vec3(0, 0.05, 0), pos /*+ m_transform->GetForward() * 1.f*/ - t * 0.5f + vec3(0, 0.5, 0), vec3(m_color.x * 5, m_color.y * 5, m_color.z * 5), 12.5);
+		m_lights[1] = new Light(2, -m_transform->GetForward() - vec3(0, 0.05, 0),
+		                        pos /*+ m_transform->GetForward() * 1.f*/ - t * 0.5f + vec3(0, 0.5, 0),
+		                        vec3(5.0, 5.0, 5.0), 12.5);
 		break;
 	case 2:
-		m_lights[2] = new Light(2, m_transform->GetForward() - vec3(0, 0.05, 0), pos + vec3(-0.5, 0.5, 0), vec3(m_color.x * 5, m_color.y * 5, m_color.z * 5), 12.5);
+		m_lights[2] = new Light(2, m_transform->GetForward() - vec3(0, 0.05, 0), pos + vec3(-0.5, 0.5, 0),
+		                        vec3(5.0, 5.0, 5.0), 12.5);
 		break;
 	case 3:
-		m_lights[3] = new Light(2, m_transform->GetForward() - vec3(0, 0.05, 0), pos + vec3(0.5, 0.5, 0), vec3(m_color.x * 5, m_color.y * 5, m_color.z * 5), 12.5);
+		m_lights[3] = new Light(2, m_transform->GetForward() - vec3(0, 0.05, 0), pos + vec3(0.5, 0.5, 0),
+		                        vec3(5.0, 5.0, 5.0), 12.5);
 		break;
 	default:
 		break;
@@ -465,7 +490,7 @@ void Player::SetFinishPos(vec3 pos)
 void Player::SetPos(vec3 pos)
 {
 	m_body->getWorldTransform().setOrigin(btVector3(pos.x, pos.y, pos.z));
-	m_body->setLinearVelocity(btVector3(0,0,0));
+	m_body->setLinearVelocity(btVector3(0, 0, 0));
 }
 
 bool Player::GetFallen()
@@ -475,7 +500,14 @@ bool Player::GetFallen()
 
 void Player::GivePower(int type)
 {
-	if (m_powerActive) 
+	if (type == 2)
+	{
+		m_nrOfRockets++;
+	}
+	else
+	{
+	}
+	if (m_powerActive)
 	{
 		removePower(m_powerType);
 	}
@@ -485,62 +517,64 @@ void Player::GivePower(int type)
 
 	float mass;
 	btVector3 localInertia(0, 0, 0);
-	switch (type) 
+	switch (type)
 	{
-		case 0:
-			mass = m_body->getMass() * 1.5f;
-			m_body->getCollisionShape()->calculateLocalInertia(mass, localInertia);
-			m_body->setMassProps(mass, localInertia);
-			m_transform->SetScale(m_scale.x * (1.5f), m_scale.y * (1.5f), m_scale.z * (1.5f));
-			m_powerMultiplier = 1.0f;
-			break;
+	case 0:
+		mass = m_body->getMass() * 1.5f;
+		m_body->getCollisionShape()->calculateLocalInertia(mass, localInertia);
+		m_body->setMassProps(mass, localInertia);
+		m_transform->SetScale(m_scale.x * (1.5f), m_scale.y * (1.5f), m_scale.z * (1.5f));
+		m_powerMultiplier = 1.0f;
+		break;
 
-		case 1:
-			m_inverted = true;
-			break;
+	case 1:
+		m_inverted = true;
+		break;
 
-		case 2:
-			m_powerDuration = 10000.f;
-			//m_powerMultiplier = 0.5f;
-			break;
+	case 2:
+		m_powerDuration = 10000.f;
+		//m_powerMultiplier = 0.5f;
+		break;
 
-		case 3:
-			mass = m_body->getMass() / 1.5f;
-			m_body->getCollisionShape()->calculateLocalInertia(mass, localInertia);
-			m_body->setMassProps(mass, localInertia);
-			m_transform->SetScale(m_scale.x * (0.75f), m_scale.y * (0.75f), m_scale.z * (0.75f));
-			m_powerMultiplier = 1.0f;
-			break;
+	case 3:
+		mass = m_body->getMass() / 1.5f;
+		m_body->getCollisionShape()->calculateLocalInertia(mass, localInertia);
+		m_body->setMassProps(mass, localInertia);
+		m_transform->SetScale(m_scale.x * (0.75f), m_scale.y * (0.75f), m_scale.z * (0.75f));
+		m_powerMultiplier = 1.0f;
+		break;
 
-		case 4:
-			mass = m_body->getMass() * 1.5f;
-			m_body->getCollisionShape()->calculateLocalInertia(mass, localInertia);
-			m_body->setMassProps(mass, localInertia);
-			m_transform->SetScale(m_scale.x * (1.5f), m_scale.y * (1.5f), m_scale.z * (1.5f));
-			m_powerMultiplier = 1.0f;
-			break;	
+	case 4:
+		mass = m_body->getMass() * 1.5f;
+		m_body->getCollisionShape()->calculateLocalInertia(mass, localInertia);
+		m_body->setMassProps(mass, localInertia);
+		m_transform->SetScale(m_scale.x * (1.5f), m_scale.y * (1.5f), m_scale.z * (1.5f));
+		m_powerMultiplier = 1.0f;
+		break;
 
-		case 5:
-			mass = m_body->getMass() / 1.5f;
-			m_body->getCollisionShape()->calculateLocalInertia(mass, localInertia);
-			m_body->setMassProps(mass, localInertia);
-			m_transform->SetScale(m_scale.x * (0.75f), m_scale.y * (0.75f), m_scale.z * (0.75f));
-			m_powerMultiplier = 1.0f;
-			break;
+	case 5:
+		mass = m_body->getMass() / 1.5f;
+		m_body->getCollisionShape()->calculateLocalInertia(mass, localInertia);
+		m_body->setMassProps(mass, localInertia);
+		m_transform->SetScale(m_scale.x * (0.75f), m_scale.y * (0.75f), m_scale.z * (0.75f));
+		m_powerMultiplier = 1.0f;
+		break;
 
-		case 6: //Bomb
-			break;
+	case 6: //Bomb
+		break;
 
-		case 7: //Lightbulb
-			break;
+	case 7: //Lightbulb
+		m_powerDuration = 5.f;
+		break;
 
-		case 8:
-			m_lives++;
-			break;
+	case 8:
+		m_lives++;
+		break;
 
-		case 9: //Invisible terrain
-			//m_body->setRestitution(m_restitution * 1.2);
-			break;
+	case 9: //Invisible terrain
+		//m_body->setRestitution(m_restitution * 1.2);
+		m_powerDuration = 5.f;
+		break;
 	}
 }
 
@@ -550,7 +584,7 @@ void Player::removePower(int type)
 	btVector3 localInertia(0, 0, 0);
 	m_powerActive = false;
 
-	switch (type) 
+	switch (type)
 	{
 	case 0:
 		mass = m_body->getMass() / 1.5f;
@@ -593,7 +627,7 @@ void Player::removePower(int type)
 		m_transform->SetScale(m_scale.x, m_scale.y, m_scale.z);
 		break;
 	case 6:
-		
+
 		break;
 	case 7:
 		break;
@@ -613,7 +647,7 @@ bool Player::updatePower(float dt)
 	bool destroy = false;
 	m_powerDuration = m_powerDuration - dt;
 
-	if (m_powerDuration <= 0.f && m_powerActive == true) 
+	if (m_powerDuration <= 0.f && m_powerActive == true)
 	{
 		m_powerActive = false;
 		destroy = true;
@@ -685,7 +719,6 @@ vec3 Player::GetLastPos()
 void Player::SetLastPos(vec3 pos)
 {
 	m_lastPos = pos;
-
 }
 
 bool Player::GetHook()

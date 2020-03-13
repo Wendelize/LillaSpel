@@ -13,7 +13,7 @@ private:
 
 	float m_translationSpeed[4];
 	float m_textureTranslation[4];
-	
+
 public:
 	Sky();
 	~Sky();
@@ -23,5 +23,4 @@ public:
 
 	void RenderSkyDome(Shader* shader, mat4 model, mat4 view, mat4 proj);
 	void RenderSkyPlane(Shader* shader, mat4 model, mat4 view, mat4 proj);
-	
 };

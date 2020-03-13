@@ -4,7 +4,7 @@
 class Bloom
 {
 private:
-	Shader* m_blur, * m_bloom;
+	Shader *m_blur, *m_bloom;
 	unsigned int m_FBO1, m_pingPongFBO[2];
 	unsigned int m_colorBuffers[2], m_depth, m_pingPongColorBuffer[2];
 	unsigned int m_quadVAO = 0;
@@ -33,6 +33,4 @@ public:
 	Shader* GetBloomShader();
 
 	unsigned int getFBO();
-
-
 };

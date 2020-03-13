@@ -12,18 +12,20 @@ class ObjectHandler
 private:
 	bool m_usedSpawns[20];
 	bool m_collision;
-	btVector3 m_spawnpoints[20] = 
+	btVector3 m_spawnpoints[20] =
 	{
-	btVector3(2,3,2), btVector3(5,3,5),btVector3(-5,3,5), btVector3(9,3,9), btVector3(-9,3,9),
-	btVector3(2,3,-2), btVector3(5,3,-5), btVector3(-5,3,-5), btVector3(9,3,-9), btVector3(-9,3,-9),
-	btVector3(-2,3,2), btVector3(2,3,0), btVector3(-2,3,0), btVector3(5,3,0), btVector3(-5,3,0),
-	btVector3(-2,3,-2), btVector3(0,3,2), btVector3(0,3,5), btVector3(0,3,-2), btVector3(0,3,0)
+		btVector3(2, 3, 2), btVector3(5, 3, 5), btVector3(-5, 3, 5), btVector3(9, 3, 9), btVector3(-9, 3, 9),
+		btVector3(2, 3, -2), btVector3(5, 3, -5), btVector3(-5, 3, -5), btVector3(9, 3, -9), btVector3(-9, 3, -9),
+		btVector3(-2, 3, 2), btVector3(2, 3, 0), btVector3(-2, 3, 0), btVector3(5, 3, 0), btVector3(-5, 3, 0),
+		btVector3(-2, 3, -2), btVector3(0, 3, 2), btVector3(0, 3, 5), btVector3(0, 3, -2), btVector3(0, 3, 0)
 	};
 	vector<Player*> m_players;
 	vector<Platform*> m_platforms;
 	vector<PowerUp*> m_powerUps;
 	vector<Ghost*> m_ghosts;
 	vector<Object*> m_objects;
+	vector<Object*> m_oribtObjects;
+
 	vector<ObjectInfo*> m_structs;
 	vector<Light*> m_carLights;
 	vector<vec3> m_bombZone;
@@ -39,8 +41,8 @@ private:
 	float m_collidTimer = 0;
 	float m_scaleTimer = 0;
 	// uses controller id
-	vector <int> m_deathOrder;
-	
+	vector<int> m_deathOrder;
+
 	ISoundEngine* m_soundEngine;
 
 	const char* m_soundFiles[NRDEATHSOUNDS];
@@ -66,13 +68,15 @@ public:
 	void Update(float dt);
 	void AddPlayer(vec3 pos, int controllerID, int modelId, vec3 color, Model* model);
 	void AddObject(vec3 pos, int modelId, Model* model);
+	void AddOrbitObjects(vec3 pos, int modelId, Model* model, float speed, float scale);
+	void RemoveOrbitObjects(int index);
+	void RemoveAllOrbitObjects();
 	void RemoveObject(int index);
 	void AddPlatform(int modelId, Model* model);
 	void AddGhost(int index);
 	void SetScale(int id, vec3 scale);
 	void SetPlayerFinishRotation(int index);
 	void RemovePlayer(int index);
-	void RemovePlatform();
 	void AddPowerUp();
 	int GetNumPowerUps();
 	void RemovePowerUp(int index);

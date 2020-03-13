@@ -1,8 +1,8 @@
 #pragma once
 
-#pragma once 
-#include "Include.h" 
-#include <algorithm> 
+#pragma once
+#include "Include.h"
+#include <algorithm>
 
 class PerlinNoise
 {

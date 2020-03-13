@@ -28,5 +28,5 @@ void main()
 
 	vec3 earth = texture2D(u_Texture3, UV).xyz;
 
-	FragColor = clouds;//vec4(mix(earth, clouds.xyz, clouds.w), 1);
+	FragColor = vec4(0, 0, 0, clouds.w);//vec4(mix(earth, clouds.xyz, clouds.w), 1);
 }

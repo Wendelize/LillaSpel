@@ -10,7 +10,7 @@ Game* GAME;
 int main(void)
 {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-	srand(time(NULL));
+	srand(time(nullptr));
 	GAME = new Game();
 
 	float _deltaTime = 0.0, _curTime = 0.0, _lastTime = 0.0;
@@ -18,9 +18,8 @@ int main(void)
 
 	std::thread t(&Game::MutliThread, GAME, _window);
 	while (!glfwWindowShouldClose(_window))
-	{	
-
-		_curTime = (float)glfwGetTime();
+	{
+		_curTime = static_cast<float>(glfwGetTime());
 		_deltaTime = _curTime - _lastTime;
 		_lastTime = _curTime;
 		GAME->Update(_deltaTime);
@@ -33,13 +32,12 @@ int main(void)
 	ImGui::DestroyContext();
 
 	glfwTerminate();
-	
+
 	delete GAME;
 
 	exit(0); //Used to be called in window destructor -> caused memory leaks. This fixes it.
 
 	//_CrtDumpMemoryLeaks();
-	
+
 	return 0;
 }
-
