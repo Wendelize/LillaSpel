@@ -134,8 +134,8 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 			//	NavHighlight is the border around the button
 			ImGui::PushStyleColor(ImGuiCol_NavHighlight, ImVec4(0, 0, 0, 0));
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
-			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0, 0.0, 0.0, 1));
-			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.1, 0.1, 0.1, 0.3));
+			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0, 1.0, 1.0, 1));
+			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.3, 0.3, 0.3, 0.3));
 
 
 			ImGui::SetCursorPos(ImVec2(middle - (middle / 2.f), heightMiddle));
@@ -170,7 +170,7 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 		m_objHand->SetPlayerSpotlights(false);
 		m_scene->SetBloom(false);
 		m_scene->ResetCameraFOV();
-		m_scene->SetOnlySky(true);
+		//m_scene->SetOnlySky(true);
 		m_scene->SetInstantCameraFocus(CAMERAPOS_SELECT + vec3(0, -1, 1));
 
 		ImGui::SetNextWindowPos(ImVec2(0, height / 2));
@@ -178,7 +178,7 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 5);
 		ImGui::GetStyle().WindowRounding = 0.0f;
 		ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(m_p1Col.x * borderCol, m_p1Col.y * borderCol, m_p1Col.z * borderCol, 1));
-		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_p1Col.x / 3, m_p1Col.y / 3, m_p1Col.z / 3, 1));
+		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_p1Col.x * 0.2f, m_p1Col.y * 0.2f, m_p1Col.z * 0.2f, 1));
 		if (ImGui::Begin("##player1Select", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoNavInputs))
 		{
 			int index = 0;
@@ -1982,7 +1982,7 @@ void Menu::LoadMenuPic()
 
 	m_menuPicWidth = 0;
 	m_menuPicHeight = 0;
-	unsigned char* data = stbi_load("src/Textures/menu1.png", &m_menuPicWidth, &m_menuPicHeight, nullptr, 4);
+	unsigned char* data = stbi_load("src/Textures/Menu.png", &m_menuPicWidth, &m_menuPicHeight, nullptr, 4);
 	if (data)
 	{
 		glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
@@ -2141,136 +2141,6 @@ void Menu::RankPlayers()
 		newLifeId[j] = m_objHand->GetPlayerControllerID(newI);
 	}
 
-
-	/*
-
-
-	// getting the amount of lives the remaining players have
-	if (m_deathOrderID.size() == 0)
-	{
-		for (int i = 0; i < m_objHand->GetNumPlayers(); i++)
-		{
-			livesForPlayerWithIndex[i] = m_objHand->GetPlayerLives(i);
-		}
-
-		int newI[4] = { -1, -1 , -1, -1 };
-
-		for (int j = 0; j < m_objHand->GetNumPlayers(); j++)
-		{
-			
-			int tempLives = -1;
-
-			for (int i = 0; i < 4; i++)
-			{
-				if (tempLives <= livesForPlayerWithIndex[i] && i != newI[0] && i != newI[1] && i != newI[2] && i != newI[3])
-				{
-					// if same amount of lives then check how many kills they've got
-					if (tempLives == livesForPlayerWithIndex[i])
-					{
-						// should not give a out of bounds error since the first time it can never have the same amount of lives as -1
-						if (m_kills[m_objHand->GetPlayerControllerID(newI[j])] < m_kills[m_objHand->GetPlayerControllerID(i)])
-						{
-							newI[j] = i;
-						}
-						// no need to change tempLives since they have the same amount of lives
-					}
-					else
-					{
-						tempLives = livesForPlayerWithIndex[i];
-						newI[j] = i;
-					}
-				}
-			}
-			newLifeId[j] = m_objHand->GetPlayerControllerIDBloo(newI[j], 1);
-		}
-
-	}
-	else if (m_deathOrderID.size() == 1)
-	{
-		for (int i = 0; i < m_objHand->GetNumPlayers(); i++)
-		{
-			if (m_objHand->GetPlayerControllerIDBloo(i, 2) != m_deathOrderID[0])
-			{
-				livesForPlayerWithIndex[i] = m_objHand->GetPlayerLives(i);
-			}
-		}
-
-		int newI[4] = { -1, -1 , -1, -1 };
-
-		for (int j = 0; j < m_objHand->GetNumPlayers(); j++)
-		{
-			int tempLives = -1;
-
-			for (int i = 0; i < 3; i++)
-			{
-				if (tempLives <= livesForPlayerWithIndex[i] && i != newI[0] && i != newI[1] && i != newI[2] && i != newI[3])
-				{
-					// if same amount of lives then check how many kills they've got
-					if (tempLives == livesForPlayerWithIndex[i])
-					{
-						// should not give a out of bounds error since the first time it can never have the same amount of lives as -1
-						if (m_kills[m_objHand->GetPlayerControllerID(newI[j])] < m_kills[m_objHand->GetPlayerControllerID(i)])
-						{
-							newI[j] = i;
-						}
-						// no need to change tempLives since they have the same amount of lives
-					}
-					else
-					{
-						tempLives = livesForPlayerWithIndex[i];
-						newI[j] = i;
-					}
-				}
-			}
-			newLifeId[j] = m_objHand->GetPlayerControllerIDBloo(newI[j], 3);
-		}
-	}
-	else if (m_deathOrderID.size() == 2)
-	{
-		for (int i = 0; i < m_objHand->GetNumPlayers(); i++)
-		{
-			if (m_objHand->GetPlayerControllerIDBloo(i, 4) != m_deathOrderID[0] && m_objHand->GetPlayerControllerIDBloo(i, 5) != m_deathOrderID[1])
-			{
-				livesForPlayerWithIndex[i] = m_objHand->GetPlayerLives(i);
-			}
-		}
-
-		int newI[4] = { -1, -1 , -1, -1 };
-
-		for (int j = 0; j < m_objHand->GetNumPlayers(); j++)
-		{
-			int tempLives = -1;
-
-			for (int i = 0; i < 2; i++)
-			{
-				if (tempLives <= livesForPlayerWithIndex[i] && i != newI[0] && i != newI[1] && i != newI[2] && i != newI[3])
-				{
-					// if same amount of lives then check how many kills they've got
-					if (tempLives == livesForPlayerWithIndex[i])
-					{
-						// should not give a out of bounds error since the first time it can never have the same amount of lives as -1
-						if (m_kills[m_objHand->GetPlayerControllerID(newI[j])] < m_kills[m_objHand->GetPlayerControllerID(i)])
-						{
-							newI[j] = i;
-						}
-						// no need to change tempLives since they have the same amount of lives
-					}
-					else
-					{
-						tempLives = livesForPlayerWithIndex[i];
-						newI[j] = i;
-					}
-				}
-			}
-			newLifeId[j] = m_objHand->GetPlayerControllerIDBloo(newI[j], 6);
-		}
-	}// if deathOrder.size() == 3 then thers only one left alive so choose it
-	else if (m_deathOrderID.size() == 3)
-	{
-			newLifeId[0] = m_objHand->GetPlayerControllerIDBloo(0, 10);
-	}
-	*/
-	//	adding the deathOrder and remaning lives to the same list in order to get the final rankings
 	for (int i = 0; i < 4; i++)
 	{
 		if (newLifeId[i] != -1)
@@ -2334,8 +2204,8 @@ void Menu::animateMenu(float dt)
 		}
 	}
 }
-	m_updateMap = map;
-{
+
 void Menu::SetMapUpdate(bool map)
-	ImGui::End();
-}*/
+{
+	m_updateMap = map;
+}
