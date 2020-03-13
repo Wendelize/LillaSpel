@@ -34,6 +34,8 @@ Menu::Menu(Scene* scene, ObjectHandler* objHand)
 	m_playerColor.push_back(m_p2Col);
 	m_playerColor.push_back(m_p3Col);
 	m_playerColor.push_back(m_p4Col);
+
+	
 }
 
 Menu::~Menu()
@@ -55,10 +57,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 	float borderCol = 0.2;
 
 	Window* w = m_scene->GetOurWindow();
-	//if (gameOver)
-	//{
-	//	m_menu = ActiveMenu::restart;
-	//}
+
 	if ((m_menu == ActiveMenu::playerHud || m_menu == ActiveMenu::select) && glfwGetGamepadState(0, &state))
 	{
 		// TODO: maybe one should be able to access the pause menu from more places?
@@ -165,6 +164,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		break;
 	case ActiveMenu::select:
 
+		m_objHand->SetPlayerSpotlights(false);
 		m_scene->SetBloom(false);
 		m_scene->ResetCameraFOV();
 		m_scene->SetOnlySky(true);
@@ -189,7 +189,6 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 			m_p1Col = m_objHand->GetPlayerColor(index);
 			m_playerColor[0] = m_p1Col;
 			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0, 0, 1));
-			//ImGui::SetCursorPos(ImVec2(width / 8 - (width/16), 0));
 
 			if (m_selected[0] == 0)
 			{
@@ -268,7 +267,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		}
 		ImGui::End();
 
-		ImGui::SetNextWindowPos(ImVec2(width / 4, height / 2));
+		ImGui::SetNextWindowPos(ImVec2(width / 4, height / 2 + (height/2) * m_p2Menuheight));
 		ImGui::SetNextWindowSize(ImVec2(width / 4, height / 2));
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 5);
 		ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(m_p2Col.x * borderCol, m_p2Col.y * borderCol, m_p2Col.z * borderCol, 1));
@@ -280,7 +279,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0, 0, 1));
 				if (time - m_p3Seconds >= 0.3 && (glfwGetGamepadState(1, &state)))
 				{
-					string temp = " Join? Press \"A\"!";
+					string temp = "Press \"A\" to Join!";
 					ImGui::SetCursorPosX(width / 8 - ImGui::CalcTextSize(temp.c_str()).x / 2);
 					ImGui::Text(temp.c_str());
 
@@ -292,6 +291,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 						m_objHand->AddPlayer(SELECTPOS2, 1, 0, vec3(0, 2, 0), model);
 						m_p2Seconds = time;
 						m_p2ModelId = 0;
+						animateP2 = true;
 					}
 				}
 			}
@@ -388,7 +388,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		// TODO: Kanske Fixa s� det f�ljer kontrollerId eller n�tt
 		//if(glfwGetGamepadState(2, &state))//m_objHand->GetNumPlayers() >= 3)
 		//{
-		ImGui::SetNextWindowPos(ImVec2(width / 2, height / 2));
+		ImGui::SetNextWindowPos(ImVec2(width / 2, height / 2 + (height / 2) * m_p3Menuheight));
 		ImGui::SetNextWindowSize(ImVec2(width / 4, height / 2));
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 5);
 		ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(m_p3Col.x * borderCol, m_p3Col.y * borderCol, m_p3Col.z * borderCol, 1));
@@ -401,7 +401,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0, 0, 1));
 				if (time - m_p3Seconds >= 0.3 && (glfwGetGamepadState(2, &state)))
 				{
-					string temp = " Join? Press \"A\"!";
+					string temp = "Press \"A\" to Join!";
 					ImGui::SetCursorPosX(width / 8 - ImGui::CalcTextSize(temp.c_str()).x / 2);
 					ImGui::Text(temp.c_str());
 
@@ -413,6 +413,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 						m_objHand->AddPlayer(SELECTPOS3, 2, 0, vec3(3, 0, 0), model);
 						m_p3Seconds = time;
 						m_p3ModelId = 0;
+						animateP3 = true;
 					}
 
 				}
@@ -511,7 +512,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 
 		//if (m_p3Joined && glfwGetGamepadState(3, &state))//m_objHand->GetNumPlayers() >= 4)
 		//{
-		ImGui::SetNextWindowPos(ImVec2(width / 2 + width / 4, height / 2));
+		ImGui::SetNextWindowPos(ImVec2(width / 2 + width / 4, height / 2 + (height / 2) * m_p4Menuheight));
 		ImGui::SetNextWindowSize(ImVec2(width / 4, height / 2));
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 5);
 		ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(m_p4Col.x * borderCol, m_p4Col.y * borderCol, m_p4Col.z * borderCol, 1));
@@ -524,7 +525,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0, 0, 1));
 				if (time - m_p4Seconds >= 0.3 && (glfwGetGamepadState(3, &state)))
 				{
-					string temp = " Join? Press \"A\"!";
+					string temp = "Press \"A\" to Join!";
 					ImGui::SetCursorPosX(width / 8 - ImGui::CalcTextSize(temp.c_str()).x / 2);
 					ImGui::Text(temp.c_str());
 
@@ -536,6 +537,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 						m_objHand->AddPlayer(SELECTPOS4, 3, 0, vec3(3, 3, 0), model);
 						m_p4Seconds = time;
 						m_p4ModelId = 0;
+						animateP4 = true;
 					}
 
 				}
@@ -657,9 +659,11 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		break;
 	case ActiveMenu::selectLevel:
 
-		if(m_objHand->GetNumPlayers() == 1)
+		if (m_objHand->GetNumPlayers() == 1)
+		{
 			m_objHand->AddPlayer(SELECTPOS2, 1, 0, vec3(0, 2, 0), model);
-
+		}
+		m_objHand->SetPlayerSpotlights(true);
 		m_scene->SetBloom(true);
 		m_scene->SetOnlySky(false);
 		m_scene->SetInstantCameraFocus(vec3(0, 0, 0));
@@ -768,6 +772,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		break;
 
 	case ActiveMenu::selectLives:
+		m_objHand->SetPlayerSpotlights(true);
 		m_scene->SetBloom(true);
 		m_scene->SetOnlySky(false);
 		m_scene->SetInstantCameraFocus(vec3(0, 0, 0));
@@ -785,12 +790,6 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				m_objHand->SetWholePlayerPos(vec3(7, 6, 15), i);
 		}
 
-		//GLFWgamepadstate state;
-	////	int fillerSize = 300;
-	//	if (height <= 720)
-	//	{
-	//		fillerSize = 200;
-	//	}
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 10);
 		ImGui::SetNextWindowPos(ImVec2((float)width / 3 - (slWidth / 2), height / 4));
 		ImGui::SetNextWindowSize(ImVec2((float)width / 3 + slWidth, height / 4 - 300));
@@ -910,6 +909,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		ImGui::End();
 		break;
 	case ActiveMenu::pause:
+		m_objHand->SetPlayerSpotlights(true);
 		m_scene->SetBloom(true);
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 15);
 		ImGui::SetNextWindowPos(ImVec2((float)width / 3 - (pauseMenuWidth / 2), height / 4 - (pauseMenuHeight / 2)));
@@ -952,6 +952,9 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				m_p2ModelId = 0;
 				m_p3ModelId = 0;
 				m_p4ModelId = 0;
+				m_p2Menuheight = .8f;
+				m_p3Menuheight = .8f;
+				m_p4Menuheight = .8f;
 				for (int i = 0; i < 4; i++)
 				{
 					if (m_objHand->GetNumPlayers() > 0)
@@ -959,10 +962,6 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 						m_objHand->RemovePlayer(m_objHand->GetNumPlayers() - 1);
 					}
 				}
-				/*if (m_objHand->GetNumPlayers() == 0)
-				{
-					m_objHand->AddPlayer(vec3(-10, 6, 3), 0, m_p1ModelId, m_p1Col, model);
-				}*/
 			}
 			ImGui::SetCursorPos(ImVec2(((float)width / 3) / 3, 315));
 			if (ImGui::Button("Exit", ImVec2(200, 75)))
@@ -979,6 +978,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		ImGui::End();
 		break;
 	case ActiveMenu::restart:
+		m_objHand->SetPlayerSpotlights(true);
 		m_scene->SetBloom(true);
 		m_scene->SetOnlySky(false);
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 15);
@@ -1041,6 +1041,9 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 				m_p2ModelId = 0;
 				m_p3ModelId = 0;
 				m_p4ModelId = 0;
+				m_p2Menuheight = .8f;
+				m_p3Menuheight = .8f;
+				m_p4Menuheight = .8f;
 				for (int i = 0; i < 4; i++)
 				{
 					if (m_objHand->GetNumPlayers() > 0)
@@ -1069,6 +1072,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		ImGui::End();
 		break;
 	case ActiveMenu::win:
+		m_objHand->SetPlayerSpotlights(true);
 		m_scene->SetBloom(true);
 		m_scene->SetOnlySky(false);
 		ImGui::SetNextWindowPos(ImVec2(width / 2 - 150, 0));
@@ -1136,6 +1140,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		}
 		break;
 	case ActiveMenu::stats:
+		m_objHand->SetPlayerSpotlights(true);
 		m_scene->SetBloom(true);
 		m_scene->SetOnlySky(false);
 		// Winner
@@ -1523,6 +1528,7 @@ void Menu::RenderMenu(bool gameOver, float timer,Model* model)
 		}
 		break;
 	case ActiveMenu::playerHud:
+		m_objHand->SetPlayerSpotlights(true);
 		m_scene->SetBloom(true);
 		m_scene->SetOnlySky(false);
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 5);
@@ -2113,101 +2119,40 @@ bool Menu::GetMapUpdate()
 	return m_updateMap;
 }
 
+void Menu::animateMenu(float dt)
+{
+	if (animateP2)
+	{
+		m_p2Menuheight -= dt * 2;
+		if (m_p2Menuheight <= 0)
+		{
+			m_p2Menuheight = 0;
+			animateP2 = false;
+		}
+			
+	}
+	if (animateP3)
+	{
+		m_p3Menuheight -= dt * 2;
+		if (m_p3Menuheight <= 0)
+		{
+			m_p3Menuheight = 0;
+			animateP3 = false;
+		}
+	}
+	if (animateP4)
+	{
+		m_p4Menuheight -= dt * 2;
+		if (m_p4Menuheight <= 0)
+		{
+			m_p3Menuheight = 0;
+			animateP3 = false;
+		}
+	}
+		
+}
+
 void Menu::SetMapUpdate(bool map)
 {
 	m_updateMap = map;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-void Scene::renderMenu()
-{
-	// ## osynligtr id s� f�nster utan titel
-	// id 'r vad imgui referera till s� h�ll koll p� dem
-	//int width, height, nrChannels;
-	//unsigned char* data = stbi_load("src/Textures/wow.png", &width, &height, &nrChannels, 0);
-	//unsigned int wowTexture;
-	//glGenTextures(1, &wowTexture);
-	//glBindTexture(GL_TEXTURE_2D, wowTexture);
-	//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-	//glGenerateMipmap(GL_TEXTURE_2D);
-	//stbi_image_free(data);
-
-	switch (m_menu)
-	{
-	case Menu::start:
-		//ImGui::Image((void*)wowTexture, ImVec2(width, height));
-
-		ImGui::SetNextWindowPos(ImVec2(-2, -2));
-		ImGui::SetNextWindowSize(ImVec2(m_window->GetWidht() + 4, m_windoheight + 4));
-		if (ImGui::Begin("##MainMenu", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiNavInput_Activate))
-		{
-
-			float placement = (float)m_window->GetWidht() * 0.5f;
-			//ImGui::SetWindowPos(ImVec2(placement, 50));
-			//ImGui::Spacing();
-			//ImGui::NextColumn();
-			ImGui::SetCursorPos(ImVec2(placement - 100, 15));
-			//ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(placement, 0));
-			ImGui::PushFont(m_window->m_fonts[1]);
-			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 1, 0, 1));
-			ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.5);
-			ImGui::Text("KamiCarZe");
-			ImGui::SetCursorPos(ImVec2(placement - 75, 300));
-			if (ImGui::Button("Start", ImVec2(200, 75)))
-			{
-				m_menu = Menu::playerHud;
-			}
-			ImGui::SetCursorPos(ImVec2(placement - 75, 460));
-			if (ImGui::Button("Exit", ImVec2(200, 75)))
-			{
-				glfwSetWindowShouldClose(GetWindow(), 1);
-			}
-			ImGui::PopStyleVar(1); // pop all the styles
-			ImGui::PopFont();
-			ImGui::PopStyleColor();
-
-		}
-		ImGui::End();
-		break;
-	case Menu::select:
-		break;
-	case Menu::playerHud:
-		ImGui::SetNextWindowPos(ImVec2(0, 0));
-		ImGui::SetNextWindowSize(ImVec2(200, 100));
-		if (ImGui::Begin("##player1Hud", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize))
-		{
-			ImGui::Text("Player One lives: %d", 3);
-		}
-		ImGui::End();
-		break;
-	default:
-		break;
-	}
-
-	/*
-	if (ImGui::Begin("##MainMenu", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_AlwaysAutoResize))
-	{
-		float placement = (float)m_window->GetWidht() * 0.5f - ImGui::GetWindowContentRegionWidth() * 0.5;
-		ImGui::SetWindowPos(ImVec2(placement, 50));
-		ImGui::PushFont(m_window->m_fonts[1]);
-		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 1, 0, 1));
-		ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.5);
-		ImGui::Text("KamiCarZe");
-		ImGui::PopStyleVar();
-		ImGui::PopFont();
-		ImGui::PopStyleColor();
-
-	}
-	ImGui::End();
-}*/

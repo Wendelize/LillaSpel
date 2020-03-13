@@ -29,6 +29,11 @@ Game::Game()
 
 	m_timeSinceSpawn = 0;
 
+	m_scene->AddPointLight(SELECTPOS1 + vec3(0, 3, 0), vec3(1, 1, 1));
+	m_scene->AddPointLight(SELECTPOS2 + vec3(0, 3, 0), vec3(1, 1, 1));
+	m_scene->AddPointLight(SELECTPOS3 + vec3(0, 3, 0), vec3(1, 1, 1));
+	m_scene->AddPointLight(SELECTPOS4 + vec3(0, 3, 0), vec3(1, 1, 1));
+
 	/*vec3 pos = CAMERAPOS_SELECT + vec3(0, -1, 1) * 3.f;
 	pos += vec3(4.4, 0, 2);
 	m_objectHandler->AddPlayer(SELECTPOS1, 0, 0, vec3(0.5, 1, 9), m_cars[0]);
@@ -122,6 +127,11 @@ void Game::Update(float dt)
 	// är select menyn aktiverad? ändra kameran till inzoomad
 	if (m_menu->SelectMenuActive() || m_menu->SelectLivesMenuActive())
 	{
+		for (int i = 0; i < m_objectHandler->GetNumPlayers(); i++)
+		{
+			m_objectHandler->RotatePlayer(i, dt);
+		}
+
 		if (m_cube->GetCurrentLevel() != 0 && m_menu->SelectMenuActive()) {
 			m_cube->SetCurrentLevel(0);
 			m_updateMap.store(true);
@@ -352,6 +362,7 @@ void Game::Update(float dt)
 
 		
 	}
+	m_menu->animateMenu(dt);
 	m_scene->UpdateSky(dtUnchanged);
 	m_scene->UpdateParticles(dtUnchanged);
 	DynamicCamera(dtUnchanged);
@@ -714,9 +725,9 @@ void Game::Debug()
 		if (m_objectHandler->GetNumPlayers() < 40)
 		{
 			if(m_modelId < m_scene->GetNumPlayerModels())
-				m_objectHandler->AddPlayer(vec3(m_pos[0], m_pos[1], m_pos[2]), m_controllerID, m_modelId, vec3(0.5, 0.5, 0.5),m_cars[0]);
+				m_objectHandler->AddPlayer(vec3(m_pos[0], m_pos[1], m_pos[2]), m_controllerID, m_modelId, vec3(0.5, 0.5, 0.5), m_cars[0]);
 			else
-				m_objectHandler->AddPlayer(vec3(m_pos[0], m_pos[1], m_pos[2]), m_controllerID, 0, vec3(0.5, 0.5, 0.5),m_cars[0]);
+				m_objectHandler->AddPlayer(vec3(m_pos[0], m_pos[1], m_pos[2]), m_controllerID, 0, vec3(0.5, 0.5, 0.5), m_cars[0]);
 		}
 	}
 

@@ -81,6 +81,8 @@ public:
 	vec3 GetPlayerPos(int index);
 	void SetPlayerPos(vec3 pos, int controllerId);
 	void SetWholePlayerPos(vec3 pos, int index);
+	void RotatePlayer(int index, float speed);
+	void SetPlayerSpotlights(bool b);
 	mat4 GetPlayerMatrix(int index);
 	void SetNumberOfLives(int num);
 	vec3 GetPlayerDirection(int index);

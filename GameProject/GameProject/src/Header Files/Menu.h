@@ -37,6 +37,7 @@ public:
 	bool Reset();
 	void ResetReset();
 	void SetMapUpdate(bool map);
+	void animateMenu(float dt);
 	ISoundEngine* m_soundEngine;
 	vector<ISoundSource*> m_menuSounds;
 	// for statsMenu 
@@ -68,35 +69,40 @@ private:
 	int m_points[4] = { 0, 0, 0, 0 }; // points 2 per kill and 1 per life left
 	vector<vec3> m_playerColor;
 
+	bool animateP2 = false;
+	bool animateP3 = false;
+	bool animateP4 = false;
+
 	int m_selected[4] = { 0, 0, 0, 0 };
 	int m_continue = 0;
 
 	int m_p1ModelId = 0;
 	double m_p1Seconds = 1;
 	bool m_p1Joined = false;
+	float m_p1Menuheight = 0.f;
 	vec3 m_p1Col = vec3(0.5, 1, 9);
 
 
 	int m_p2ModelId = 0;
 	double m_p2Seconds = 1;
 	bool m_p2Joined = false;
+	float m_p2Menuheight = .8f;
 	vec3 m_p2Col = vec3(0, 2, 0);
 
 	
 	int m_p3ModelId = -1;
 	double m_p3Seconds = 1;
 	bool m_p3Joined = false;
+	float m_p3Menuheight = .8f;
 	vec3 m_p3Col = vec3(3, 0, 0);
 
 	int m_p4ModelId = -1;
 	double m_p4Seconds = 1;
 	bool m_p4Joined = false;
+	float m_p4Menuheight = .8f;
 	vec3 m_p4Col = vec3(1, 1, 0);
 
 	double m_inputSeconds = 1;
 	
 	ActiveMenu m_menu = ActiveMenu::start;
-
-
-
 };

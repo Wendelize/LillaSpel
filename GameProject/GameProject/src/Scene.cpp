@@ -304,10 +304,16 @@ void Scene::RenderSceneInfo(Shader* shader, vector<ObjectInfo*> objects)
 			break;
 		}
 	}
+
 	shader->SetUniform("u_Model", glm::scale(translate(mat4(1.f), vec3(0, 9.65, 30)),vec3(0.25, 0.25, 0.25)));
 	shader->SetUniform("u_PlayerColor", vec3(1, 0, 0));
 	shader->SetUniform("u_Glow", false);
 	m_winnerIsland->Draw(shader);
+
+	shader->SetUniform("u_Model", translate(mat4(1.f), CAMERAPOS_SELECT + vec3(0, -4.7, 5)));
+	shader->SetUniform("u_PlayerColor", vec3(0.5, 0.3, 0.01));
+	shader->SetUniform("u_Glow", false);
+	m_platform[0]->Draw(shader);
 }
 
 void Scene::RenderSkybox()

@@ -409,6 +409,11 @@ mat4 Player::GetMatrix()
 	return m_transform->GetMatrix();
 }
 
+void Player::Rotate(float speed)
+{
+	m_transform->Rotate(vec3(0, speed, 0));
+}
+
 ObjectInfo* Player::GetObjectInfo()
 {
 	m_info = new ObjectInfo(m_transform->GetMatrix(), m_modelId, 0, m_color, false);

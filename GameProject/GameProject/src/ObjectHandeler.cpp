@@ -525,6 +525,19 @@ void ObjectHandler::SetWholePlayerPos(vec3 pos, int index)
 	m_players[index]->SetPos(pos);
 }
 
+void ObjectHandler::RotatePlayer(int index, float speed)
+{
+	m_players[index]->Rotate(speed);
+}
+
+void ObjectHandler::SetPlayerSpotlights(bool b)
+{
+	for (int i = 0; i < m_players.size(); i++)
+	{
+		m_players[i]->SetBoolLights(b);
+	}
+}
+
 mat4 ObjectHandler::GetPlayerMatrix(int index)
 {
 	return m_players[index]->GetMatrix();
