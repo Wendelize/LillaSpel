@@ -183,7 +183,12 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 5);
 		ImGui::GetStyle().WindowRounding = 0.0f;
 		ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(m_p1Col.x * borderCol, m_p1Col.y * borderCol, m_p1Col.z * borderCol, 1));
-		p1PulseValue = (sinTime / 4) + 0.75f;
+		if (m_selected[0] == 0) {
+			p1PulseValue = (sinTime / 4) + 0.75f;
+		}
+		else {
+			p1PulseValue = 1;
+		}
 		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4((m_p1Col.x * p1PulseValue) / 3, (m_p1Col.y * p1PulseValue) / 3, (m_p1Col.z * p1PulseValue) / 3, 1));
 
 		if (ImGui::Begin("##player1Select", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoNavInputs))
@@ -286,7 +291,7 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 5);
 		ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(m_p2Col.x * borderCol, m_p2Col.y * borderCol, m_p2Col.z * borderCol, 1));
 
-		if (m_p2Joined) {
+		if (m_p2Joined && m_selected[1] == 0) {
 			p2PulseValue = (sinTime / 4) + 0.75f;
 			cout << p2PulseValue << endl;
 		}
@@ -417,7 +422,7 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 		ImGui::SetNextWindowSize(ImVec2(width / 4, height / 2));
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 5);
 		ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(m_p3Col.x * borderCol, m_p3Col.y * borderCol, m_p3Col.z * borderCol, 1));
-		if (m_p3Joined) {
+		if (m_p3Joined && m_selected[2] == 0) {
 			p3PulseValue = (sinTime / 4) + 0.75f;
 			cout << p3PulseValue << endl;
 		}
@@ -552,7 +557,7 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 5);
 		p4FadeCol = 0.25;
 		ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(m_p4Col.x * borderCol, m_p4Col.y * borderCol, m_p4Col.z * borderCol, 1));
-		if (m_p4Joined) {
+		if (m_p4Joined && m_selected[3] == 0) {
 			p4PulseValue = (sinTime / 4) + 0.75f;
 		}
 		else {
