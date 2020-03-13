@@ -314,7 +314,7 @@ void Game::Update(float dt)
 			vec3 pos = m_objectHandler->GetPlayerPos(m_objectHandler->GetIndexByControllerId(aId));
 			pos += m_objectHandler->GetPlayerPos(m_objectHandler->GetIndexByControllerId(bId));
 
-			m_scene->AddParticleEffect(pos / 2.f, vec3(1, 0, 0), vec3(0, 1, 0), 1, 6, vec3(0, 1, 0), 200, 0.5, 0.15,
+			m_scene->AddParticleEffect(pos / 2.f, vec3(1, 0, 0), vec3(0, 1, 0), 1, 6, vec3(0, 1, 0), 50, 0.5, 0.15,
 			                           -9.82);
 
 			if (m_objectHandler->GetNumPlayers() == 2)
@@ -351,14 +351,14 @@ void Game::Update(float dt)
 
 			if (speed > 3)
 			{
-				m_scene->AddParticleEffect(pos, vec3(0.6, 0.6, 0.6), vec3(0), 5, 0.005, dir, 4, 0.3, 0.3, 1);
+				m_scene->AddParticleEffect(pos, vec3(0.6, 0.6, 0.6), vec3(0), 5, 0.005, dir, 300 * dt, 0.3, 0.3, 1);
 			}
 
 			if (speed > 15 || m_objectHandler->GetPlayerHook(i))
 			{
 				if (m_objectHandler->GetPlayerHook(i))
 				{
-					m_scene->AddParticleEffect(pos, vec3(1, 0, 0), vec3(0, 1, 0), 5, 1, dir, 50, 0.3, 0.3, 1);
+					m_scene->AddParticleEffect(pos, vec3(1, 0, 0), vec3(0, 1, 0), 5, 1, dir, 300 * dt, 0.3, 0.3, 1);
 				}
 			}
 		}
@@ -444,10 +444,10 @@ void Game::DynamicCamera(float dt)
 
 		//Confetti
 		m_scene->AddParticleEffect(m_objectHandler->GetPlayerPos(winner) + right * 2.0f + vec3(0, -1, 0), vec3(NULL),
-		                           vec3(NULL), 1, 0.9, vec3(0, 8, 0) - right * 1.5f + vec3(0, -1, 0), 15, 1.0, 0.04,
+		                           vec3(NULL), 1, 0.9, vec3(0, 8, 0) - right * 1.5f + vec3(0, -1, 0), 1000 * dt, 1.0, 0.04,
 		                           -9.82);
 		m_scene->AddParticleEffect(m_objectHandler->GetPlayerPos(winner) - right * 2.0f + vec3(0, -1, 0), vec3(NULL),
-		                           vec3(NULL), 1, 0.9, vec3(0, 8, 0) + right * 1.5f + vec3(0, -1, 0), 15, 1.0, 0.04,
+		                           vec3(NULL), 1, 0.9, vec3(0, 8, 0) + right * 1.5f + vec3(0, -1, 0), 1000 * dt, 1.0, 0.04,
 		                           -9.82);
 
 		//Fireworks

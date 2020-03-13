@@ -664,7 +664,7 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 		m_scene->SetBloom(true);
 		m_scene->SetOnlySky(false);
 		m_scene->SetInstantCameraFocus(vec3(0, 0, 0));
-		m_scene->SetCameraPos(CAMERAPOS_GAME);
+		m_scene->SetCameraPos(CAMERAPOS_LEVELSELECT);
 
 		//ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 10);
 		ImGui::SetNextWindowPos(ImVec2((float)width / 3 - (slWidth / 2), 0));

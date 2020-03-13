@@ -61,7 +61,7 @@
 //DEFINES 
 #define NRDEATHSOUNDS 30
 #define CAMERAPOS_SELECT vec3(0, 10, 50)
-#define CAMERAPOS_LEVELSELECT vec3(0, 40, 3)
+#define CAMERAPOS_LEVELSELECT vec3(0, 38, 30)
 #define CAMERAPOS_GAME vec3(0, 22, 28)
 
 #define SELECTPOS1 CAMERAPOS_SELECT + vec3(0, -1, 1) * 3.f + vec3(4.4, 0, 2)
