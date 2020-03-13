@@ -441,14 +441,28 @@ void Game::DynamicCamera(float dt)
 		m_scene->SetCameraFocus(winnerPos + vec3(0, 1.3, 0));
 
 		vec3 right = normalize(winnerPos - (winnerPos + vec3(1, 0, 0)));
+		vec3 winColor = m_menu->GetWinnerColor();
+		vec3 randCol = vec3(0, 0, 0);
+
+		if (winColor.x > 0.5)
+		{
+			randCol.x =1;
+		}
+		if (winColor.y >0.5)
+		{
+			randCol.y = 1;
+		}
+		if (winColor.z >0.5)
+		{
+			randCol.z = 1;
+		}
 
 		//Confetti
-		m_scene->AddParticleEffect(m_objectHandler->GetPlayerPos(winner) + right * 2.0f + vec3(0, -1, 0), vec3(NULL),
-		                           vec3(NULL), 1, 0.9, vec3(0, 8, 0) - right * 1.5f + vec3(0, -1, 0), 15, 1.0, 0.04,
-		                           -9.82);
-		m_scene->AddParticleEffect(m_objectHandler->GetPlayerPos(winner) - right * 2.0f + vec3(0, -1, 0), vec3(NULL),
-		                           vec3(NULL), 1, 0.9, vec3(0, 8, 0) + right * 1.5f + vec3(0, -1, 0), 15, 1.0, 0.04,
-		                           -9.82);
+		m_scene->AddParticleEffect(m_objectHandler->GetPlayerPos(winner) + right * 2.0f + vec3(0, -1, 0), vec3(winColor.x*0.25, winColor.y*0.25, winColor.z*0.25),
+		                           vec3(randCol), 1, 0.9, vec3(0, 8, 0) - right * 1.5f + vec3(0, -1, 0), 15, 1.0, 0.04, -9.82);
+
+		m_scene->AddParticleEffect(m_objectHandler->GetPlayerPos(winner) - right * 2.0f + vec3(0, -1, 0), vec3(winColor.x * 0.25, winColor.y * 0.25, winColor.z * 0.25),
+		                           vec3(randCol), 1, 0.9, vec3(0, 8, 0) + right * 1.5f + vec3(0, -1, 0), 15, 1.0, 0.04, -9.82);
 
 		//Fireworks
 		m_fireworkCooldown += dt;
