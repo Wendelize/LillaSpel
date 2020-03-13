@@ -2242,6 +2242,12 @@ bool Menu::GetMapUpdate()
 	return m_updateMap;
 }
 
+vec3 Menu::GetWinnerColor()
+{
+	return m_playerColor[m_winOrder[0]];
+
+}
+
 void Menu::animateMenu(float dt)
 {
 	if (animateP2)
