@@ -2280,7 +2280,7 @@ void Menu::animateMenu(float dt)
 		if (m_p4Menuheight <= 0)
 		{
 			m_p4Menuheight = 0;
-			animateP3 = false;
+			animateP4 = false;
 		}
 	}
 }
