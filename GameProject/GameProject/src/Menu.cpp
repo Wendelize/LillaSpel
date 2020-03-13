@@ -664,7 +664,7 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 		m_scene->SetBloom(true);
 		m_scene->SetOnlySky(false);
 		m_scene->SetInstantCameraFocus(vec3(0, 0, 0));
-		m_scene->SetCameraPos(CAMERAPOS_GAME);
+		m_scene->SetCameraPos(CAMERAPOS_LEVELSELECT);
 
 		//ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 10);
 		ImGui::SetNextWindowPos(ImVec2((float)width / 3 - (slWidth / 2), 0));
@@ -854,7 +854,7 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 						m_soundEngine->play2D(m_menuSounds[0], false);
 					if (m_selected[0] == 0)
 					{
-						if (m_maxLives < 10)
+						if (m_maxLives < 6)
 						{
 							m_maxLives += 1;
 						}
@@ -886,13 +886,13 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 						m_soundEngine->play2D(m_menuSounds[0], false);
 					if (m_selected[0] == 0)
 					{
-						if (m_maxLives <= 10 && m_maxLives > 1)
+						if (m_maxLives <= 6 && m_maxLives > 1)
 						{
 							m_maxLives -= 1;
 						}
 						else
 						{
-							m_maxLives = 10;
+							m_maxLives = 6;
 						}
 					}
 					else if (m_selected[0] == 1)
@@ -1205,8 +1205,14 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0, 0, 1));
 		if (ImGui::Begin("##statsP1.1", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize))
 		{
-			ImGui::Text("\t\t\t\t\t 1st \n\t\t\tPlayer\t%d ", m_winOrder[0] + 1);
-			
+			//ImGui::Text("\t\t\t\t\t 1st \n\t\t\tPlayer\t%d ", m_winOrder[0] + 1);
+			string temp = "1st";
+			ImGui::SetCursorPosX(250 / 2 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+			ImGui::Text(temp.c_str());
+			temp = "Player  " + to_string(m_winOrder[0] + 1);
+			ImGui::SetCursorPosX(250 / 2 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+			ImGui::Text(temp.c_str());
+
 			ImGui::PopStyleColor(3);
 			ImGui::PopStyleVar();
 		}
@@ -1337,7 +1343,14 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_playerColor[m_winOrder[1]].x / 3 - p4FadeCol, m_playerColor[m_winOrder[1]].y / 3 - p4FadeCol, m_playerColor[m_winOrder[1]].z / 3, 1));
 		if (ImGui::Begin("##statsP2.1", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize))
 		{
-			ImGui::Text("\t\t\t\t\t 2nd \n\t\t\tPlayer\t%d ", m_winOrder[1] + 1);
+			//ImGui::Text("\t\t\t\t\t 2nd \n\t\t\tPlayer\t%d ", m_winOrder[1] + 1);
+			string temp = "2nd";
+			ImGui::SetCursorPosX(250 / 2 - ImGui::CalcTextSize(temp.c_str()).x/2);
+			ImGui::Text(temp.c_str());
+			temp = "Player  " + to_string(m_winOrder[1] + 1);
+			ImGui::SetCursorPosX(250 / 2 - ImGui::CalcTextSize(temp.c_str()).x/2);
+			ImGui::Text(temp.c_str());
+
 			ImGui::PopStyleColor(3);
 			ImGui::PopStyleVar();
 		}
@@ -1464,7 +1477,13 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 			ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_playerColor[m_winOrder[2]].x / 3 - p4FadeCol, m_playerColor[m_winOrder[2]].y / 3 - p4FadeCol, m_playerColor[m_winOrder[2]].z / 3, 1));
 			if (ImGui::Begin("##statsP3.1", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize))
 			{
-				ImGui::Text("\t\t\t\t\t 3rd \n\t\t\tPlayer\t%d ", m_winOrder[2] + 1);
+				//ImGui::Text("\t\t\t\t\t 3rd \n\t\t\tPlayer\t%d ", m_winOrder[2] + 1);
+				string temp = "3rd";
+				ImGui::SetCursorPosX(250 / 2 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+				ImGui::Text(temp.c_str());
+				temp = "Player  " + to_string(m_winOrder[2] + 1);
+				ImGui::SetCursorPosX(250 / 2 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+				ImGui::Text(temp.c_str());
 
 				ImGui::PopStyleColor(3);
 				ImGui::PopStyleVar();
@@ -1600,7 +1619,13 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 			ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_playerColor[m_winOrder[3]].x / 3 - p4FadeCol, m_playerColor[m_winOrder[3]].y / 3 - p4FadeCol, m_playerColor[m_winOrder[3]].z / 3, 1));
 			if (ImGui::Begin("##statsP4.1", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize))
 			{
-				ImGui::Text("\t\t\t\t\t 4th \n\t\t\tPlayer\t%d ", m_winOrder[3] + 1);
+				//ImGui::Text("\t\t\t\t\t 4th \n\t\t\tPlayer\t%d ", m_winOrder[3] + 1);
+				string temp = "4th";
+				ImGui::SetCursorPosX(250 / 2 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+				ImGui::Text(temp.c_str());
+				temp = "Player  " + to_string(m_winOrder[3] + 1);
+				ImGui::SetCursorPosX(250 / 2 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+				ImGui::Text(temp.c_str());
 
 				ImGui::PopStyleColor(3);
 				ImGui::PopStyleVar();
