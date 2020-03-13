@@ -776,28 +776,15 @@ vector<Light*> ObjectHandler::GetLights()
 
 vector<Light*> ObjectHandler::GetObjLight()
 {
-	cout << m_objLights.size() << endl;
 	for (size_t i = 0; i < m_objLights.size(); i++)
 	{
 		delete m_objLights.at(i);
 	}
 	m_objLights.clear();
-
 	vector<Light*> temp;
 	for (uint i = 0; i < m_objects.size(); i++)
 	{
 		temp = m_objects.at(i)->GetAllLight();
-		if (temp.size() > 0)
-		{
-			for (uint j = 0; j < temp.size(); j++)
-			{
-				m_objLights.push_back(temp.at(j));
-			}
-		}
-	}
-	for (uint i = 0; i < m_oribtObjects.size(); i++)
-	{
-		temp = m_oribtObjects.at(i)->GetAllLight();
 		if (temp.size() > 0)
 		{
 			for (uint j = 0; j < temp.size(); j++)

@@ -130,12 +130,6 @@ vector<Light*> Object::GetAllLight()
 		m_lights.push_back(new Light(1, { 0,0,0 }, { pos.x, pos.y + 6, pos.z }, { 1, 1, 1 }, 0));
 		m_lights.push_back(new Light(1, { 0,0,0 }, { pos.x, pos.y + 1, pos.z }, { 1, 0, 0 }, 0));
 		break;
-	case 10:
-
-		m_lights.clear();
-		m_lights.push_back(new Light(1, { 0,0,0 }, { pos.x , pos.y, pos.z + 3 * scale }, { 1, 0, 0 }, 0));
-		m_lights.push_back(new Light(1, { 0,0,0 }, { pos.x, pos.y + 3 * scale , pos.z}, { 1, 0, 0 }, 0));
-		m_lights.push_back(new Light(1, { 0,0,0 }, { pos.x + 3 * scale, pos.y, pos.z }, { 1, 0, 0 }, 0));
 	default:
 		break;
 	}
