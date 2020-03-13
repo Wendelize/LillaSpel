@@ -2268,7 +2268,7 @@ void Menu::animateMenu(float dt)
 		m_p4Menuheight -= dt * 2;
 		if (m_p4Menuheight <= 0)
 		{
-			m_p3Menuheight = 0;
+			m_p4Menuheight = 0;
 			animateP3 = false;
 		}
 	}
