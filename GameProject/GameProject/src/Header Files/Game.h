@@ -42,7 +42,7 @@ private:
 	int m_winner = 0;
 	bool m_wasSelect = false; // used to see if we were in select-menu last time or not
 	void Debug();
-	void SelectionMenu();	// settup for select-menu
+	void SelectionMenu(); // settup for select-menu
 public:
 	Game();
 	~Game();

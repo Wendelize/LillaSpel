@@ -28,4 +28,3 @@ public:
 	void SetModelId(int id);
 	void SetSkyboxId(int id);
 };
-

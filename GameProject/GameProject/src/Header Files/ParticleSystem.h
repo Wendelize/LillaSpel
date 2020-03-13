@@ -1,5 +1,5 @@
 #pragma once
-#include "Include.h" 
+#include "Include.h"
 
 struct Particle
 {
@@ -11,7 +11,8 @@ struct Particle
 
 	Particle()
 		: position(0), velocity(0), color(0), size(0), rotate(0), weight(0), life(0), cameraDist(0)
-	{}
+	{
+	}
 
 	bool operator<(const Particle& other) const
 	{
@@ -24,7 +25,7 @@ class ParticleSystem
 private:
 	Shader* m_particleShader;
 	GLuint m_billBoardBuffer, m_particlePosBuffer, m_particleColorBuffer;
-	GLfloat* m_particlePos, * m_particleColor;
+	GLfloat *m_particlePos, *m_particleColor;
 	GLuint m_tex;
 	GLuint m_VAO;
 	int m_nrOfParticle = 100, m_lastUsedParticle = 0, m_particleCount;
@@ -50,7 +51,8 @@ public:
 
 	//void DriftParticles();
 
-	void GenerateParticles(vec3 emitterPos, float speed, float spread, float life, vec3 color1, vec3 color2, float size, vec3 dir, float gravity);
+	void GenerateParticles(vec3 emitterPos, float speed, float spread, float life, vec3 color1, vec3 color2, float size,
+	                       vec3 dir, float gravity);
 	void Simulate(float dt);
 
 	//void GenerateParticlesForVictory(vec3 emitterPos);
@@ -60,6 +62,4 @@ public:
 
 	void SetActive();
 	bool GetActive();
-
-
 };

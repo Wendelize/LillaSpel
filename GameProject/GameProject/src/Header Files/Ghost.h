@@ -37,5 +37,4 @@ public:
 	void SetBombSwitch(bool state);
 	void SetCtrlSwitch(bool state);
 	void SetLightSwitch(bool state);
-
 };

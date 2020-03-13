@@ -3,7 +3,8 @@
 class Camera
 {
 private:
-	vec3 m_direction, m_position, m_up, m_parallel, m_focusPoint, m_focusTranslation, m_focusTranslationPoint, m_positionTranslation, m_translationPoint;
+	vec3 m_direction, m_position, m_up, m_parallel, m_focusPoint, m_focusTranslation, m_focusTranslationPoint,
+	     m_positionTranslation, m_translationPoint;
 	float m_translationDistance;
 	mat4 m_viewMatrix;
 
@@ -15,7 +16,7 @@ private:
 	int k; // används för att sänka m_shakefade varannan iteration.
 
 public:
-	Camera(vec3 pos = { 0,0,2 }, vec3 point = { 0,0,0 }, vec3 up = { 0,1,0 });
+	Camera(vec3 pos = {0, 0, 2}, vec3 point = {0, 0, 0}, vec3 up = {0, 1, 0});
 	~Camera();
 
 	void SetFocusPoint(vec3 p);
@@ -32,4 +33,3 @@ public:
 	void MoveCamera(vec3 newPos);
 	void UpdateMovement(float delta);
 };
-

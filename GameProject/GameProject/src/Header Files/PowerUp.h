@@ -38,4 +38,3 @@ public:
 	void BombBlown();
 	bool IsBombBlown();
 };
- 
