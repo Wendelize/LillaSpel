@@ -55,7 +55,8 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 	GLFWgamepadstate state;
 	float borderCol = 0.2;
 	float p4FadeCol = 0.3;
-
+	float dt = timer - m_lastTime;
+	m_lastTime = timer;
 	Window* w = m_scene->GetOurWindow();
 
 	if ((m_menu == ActiveMenu::playerHud || m_menu == ActiveMenu::select) && glfwGetGamepadState(0, &state))
@@ -79,7 +80,11 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 	int mainMenuButonHeight = 0;
 	int pauseMenuWidth = 0;
 	int pauseMenuHeight = 0;
-
+	float p1PulseValue = 1;
+	float p2PulseValue = 1;
+	float p3PulseValue = 1;
+	float p4PulseValue = 1;
+	float sinTime = sin(time*3);
 	glfwGetWindowSize(wW, &width, &height);
 
 	// resize menyerna om 720p
@@ -178,9 +183,15 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 5);
 		ImGui::GetStyle().WindowRounding = 0.0f;
 		ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(m_p1Col.x * borderCol, m_p1Col.y * borderCol, m_p1Col.z * borderCol, 1));
-		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_p1Col.x * 0.2f, m_p1Col.y * 0.2f, m_p1Col.z * 0.2f, 1));
+		p1PulseValue = (sinTime / 4) + 0.75f;
+		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4((m_p1Col.x * p1PulseValue) / 3, (m_p1Col.y * p1PulseValue) / 3, (m_p1Col.z * p1PulseValue) / 3, 1));
+
 		if (ImGui::Begin("##player1Select", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoNavInputs))
 		{
+			//cout << dt << endl;
+			
+
+			
 			int index = 0;
 			for (int i = 0; i < m_objHand->GetNumPlayers(); i++)
 			{
@@ -274,7 +285,17 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 		ImGui::SetNextWindowSize(ImVec2(width / 4, height / 2));
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 5);
 		ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(m_p2Col.x * borderCol, m_p2Col.y * borderCol, m_p2Col.z * borderCol, 1));
-		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_p2Col.x / 3, m_p2Col.y / 3, m_p2Col.z / 3, 1));
+
+		if (m_p2Joined) {
+			p2PulseValue = (sinTime / 4) + 0.75f;
+			cout << p2PulseValue << endl;
+		}
+		else {
+			p2PulseValue = 1;
+		}
+		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4((m_p2Col.x* p2PulseValue) / 3, (m_p2Col.y* p2PulseValue) / 3, (m_p2Col.z* p2PulseValue) / 3, 1));
+
+		//ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_p2Col.x / 3, m_p2Col.y / 3, m_p2Col.z / 3, 1));
 		if (ImGui::Begin("##player2Select", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoNavInputs))
 		{
 			if (m_p2Joined == false)
@@ -300,6 +321,7 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 			}
 			else
 			{
+				m_p2Pusle += dt;
 				//GLFWgamepadstate state;
 				int index = 1;
 				for (int i = 0; i < m_objHand->GetNumPlayers(); i++)
@@ -395,7 +417,17 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 		ImGui::SetNextWindowSize(ImVec2(width / 4, height / 2));
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 5);
 		ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(m_p3Col.x * borderCol, m_p3Col.y * borderCol, m_p3Col.z * borderCol, 1));
-		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_p3Col.x / 3, m_p3Col.y / 3, m_p3Col.z / 3, 1));
+		if (m_p3Joined) {
+			p3PulseValue = (sinTime / 4) + 0.75f;
+			cout << p3PulseValue << endl;
+		}
+		else {
+			p3PulseValue = 1;
+		}
+
+		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4((m_p3Col.x * p3PulseValue) / 3, (m_p3Col.y * p3PulseValue) / 3, (m_p3Col.z * p3PulseValue) / 3, 1));
+
+	//	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_p3Col.x / 3, m_p3Col.y / 3, m_p3Col.z / 3, 1));
 		if (ImGui::Begin("##player3Select", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoNavInputs))
 		{
 			//GLFWgamepadstate state;
@@ -422,6 +454,8 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 			}
 			else
 			{
+				m_p3Pusle += dt;
+
 				int index = 2;
 				for (int i = 0; i < m_objHand->GetNumPlayers(); i++)
 				{
@@ -518,7 +552,13 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 5);
 		p4FadeCol = 0.25;
 		ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(m_p4Col.x * borderCol, m_p4Col.y * borderCol, m_p4Col.z * borderCol, 1));
-		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(m_p4Col.x / 3 - p4FadeCol, m_p4Col.y / 3 - p4FadeCol, m_p4Col.z / 3 - p4FadeCol, 1));
+		if (m_p4Joined) {
+			p4PulseValue = (sinTime / 4) + 0.75f;
+		}
+		else {
+			p4PulseValue = 1;
+		}
+		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4((m_p4Col.x * p4PulseValue) / 3, (m_p4Col.y * p4PulseValue) / 3, (m_p4Col.z * p4PulseValue) / 3, 1));
 		if (ImGui::Begin("##player4Select", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoNavInputs))
 		{
 			if (m_p4Joined == false)
@@ -545,6 +585,8 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 			}
 			else
 			{
+				m_p4Pusle += dt;
+
 				int index = 3;
 				for (int i = 0; i < m_objHand->GetNumPlayers(); i++)
 				{
