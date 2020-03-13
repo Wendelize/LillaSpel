@@ -30,6 +30,11 @@ Game::Game()
 
 	m_timeSinceSpawn = 0;
 
+	m_scene->AddPointLight(SELECTPOS1 + vec3(0, 3, 0), vec3(1, 1, 1));
+	m_scene->AddPointLight(SELECTPOS2 + vec3(0, 3, 0), vec3(1, 1, 1));
+	m_scene->AddPointLight(SELECTPOS3 + vec3(0, 3, 0), vec3(1, 1, 1));
+	m_scene->AddPointLight(SELECTPOS4 + vec3(0, 3, 0), vec3(1, 1, 1));
+
 	/*vec3 pos = CAMERAPOS_SELECT + vec3(0, -1, 1) * 3.f;
 	pos += vec3(4.4, 0, 2);
 	m_objectHandler->AddPlayer(SELECTPOS1, 0, 0, vec3(0.5, 1, 9), m_cars[0]);
@@ -145,8 +150,12 @@ void Game::Update(float dt)
 	// är select menyn aktiverad? ändra kameran till inzoomad
 	if (m_menu->SelectMenuActive() || m_menu->SelectLivesMenuActive())
 	{
-		if (m_cube->GetCurrentLevel() != 0 && m_menu->SelectMenuActive())
+		for (int i = 0; i < m_objectHandler->GetNumPlayers(); i++)
 		{
+			m_objectHandler->RotatePlayer(i, dt);
+		}
+
+		if (m_cube->GetCurrentLevel() != 0 && m_menu->SelectMenuActive()) {
 			m_cube->SetCurrentLevel(0);
 			m_updateMap.store(true);
 		}
@@ -305,7 +314,7 @@ void Game::Update(float dt)
 			vec3 pos = m_objectHandler->GetPlayerPos(m_objectHandler->GetIndexByControllerId(aId));
 			pos += m_objectHandler->GetPlayerPos(m_objectHandler->GetIndexByControllerId(bId));
 
-			m_scene->AddParticleEffect(pos / 2.f, vec3(1, 0, 0), vec3(0, 1, 0), 1, 6, vec3(0, 1, 0), 200, 0.5, 0.15,
+			m_scene->AddParticleEffect(pos / 2.f, vec3(1, 0, 0), vec3(0, 1, 0), 1, 6, vec3(0, 1, 0), 50, 0.5, 0.15,
 			                           -9.82);
 
 			if (m_objectHandler->GetNumPlayers() == 2)
@@ -342,14 +351,14 @@ void Game::Update(float dt)
 
 			if (speed > 3)
 			{
-				m_scene->AddParticleEffect(pos, vec3(0.6, 0.6, 0.6), vec3(0), 5, 0.005, dir, 4, 0.3, 0.3, 1);
+				m_scene->AddParticleEffect(pos, vec3(0.6, 0.6, 0.6), vec3(0), 5, 0.005, dir, 300 * dt, 0.3, 0.3, 1);
 			}
 
 			if (speed > 15 || m_objectHandler->GetPlayerHook(i))
 			{
 				if (m_objectHandler->GetPlayerHook(i))
 				{
-					m_scene->AddParticleEffect(pos, vec3(1, 0, 0), vec3(0, 1, 0), 5, 1, dir, 50, 0.3, 0.3, 1);
+					m_scene->AddParticleEffect(pos, vec3(1, 0, 0), vec3(0, 1, 0), 5, 1, dir, 300 * dt, 0.3, 0.3, 1);
 				}
 			}
 		}
@@ -379,6 +388,7 @@ void Game::Update(float dt)
 			}
 		}
 	}
+	m_menu->animateMenu(dt);
 	m_scene->UpdateSky(dtUnchanged);
 	m_scene->UpdateParticles(dtUnchanged);
 	m_scene->UpdateTerrainAlpha(dtUnchanged, m_objectHandler->GetTerrain());
@@ -434,10 +444,10 @@ void Game::DynamicCamera(float dt)
 
 		//Confetti
 		m_scene->AddParticleEffect(m_objectHandler->GetPlayerPos(winner) + right * 2.0f + vec3(0, -1, 0), vec3(NULL),
-		                           vec3(NULL), 1, 0.9, vec3(0, 8, 0) - right * 1.5f + vec3(0, -1, 0), 15, 1.0, 0.04,
+		                           vec3(NULL), 1, 0.9, vec3(0, 8, 0) - right * 1.5f + vec3(0, -1, 0), 1000 * dt, 1.0, 0.04,
 		                           -9.82);
 		m_scene->AddParticleEffect(m_objectHandler->GetPlayerPos(winner) - right * 2.0f + vec3(0, -1, 0), vec3(NULL),
-		                           vec3(NULL), 1, 0.9, vec3(0, 8, 0) + right * 1.5f + vec3(0, -1, 0), 15, 1.0, 0.04,
+		                           vec3(NULL), 1, 0.9, vec3(0, 8, 0) + right * 1.5f + vec3(0, -1, 0), 1000 * dt, 1.0, 0.04,
 		                           -9.82);
 
 		//Fireworks

@@ -288,8 +288,8 @@ void Scene::Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, 
 	RenderParticles();
 
 	// Render Skybox
-	if (!m_enableBloom)
-		RenderSkybox();
+	//if (!m_enableBloom)
+		//RenderSkybox();
 
 	// Add glow
 	m_bloom->PingPongRender(3);
@@ -333,6 +333,11 @@ void Scene::RenderSceneInfo(Shader* shader, vector<ObjectInfo*> objects)
 	shader->SetUniform("u_Glow", false);
 	shader->SetUniform("u_Alpha", alpha);
 	m_winnerIsland->Draw(shader);
+
+	/*shader->SetUniform("u_Model", translate(mat4(1.f), CAMERAPOS_SELECT + vec3(0, -4.7, 5)));
+	shader->SetUniform("u_PlayerColor", vec3(0.5, 0.3, 0.01));
+	shader->SetUniform("u_Glow", false);
+	m_platform[0]->Draw(shader);*/
 }
 
 void Scene::RenderSkybox()

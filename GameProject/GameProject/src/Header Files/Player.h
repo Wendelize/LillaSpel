@@ -33,7 +33,7 @@ private:
 
 	// CarLights
 	Light* m_lights[2];
-	bool m_lightsOn = true;
+	bool m_lightsOn = false;
 	float m_timeOut;
 	int m_nrOfRockets;
 	//Variables 4 Fysik
@@ -76,6 +76,7 @@ public:
 	void FinishRotation();
 	vec3 GetDirection();
 	mat4 GetMatrix();
+	void Rotate(float speed);
 	ObjectInfo* GetObjectInfo();
 	Light* GetLight(int index);
 	btRigidBody* GetBody();

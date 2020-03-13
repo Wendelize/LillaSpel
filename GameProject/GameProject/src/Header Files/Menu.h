@@ -38,6 +38,7 @@ public:
 	bool Reset();
 	void ResetReset();
 	void SetMapUpdate(bool map);
+	void animateMenu(float dt);
 	ISoundEngine* m_soundEngine;
 	vector<ISoundSource*> m_menuSounds;
 	// for statsMenu 
@@ -69,7 +70,11 @@ private:
 	int m_points[4] = {0, 0, 0, 0}; // points 2 per kill and 1 per life left
 	vector<vec3> m_playerColor;
 
-	int m_selected[4] = {0, 0, 0, 0};
+	bool animateP2 = false;
+	bool animateP3 = false;
+	bool animateP4 = false;
+
+	int m_selected[4] = { 0, 0, 0, 0 };
 	int m_continue = 0;
 
 	int m_p1ModelId = 0;
@@ -78,10 +83,12 @@ private:
 	vec3 m_p1Col = vec3(2, 0, 4);
 	float m_p1Pusle =	0.f;
 	float m_p1PulseWay = 1.f;
+	float m_p1Menuheight = 0.f;
 
 	int m_p2ModelId = 0;
 	double m_p2Seconds = 1;
 	bool m_p2Joined = false;
+	float m_p2Menuheight = .8f;
 	vec3 m_p2Col = vec3(0, 1.6, 0.8);
 	float m_p2Pusle = 0.f;
 	float m_p2PulseWay = 1.f;
@@ -91,12 +98,14 @@ private:
 	double m_p3Seconds = 1;
 	bool m_p3Joined = false;
 	vec3 m_p3Col = vec3(3.2, 0, 0.8);
+	float m_p3Menuheight = .8f;
 	float m_p3Pusle =	0.f;
 	float m_p3PulseWay = 1.f;
 
 	int m_p4ModelId = -1;
 	double m_p4Seconds = 1;
 	bool m_p4Joined = false;
+	float m_p4Menuheight = .8f;
 	vec3 m_p4Col = vec3(4, 4, 0.6);
 	float m_p4Pusle = 0.f;
 	float m_p4PulseWay = 1.f;
