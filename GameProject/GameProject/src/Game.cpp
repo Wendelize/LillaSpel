@@ -557,6 +557,8 @@ void Game::AddInteractiveObjects()
 			m_objectHandler->AddObject(vec3(-20, 1.1, -2), 3, m_objectModels[3]);
 			m_objectHandler->AddObject(vec3(-18, 1.3, 0), 3, m_objectModels[3]);
 			m_objectHandler->AddObject(vec3(0, 0.3, -18), 3, m_objectModels[3]);
+			m_objectHandler->AddObject(vec3(0, 0.3, 18), 3, m_objectModels[3]);
+			m_objectHandler->AddObject(vec3(18, 0.3, 0), 3, m_objectModels[3]);
 		}
 		break;
 	case 1:
