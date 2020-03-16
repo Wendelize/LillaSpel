@@ -6,6 +6,7 @@
 #include "Ghost.h"
 #include "MarchingCubes.h"
 #include "Object.h"
+#include "Scene.h"
 
 class ObjectHandler
 {
@@ -61,6 +62,8 @@ private:
 	bool m_lightsOut;
 	bool m_terrain;
 
+	bool PUpCollision[4];
+
 public:
 	ObjectHandler();
 	~ObjectHandler();
@@ -112,8 +115,6 @@ public:
 	int GetDeadId();
 	// also clears the vector
 	vector<int> GetDeathOrder();
-	// TEMP!! TODO: REMOVE!!!!
-	int GetPlayerControllerIDBloo(int index, int bloo);
 
 	bool GetExplosion();
 	void SetExplosion(bool b);
@@ -146,4 +147,5 @@ public:
 	void UpdateLastPos();
 	void UpdateHook(float dt);
 	bool GetPlayerHook(int index);
+	void PowerUpParticles(Scene* scene);
 };

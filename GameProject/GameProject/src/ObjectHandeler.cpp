@@ -610,17 +610,6 @@ int ObjectHandler::GetPlayerControllerID(int index)
 	return m_players[index]->GetControllerID();
 }
 
-int ObjectHandler::GetPlayerControllerIDBloo(int index, int bloo)
-{
-	// TODO: ta bort denna ifsats när spelet är klart?
-	if (index == -1 || this->GetNumPlayers() - 1 < index)
-	{
-		// otillåtna värden som index
-		cout << "invalid index send to getPlayerControlerID! index : " << index << " from int : " << bloo << endl;
-	}
-	return m_players[index]->GetControllerID();
-}
-
 bool ObjectHandler::GetExplosion()
 {
 	return m_cube->GetExplosion();
@@ -964,6 +953,7 @@ void ObjectHandler::CheckPowerUpCollision()
 			{
 				if (m_players.at(f)->GetBody() == obA)
 				{
+					PUpCollision[f] = true;
 					for (int k = 0; k < m_powerUps.size(); k++)
 					{
 						if (m_powerUps.at(k)->getObject() == obB)
@@ -1017,6 +1007,7 @@ void ObjectHandler::CheckPowerUpCollision()
 			{
 				if (m_players.at(f)->GetBody() == obB)
 				{
+					PUpCollision[f] = true;
 					for (int k = 0; k < m_powerUps.size(); k++)
 					{
 						if (m_powerUps.at(k)->getObject() == obA)
@@ -1237,3 +1228,19 @@ bool ObjectHandler::GetPlayerHook(int index)
 {
 	return m_players[index]->GetHook();
 }
+
+void ObjectHandler::PowerUpParticles(Scene *m_scene) 
+{ 
+	for (int i = 0; i < m_players.size(); i++) 
+	{ 
+		if (PUpCollision[i] == true) 
+		{ 
+			btVector3 btPos= m_players.at(i)->GetCurrentPos(); 
+			vec3 pos = vec3(btPos.x(), btPos.y(), btPos.z()); 
+ 
+			m_scene->AddParticleEffect( pos, vec3(NULL), vec3(NULL), 2, 4, vec3(1, 0, 0), 35, 0.5, 0.2,-9.82); 
+			PUpCollision[i] = false; 
+		} 
+	} 
+ 
+} 

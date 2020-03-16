@@ -199,7 +199,7 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 			int index = 0;
 			for (int i = 0; i < m_objHand->GetNumPlayers(); i++)
 			{
-				if (m_objHand->GetPlayerControllerIDBloo(i, 27) == 0)
+				if (m_objHand->GetPlayerControllerID(i) == 0)
 				{
 					index = i;
 				}
@@ -340,7 +340,7 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 				int index = 1;
 				for (int i = 0; i < m_objHand->GetNumPlayers(); i++)
 				{
-					if (m_objHand->GetPlayerControllerIDBloo(i, 28) == 1)
+					if (m_objHand->GetPlayerControllerID(i) == 1)
 					{
 						index = i;
 					}
@@ -483,7 +483,7 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 				int index = 2;
 				for (int i = 0; i < m_objHand->GetNumPlayers(); i++)
 				{
-					if (m_objHand->GetPlayerControllerIDBloo(i, 29) == 2)
+					if (m_objHand->GetPlayerControllerID(i) == 2)
 					{
 						index = i;
 					}
@@ -624,7 +624,7 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 				int index = 3;
 				for (int i = 0; i < m_objHand->GetNumPlayers(); i++)
 				{
-					if (m_objHand->GetPlayerControllerIDBloo(i, 30) == 3)
+					if (m_objHand->GetPlayerControllerID(i) == 3)
 					{
 						index = i;
 					}
@@ -853,6 +853,21 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 			//ImGui::PopStyleVar();
 		}
 		ImGui::End();
+
+		ImGui::SetNextWindowPos(ImVec2((float)width / 3 - (slWidth / 2), height - (height / 16) ));
+		ImGui::SetNextWindowSize(ImVec2((float)width / 3 + slWidth, height / 8));
+		if (ImGui::Begin("##selectLevelBack", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_AlwaysAutoResize | ImGuiNavInput_Activate))
+		{
+			float windowSizeX = (float)width / 3 + slWidth;
+			ImGui::PushFont(w->m_fonts[0]);
+			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.8, 0.8, 0.8, 1));
+			string temp = "Press \"B\" for Back";
+			ImGui::SetCursorPosX(windowSizeX / 2 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+			ImGui::Text(temp.c_str());
+			ImGui::PopFont();
+			ImGui::PopStyleColor();
+		}
+		ImGui::End();
 		break;
 
 	case ActiveMenu::selectLives:
@@ -1019,6 +1034,22 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 
 		}
 		ImGui::End();
+
+		ImGui::SetNextWindowPos(ImVec2((float)width / 3 - (slWidth / 2), height - (height / 16) ));
+		ImGui::SetNextWindowSize(ImVec2((float)width / 3 + slWidth, height / 8));
+		if (ImGui::Begin("##selectLivesBack", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_AlwaysAutoResize | ImGuiNavInput_Activate))
+		{
+			float windowSizeX = (float)width / 3 + slWidth;
+			ImGui::PushFont(w->m_fonts[0]);
+			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.8, 0.8, 0.8, 1));
+			string temp = "Press \"B\" for Back";
+			ImGui::SetCursorPosX(windowSizeX / 2 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+			ImGui::Text(temp.c_str());
+			ImGui::PopFont();
+			ImGui::PopStyleColor();
+		}
+		ImGui::End();
+
 		break;
 	case ActiveMenu::pause:
 		m_objHand->SetPlayerSpotlights(true);
@@ -1320,14 +1351,45 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 			ImGui::Text("Kills : ");
 			int killCursorPosY = ImGui::GetCursorPosY();
 			int suicides = 0;
-			int j = 0;
+			int k = 0;
+			string kill = "";
+			vector<string> kills;
+			int xPos = 0;
 			for (int i = 0; i < m_kills[m_winOrder[0]].size(); i++)
 			{
-				if (i % 4 != 0)
+				kill = "P" + to_string((m_kills[m_winOrder[0]]).at(i) + 1);
+				kills.push_back(kill);
+				if ( ((i + 1) % 4 == 0) )
 				{
-					ImGui::SameLine();
+					//ImGui::SameLine();
+					string temp = kills[0] + "\t" + kills[1] + "\t" + kills[2] + "\t" + kills[3];
+					xPos = (250 / 2 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+					ImGui::SetCursorPosX(xPos);
+					ImGui::Text(temp.c_str());
+					kills.clear();
 				}
-				ImGui::Text("\tP%d ", (m_kills[m_winOrder[0]]).at(i) + 1);
+				else if (i == m_kills[m_winOrder[0]].size() - 1)
+				{
+					string temp;
+					for (int j  = 0; j < kills.size(); j++)
+					{
+						if (j != 0)
+						{
+							temp += "\t";
+						}
+
+						temp += kills[j];
+					}
+					if (xPos == 0)
+					{
+						xPos = (250 / 2 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+					}
+					ImGui::SetCursorPosX(xPos);
+					ImGui::Text(temp.c_str());
+				}
+					
+
+				//ImGui::Text("\tP%d ", (m_kills[m_winOrder[0]]).at(i) + 1);
 
 			}
 			if (m_kills[m_winOrder[0]].size() == 0)
@@ -1345,16 +1407,48 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 			ImGui::Separator();
 			ImGui::Text("Deaths : ");//	TODO: FIxa så att antal suicides skrivs ut för sig själv 
 			int deathCursorPosY = ImGui::GetCursorPosY();
+			string death = "";
+			vector<string> deaths;
+			xPos = 0;
 			for (int i = 0; i < m_killers[m_winOrder[0]].size(); i++)
 			{
 				if ((m_killers[m_winOrder[0]].at(i)) != m_winOrder[0])
 				{
-					if (j % 4 != 0)
+					//if (j % 4 != 0)
+					//{
+					//	ImGui::SameLine();
+					//}
+					//ImGui::Text("\tP%d ", (m_killers[m_winOrder[0]]).at(i) + 1);
+					k++;
+					death = "P" + to_string((m_killers[m_winOrder[0]]).at(i) + 1);
+					deaths.push_back(death);
+					if (deaths.size() == 4)//((i + 1) % 4 == 0))
 					{
-						ImGui::SameLine();
+						string temp = deaths[0] + "\t" + deaths[1] + "\t" + deaths[2] + "\t" + deaths[3];
+						xPos = (250 / 2 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+						ImGui::SetCursorPosX(xPos);
+						ImGui::Text(temp.c_str());
+						deaths.clear();
 					}
-					ImGui::Text("\tP%d ", (m_killers[m_winOrder[0]]).at(i) + 1);
-					j++;
+					else if (i == m_killers[m_winOrder[0]].size() - 1)
+					{
+						string temp;
+						for (int j = 0; j < deaths.size(); j++)
+						{
+							if (j != 0)
+							{
+								temp += "\t";
+							}
+
+							temp += deaths[j];
+						}
+						if (xPos == 0)
+						{
+							xPos = (250 / 2 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+						}
+						ImGui::SetCursorPosX(xPos);
+						ImGui::Text(temp.c_str());
+					}
 				}
 				else
 				{
@@ -1362,7 +1456,7 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 				}
 			}
 
-			if (j == 0)
+			if (k == 0)
 			{
 				ImGui::SameLine();
 				string temp = "0";
@@ -1455,15 +1549,51 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 			ImGui::Text("Kills : ");
 			int killCursorPosY = ImGui::GetCursorPosY();
 			int suicides = 0;
-			int j = 0;
+			int k = 0;
+			string kill = "";
+			vector<string> kills;
+			int xPos = 0;
 			for (int i = 0; i < m_kills[m_winOrder[1]].size(); i++)
 			{
+				if (i % 4 == 0)
+				{
+					kill = "P" + to_string((m_kills[m_winOrder[1]]).at(i) + 1);
+				}
+				else
+				{
+					kill = "\tP" + to_string((m_kills[m_winOrder[1]]).at(i) + 1);
+				}
+				kills.push_back(kill);
+				if (((i + 1) % 4 == 0))
+				{
+					//ImGui::SameLine();
+					string temp = kills[0] + kills[1] + kills[2] + kills[3];
+					xPos = (250 / 2 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+					ImGui::SetCursorPosX(xPos);
+					ImGui::Text(temp.c_str());
+					kills.clear();
+				}
+				else if (i == m_kills[m_winOrder[1]].size() - 1)
+				{
+					string temp;
+					for (int j = 0; j < kills.size(); j++)
+					{
+						temp += kills[j];
+					}
+					if (xPos == 0)
+					{
+						xPos = (250 / 2 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+					}
+					ImGui::SetCursorPosX(xPos);
+					ImGui::Text(temp.c_str());
+				}
+				/*
 				if (i % 4 != 0)
 				{
 					ImGui::SameLine();
 				}
 				ImGui::Text("\tP%d ", (m_kills[m_winOrder[1]]).at(i) + 1);
-
+				*/
 			}
 			if (m_kills[m_winOrder[1]].size() == 0)
 			{
@@ -1480,16 +1610,44 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 			ImGui::Separator();
 			ImGui::Text("Deaths : ");//	TODO: FIxa så att antal suicides skrivs ut för sig själv 
 			int deathCursorPosY = ImGui::GetCursorPosY();
+			string death = "";
+			vector<string> deaths;
+			xPos = 0;
 			for (int i = 0; i < m_killers[m_winOrder[1]].size(); i++)
 			{
 				if ((m_killers[m_winOrder[1]].at(i)) != m_winOrder[1])
 				{
-					if (j % 4 != 0)
+					k++;
+
+					death = "P" + to_string((m_killers[m_winOrder[1]]).at(i) + 1);	
+					deaths.push_back(death);
+					if ( deaths.size() == 4 )
 					{
-						ImGui::SameLine();
+						string temp = deaths[0] + "\t" + deaths[1] + "\t" + deaths[2] + "\t" + deaths[3];
+						xPos = (250 / 2 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+						ImGui::SetCursorPosX(xPos);
+						ImGui::Text(temp.c_str());
+						deaths.clear();
 					}
-					ImGui::Text("\tP%d ", (m_killers[m_winOrder[1]]).at(i) + 1);
-					j++;
+					else if (i == m_killers[m_winOrder[1]].size() - 1)
+					{
+						string temp;
+						for (int j = 0; j < deaths.size(); j++)
+						{
+							if (j != 0)
+							{
+								temp += "\t";
+							}
+
+							temp += deaths[j];
+						}
+						if (xPos == 0)
+						{
+							xPos = (250 / 2 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+						}
+						ImGui::SetCursorPosX(xPos);
+						ImGui::Text(temp.c_str());
+					}
 				}
 				else
 				{
@@ -1497,7 +1655,7 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 				}
 			}
 
-			if (j == 0)
+			if (k == 0)
 			{
 				ImGui::SameLine();
 				string temp = "0";
@@ -1591,14 +1749,42 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 				ImGui::Text("Kills : ");
 				int killCursorPosY = ImGui::GetCursorPosY();
 				int suicides = 0;
-				int j = 0;
+				int k = 0;
+				string kill = "";
+				vector<string> kills;
+				int xPos = 0;
 				for (int i = 0; i < m_kills[m_winOrder[2]].size(); i++)
 				{
-					if (i % 4 != 0)
+					kill = "P" + to_string((m_kills[m_winOrder[2]]).at(i) + 1);
+					kills.push_back(kill);
+					if (((i + 1) % 4 == 0))
 					{
-						ImGui::SameLine();
+						//ImGui::SameLine();
+						string temp = kills[0] + "\t" + kills[1] + "\t" + kills[2] + "\t" + kills[3];
+						xPos = (250 / 2 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+						ImGui::SetCursorPosX(xPos);
+						ImGui::Text(temp.c_str());
+						kills.clear();
 					}
-					ImGui::Text("\tP%d ", (m_kills[m_winOrder[2]]).at(i) + 1);
+					else if (i == m_kills[m_winOrder[2]].size() - 1)
+					{
+						string temp;
+						for (int j = 0; j < kills.size(); j++)
+						{
+							if (j != 0)
+							{
+								temp += "\t";
+							}
+
+							temp += kills[j];
+						}
+						if (xPos == 0)
+						{
+							xPos = (250 / 2 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+						}
+						ImGui::SetCursorPosX(xPos);
+						ImGui::Text(temp.c_str());
+					}
 
 				}
 				if (m_kills[m_winOrder[2]].size() == 0)
@@ -1616,18 +1802,46 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 				ImGui::Separator();
 				ImGui::Text("Deaths : ");//	TODO: FIxa så att antal suicides skrivs ut för sig själv 
 				int deathCursorPosY = ImGui::GetCursorPosY();
+				string death = "";
+				vector<string> deaths;
+				xPos = 0;
 				for (int i = 0; i < m_killers[m_winOrder[2]].size(); i++)
 				{
 
 
 					if ((m_killers[m_winOrder[2]].at(i)) != m_winOrder[2])
 					{
-						if (j % 4 != 0)
+						k++;
+
+						death = "P" + to_string((m_killers[m_winOrder[2]]).at(i) + 1);
+						deaths.push_back(death);
+						if (deaths.size() == 4)
 						{
-							ImGui::SameLine();
+							string temp = deaths[0] + "\t" + deaths[1] + "\t" + deaths[2] + "\t" + deaths[3];
+							xPos = (250 / 2 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+							ImGui::SetCursorPosX(xPos);
+							ImGui::Text(temp.c_str());
+							deaths.clear();
 						}
-						ImGui::Text("\tP%d ", (m_killers[m_winOrder[2]]).at(i) + 1);
-						j++;
+						else if (i == m_killers[m_winOrder[2]].size() - 1)
+						{
+							string temp;
+							for (int j = 0; j < deaths.size(); j++)
+							{
+								if (j != 0)
+								{
+									temp += "\t";
+								}
+
+								temp += deaths[j];
+							}
+							if (xPos == 0)
+							{
+								xPos = (250 / 2 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+							}
+							ImGui::SetCursorPosX(xPos);
+							ImGui::Text(temp.c_str());
+						}
 					}
 					else
 					{
@@ -1637,7 +1851,7 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 
 				}
 
-				if (j == 0)
+				if (k == 0)
 				{
 					ImGui::SameLine();
 					string temp = "0";
@@ -1733,14 +1947,44 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 				ImGui::Text("Kills : ");
 				int killCursorPosY = ImGui::GetCursorPosY();
 				int suicides = 0;
-				int j = 0;
+				int k = 0;
+				string kill = "";
+				vector<string> kills;
+				int xPos = 0;
 				for (int i = 0; i < m_kills[m_winOrder[3]].size(); i++)
 				{
-					if (i % 4 != 0)
+					if (i % 4 == 0)
 					{
-						ImGui::SameLine();
+						kill = "P" + to_string((m_kills[m_winOrder[3]]).at(i) + 1);
 					}
-					ImGui::Text("\tP%d ", (m_kills[m_winOrder[3]]).at(i) + 1);
+					else
+					{
+						kill = "\tP" + to_string((m_kills[m_winOrder[3]]).at(i) + 1);
+					}
+					kills.push_back(kill);
+					if (((i + 1) % 4 == 0))
+					{
+						//ImGui::SameLine();
+						string temp = kills[0] + kills[1] + kills[2] + kills[3];
+						xPos = (250 / 2 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+						ImGui::SetCursorPosX(xPos);
+						ImGui::Text(temp.c_str());
+						kills.clear();
+					}
+					else if (i == m_kills[m_winOrder[3]].size() - 1)
+					{
+						string temp;
+						for (int j = 0; j < kills.size(); j++)
+						{
+							temp += kills[j];
+						}
+						if (xPos == 0)
+						{
+							xPos = (250 / 2 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+						}
+						ImGui::SetCursorPosX(xPos);
+						ImGui::Text(temp.c_str());
+					}
 
 				}
 				if (m_kills[m_winOrder[3]].size() == 0)
@@ -1758,18 +2002,46 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 				ImGui::Separator();
 				ImGui::Text("Deaths : ");//	TODO: FIxa så att antal suicides skrivs ut för sig själv 
 				int deathCursorPosY = ImGui::GetCursorPosY();
+				string death = "";
+				vector<string> deaths;
+				xPos = 0;
 				for (int i = 0; i < m_killers[m_winOrder[3]].size(); i++)
 				{
 
 
 					if ((m_killers[m_winOrder[3]].at(i)) != m_winOrder[3])
 					{
-						if (j % 4 != 0)
+						k++;
+
+						death = "P" + to_string((m_killers[m_winOrder[3]]).at(i) + 1);
+						deaths.push_back(death);
+						if (deaths.size() == 4)
 						{
-							ImGui::SameLine();
+							string temp = deaths[0] + "\t" + deaths[1] + "\t" + deaths[2] + "\t" + deaths[3];
+							xPos = (250 / 2 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+							ImGui::SetCursorPosX(xPos);
+							ImGui::Text(temp.c_str());
+							deaths.clear();
 						}
-						ImGui::Text("\tP%d ", (m_killers[m_winOrder[3]]).at(i) + 1);
-						j++;
+						else if (i == m_killers[m_winOrder[3]].size() - 1)
+						{
+							string temp;
+							for (int j = 0; j < deaths.size(); j++)
+							{
+								if (j != 0)
+								{
+									temp += "\t";
+								}
+
+								temp += deaths[j];
+							}
+							if (xPos == 0)
+							{
+								xPos = (250 / 2 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+							}
+							ImGui::SetCursorPosX(xPos);
+							ImGui::Text(temp.c_str());
+						}
 					}
 					else
 					{
@@ -1779,7 +2051,7 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 
 				}
 
-				if (j == 0)
+				if (k == 0)
 				{
 					ImGui::SameLine();
 					string temp = "0";
@@ -1870,7 +2142,7 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 			int lives = 0;
 			for (int i = 0; i < m_objHand->GetNumPlayers(); i++)
 			{
-				if (m_objHand->GetPlayerControllerIDBloo(i, 23) == 0)
+				if (m_objHand->GetPlayerControllerID(i) == 0)
 				{
 					index = i;
 				}
@@ -1908,7 +2180,7 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 			int lives = 0;
 			for (int i = 0; i < m_objHand->GetNumPlayers(); i++)
 			{
-				if (m_objHand->GetPlayerControllerIDBloo(i, 24) == 1)
+				if (m_objHand->GetPlayerControllerID(i) == 1)
 				{
 					index = i;
 				}
@@ -1947,7 +2219,7 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 				int lives = 0;
 				for (int i = 0; i < m_objHand->GetNumPlayers(); i++)
 				{
-					if (m_objHand->GetPlayerControllerIDBloo(i, 25) == 2)
+					if (m_objHand->GetPlayerControllerID(i) == 2)
 					{
 						index = i;
 					}
@@ -1988,7 +2260,7 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 				int lives = 0;
 				for (int i = 0; i < m_objHand->GetNumPlayers(); i++)
 				{
-					if (m_objHand->GetPlayerControllerIDBloo(i, 26) == 3)
+					if (m_objHand->GetPlayerControllerID(i) == 3)
 					{
 						index = i;
 					}
