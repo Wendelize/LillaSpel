@@ -381,7 +381,7 @@ void Game::Update(float dt)
 
 void Game::DynamicCamera(float dt)
 {
-	vec3 focusPoint = vec3(0);
+	vec3 focusPoint = vec3(0, 0, 0);
 	vec3 offset = vec3(0, -6, 0);
 	int numPlayers = m_objectHandler->GetNumPlayers();
 	int winner = m_winner;
@@ -401,13 +401,22 @@ void Game::DynamicCamera(float dt)
 		}
 		focusPoint /= vec3(numPlayers);
 	}
-	else
+
+	if(m_menu->SelectMenuActive())
 	{
-		focusPoint = CAMERAPOS_SELECT + vec3(0, -1, 1);
+		//focusPoint = CAMERAPOS_SELECT + vec3(0, -1, 1);
+	}
+
+	if (m_menu->SelectLevelMenuActive())
+	{
+		//focusPoint = vec3(0, 2, -7);
 	}
 
 	if (dt < 1.f)
+	{
 		m_scene->SetCameraFocus(focusPoint);
+	}
+		
 
 	if (m_menu->WinMenuActive() || m_menu->RestartMenuActive() || m_menu->StatsMenuActive())
 	{
