@@ -552,12 +552,7 @@ void Game::AddInteractiveObjects()
 		break;
 	case 1:
 		{
-			m_objectHandler->AddObject(vec3(15, 4.5, 3.2), 5, m_objectModels[4], 2);
-			mat4 temp = m_objectHandler->GetObjects().front()->modelMatrix;
-			temp[0][0] *= 10;
-			temp[1][1] *= 10;
-			temp[2][2] *= 10;
-			m_objectHandler->GetObjects().front()->modelMatrix = temp;
+			m_objectHandler->AddObject(vec3(15, 4.5, 3.2), 5, m_objectModels[5], 2);
 
 			m_objectHandler->AddObject(vec3(-4.6, 8.8, -15), 6, m_objectModels[6]);
 			m_objectHandler->AddObject(vec3(0, 5.6, -5), 6, m_objectModels[6]);
