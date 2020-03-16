@@ -26,6 +26,7 @@ public:
 	void SetActiveMenu(ActiveMenu activeMenu);
 	void SetWinner(int playerNum); // old might not be needed anymore
 	bool SelectMenuActive();
+	bool SelectLevelMenuActive();
 	bool SelectLivesMenuActive();
 	bool StartMenuActive();
 	bool RestartMenuActive();
@@ -48,6 +49,8 @@ public:
 	int GetWinnerIndex();
 	bool GetMapUpdate();
 	vec3 GetWinnerColor();
+
+	string flavorText[6];
 
 private:
 	Scene* m_scene;
