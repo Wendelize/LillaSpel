@@ -377,11 +377,12 @@ void Game::Update(float dt)
 	m_scene->UpdateLightsOut(m_objectHandler->GetLightsOut());
 	DynamicCamera(dtUnchanged);
 	m_scene->UpdateCamera(dtUnchanged);
+	m_objectHandler->PowerUpParticles(m_scene);
 }
 
 void Game::DynamicCamera(float dt)
 {
-	vec3 focusPoint = vec3(0);
+	vec3 focusPoint = vec3(0, 0, 0);
 	vec3 offset = vec3(0, -6, 0);
 	int numPlayers = m_objectHandler->GetNumPlayers();
 	int winner = m_winner;
@@ -401,13 +402,22 @@ void Game::DynamicCamera(float dt)
 		}
 		focusPoint /= vec3(numPlayers);
 	}
-	else
+
+	if(m_menu->SelectMenuActive())
 	{
-		focusPoint = CAMERAPOS_SELECT + vec3(0, -1, 1);
+		//focusPoint = CAMERAPOS_SELECT + vec3(0, -1, 1);
+	}
+
+	if (m_menu->SelectLevelMenuActive())
+	{
+		//focusPoint = vec3(0, 2, -7);
 	}
 
 	if (dt < 1.f)
+	{
 		m_scene->SetCameraFocus(focusPoint);
+	}
+		
 
 	if (m_menu->WinMenuActive() || m_menu->RestartMenuActive() || m_menu->StatsMenuActive())
 	{
@@ -547,16 +557,13 @@ void Game::AddInteractiveObjects()
 			m_objectHandler->AddObject(vec3(-20, 1.1, -2), 3, m_objectModels[3]);
 			m_objectHandler->AddObject(vec3(-18, 1.3, 0), 3, m_objectModels[3]);
 			m_objectHandler->AddObject(vec3(0, 0.3, -18), 3, m_objectModels[3]);
+			m_objectHandler->AddObject(vec3(0, 0.3, 18), 3, m_objectModels[3]);
+			m_objectHandler->AddObject(vec3(18, 0.3, 0), 3, m_objectModels[3]);
 		}
 		break;
 	case 1:
 		{
-			m_objectHandler->AddObject(vec3(15, 4.5, 3.2), 5, m_objectModels[4], 2);
-			mat4 temp = m_objectHandler->GetObjects().front()->modelMatrix;
-			temp[0][0] *= 10;
-			temp[1][1] *= 10;
-			temp[2][2] *= 10;
-			m_objectHandler->GetObjects().front()->modelMatrix = temp;
+			m_objectHandler->AddObject(vec3(15, 4.5, 3.2), 5, m_objectModels[5], 2);
 
 			m_objectHandler->AddObject(vec3(-4.6, 8.8, -15), 6, m_objectModels[6]);
 			m_objectHandler->AddObject(vec3(0, 5.6, -5), 6, m_objectModels[6]);

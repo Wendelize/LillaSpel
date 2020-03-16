@@ -34,6 +34,10 @@ Menu::Menu(Scene* scene, ObjectHandler* objHand)
 	m_playerColor.push_back(m_p3Col);
 	m_playerColor.push_back(m_p4Col);
 
+	flavorText[0] = "\nThis old classic brings us back when \ncars where smoking and the start \nbutton was OP.";
+	flavorText[1] = "\nHopefully this big vehicle will drive \ninto Vendela one day. Until that day \nthis will be the ultimate KamiCarZe \nvehicle.";
+	flavorText[2] = "\nThe Cybertruck. Totally unbreakable. \n Except the windows. We do not talk \nabout the windows.";
+	flavorText[3] = "\nIn the hands of a student, this vehicle \nwill never be used at full capacity \nunless its \"CSN-time\"";
 	
 }
 
@@ -59,7 +63,7 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 	m_lastTime = timer;
 	Window* w = m_scene->GetOurWindow();
 
-	if ((m_menu == ActiveMenu::playerHud || m_menu == ActiveMenu::select) && glfwGetGamepadState(0, &state))
+	if (m_menu == ActiveMenu::playerHud && glfwGetGamepadState(0, &state))
 	{
 		// TODO: maybe one should be able to access the pause menu from more places?
 		if (state.buttons[GLFW_GAMEPAD_BUTTON_START])
@@ -175,7 +179,6 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 		m_objHand->SetPlayerSpotlights(false);
 		m_scene->SetBloom(false);
 		m_scene->ResetCameraFOV();
-		//m_scene->SetOnlySky(true);
 		m_scene->SetInstantCameraFocus(CAMERAPOS_SELECT + vec3(0, -1, 1));
 
 		ImGui::SetNextWindowPos(ImVec2(0, height / 2));
@@ -193,10 +196,6 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 
 		if (ImGui::Begin("##player1Select", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoNavInputs))
 		{
-			//cout << dt << endl;
-			
-
-			
 			int index = 0;
 			for (int i = 0; i < m_objHand->GetNumPlayers(); i++)
 			{
@@ -218,6 +217,11 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 				temp = " < Vehicle Model :" + to_string(m_p1ModelId) + "  >";
 				ImGui::SetCursorPosX(width / 8 - ImGui::CalcTextSize(temp.c_str()).x / 2);
 				ImGui::Text(temp.c_str());
+
+				ImGui::Text("\n");
+				ImGui::Separator();
+				temp = flavorText[m_p1ModelId];
+				ImGui::Text(temp.c_str());
 			}
 			else
 			{
@@ -227,6 +231,11 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 
 				temp = "Press \"B\" to Unselect!";
 				ImGui::SetCursorPosX(width / 8 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+				ImGui::Text(temp.c_str());
+
+				ImGui::Text("\n");
+				ImGui::Separator();
+				temp = flavorText[m_p1ModelId];
 				ImGui::Text(temp.c_str());
 			}
 
@@ -348,6 +357,11 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 					temp = "Vehicle Model : " + to_string(m_p2ModelId) + "  >";
 					ImGui::SetCursorPosX(width / 8 - ImGui::CalcTextSize(temp.c_str()).x / 2);
 					ImGui::Text(temp.c_str());
+
+					ImGui::Text("\n");
+					ImGui::Separator();
+					temp = flavorText[m_p1ModelId];
+					ImGui::Text(temp.c_str());
 				}
 				else
 				{
@@ -357,6 +371,11 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 
 					temp = "Press \"B\" to Unselect!";
 					ImGui::SetCursorPosX(width / 8 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+					ImGui::Text(temp.c_str());
+
+					ImGui::Text("\n");
+					ImGui::Separator();
+					temp = flavorText[m_p1ModelId];
 					ImGui::Text(temp.c_str());
 				}
 
@@ -481,6 +500,11 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 					temp = "Vehicle Model : " + to_string(m_p3ModelId) + "  >";
 					ImGui::SetCursorPosX(width / 8 - ImGui::CalcTextSize(temp.c_str()).x / 2);
 					ImGui::Text(temp.c_str());
+
+					ImGui::Text("\n");
+					ImGui::Separator();
+					temp = flavorText[m_p1ModelId];
+					ImGui::Text(temp.c_str());
 				}
 				else
 				{
@@ -490,6 +514,11 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 
 					temp = "Press \"B\" to Unselect!";
 					ImGui::SetCursorPosX(width / 8 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+					ImGui::Text(temp.c_str());
+
+					ImGui::Text("\n");
+					ImGui::Separator();
+					temp = flavorText[m_p1ModelId];
 					ImGui::Text(temp.c_str());
 				}
 
@@ -612,6 +641,11 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 					temp = "Vehicle Model : " + to_string(m_p4ModelId) + "  >";
 					ImGui::SetCursorPosX(width / 8 - ImGui::CalcTextSize(temp.c_str()).x / 2);
 					ImGui::Text(temp.c_str());
+
+					ImGui::Text("\n");
+					ImGui::Separator();
+					temp = flavorText[m_p1ModelId];
+					ImGui::Text(temp.c_str());
 				}
 				else
 				{
@@ -621,6 +655,11 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 
 					temp = "Press \"B\" to Unselect!";
 					ImGui::SetCursorPosX(width / 8 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+					ImGui::Text(temp.c_str());
+
+					ImGui::Text("\n");
+					ImGui::Separator();
+					temp = flavorText[m_p1ModelId];
 					ImGui::Text(temp.c_str());
 				}
 
@@ -710,8 +749,8 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 		m_objHand->SetPlayerSpotlights(true);
 		m_scene->SetBloom(true);
 		m_scene->SetOnlySky(false);
-		m_scene->SetInstantCameraFocus(vec3(0, 0, 0));
 		m_scene->SetCameraPos(CAMERAPOS_LEVELSELECT);
+		m_scene->SetInstantCameraFocus(vec3(0, 0, 3));
 
 		//ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 10);
 		ImGui::SetNextWindowPos(ImVec2((float)width / 3 - (slWidth / 2), 0));
@@ -835,8 +874,8 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 		m_objHand->SetPlayerSpotlights(true);
 		m_scene->SetBloom(true);
 		m_scene->SetOnlySky(false);
-		m_scene->SetInstantCameraFocus(vec3(0, 0, 0));
 		m_scene->SetCameraPos(CAMERAPOS_GAME);
+		m_scene->SetCameraFocus(vec3(0, 6, 0));
 
 		for (int i = 0; i < m_objHand->GetNumPlayers(); i++)
 		{
@@ -2312,6 +2351,13 @@ void Menu::SetWinner(int playerID)
 bool Menu::SelectMenuActive()
 {
 	if (m_menu == ActiveMenu::select)
+		return true;
+	return false;
+}
+
+bool Menu::SelectLevelMenuActive()
+{
+	if (m_menu == ActiveMenu::selectLevel)
 		return true;
 	return false;
 }
