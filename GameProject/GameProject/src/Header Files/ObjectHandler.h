@@ -112,8 +112,6 @@ public:
 	int GetDeadId();
 	// also clears the vector
 	vector<int> GetDeathOrder();
-	// TEMP!! TODO: REMOVE!!!!
-	int GetPlayerControllerIDBloo(int index, int bloo);
 
 	bool GetExplosion();
 	void SetExplosion(bool b);

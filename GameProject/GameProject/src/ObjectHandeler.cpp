@@ -610,17 +610,6 @@ int ObjectHandler::GetPlayerControllerID(int index)
 	return m_players[index]->GetControllerID();
 }
 
-int ObjectHandler::GetPlayerControllerIDBloo(int index, int bloo)
-{
-	// TODO: ta bort denna ifsats när spelet är klart?
-	if (index == -1 || this->GetNumPlayers() - 1 < index)
-	{
-		// otillåtna värden som index
-		cout << "invalid index send to getPlayerControlerID! index : " << index << " from int : " << bloo << endl;
-	}
-	return m_players[index]->GetControllerID();
-}
-
 bool ObjectHandler::GetExplosion()
 {
 	return m_cube->GetExplosion();
