@@ -600,16 +600,6 @@ vector<Model*> Scene::GetModels(int index)
 		return m_objects;
 }
 
-vector<Light*> Scene::GetCarLight()
-{
-	return m_lights;
-}
-
-vector<Light*> Scene::GetObjLight()
-{
-	return vector<Light*>();
-}
-
 void Scene::AddPointLight(vec3 pos, vec3 color)
 {
 	m_lights.push_back(new Light(1, pos, pos, color, 50));
