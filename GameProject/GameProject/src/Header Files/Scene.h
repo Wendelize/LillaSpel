@@ -32,9 +32,10 @@ private:
 
 	Model* m_winnerIsland;
 
-	vector<Light*> m_lights;
-	vector<Light*> m_carLights;
-	int m_nrOfLights = 0, m_nrOfCarLights = 0;
+	vector <Light*> m_lights;
+	vector <Light*> m_carLights;
+	vector <Light*> m_objLights;
+	int m_nrOfLights = 0, m_nrOfCarLights = 0, m_nrOfObjLights = 0;
 
 	int m_screenWidth;
 	int m_screenHeight;
@@ -60,7 +61,7 @@ public:
 	void RenderSceneInfo(Shader* shader, vector<ObjectInfo*> objects);
 	void RenderSkybox();
 	void RenderSky();
-	void RenderLights(vector<Light*> light);
+	void RenderLights(vector<Light*> carlight, vector<Light*> objlight);
 	void RenderShadows(vector<ObjectInfo*> objects);
 	void RenderImGui(btDiscreteDynamicsWorld* world);
 	void RenderParticles();

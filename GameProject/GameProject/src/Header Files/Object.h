@@ -9,6 +9,7 @@ public:
 	~Object();
 	ObjectInfo* GetObjectInfo();
 	btRigidBody* GetObject();
+	vector<Light*> GetAllLight();
 	void Update();
 	void SetScale(float scale);
 	float GetScale();
@@ -31,6 +32,8 @@ private:
 	vec3 m_color;
 	Transform* m_transform;
 	ObjectInfo* m_info;
+	vector<Light*> m_lights;
+	int m_nrOfLights;
 	float m_scale;
 	float m_speed;
 };

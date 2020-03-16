@@ -47,6 +47,7 @@ public:
 	void RankPlayers();
 	int GetWinnerIndex();
 	bool GetMapUpdate();
+	vec3 GetWinnerColor();
 
 private:
 	Scene* m_scene;
@@ -81,14 +82,17 @@ private:
 	double m_p1Seconds = 1;
 	bool m_p1Joined = false;
 	vec3 m_p1Col = vec3(2, 0, 4);
+	float m_p1Pusle =	0.f;
+	float m_p1PulseWay = 1.f;
 	float m_p1Menuheight = 0.f;
-
 
 	int m_p2ModelId = 0;
 	double m_p2Seconds = 1;
 	bool m_p2Joined = false;
 	float m_p2Menuheight = .8f;
 	vec3 m_p2Col = vec3(0, 1.6, 0.8);
+	float m_p2Pusle = 0.f;
+	float m_p2PulseWay = 1.f;
 
 
 	int m_p3ModelId = -1;
@@ -96,13 +100,18 @@ private:
 	bool m_p3Joined = false;
 	vec3 m_p3Col = vec3(3.2, 0, 0.8);
 	float m_p3Menuheight = .8f;
+	float m_p3Pusle =	0.f;
+	float m_p3PulseWay = 1.f;
 
 	int m_p4ModelId = -1;
 	double m_p4Seconds = 1;
 	bool m_p4Joined = false;
 	float m_p4Menuheight = .8f;
 	vec3 m_p4Col = vec3(4, 4, 0.6);
+	float m_p4Pusle = 0.f;
+	float m_p4PulseWay = 1.f;
 
+	float m_lastTime;
 	double m_inputSeconds = 1;
 
 	ActiveMenu m_menu = ActiveMenu::start;

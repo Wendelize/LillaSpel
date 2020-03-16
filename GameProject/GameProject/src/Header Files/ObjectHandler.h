@@ -25,9 +25,9 @@ private:
 	vector<Ghost*> m_ghosts;
 	vector<Object*> m_objects;
 	vector<Object*> m_oribtObjects;
-
 	vector<ObjectInfo*> m_structs;
 	vector<Light*> m_carLights;
+	vector<Light*> m_objLights;
 	vector<vec3> m_bombZone;
 	vector<ParticleSystem*> m_particles;
 	// used to track collisions for statsMenu
@@ -67,7 +67,7 @@ public:
 
 	void Update(float dt);
 	void AddPlayer(vec3 pos, int controllerID, int modelId, vec3 color, Model* model);
-	void AddObject(vec3 pos, int modelId, Model* model);
+	void AddObject(vec3 pos, int modelId, Model* model, float scale = 1);
 	void AddOrbitObjects(vec3 pos, int modelId, Model* model, float speed, float scale);
 	void RemoveOrbitObjects(int index);
 	void RemoveAllOrbitObjects();
@@ -120,6 +120,7 @@ public:
 	void StopAllSound();
 	vector<ObjectInfo*> GetObjects();
 	vector<Light*> GetLights();
+	vector<Light*> GetObjLight();
 	btDiscreteDynamicsWorld* GetWorld();
 	DebugDrawer* GetDebugDrawer();
 	int GetWinnerID();

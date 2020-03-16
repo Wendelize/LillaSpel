@@ -106,6 +106,11 @@ ObjectHandler::~ObjectHandler()
 	}
 	m_carLights.clear();
 
+	for (size_t i = 0; i < m_objLights.size(); i++)
+	{
+		delete m_objLights.at(i);
+	}
+	m_objLights.clear();
 
 	for (int i = m_dynamicsWorld->getNumCollisionObjects() - 1; i >= 0; i--)
 	{
@@ -393,9 +398,9 @@ void ObjectHandler::AddPlayer(vec3 pos, int controllerID, int modelId, vec3 colo
 		m_players.back()->StartEngineSounds();
 }
 
-void ObjectHandler::AddObject(vec3 pos, int modelId, Model* model)
+void ObjectHandler::AddObject(vec3 pos, int modelId, Model* model, float scale)
 {
-	m_objects.push_back(new Object(btVector3(pos.x, pos.y, pos.z), modelId, model));
+	m_objects.push_back(new Object(btVector3(pos.x, pos.y, pos.z), modelId, model, 0, scale));
 	m_dynamicsWorld->addRigidBody(m_objects.back()->GetObject());
 }
 
@@ -786,6 +791,29 @@ vector<Light*> ObjectHandler::GetLights()
 
 
 	return m_carLights;
+}
+
+vector<Light*> ObjectHandler::GetObjLight()
+{
+	for (size_t i = 0; i < m_objLights.size(); i++)
+	{
+		delete m_objLights.at(i);
+	}
+	m_objLights.clear();
+	vector<Light*> temp;
+	for (uint i = 0; i < m_objects.size(); i++)
+	{
+		temp = m_objects.at(i)->GetAllLight();
+		if (temp.size() > 0)
+		{
+			for (uint j = 0; j < temp.size(); j++)
+			{
+				m_objLights.push_back(temp.at(j));
+			}
+		}
+	}
+
+	return m_objLights;
 }
 
 btDiscreteDynamicsWorld* ObjectHandler::GetWorld()
