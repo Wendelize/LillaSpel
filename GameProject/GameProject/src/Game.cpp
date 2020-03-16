@@ -377,6 +377,7 @@ void Game::Update(float dt)
 	m_scene->UpdateLightsOut(m_objectHandler->GetLightsOut());
 	DynamicCamera(dtUnchanged);
 	m_scene->UpdateCamera(dtUnchanged);
+	m_objectHandler->PowerUpParticles(m_scene);
 }
 
 void Game::DynamicCamera(float dt)

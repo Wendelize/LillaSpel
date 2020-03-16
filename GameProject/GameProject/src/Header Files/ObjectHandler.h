@@ -6,6 +6,7 @@
 #include "Ghost.h"
 #include "MarchingCubes.h"
 #include "Object.h"
+#include "Scene.h"
 
 class ObjectHandler
 {
@@ -60,6 +61,8 @@ private:
 
 	bool m_lightsOut;
 	bool m_terrain;
+
+	bool PUpCollision[4];
 
 public:
 	ObjectHandler();
@@ -144,4 +147,5 @@ public:
 	void UpdateLastPos();
 	void UpdateHook(float dt);
 	bool GetPlayerHook(int index);
+	void PowerUpParticles(Scene* scene);
 };
