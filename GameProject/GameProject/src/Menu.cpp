@@ -38,9 +38,8 @@ Menu::Menu(Scene* scene, ObjectHandler* objHand)
 	flavorText[1] = "\nHopefully this big vehicle will drive \ninto Vendela one day. Until that day \nthis will be the ultimate KamiCarZe \nvehicle.";
 	flavorText[2] = "\nThe Cybertruck. Totally unbreakable. \n Except the windows. We do not talk \nabout the windows.";
 	flavorText[3] = "\nIn the hands of a student, this vehicle \nwill never be used at full capacity \nunless its \"CSN-time\"";
-	
-}
 
+}
 Menu::~Menu()
 {
 	if (m_soundEngine)
@@ -360,7 +359,7 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 
 					ImGui::Text("\n");
 					ImGui::Separator();
-					temp = flavorText[m_p1ModelId];
+					temp = flavorText[m_p2ModelId];
 					ImGui::Text(temp.c_str());
 				}
 				else
@@ -375,7 +374,7 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 
 					ImGui::Text("\n");
 					ImGui::Separator();
-					temp = flavorText[m_p1ModelId];
+					temp = flavorText[m_p2ModelId];
 					ImGui::Text(temp.c_str());
 				}
 
@@ -503,7 +502,7 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 
 					ImGui::Text("\n");
 					ImGui::Separator();
-					temp = flavorText[m_p1ModelId];
+					temp = flavorText[m_p3ModelId];
 					ImGui::Text(temp.c_str());
 				}
 				else
@@ -518,7 +517,7 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 
 					ImGui::Text("\n");
 					ImGui::Separator();
-					temp = flavorText[m_p1ModelId];
+					temp = flavorText[m_p3ModelId];
 					ImGui::Text(temp.c_str());
 				}
 
@@ -644,7 +643,7 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 
 					ImGui::Text("\n");
 					ImGui::Separator();
-					temp = flavorText[m_p1ModelId];
+					temp = flavorText[m_p4ModelId];
 					ImGui::Text(temp.c_str());
 				}
 				else
@@ -659,7 +658,7 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 
 					ImGui::Text("\n");
 					ImGui::Separator();
-					temp = flavorText[m_p1ModelId];
+					temp = flavorText[m_p4ModelId];
 					ImGui::Text(temp.c_str());
 				}
 

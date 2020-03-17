@@ -7,7 +7,7 @@ Player::Player(Model* model, int modelId, vec3 pos)
 
 	float radius = 1.;
 	float scale = 0.69;
-	m_restitution = 1.6699;
+	m_restitution = 1.7699;
 	m_transform->SetScale(scale, scale, scale);
 
 	m_lives = 3;
