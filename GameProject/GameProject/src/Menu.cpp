@@ -221,7 +221,7 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 				ImGui::SetCursorPosX(width / 8 - ImGui::CalcTextSize(temp.c_str()).x / 2);
 				ImGui::Text(temp.c_str());
 
-				temp = " < Vehicle Model :" + to_string(m_p1ModelId) + "  >";
+				temp = " <  Vehicle Model :" + to_string(m_p1ModelId) + "  >";
 				ImGui::SetCursorPosX(width / 8 - ImGui::CalcTextSize(temp.c_str()).x / 2);
 				ImGui::Text(temp.c_str());
 
@@ -361,7 +361,7 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 					ImGui::SetCursorPosX(width / 8 - ImGui::CalcTextSize(temp.c_str()).x / 2);
 					ImGui::Text(temp.c_str());
 
-					temp = "Vehicle Model : " + to_string(m_p2ModelId) + "  >";
+					temp = "<  Vehicle Model : " + to_string(m_p2ModelId) + "  >";
 					ImGui::SetCursorPosX(width / 8 - ImGui::CalcTextSize(temp.c_str()).x / 2);
 					ImGui::Text(temp.c_str());
 
@@ -504,7 +504,7 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 					ImGui::SetCursorPosX(width / 8 - ImGui::CalcTextSize(temp.c_str()).x / 2);
 					ImGui::Text(temp.c_str());
 
-					temp = "Vehicle Model : " + to_string(m_p3ModelId) + "  >";
+					temp = "<  Vehicle Model : " + to_string(m_p3ModelId) + "  >";
 					ImGui::SetCursorPosX(width / 8 - ImGui::CalcTextSize(temp.c_str()).x / 2);
 					ImGui::Text(temp.c_str());
 
@@ -645,7 +645,7 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 					ImGui::SetCursorPosX(width / 8 - ImGui::CalcTextSize(temp.c_str()).x / 2);
 					ImGui::Text(temp.c_str());
 
-					temp = "Vehicle Model : " + to_string(m_p4ModelId) + "  >";
+					temp = "<  Vehicle Model : " + to_string(m_p4ModelId) + "  >";
 					ImGui::SetCursorPosX(width / 8 - ImGui::CalcTextSize(temp.c_str()).x / 2);
 					ImGui::Text(temp.c_str());
 
