@@ -309,7 +309,6 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 
 		if (m_p2Joined && m_selected[1] == 0) {
 			p2PulseValue = (sinTime / 4) + 0.75f;
-			cout << p2PulseValue << endl;
 		}
 		else {
 			p2PulseValue = 1;
