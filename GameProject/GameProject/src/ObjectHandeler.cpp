@@ -313,8 +313,9 @@ void ObjectHandler::Update(float dt)
 					m_players[isPlayer]->SetFallen();
 					m_players[isPlayer]->StopEngineSounds();
 				}
-
-				if (m_players[isPlayer]->GetCurrentPos().y() < -20.f && m_players[isPlayer]->GetLives() > 0)
+				// DEATH -> DO WE WANT BOX?
+				vec3 currentPosition = vec3(m_players[isPlayer]->GetCurrentPos().x(), m_players[isPlayer]->GetCurrentPos().y(), m_players[isPlayer]->GetCurrentPos().z());
+				if ((currentPosition.y < -20.f || currentPosition.x < -75.f || currentPosition.x > 75.f || currentPosition.z < -75.f || currentPosition.z > 65.f) && m_players[isPlayer]->GetLives() > 0)
 				{
 					bool spawnFound = false;
 					vec3 spawn = vec3(0); // = vec3((rand() % 30) - 15, 7, (rand() % 20 - 15)));
