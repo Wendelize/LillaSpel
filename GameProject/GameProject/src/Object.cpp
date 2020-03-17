@@ -100,7 +100,7 @@ ObjectInfo* Object::GetObjectInfo()
 	          tempScalar[4], tempScalar[5], tempScalar[6], tempScalar[7]
 	          , tempScalar[8], tempScalar[9], tempScalar[10], tempScalar[11]
 	          , tempScalar[12], tempScalar[13], tempScalar[14], tempScalar[15]);
-	m_info = new ObjectInfo(scale(temp, vec3(m_scale)), m_model, 3, m_color, false);
+	m_info = new ObjectInfo(scale(temp, vec3(m_scale)), m_model, 3, m_color, true);
 	return m_info;
 }
 

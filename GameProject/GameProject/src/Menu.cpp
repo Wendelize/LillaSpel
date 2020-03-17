@@ -738,11 +738,38 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 
 		if (m_continue == m_objHand->GetNumPlayers())
 		{
+
 			m_menu = ActiveMenu::selectLevel;
 
 			for (int i = 0; i < m_objHand->GetNumPlayers(); i++)
 			{
 				m_selected[i] = 0;
+			}
+
+			if (m_objHand->GetNumPlayers() == 1)
+			{
+				// resettar banan m.m. och laddar start menyn
+				if (m_soundEngine)
+					m_soundEngine->play2D(m_menuSounds[2], false);
+				m_menu = ActiveMenu::start;
+				m_reset = true;
+				m_p2Joined = false;
+				m_p3Joined = false;
+				m_p4Joined = false;
+				m_p1ModelId = 0;
+				m_p2ModelId = 0;
+				m_p3ModelId = 0;
+				m_p4ModelId = 0;
+				m_p2Menuheight = .8f;
+				m_p3Menuheight = .8f;
+				m_p4Menuheight = .8f;
+				for (int i = 0; i < 4; i++)
+				{
+					if (m_objHand->GetNumPlayers() > 0)
+					{
+						m_objHand->RemovePlayer(m_objHand->GetNumPlayers() - 1);
+					}
+				}
 			}
 		}
 
@@ -949,6 +976,7 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 			{
 				m_menu = ActiveMenu::selectLevel;
 				m_selected[0] = 0;
+				
 			}
 
 			if (time - m_p1Seconds >= 0.3 && (glfwGetGamepadState(0, &state)))
