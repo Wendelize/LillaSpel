@@ -450,7 +450,6 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 		ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(m_p3Col.x * borderCol, m_p3Col.y * borderCol, m_p3Col.z * borderCol, 1));
 		if (m_p3Joined && m_selected[2] == 0) {
 			p3PulseValue = (sinTime / 4) + 0.75f;
-			cout << p3PulseValue << endl;
 		}
 		else {
 			p3PulseValue = 1;
