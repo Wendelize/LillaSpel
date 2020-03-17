@@ -16,10 +16,11 @@ public:
 		selectLives = 3,
 		selectLevel = 4,
 		pause = 5,
-		stats = 6,
-		win = 7,
-		restart = 8,
-		playerHud = 9
+		controllerScheme = 6,
+		stats = 7,
+		win = 8,
+		restart = 9,
+		playerHud = 10
 	};
 
 	void RenderMenu(bool gameOver, float time, Model* model);
@@ -35,6 +36,7 @@ public:
 	bool GameOn();
 	int GetMaxTime();
 	void LoadMenuPic();
+	void LoadPicture(string filename, GLuint n, GLuint *texture);
 	bool Pause();
 	bool Reset();
 	void ResetReset();
@@ -56,7 +58,10 @@ private:
 	Scene* m_scene;
 	ObjectHandler* m_objHand;
 	GLuint m_mainMenuPic;
+	GLuint m_playerController;
+	GLuint m_ghostController;
 	int m_menuPicWidth, m_menuPicHeight;
+	int m_controllerSchemeWidth, m_controllerSchemeHeight;
 	bool m_reset = false;
 	bool m_updateMap = false;
 	int m_maxLives = 3;

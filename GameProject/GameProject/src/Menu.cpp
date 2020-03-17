@@ -10,6 +10,8 @@ Menu::Menu(Scene* scene, ObjectHandler* objHand)
 	m_kills.push_back(temp);
 	m_kills.push_back(temp);
 	m_kills.push_back(temp);
+	LoadPicture("src/Textures/playerController.png", 1, &m_playerController);
+	LoadPicture("src/Textures/ghostController.png", 2, &m_ghostController);
 	m_soundEngine = createIrrKlangDevice();
 
 	if (m_soundEngine)
@@ -159,8 +161,13 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 				m_p3Seconds = time;
 				m_p4Seconds = time;
 			}
+			ImGui::SetCursorPos(ImVec2(middle - (middle / 2.f) - 50, heightMiddle + (heightMiddle / 4.f)));
+			if (ImGui::Button("Controls", ImVec2(300, 75)))
+			{
+				m_menu = ActiveMenu::controllerScheme;
+			}
 
-			ImGui::SetCursorPos(ImVec2(middle - (middle / 2.f), heightMiddle + (heightMiddle / 4.f)));
+			ImGui::SetCursorPos(ImVec2(middle - (middle / 2.f), heightMiddle + (heightMiddle / 2.f)));
 			if (ImGui::Button("Exit", ImVec2(200, 75)))
 			{
 				if (m_soundEngine)
@@ -172,6 +179,7 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 			ImGui::PopStyleColor(4);
 		}
 		ImGui::End();
+
 		break;
 	case ActiveMenu::select:
 
@@ -1117,6 +1125,73 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 			//ImGui::PopStyleColor();
 		}
 		ImGui::End();
+		break;
+	case ActiveMenu::controllerScheme:
+		ImGui::SetNextWindowPos(ImVec2(-4, -2));
+
+
+		//float wi = *width;
+		//float hi = *height;
+		ImGui::SetNextWindowSize(ImVec2(static_cast<float>(width) + 8, static_cast<float>(height) + 2));
+		//(float)w->GetWidht() + 4, w->GetHeight() + 4));
+		if (ImGui::Begin("##Background", nullptr,
+			ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoBackground |
+			ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoNav))
+		{
+			ImGui::SetCursorPos(ImVec2(0, 0));
+			ImGui::Image((void*)m_mainMenuPic, ImVec2(width + 8, height + 2), ImVec2(0, 0), ImVec2(1, 1));
+		}
+		ImGui::End();
+
+		ImGui::SetNextWindowPos(ImVec2(width / 4 - 350, height / 2 - 210));
+		ImGui::SetNextWindowSize(ImVec2(700, 420));
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 5);
+		if (ImGui::Begin("##playerControllerScheme", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize))
+		{
+			string temp = "Player Controller Scheme";
+			ImGui::SetCursorPosX(700 / 2 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+			ImGui::Text(temp.c_str());
+
+			ImGui::Image((void*)m_playerController, ImVec2(680, 370), ImVec2(0, 0), ImVec2(1, 1));
+			ImGui::PopStyleVar();
+		}
+		ImGui::End();
+
+		ImGui::SetNextWindowPos(ImVec2(width / 4 * 3 - 350, height / 2 - 210));
+		ImGui::SetNextWindowSize(ImVec2(700, 420));
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 5);
+		if (ImGui::Begin("##ghostControllerScheme", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize))
+		{
+			string temp = "Ghost Controller Scheme";
+			ImGui::SetCursorPosX(700 / 2 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+			ImGui::Text(temp.c_str());
+
+			ImGui::Image((void*)m_ghostController, ImVec2(680, 370), ImVec2(0, 0), ImVec2(1, 1));
+			ImGui::PopStyleVar();
+		}
+		ImGui::End();
+
+		if (time - m_p1Seconds >= 1.0 && (glfwGetGamepadState(0, &state)))
+		{
+			ImGui::SetNextWindowPos(ImVec2(width / 2 - 250, height - 60));
+			ImGui::SetNextWindowSize(ImVec2(500, 60));
+			ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 5);
+			if (ImGui::Begin("##backButton", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize))
+			{
+				//ImGui::Text(" Press  \"Back \"  for Controller Scheme.");
+				string temp = "Press  \"B\"  to Return!";
+				ImGui::SetCursorPosX(500 / 2 - ImGui::CalcTextSize(temp.c_str()).x / 2);
+				ImGui::SetCursorPosY(15);
+				ImGui::Text(temp.c_str());
+				if (state.buttons[GLFW_GAMEPAD_BUTTON_B])
+				{
+					m_menu = ActiveMenu::start;
+					m_p1Seconds = time;
+				}
+				ImGui::PopStyleVar();
+			}
+			ImGui::End();
+		}
 		break;
 	case ActiveMenu::restart:
 		m_objHand->SetPlayerSpotlights(true);
@@ -2428,6 +2503,31 @@ void Menu::LoadMenuPic()
 	else
 	{
 		std::cout << "MainMenu texture failed to load at path: " << "src/Textures/menu1.png" << std::endl;
+		stbi_image_free(data);
+	}
+}
+
+void Menu::LoadPicture(string filename, GLuint n, GLuint *texture)
+{
+	glGenTextures(n, texture);
+	glBindTexture(GL_TEXTURE_2D, *texture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	m_controllerSchemeWidth = 0;
+	m_controllerSchemeHeight = 0;
+	unsigned char* data = stbi_load(filename.c_str(), &m_controllerSchemeWidth, &m_controllerSchemeHeight, nullptr, 4);
+	if (data)
+	{
+		glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+		glTexImage2D(GL_TEXTURE_2D,
+			0, GL_RGB, m_controllerSchemeWidth, m_controllerSchemeHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, data
+		);
+		stbi_image_free(data);
+	}
+	else
+	{
+		std::cout << "Picture texture failed to load at path: " << filename << std::endl;
 		stbi_image_free(data);
 	}
 }
