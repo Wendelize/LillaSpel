@@ -110,7 +110,10 @@ void Ghost::UpdateGhost(float dt)
 			{
 				// Play "Here comes a bomb"" 
 				filename = m_soundFiles[25];
-				m_tauntEngine->play2D(filename, false);
+				if (m_tauntEngine)
+				{
+					m_tauntEngine->play2D(filename, false);
+				}
 				m_nrOfBombSwitch--;
 				m_timeOut = 0;
 				m_bombSwitch = true;
@@ -124,7 +127,10 @@ void Ghost::UpdateGhost(float dt)
 			{
 				// Play "Buuuuh, daaark"
 				filename = m_soundFiles[26];
-				m_tauntEngine->play2D(filename, false);
+				if (m_tauntEngine)
+				{
+					m_tauntEngine->play2D(filename, false);
+				}	
 				m_lightSwitch = true;
 				m_nrOfLightSwitch--;
 				m_timeOut = 0;
@@ -138,7 +144,10 @@ void Ghost::UpdateGhost(float dt)
 			{
 				// Play "HEHEHEHE, TRY DIZ"
 				filename = m_soundFiles[27];
-				m_tauntEngine->play2D(filename, false);
+				if (m_tauntEngine)
+				{
+					m_tauntEngine->play2D(filename, false);
+				}
 				m_ctrlSwitch = true;
 				m_nrOfCtrlSwitch--;
 				m_timeOut = 0;

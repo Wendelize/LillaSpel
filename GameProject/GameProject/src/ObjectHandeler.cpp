@@ -602,12 +602,6 @@ vec3 ObjectHandler::GetPlayerDirection(int index)
 
 int ObjectHandler::GetPlayerControllerID(int index)
 {
-	// TODO: ta bort denna ifsats när spelet är klart?
-	if (index == -1 || this->GetNumPlayers() - 1 < index)
-	{
-		// otillåtna värden som index
-		cout << "invalid index send to getPlayerControlerID! index : " << index << endl;
-	}
 	return m_players[index]->GetControllerID();
 }
 

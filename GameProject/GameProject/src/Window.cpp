@@ -114,7 +114,7 @@ Window::Window(int width, int height)
 	m_fonts.push_back(io.Fonts->AddFontFromFileTTF("src/IMGUI/Fonts/CFLegendsoftheFall-Regular.ttf", 60.0f));
 	m_fonts.push_back(io.Fonts->AddFontFromFileTTF("src/IMGUI/Fonts/thememefont.ttf", 20.0f));	// MEME font
 	m_fonts.push_back(io.Fonts->AddFontFromFileTTF("src/IMGUI/Fonts/Rowdy-Regular.ttf", 90.0f));
-	m_fonts.push_back(io.Fonts->AddFontFromFileTTF("src/IMGUI/Fonts/SugarpunchDEMO.ttf", 30.0f));
+	m_fonts.push_back(io.Fonts->AddFontFromFileTTF("src/IMGUI/Fonts/ghostsmileys.ttf", 30.0f)); // Ghosts
 	m_fonts.push_back(io.Fonts->AddFontFromFileTTF("src/IMGUI/Fonts/SugarpunchDEMO.ttf", 60.0f));
 	ImGui::StyleColorsDark();
 
