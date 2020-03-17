@@ -131,7 +131,6 @@ Window::~Window()
 {
 	glfwDestroyWindow(m_window);
 	glfwTerminate();
-	//exit(EXIT_SUCCESS);
 }
 
 int Window::GetWidht()

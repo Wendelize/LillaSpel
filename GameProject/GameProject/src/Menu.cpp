@@ -743,9 +743,6 @@ void Menu::RenderMenu(bool gameOver, float timer, Model* model)
 		break;
 	case ActiveMenu::selectLevel:
 
-		if (m_objHand->GetNumPlayers() == 1)
-			m_objHand->AddPlayer(SELECTPOS2, 1, 0, m_p2Col, model);
-
 		m_objHand->SetPlayerSpotlights(true);
 		m_scene->SetBloom(true);
 		m_scene->SetOnlySky(false);

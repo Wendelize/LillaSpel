@@ -55,7 +55,6 @@ public:
 
 	void Init();
 	void LightToShader();
-	//void Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, MarchingCubes* cube);
 	void Render(vector<ObjectInfo*> objects, btDiscreteDynamicsWorld* world, MarchingCubes* cube, bool gameOver,
 	            int winner, bool terrain);
 	void RenderSceneInfo(Shader* shader, vector<ObjectInfo*> objects);
@@ -101,5 +100,4 @@ public:
 	void AddSpotLight(vec3 pos = {0, 10, 0}, vec3 dir = {0, -1, 0}, vec3 color = {0, 0, 1}, float cutOff = 12.0);
 	void UpdateTerrainAlpha(float dt, bool terrain);
 	void UpdateLightsOut(bool lightsOut);
-	//void CameraFollowCar(ObjectInfo* objects);
 };

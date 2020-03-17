@@ -107,6 +107,65 @@ void Game::Update(float dt)
 {
 	float dtUnchanged = dt;
 
+	if (m_menu->GameOn())
+	{
+		if (m_slowmoCooldown > 0)
+		{
+			m_slowmoCooldown -= dt;
+			dt /= (m_slowmoCooldown * 5) + 1;
+		}
+
+		cout << to_string(dt);
+
+		//Exhaust particles &	Hook/Rocket
+		for (int i = 0; i < m_objectHandler->GetNumPlayers(); i++)
+		{
+			float speed = m_objectHandler->GetPlayerSpeed(i);
+
+			vec3 dir = m_objectHandler->GetPlayerDirection(i);
+			vec3 pos = m_objectHandler->GetPlayerPos(i) + dir * 1.f + vec3(0, -0.45, 0);
+			vec3 right = cross(dir, vec3(0, 1, 0)) * 0.5f;
+
+			if (speed > 3)
+			{
+				m_scene->AddParticleEffect(pos, vec3(0.6, 0.6, 0.6), vec3(0), 5, 0.005, dir, 300 * dt, 0.3, 0.3, 1);
+			}
+
+			if (speed > 15 || m_objectHandler->GetPlayerHook(i))
+			{
+				if (m_objectHandler->GetPlayerHook(i))
+				{
+					m_scene->AddParticleEffect(pos, vec3(1, 0, 0), vec3(0, 1, 0), 5, 1, dir, 300 * dt, 0.3, 0.3, 1);
+				}
+			}
+		}
+
+		//Explosion particles and screen shake
+		if (m_objectHandler->GetExplosion())
+		{
+			vec3 pos = m_objectHandler->GetExplosionPosition();
+			m_scene->ShakeCamera(0.4f, 1);
+			m_scene->AddParticleEffect(pos, vec3(0.01, 0, 0), vec3(1, 0, 0), 1, 6, vec3(0, 1, 0), 50, 1.2, 0.5, -9.82);
+			m_objectHandler->SetExplosion(false);
+		}
+
+		//Victory condition
+		if (m_objectHandler->GetNumPlayers() == 1 && !m_gameOver)
+		{
+			m_menu->RankPlayers();
+			m_winner = m_menu->GetWinnerIndex();
+			m_menu->SetActiveMenu(Menu::ActiveMenu::win);
+			m_gameOver = true;
+
+			if (m_soundEngine)
+			{
+				m_soundEngine->stopAllSounds();
+				m_soundEngine->play2D("src/Audio/Music - Win.mp3", true);
+				m_objectHandler->StopAllSound();
+			}
+		}
+	}
+
 	// är vi på en meny som ska pausa spelet? sluta då updatera deltaTime
 	if (m_menu->Pause())
 	{
@@ -314,65 +373,13 @@ void Game::Update(float dt)
 		}
 	}
 
-	if (m_menu->GameOn())
-	{
-		if (m_slowmoCooldown > 0)
-		{
-			m_slowmoCooldown -= dt;
-			dt /= (m_slowmoCooldown * 1.5) + 1;
-		}
-
-		//Exhaust particles &	Hook/Rocket
-		for (int i = 0; i < m_objectHandler->GetNumPlayers(); i++)
-		{
-			float speed = m_objectHandler->GetPlayerSpeed(i);
-
-			vec3 dir = m_objectHandler->GetPlayerDirection(i);
-			vec3 pos = m_objectHandler->GetPlayerPos(i) + dir * 1.f + vec3(0, -0.45, 0);
-			vec3 right = cross(dir, vec3(0, 1, 0)) * 0.5f;
-
-			if (speed > 3)
-			{
-				m_scene->AddParticleEffect(pos, vec3(0.6, 0.6, 0.6), vec3(0), 5, 0.005, dir, 300 * dt, 0.3, 0.3, 1);
-			}
-
-			if (speed > 15 || m_objectHandler->GetPlayerHook(i))
-			{
-				if (m_objectHandler->GetPlayerHook(i))
-				{
-					m_scene->AddParticleEffect(pos, vec3(1, 0, 0), vec3(0, 1, 0), 5, 1, dir, 300 * dt, 0.3, 0.3, 1);
-				}
-			}
-		}
-
-		//Explosion particles and screen shake
-		if (m_objectHandler->GetExplosion())
-		{
-			vec3 pos = m_objectHandler->GetExplosionPosition();
-			m_scene->ShakeCamera(0.4f, 1);
-			m_scene->AddParticleEffect(pos, vec3(0.01, 0, 0), vec3(1, 0, 0), 1, 6, vec3(0, 1, 0), 50, 1.2, 0.5, -9.82);
-			m_objectHandler->SetExplosion(false);
-		}
-
-		//Victory condition
-		if (m_objectHandler->GetNumPlayers() == 1 && !m_gameOver)
-		{
-			m_menu->RankPlayers();
-			m_winner = m_menu->GetWinnerIndex();
-			m_menu->SetActiveMenu(Menu::ActiveMenu::win);
-			m_gameOver = true;
-
-			if (m_soundEngine)
-			{
-				m_soundEngine->stopAllSounds();
-				m_soundEngine->play2D("src/Audio/Music - Win.mp3", true);
-				m_objectHandler->StopAllSound();
-			}
-		}
-	}
 	m_menu->animateMenu(dt);
 	m_scene->UpdateSky(dtUnchanged);
-	m_scene->UpdateParticles(dtUnchanged);
+	if(dt == 0)
+		m_scene->UpdateParticles(dtUnchanged);
+	else
+		m_scene->UpdateParticles(dt);
+
 	m_scene->UpdateTerrainAlpha(dtUnchanged, m_objectHandler->GetTerrain());
 	m_scene->UpdateLightsOut(m_objectHandler->GetLightsOut());
 	DynamicCamera(dtUnchanged);

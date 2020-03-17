@@ -6,7 +6,6 @@ class Sky
 {
 private:
 	GLuint m_texture[3];
-	//GLuint m_texture2;
 	int m_width, m_height, m_nrChannels;
 	Model *m_skyDome, *m_skyPlane;
 	vec3 m_apexColor, m_centerColor;

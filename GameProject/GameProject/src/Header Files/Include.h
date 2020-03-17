@@ -15,7 +15,6 @@
 #include "../IMGUI/imgui.h"
 #include "../IMGUI/imgui_impl_opengl3.h"
 #include "../IMGUI/imgui_impl_glfw.h"
-//include "stb_image.h"
 
 //AUDIO
 // irrKlang is not Creative Commons. If we want to release the game we need to change audio library. OpenAL perhaps.
