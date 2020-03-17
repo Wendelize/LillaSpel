@@ -115,8 +115,6 @@ void Game::Update(float dt)
 			dt /= (m_slowmoCooldown * 5) + 1;
 		}
 
-		cout << to_string(dt);
-
 		//Exhaust particles &	Hook/Rocket
 		for (int i = 0; i < m_objectHandler->GetNumPlayers(); i++)
 		{
